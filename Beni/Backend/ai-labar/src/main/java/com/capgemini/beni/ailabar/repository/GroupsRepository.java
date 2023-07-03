@@ -1,6 +1,5 @@
 package com.capgemini.beni.ailabar.repository;
 
-
 import com.capgemini.beni.ailabar.entity.GroupsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,7 +18,11 @@ public interface GroupsRepository extends JpaRepository<GroupsEntity, String> {
     @Query("SELECT CASE WHEN COUNT(g) > 0 THEN true ELSE false END FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     Boolean existsByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
 
+    @Query("SELECT g FROM GroupsEntity g WHERE g.id = :id")
+    GroupsEntity findGroupsEntityById(@Param("id") Integer id);
+
     @Modifying
     @Query("DELETE FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     void deleteByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
+
 }

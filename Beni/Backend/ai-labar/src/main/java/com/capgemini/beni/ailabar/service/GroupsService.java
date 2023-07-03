@@ -4,7 +4,6 @@ import com.capgemini.beni.ailabar.entity.GroupsEntity;
 import com.capgemini.beni.ailabar.repository.GroupsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -30,11 +29,21 @@ public class GroupsService {
         return groupsRepository.findByGroupNameAndAdmin(groupName, admin);
     }
 
-    public List<String> editGroup(String admin) {
+    public List<String> getGroupForEdit(String admin) {
         return groupsRepository.findAllGroupNamesByAdmin(admin);
     }
 
     public void deleteGroup(String groupName, String admin) {
         groupsRepository.deleteByGroupNameAndAdmin(groupName, admin);
     }
+
+    public GroupsEntity findGroupsEntityById(Integer id) {
+        return groupsRepository.findGroupsEntityById(id);
+    }
+
+    /* Inicio métodos sólo para pruebas */
+    public List<GroupsEntity> getAllGroupsData() {
+        return groupsRepository.findAll();
+    }
+    /* Fin métodos sólo para pruebas */
 }

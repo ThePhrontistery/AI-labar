@@ -4,7 +4,6 @@ import com.capgemini.beni.ailabar.entity.UsersEntity;
 import com.capgemini.beni.ailabar.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -18,20 +17,17 @@ public class UsersService {
         this.usersRepository = usersRepository;
     }
 
-    public void createUser(UsersEntity userEntity) {
-        usersRepository.save(userEntity);
-    }
-
-    public Boolean existsByUser(String user){
+    public Boolean checkUser(String user){
         return usersRepository.existsByUser(user);
     }
 
-    public Boolean existsByEmail(String email){
-        return usersRepository.existsByEmail(email);
+    public List<String> getMails(List<String> userList) {
+        return usersRepository.getEmailsByUserList(userList);
     }
 
-    public UsersEntity findByUser(String user) {
-        return usersRepository.findByUser(user);
+    /* Inicio de métodos sólo para realizar pruebas */
+    public void createUser(UsersEntity userEntity) {
+        usersRepository.save(userEntity);
     }
 
     public void deleteUser(String user) {
@@ -41,10 +37,14 @@ public class UsersService {
     public List<UsersEntity> getAllUsersData() {
         return usersRepository.findAll();
     }
+    /* Fin métodos sólo para realizar pruebas */
 
-    /* Este método es sólo de prueba, no va en esta clase, si no en MailService */
-    public List<String> getEmailsByUserList(List<String> userList) {
-        return usersRepository.getEmailsByUserList(userList);
+    public Boolean existsByEmail(String email){
+        return usersRepository.existsByEmail(email);
     }
-    /* ¡¡BORRAR!! */
+
+    public UsersEntity findByUser(String user) {
+        return usersRepository.findByUser(user);
+    }
+
 }

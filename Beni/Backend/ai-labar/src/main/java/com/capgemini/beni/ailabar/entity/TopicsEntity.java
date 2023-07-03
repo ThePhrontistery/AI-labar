@@ -21,10 +21,10 @@ public class TopicsEntity {
     private String question;
     @Column(name = "options")
     private String options;
+    @Column(name = "voted_by")
+    private String votedBy;
     @Column(name = "author")
     private String author;
-    @Column(name = "group_name")
-    private String groupName;
     @Column(name = "members")
     private String members;
     @Column(name = "close_date")
@@ -32,7 +32,7 @@ public class TopicsEntity {
     @Column(name = "visits")
     private Integer visits;
     @Column(name = "status")
-    private Integer status;
+    private String status;
 
     public TopicsEntity() {}
 
@@ -42,7 +42,6 @@ public class TopicsEntity {
         this.question = topicDto.getQuestion();
         this.options = topicDto.getOptions();
         this.author = topicDto.getAuthor();
-        this.groupName = topicDto.getGroupName();
         this.members = topicDto.getMembers();
         this.closeDate = topicDto.getCloseDate();
         this.visits = topicDto.getVisits();

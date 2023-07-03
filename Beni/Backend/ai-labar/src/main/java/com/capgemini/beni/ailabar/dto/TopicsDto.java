@@ -2,6 +2,8 @@ package com.capgemini.beni.ailabar.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class TopicsDto {
     private Integer id;
@@ -9,10 +11,12 @@ public class TopicsDto {
     private String type;
     private String question;
     private String options;
+    private String votedBy;
     private String author;
-    private String groupName;
     private String members;
     private String closeDate;
     private Integer visits;
-    private Integer status;
+    private String status;
+    private String user;
+    private List<String> votation;
 }
