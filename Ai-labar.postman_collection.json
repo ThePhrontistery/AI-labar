@@ -138,14 +138,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/groups/addUser",
+							"raw": "localhost:8080/groups/getUser",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"groups",
-								"addUser"
+								"getUser"
 							]
 						}
 					},

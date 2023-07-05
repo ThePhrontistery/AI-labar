@@ -60,7 +60,7 @@ public class UsersController implements SpecialResponseInterface {
 
         UsersEntity userEntity = new UsersEntity(userDto);
         userEntity.setPassword(hashedPassword);
-        usersService.createUser(userEntity);
+        usersService.saveUser(userEntity);
         responseJson.put("message", "User created successfully");
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
     }
@@ -81,12 +81,12 @@ public class UsersController implements SpecialResponseInterface {
 
         if (Boolean.FALSE.equals(usersService.checkUser(userDto.getUser()))) {
             responseJson.put("message", "The user does not exist");
-            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_REQUEST);
         }
 
         if (Boolean.TRUE.equals(usersService.checkUser(userDto.getNewUser().strip()))) {
             responseJson.put("message", "The new username already exists");
-            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_REQUEST);
         }
 
         UsersEntity userEntity = usersService.findByUser(userDto.getUser());
@@ -99,7 +99,7 @@ public class UsersController implements SpecialResponseInterface {
             userEntity.setPassword(DigestUtils.sha256Hex(userDto.getNewPassword()));
         }
 
-        usersService.createUser(userEntity);
+        usersService.saveUser(userEntity);
         responseJson.put("message", "User modified successfully");
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
     }

@@ -60,7 +60,7 @@ public class TopicsController implements SpecialResponseInterface {
         topicsList.removeIf(topic -> !topic.getAuthor().equals(userDto.getUser()));
 
         if(topicsList.isEmpty()) {
-            responseJson.put("message", "There are no topics related to the user.");
+            responseJson.put("message", "There are no topics related to the user");
             return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.OK);
         }
 
@@ -149,7 +149,7 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.OK);
         }
 
-        if(!topicEntity.getAuthor().equals(topicDto.getAuthor())) {
+        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
             responseJson.put("message", "The user is not the author of the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.OK);
         }
@@ -193,9 +193,9 @@ public class TopicsController implements SpecialResponseInterface {
                     if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor()))) {
                         responseJson.put("message", "There is already a topic assigned to the author with that name");
                         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
+                    } else {
+                        topicEntity.setTitle(topicDto.getTitle().strip());
                     }
-                } else {
-                    topicEntity.setTitle(topicDto.getTitle().strip());
                 }
 
                 if(checkTopicType(topicDto.getType()).equals("KO")) {
@@ -224,11 +224,10 @@ public class TopicsController implements SpecialResponseInterface {
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");
-                return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
             } else {
                 responseJson.put("message", "There is no topic with that id");
-                return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
             }
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
         } catch (Exception e) {
             JSONObject responseJson = new JSONObject();
             responseJson.put("message", "An error occurred --> " + e);
@@ -324,7 +323,7 @@ public class TopicsController implements SpecialResponseInterface {
         }
 
         if(topicEntity.getVotedBy() != null && topicEntity.getVotedBy().contains(topicDto.getUser())) {
-            responseJson.put("message", "The user has already voted.");
+            responseJson.put("message", "The user has already voted");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
         }
 
@@ -385,12 +384,6 @@ public class TopicsController implements SpecialResponseInterface {
     private List<String> getOnlyOptions(String options) {
         return Arrays.stream(options.split(","))
                 .map(option -> option.split(":")[0].strip())
-                .collect(Collectors.toList());
-    }
-
-    private List<Integer> getOnlyVotes(String options) {
-        return Arrays.stream(options.split(","))
-                .map(option -> Integer.parseInt(option.split(":")[1].strip()))
                 .collect(Collectors.toList());
     }
 

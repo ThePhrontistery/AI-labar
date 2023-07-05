@@ -10,3 +10,4 @@ public class GroupsDto {
     private String admin;
     private String newGroupName;
 }
+

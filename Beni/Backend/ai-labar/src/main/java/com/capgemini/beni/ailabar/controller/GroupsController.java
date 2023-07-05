@@ -27,7 +27,7 @@ public class GroupsController implements SpecialResponseInterface {
         this.usersService = usersService;
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/getUser")
     public ResponseEntity<String> getUser(@RequestBody UsersDto userDto) {
         JSONObject responseJson = new JSONObject();
 

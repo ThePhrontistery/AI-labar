@@ -42,24 +42,13 @@ public class MailService {
             throw new NullPointerException("Members not found in the database");
         }
 
-        // Comentado sólo para efectuar pruebas (este sería el código real
-//        emailList.forEach(email -> {
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setTo(email);
-//            message.setSubject("Se ha creado el Topic " + topicDto.getTitle() + " en el que puedes participar");
-//            message.setText("Me gustaría que formes parte de la votación. \nUn saludo.");
-//
-//            javaMailSender.send(message);
-//        });
+        emailList.forEach(email -> {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Se ha creado el Topic " + topicDto.getTitle() + " en el que puedes participar");
+            message.setText("Me gustaría que formes parte de la votación. \nUn saludo.");
 
-        /* Sólo para pruebas */
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("tu_email@email.com");
-        message.setSubject("Se ha creado el Topic " + topicDto.getTitle() + " en el que puedes participar");
-        message.setText("Me gustaría que formes parte de la votación. \nUn saludo.");
-
-        javaMailSender.send(message);
-        /* Fin de las pruebas */
+            javaMailSender.send(message);
+        });
     }
 }

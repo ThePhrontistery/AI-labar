@@ -26,7 +26,7 @@ public class UsersService {
     }
 
     /* Inicio de métodos sólo para realizar pruebas */
-    public void createUser(UsersEntity userEntity) {
+    public void saveUser(UsersEntity userEntity) {
         usersRepository.save(userEntity);
     }
 
