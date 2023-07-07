@@ -18,5 +18,6 @@ public class TopicsDto {
     private Integer visits;
     private String status;
     private String user;
+    private String token;
     private List<String> votation;
 }

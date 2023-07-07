@@ -57,7 +57,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
-        assertEquals("Login successful", responseJson.getString("message"));
+        assertEquals("525c8db4ea1954ea3028e05fa6a4ce7159961dd969306a2818e2b7382e508f68", responseJson.getString("message"));
         verify(topicsService).login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()));
     }
 
@@ -94,6 +94,7 @@ class TopicsControllerTest {
     void testLoadTopics() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("exampleUser");
+        userDto.setToken("token");
 
         List<TopicsEntity> topicsList = new ArrayList<>();
         TopicsEntity topicsEntity = new TopicsEntity();
@@ -108,6 +109,7 @@ class TopicsControllerTest {
         topicsEntity.setStatus(Constants.STATUS_OPENED);
         topicsList.add(topicsEntity);
 
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
         when(topicsService.loadTopics(userDto.getUser())).thenReturn(topicsList);
 
         ResponseEntity<SpecialResponse> response = topicsController.loadTopics(userDto);
@@ -119,15 +121,35 @@ class TopicsControllerTest {
         assertEquals("OK", responseJson.getString("message"));
 
         assertNotNull(topicsList);
-
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(topicsService, times(1)).loadTopics(userDto.getUser());
         verifyNoMoreInteractions(topicsService);
+    }
+
+    @Test
+    void testLoadTopics_TokenDoesNotMatch() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setToken("incorrectToken");
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.loadTopics(userDto);
+
+        JSONObject expectedResponseJson = new JSONObject(actualResponse.getBody().getMessage());
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals("The token does not match", expectedResponseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verifyNoMoreInteractions(usersService);
+        verifyNoInteractions(topicsService);
     }
 
     @Test
     void testLoadTopics_NoTopicsRelatedToUser() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("exampleNoUser");
+        userDto.setToken("token");
 
         List<TopicsEntity> topicsList = new ArrayList<>();
         TopicsEntity topicsEntity = new TopicsEntity();
@@ -142,6 +164,7 @@ class TopicsControllerTest {
         topicsEntity.setStatus(Constants.STATUS_OPENED);
         topicsList.add(topicsEntity);
 
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
         when(topicsService.loadTopics(userDto.getUser())).thenReturn(topicsList);
 
         ResponseEntity<SpecialResponse> response = topicsController.loadTopics(userDto);
@@ -160,7 +183,59 @@ class TopicsControllerTest {
             assertTrue(entityList.isEmpty());
         }
 
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(topicsService, times(1)).loadTopics(userDto.getUser());
+        verifyNoMoreInteractions(topicsService);
+    }
+
+    @Test
+    void testOpenTopic_TokenDoesNotMatch() {
+        // Arrange
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        // Act
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.openTopic(topicDto);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody().getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+        verifyNoInteractions(topicsService);
+    }
+
+    @Test
+    void testOpenTopic_UserNotAuthorized() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("correctToken");
+
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setAuthor("otherUser");
+        topicEntity.setMembers("member1, member2");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The user is not authorized to open the topic");
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.openTopic(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.openTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals("{\"message\":\"The user is not authorized to open the topic\"}", actualResponse.getBody().getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).openTopic(topicDto.getId());
+        verifyNoMoreInteractions(usersService);
         verifyNoMoreInteractions(topicsService);
     }
 
@@ -168,7 +243,10 @@ class TopicsControllerTest {
     void testOpenTopic_TopicNotFound() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(1);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.openTopic(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<SpecialResponse> response = topicsController.openTopic(topicDto);
@@ -179,7 +257,7 @@ class TopicsControllerTest {
         JSONObject responseJson = new JSONObject(response.getBody().getMessage());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
         assertNull(response.getBody().getEntity());
-
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).openTopic(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -188,6 +266,8 @@ class TopicsControllerTest {
     void testOpenTopic_TopicOpenedSuccessfully() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
@@ -200,6 +280,7 @@ class TopicsControllerTest {
         topicEntity.setVisits(0);
         topicEntity.setStatus(Constants.STATUS_CLOSED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.openTopic(topicDto.getId())).thenReturn(topicEntity);
         doAnswer(invocation -> invocation.getArgument(0)).when(topicsService).saveTopic(topicEntity);
 
@@ -214,7 +295,7 @@ class TopicsControllerTest {
         TopicsEntity entity = (TopicsEntity) response.getBody().getEntity();
         assertNotNull(entity);
         assertEquals(topicEntity, entity);
-
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).openTopic(topicDto.getId());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verifyNoMoreInteractions(topicsService);
@@ -241,23 +322,53 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testCreateTopic_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setTitle("exampleTitle");
+        topicDto.setType("exampleType");
+        topicDto.setQuestion("exampleQuestion");
+        topicDto.setOptions("exampleOptions");
+        topicDto.setUser("exampleUser");
+        topicDto.setMembers("exampleMembers");
+        topicDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = topicsController.createTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+        verifyNoInteractions(topicsService);
+    }
+
+    @Test
     void testCreateTopic_UserDoesNotExist() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setTitle("exampleTitle");
         topicDto.setType("exampleType");
         topicDto.setQuestion("exampleQuestion");
         topicDto.setOptions("exampleOptions");
-        topicDto.setAuthor("exampleUser");
+        topicDto.setUser("exampleUser");
         topicDto.setMembers("exampleMembers");
+        topicDto.setToken("token");
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(false);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(false);
 
         ResponseEntity<String> response = topicsController.createTopic(topicDto);
 
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The user does not exist", responseJson.getString("message"));
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
         verifyNoMoreInteractions(usersService);
         verifyNoInteractions(topicsService);
         verifyNoInteractions(mailService);
@@ -270,19 +381,22 @@ class TopicsControllerTest {
         topicDto.setType("exampleType");
         topicDto.setQuestion("exampleQuestion");
         topicDto.setOptions("exampleOptions");
-        topicDto.setAuthor("exampleUser");
+        topicDto.setUser("exampleUser");
         topicDto.setMembers("exampleMembers");
+        topicDto.setToken("token");
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(true);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(true);
 
         ResponseEntity<String> response = topicsController.createTopic(topicDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("There is already a topic assigned to the author with that name", responseJson.getString("message"));
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verifyNoMoreInteractions(usersService);
         verifyNoMoreInteractions(topicsService);
         verifyNoInteractions(mailService);
@@ -295,19 +409,22 @@ class TopicsControllerTest {
         topicDto.setType("invalidType");
         topicDto.setQuestion("exampleQuestion");
         topicDto.setOptions("exampleOptions");
-        topicDto.setAuthor("exampleUser");
+        topicDto.setUser("exampleUser");
         topicDto.setMembers("exampleMembers");
+        topicDto.setToken("token");
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(false);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
 
         ResponseEntity<String> response = topicsController.createTopic(topicDto);
 
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic type is not valid", responseJson.getString("message"));
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verifyNoMoreInteractions(usersService);
         verifyNoMoreInteractions(topicsService);
         verifyNoInteractions(mailService);
@@ -323,13 +440,16 @@ class TopicsControllerTest {
         topicDto.setOptions("exampleOptions");
         topicDto.setAuthor("exampleUser");
         topicDto.setMembers("exampleMembers");
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
         topicDto.setVisits(0);
         topicDto.setStatus(Constants.STATUS_OPENED);
 
         TopicsEntity topicEntity = new TopicsEntity(topicDto);
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(false);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("exampleOptions");
         doNothing().when(mailService).sendEmail(topicDto);
         doNothing().when(topicsService).saveTopic(Mockito.eq(topicEntity));
@@ -339,8 +459,9 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("Group saved successfully", responseJson.getString("message"));
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
         verify(mailService, times(1)).sendEmail(topicDto);
         verify(topicsService, times(1)).saveTopic(Mockito.eq(topicEntity));
@@ -356,11 +477,13 @@ class TopicsControllerTest {
         topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topicDto.setQuestion("exampleQuestion");
         topicDto.setOptions("exampleOptions");
-        topicDto.setAuthor("exampleUser");
+        topicDto.setUser("exampleUser");
         topicDto.setMembers("exampleMembers");
+        topicDto.setToken("token");
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(false);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicDto.getOptions())).thenThrow(new RuntimeException("Some error occurred"));
 
         ResponseEntity<String> response = topicsController.createTopic(topicDto);
@@ -368,7 +491,8 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("An error occurred --> java.lang.RuntimeException: Some error occurred", responseJson.getString("message"));
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
         verifyNoMoreInteractions(usersService);
@@ -377,10 +501,34 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testGetTopicForEdit_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.getTopicForEdit(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody().getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+        verifyNoInteractions(topicsService);
+    }
+
+    @Test
     void testGetTopicForEdit_InvalidTopicId() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.getTopicForEdit(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<SpecialResponse> response = topicsController.getTopicForEdit(topicDto);
@@ -388,6 +536,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody().getMessage());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).getTopicForEdit(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -397,10 +546,12 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_CLOSED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.getTopicForEdit(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<SpecialResponse> response = topicsController.getTopicForEdit(topicDto);
@@ -408,6 +559,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody().getMessage());
         assertEquals("The topic is closed", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).getTopicForEdit(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -417,11 +569,13 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_OPENED);
         topicEntity.setAuthor("differentUser");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.getTopicForEdit(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<SpecialResponse> response = topicsController.getTopicForEdit(topicDto);
@@ -429,6 +583,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody().getMessage());
         assertEquals("The user is not the author of the topic", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).getTopicForEdit(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -438,12 +593,14 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_OPENED);
         topicEntity.setAuthor("exampleUser");
         topicEntity.setOptions("exampleOption");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.getTopicForEdit(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<SpecialResponse> response = topicsController.getTopicForEdit(topicDto);
@@ -451,7 +608,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody().getMessage());
         assertEquals("OK", responseJson.getString("message"));
-
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).getTopicForEdit(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -476,6 +633,35 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testEditTopic_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(25);
+        topicDto.setTitle("exampleTitle");
+        topicDto.setType("exampleType");
+        topicDto.setQuestion("exampleQuestion");
+        topicDto.setOptions("exampleOptions");
+        topicDto.setAuthor("exampleAuthor");
+        topicDto.setMembers("exampleMembers");
+        topicDto.setUser("nonExistentUser");
+        topicDto.setToken("token");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+        verifyNoInteractions(topicsService);
+    }
+
+
+    @Test
     void testEditTopic_NonExistentTopicId() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
@@ -486,7 +672,9 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleUser");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(false);
 
         ResponseEntity<String> response = topicsController.editTopic(topicDto);
@@ -494,9 +682,10 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
+        verifyNoMoreInteractions(usersService);
         verifyNoMoreInteractions(topicsService);
-        verifyNoInteractions(usersService);
         verifyNoInteractions(mailService);
         verify(topicsService, times(0)).saveTopic(any(TopicsEntity.class));
     }
@@ -513,7 +702,9 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("nonExistentUser");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(false);
 
@@ -522,6 +713,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("An error occurred --> java.lang.NullPointerException: The user does not exist", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verifyNoMoreInteractions(topicsService);
@@ -540,7 +732,9 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("unauthorizedUser");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -549,6 +743,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The user is not the author of the topic", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verifyNoMoreInteractions(topicsService);
@@ -567,11 +762,13 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_CLOSED);
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
@@ -581,6 +778,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic is closed", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
@@ -600,11 +798,13 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_OPENED);
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
@@ -615,6 +815,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("There is already a topic assigned to the author with that name", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
@@ -635,11 +836,13 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setStatus(Constants.STATUS_OPENED);
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
@@ -650,6 +853,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic type is not valid", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
@@ -670,6 +874,7 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(25);
@@ -682,20 +887,22 @@ class TopicsControllerTest {
         topicEntity.setVisits(0);
         topicEntity.setStatus(Constants.STATUS_OPENED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(false);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
 
         ResponseEntity<String> response = topicsController.editTopic(topicDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("Topic edited successfully", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
-        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verify(mailService, times(1)).sendEmail(topicDto);
         verifyNoMoreInteractions(topicsService);
@@ -714,6 +921,7 @@ class TopicsControllerTest {
         topicDto.setAuthor("exampleAuthor");
         topicDto.setMembers("exampleMembers");
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(25);
@@ -726,20 +934,22 @@ class TopicsControllerTest {
         topicEntity.setVisits(0);
         topicEntity.setStatus(Constants.STATUS_OPENED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
-        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor())).thenReturn(false);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
 
         ResponseEntity<String> response = topicsController.editTopic(topicDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("Topic edited successfully", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
-        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verify(mailService, times(1)).sendEmail(topicDto);
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
@@ -748,10 +958,42 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testCloseTopic_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setAuthor("exampleUser");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<String> actualResponse = topicsController.closeTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService);
+        verifyNoMoreInteractions(topicsService);
+    }
+
+
+    @Test
     void testCloseTopic_TopicNotFound() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<String> response = topicsController.closeTopic(topicDto);
@@ -759,6 +1001,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -768,10 +1011,12 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("unauthorizedUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<String> response = topicsController.closeTopic(topicDto);
@@ -779,6 +1024,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The user is not the author of the topic", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -788,11 +1034,13 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("exampleAuthor");
         topicEntity.setStatus(Constants.STATUS_CLOSED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<String> response = topicsController.closeTopic(topicDto);
@@ -800,6 +1048,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic is closed", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -809,11 +1058,13 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("exampleAuthor");
         topicEntity.setStatus(Constants.STATUS_OPENED);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<String> response = topicsController.closeTopic(topicDto);
@@ -821,16 +1072,42 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic has been closed", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verifyNoMoreInteractions(topicsService);
     }
 
     @Test
+    void testDeleteTopic_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = topicsController.deleteTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+
+    @Test
     void testDeleteTopic_TopicNotFound() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<String> response = topicsController.deleteTopic(topicDto);
@@ -838,6 +1115,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -847,10 +1125,12 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("unauthorizedUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<String> response = topicsController.deleteTopic(topicDto);
@@ -858,6 +1138,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The user is not the author of the topic", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -867,10 +1148,12 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("exampleAuthor");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("exampleAuthor");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<String> response = topicsController.deleteTopic(topicDto);
@@ -878,6 +1161,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
         assertEquals("The topic has been deleted", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(topicsService, times(1)).deleteTopic(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
@@ -886,6 +1170,7 @@ class TopicsControllerTest {
     @Test
     void testGetAllTopicsData_NoTopicsInDatabase() {
         List<TopicsEntity> emptyTopicsList = new ArrayList<>();
+
         when(topicsService.getAllTopicsData()).thenReturn(emptyTopicsList);
 
         ResponseEntity<SpecialResponse> response = topicsController.getAllTopicsData();
@@ -907,6 +1192,7 @@ class TopicsControllerTest {
         topicsList.add(topic1);
         TopicsEntity topic2 = new TopicsEntity();
         topicsList.add(topic2);
+
         when(topicsService.getAllTopicsData()).thenReturn(topicsList);
 
         ResponseEntity<SpecialResponse> response = topicsController.getAllTopicsData();
@@ -922,16 +1208,43 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testVote_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+        topicDto.setVotation(Arrays.asList("Option 1", "Option 2"));
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = topicsController.vote(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+
+    @Test
     void testVote_TopicNotFound() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<String> response = topicsController.vote(topicDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("{\"message\":\"There is no topic with that id\"}", response.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -941,11 +1254,14 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("nonexistentUser");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(new TopicsEntity());
         when(usersService.checkUser(topicDto.getUser())).thenReturn(false);
 
         assertThrows(NullPointerException.class, () -> topicsController.vote(topicDto));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verifyNoMoreInteractions(topicsService);
@@ -956,10 +1272,13 @@ class TopicsControllerTest {
     void testVote_VotingEmpty() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
+        topicDto.setUser("user");
+        topicDto.setToken("token");
         topicDto.setVotation(new ArrayList<>());
 
         TopicsEntity topicEntity = new TopicsEntity();
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -967,6 +1286,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
         assertEquals("{\"message\":\"The voting cannot be empty\"}", response.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -976,12 +1296,14 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("unauthorizedUser");
+        topicDto.setToken("token");
         topicDto.setVotation(Collections.singletonList("votation"));
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setAuthor("author");
         topicEntity.setMembers("allowedUser");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -989,6 +1311,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("{\"message\":\"The user is not allowed to vote on this topic\"}", response.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -998,6 +1321,7 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("votedUser");
+        topicDto.setToken("token");
         topicDto.setVotation(Collections.singletonList("votation"));
 
         TopicsEntity topicEntity = new TopicsEntity();
@@ -1005,6 +1329,7 @@ class TopicsControllerTest {
         topicEntity.setMembers("members");
         topicEntity.setAuthor("votedUser");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -1012,6 +1337,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("{\"message\":\"The user has already voted\"}", response.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -1021,6 +1347,7 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("user");
+        topicDto.setToken("token");
         topicDto.setVotation(List.of("Option1", "Option2"));
 
         TopicsEntity topicEntity = new TopicsEntity();
@@ -1028,6 +1355,7 @@ class TopicsControllerTest {
         topicEntity.setAuthor("user");
         topicEntity.setMembers("members");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -1035,6 +1363,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
         assertEquals("{\"message\":\"The topic type is not valid for multiple voting options\"}", response.getBody());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -1044,6 +1373,7 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("validUser");
+        topicDto.setToken("token");
         topicDto.setVotation(List.of("Option1"));
 
         TopicsEntity topicEntity = new TopicsEntity();
@@ -1053,6 +1383,7 @@ class TopicsControllerTest {
         topicEntity.setOptions("Option1,Option2");
         topicEntity.setVotedBy(null);
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -1061,6 +1392,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("{\"message\":\"Votation updated successfully\"}", response.getBody());
         assertEquals("validUser", topicEntity.getVotedBy());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verify(usersService, times(1)).checkUser(topicDto.getUser());
@@ -1073,6 +1405,7 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("validUser");
+        topicDto.setToken("token");
         topicDto.setVotation(List.of("Option1,Option2"));
 
         TopicsEntity topicEntity = new TopicsEntity();
@@ -1082,6 +1415,7 @@ class TopicsControllerTest {
         topicEntity.setOptions("Option1:1,Option2:0");
         topicEntity.setVotedBy("userOne");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
         when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
@@ -1090,6 +1424,7 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("{\"message\":\"Votation updated successfully\"}", response.getBody());
         assertEquals("userOne, validUser", topicEntity.getVotedBy());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verify(usersService, times(1)).checkUser(topicDto.getUser());
@@ -1098,11 +1433,34 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testVotingResults_TokenDoesNotMatch() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.votingResults(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody().getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
     void testVotingResults_TopicNotFound() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("validUser");
+        topicDto.setToken("token");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(null);
 
         ResponseEntity<SpecialResponse> response = topicsController.votingResults(topicDto);
@@ -1112,6 +1470,7 @@ class TopicsControllerTest {
         assert responseBody != null;
         JSONObject responseJson = new JSONObject(responseBody.getMessage());
         assertEquals("There is no topic with that id", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -1121,11 +1480,13 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("unauthorizedUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setMembers("members");
         topicEntity.setAuthor("author");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<SpecialResponse> response = topicsController.votingResults(topicDto);
@@ -1135,6 +1496,7 @@ class TopicsControllerTest {
         assert responseBody != null;
         JSONObject responseJson = new JSONObject(responseBody.getMessage());
         assertEquals("The user is not allowed to view the results on this topic", responseJson.getString("message"));
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }
@@ -1144,6 +1506,7 @@ class TopicsControllerTest {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(25);
         topicDto.setUser("validUser");
+        topicDto.setToken("token");
 
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setMembers("members");
@@ -1151,6 +1514,7 @@ class TopicsControllerTest {
         topicEntity.setType("TEXT_MULTIPLE");
         topicEntity.setOptions("Option1:10, Option2:5");
 
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
 
         ResponseEntity<SpecialResponse> response = topicsController.votingResults(topicDto);
@@ -1165,7 +1529,7 @@ class TopicsControllerTest {
         expectedOptionsMap.put("Option1", "10");
         expectedOptionsMap.put("Option2", "5");
         assertEquals(expectedOptionsMap, responseBody.getEntity());
-
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verifyNoMoreInteractions(topicsService);
     }

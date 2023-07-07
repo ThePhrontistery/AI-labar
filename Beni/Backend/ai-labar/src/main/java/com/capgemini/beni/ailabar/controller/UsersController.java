@@ -58,8 +58,11 @@ public class UsersController implements SpecialResponseInterface {
 
         String hashedPassword = DigestUtils.sha256Hex(userDto.getPassword());
 
+        String token = DigestUtils.sha256Hex(userDto.getUser()+hashedPassword);
+
         UsersEntity userEntity = new UsersEntity(userDto);
         userEntity.setPassword(hashedPassword);
+        userEntity.setToken(token);
         usersService.saveUser(userEntity);
         responseJson.put("message", "User created successfully");
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
@@ -69,7 +72,7 @@ public class UsersController implements SpecialResponseInterface {
     public ResponseEntity<String> editUser(@RequestBody UsersDto userDto) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank() || userDto.getPassword().isBlank()) {
+        if(userDto.getUser().isBlank() || userDto.getPassword().isBlank() || userDto.getToken().isBlank()) {
             responseJson.put("message", "All data is required to edit a user");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
         }
@@ -79,14 +82,19 @@ public class UsersController implements SpecialResponseInterface {
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
         }
 
-        if (Boolean.FALSE.equals(usersService.checkUser(userDto.getUser()))) {
+        if(Boolean.FALSE.equals(usersService.checkUser(userDto.getUser()))) {
             responseJson.put("message", "The user does not exist");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        if (Boolean.TRUE.equals(usersService.checkUser(userDto.getNewUser().strip()))) {
+        if(Boolean.TRUE.equals(usersService.checkUser(userDto.getNewUser().strip()))) {
             responseJson.put("message", "The new username already exists");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
         }
 
         UsersEntity userEntity = usersService.findByUser(userDto.getUser());
@@ -96,7 +104,9 @@ public class UsersController implements SpecialResponseInterface {
         }
 
         if(!userDto.getNewPassword().isBlank()) {
-            userEntity.setPassword(DigestUtils.sha256Hex(userDto.getNewPassword()));
+            String hashedPassword = DigestUtils.sha256Hex(userDto.getNewPassword());
+            userEntity.setPassword(hashedPassword);
+            userEntity.setToken(userDto.getUser()+hashedPassword);
         }
 
         usersService.saveUser(userEntity);
@@ -115,6 +125,11 @@ public class UsersController implements SpecialResponseInterface {
 
         if (Boolean.FALSE.equals(usersService.checkUser(userDto.getUser()))) {
             responseJson.put("message", "The user does not exist");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
+        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
         }
 

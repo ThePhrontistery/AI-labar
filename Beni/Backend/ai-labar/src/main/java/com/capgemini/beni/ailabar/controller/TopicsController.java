@@ -47,15 +47,20 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.UNAUTHORIZED);
         }
 
-        responseJson.put("message", "Login successful");
+        responseJson.put("message", DigestUtils.sha256Hex(userDto.getUser()+DigestUtils.sha256Hex(userDto.getPassword())));
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
     }
 
     @PostMapping("loadTopics")
     public ResponseEntity<SpecialResponse> loadTopics(@RequestBody UsersDto userDto) {
-        List<TopicsEntity> topicsList = topicsService.loadTopics(userDto.getUser());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.NOT_FOUND);
+        }
+
+        List<TopicsEntity> topicsList = topicsService.loadTopics(userDto.getUser());
 
         topicsList.removeIf(topic -> !topic.getAuthor().equals(userDto.getUser()));
 
@@ -72,12 +77,22 @@ public class TopicsController implements SpecialResponseInterface {
 
     @PostMapping("openTopic")
     public ResponseEntity<SpecialResponse> openTopic(@RequestBody TopicsDto topicDto) {
-        TopicsEntity topicEntity = topicsService.openTopic(topicDto.getId());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.NOT_FOUND);
+        }
+
+        TopicsEntity topicEntity = topicsService.openTopic(topicDto.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
+            return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.OK);
+        }
+
+        if(!topicEntity.getMembers().contains(topicDto.getUser()) && !topicEntity.getAuthor().equals(topicDto.getUser())) {
+            responseJson.put("message", "The user is not authorized to open the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.OK);
         }
 
@@ -94,22 +109,28 @@ public class TopicsController implements SpecialResponseInterface {
             JSONObject responseJson = new JSONObject();
 
             if(topicDto.getTitle().isBlank() || topicDto.getType().isBlank() || topicDto.getQuestion().isBlank()
-                    || topicDto.getOptions().isBlank() || topicDto.getAuthor().isBlank() || topicDto.getMembers().isBlank()) {
+                    || topicDto.getOptions().isBlank() || topicDto.getUser().isBlank() || topicDto.getMembers().isBlank()) {
                 responseJson.put("message", "All data is required to edit a topic");
                 return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
             }
 
-            if (Boolean.FALSE.equals(usersService.checkUser(topicDto.getAuthor()))) {
+            if (Boolean.FALSE.equals(usersService.checkUser(topicDto.getUser()))) {
                 responseJson.put("message", "The user does not exist");
                 return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
             }
 
-            if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor()))) {
+            if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+                responseJson.put("message", "The token does not match");
+                return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+            }
+
+            if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
                 responseJson.put("message", "There is already a topic assigned to the author with that name");
                 return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
             }
 
             topicDto.setTitle(topicDto.getTitle().strip());
+            topicDto.setAuthor(topicDto.getUser().strip());
             if(checkTopicType(topicDto.getType()).equals("KO")) {
                 responseJson.put("message", "The topic type is not valid");
                 return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
@@ -135,9 +156,14 @@ public class TopicsController implements SpecialResponseInterface {
 
     @PostMapping("/getTopicForEdit")
     public ResponseEntity<SpecialResponse> getTopicForEdit(@RequestBody TopicsDto topicDto) {
-        TopicsEntity topicEntity = topicsService.getTopicForEdit(topicDto.getId());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.NOT_FOUND);
+        }
+
+        TopicsEntity topicEntity = topicsService.getTopicForEdit(topicDto.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
@@ -170,6 +196,11 @@ public class TopicsController implements SpecialResponseInterface {
                     || topicDto.getOptions().isBlank() || topicDto.getAuthor().isBlank() || topicDto.getMembers().isBlank() ||topicDto.getUser().isBlank()) {
                 responseJson.put("message", "All data is required to edit a topic");
                 return new ResponseEntity<>(responseJson.toString(), HttpStatus.BAD_GATEWAY);
+            }
+
+            if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+                responseJson.put("message", "The token does not match");
+                return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
             }
 
             if(Boolean.TRUE.equals(topicsService.existsById(topicDto.getId()))) {
@@ -241,6 +272,11 @@ public class TopicsController implements SpecialResponseInterface {
 
         JSONObject responseJson = new JSONObject();
 
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
@@ -264,9 +300,14 @@ public class TopicsController implements SpecialResponseInterface {
 
     @DeleteMapping("/deleteTopic")
     public ResponseEntity<String> deleteTopic(@RequestBody TopicsDto topicDto) {
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
@@ -299,9 +340,14 @@ public class TopicsController implements SpecialResponseInterface {
 
     @PutMapping("/vote")
     public ResponseEntity<String> vote(@RequestBody TopicsDto topicDto) {
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
@@ -348,9 +394,14 @@ public class TopicsController implements SpecialResponseInterface {
 
     @GetMapping("/votingResults")
     public ResponseEntity<SpecialResponse> votingResults(@RequestBody TopicsDto topicDto) {
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
-
         JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "The token does not match");
+            return new ResponseEntity<>(specialResponse(null, responseJson.toString()), HttpStatus.NOT_FOUND);
+        }
+
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");

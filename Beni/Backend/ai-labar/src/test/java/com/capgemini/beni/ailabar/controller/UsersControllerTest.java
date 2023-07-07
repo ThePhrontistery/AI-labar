@@ -11,10 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UsersControllerTest {
     @Mock
@@ -104,6 +104,7 @@ class UsersControllerTest {
         userDto.setUser("newUser");
         userDto.setPassword("password");
         userDto.setEmail("newuser@example.com");
+        userDto.setToken("token");
 
         when(usersService.checkUser(userDto.getUser())).thenReturn(false);
         when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
@@ -128,19 +129,19 @@ class UsersControllerTest {
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
         userDto.setPassword("password");
-        userDto.setNewUser("");
-        userDto.setNewPassword("");
+        userDto.setToken("token");
+        userDto.setNewUser("newUser");
+        userDto.setNewPassword("newPassword");
 
         UsersEntity existingUserEntity = new UsersEntity();
         existingUserEntity.setUser("existingUser");
         existingUserEntity.setPassword("hashedPassword");
         existingUserEntity.setEmail("email");
-
-        userDto.setNewUser("newUser");
-        userDto.setNewPassword("newPassword");
+        existingUserEntity.setToken("token");
 
         when(usersService.checkUser(userDto.getUser())).thenReturn(true);
         when(usersService.checkUser(userDto.getNewUser().strip())).thenReturn(false);
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
         when(usersService.findByUser(userDto.getUser())).thenReturn(existingUserEntity);
 
         JSONObject expectedJsonResponse = new JSONObject();
@@ -153,6 +154,7 @@ class UsersControllerTest {
         assertEquals(expectedResponse.getBody(), response.getBody());
         verify(usersService, times(1)).checkUser(userDto.getUser());
         verify(usersService, times(1)).checkUser(userDto.getNewUser().strip());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(usersService, times(1)).findByUser(userDto.getUser());
         verify(usersService, times(1)).saveUser(existingUserEntity);
         verifyNoMoreInteractions(usersService);
@@ -163,6 +165,7 @@ class UsersControllerTest {
         UsersDto userDto = new UsersDto();
         userDto.setUser("");
         userDto.setPassword("");
+        userDto.setToken("");
         userDto.setNewUser("");
         userDto.setNewPassword("");
 
@@ -182,6 +185,7 @@ class UsersControllerTest {
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
         userDto.setPassword("password");
+        userDto.setToken("token");
         userDto.setNewUser("");
         userDto.setNewPassword("");
 
@@ -201,6 +205,7 @@ class UsersControllerTest {
         UsersDto userDto = new UsersDto();
         userDto.setUser("nonExistingUser");
         userDto.setPassword("password");
+        userDto.setToken("token");
         userDto.setNewUser("newUser");
         userDto.setNewPassword("");
 
@@ -223,6 +228,7 @@ class UsersControllerTest {
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
         userDto.setPassword("password");
+        userDto.setToken("token");
         userDto.setNewUser("existingUser");
         userDto.setNewPassword("");
 
@@ -239,6 +245,31 @@ class UsersControllerTest {
         assertEquals(expectedResponse.getBody(), response.getBody());
         verify(usersService, times(2)).checkUser(userDto.getUser());
         verify(usersService, times(2)).checkUser(userDto.getNewUser().strip());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testEditUser_TokenDoesNotMatch() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("oldUser");
+        userDto.setPassword("password");
+        userDto.setNewUser("newUser");
+        userDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = usersController.editUser(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).checkUser(userDto.getNewUser().strip());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verifyNoMoreInteractions(usersService);
     }
 
@@ -278,21 +309,46 @@ class UsersControllerTest {
     }
 
     @Test
+    void testDeleteUser_TokenDoesNotMatch() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setToken("incorrectToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The token does not match");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
+
+        ResponseEntity<String> actualResponse = usersController.deleteUser(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
     void testDeleteUser_SuccessfulDeletion() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
+        userDto.setToken("token");
 
         JSONObject expectedJsonResponse = new JSONObject();
         expectedJsonResponse.put("message", "User deleted successfully");
         ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
 
         when(usersService.checkUser(userDto.getUser())).thenReturn(true);
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
 
         ResponseEntity<String> response = usersController.deleteUser(userDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedResponse.getBody(), response.getBody());
         verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(usersService, times(1)).deleteUser(userDto.getUser());
         verifyNoMoreInteractions(usersService);
     }
@@ -324,12 +380,14 @@ class UsersControllerTest {
         userEntity1.setUser("user1");
         userEntity1.setPassword("password1");
         userEntity1.setEmail("email1");
+        userEntity1.setToken("token1");
 
         UsersEntity userEntity2 = new UsersEntity();
-        userEntity1.setId(2);
-        userEntity1.setUser("user2");
-        userEntity1.setPassword("password2");
-        userEntity1.setEmail("email2");
+        userEntity2.setId(2);
+        userEntity2.setUser("user2");
+        userEntity2.setPassword("password2");
+        userEntity2.setEmail("email2");
+        userEntity2.setToken("token2");
 
         List<UsersEntity> usersList = new ArrayList<>();
         usersList.add(userEntity1);

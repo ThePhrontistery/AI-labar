@@ -1,13 +1,14 @@
 package com.capgemini.beni.ailabar.repository;
 
 import com.capgemini.beni.ailabar.entity.UsersEntity;
+import com.capgemini.beni.ailabar.service.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UsersRepositoryTest {
     @Mock
@@ -36,6 +37,21 @@ class UsersRepositoryTest {
 
         assertTrue(result);
         verify(usersRepository, times(1)).existsByUser(user);
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+    @Test
+    void testExistsByUserAndToken() {
+        String user = "exampleUser";
+        String token = "exampleToken";
+        boolean expected = true;
+
+        when(usersRepository.existsByUserAndToken(user, token)).thenReturn(expected);
+
+        boolean actual = usersRepository.existsByUserAndToken(user, token);
+
+        assertEquals(expected, actual);
+        verify(usersRepository, times(1)).existsByUserAndToken(user, token);
         verifyNoMoreInteractions(usersRepository);
     }
 

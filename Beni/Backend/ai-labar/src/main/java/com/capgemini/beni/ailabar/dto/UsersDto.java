@@ -10,6 +10,7 @@ public class UsersDto {
     private String user;
     private String password;
     private String email;
+    private String token;
 
     /* Inicio tributos sólo necesarios para realizar pruebas */
     private String newUser;

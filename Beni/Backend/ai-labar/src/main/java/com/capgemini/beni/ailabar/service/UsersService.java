@@ -21,6 +21,10 @@ public class UsersService {
         return usersRepository.existsByUser(user);
     }
 
+    public Boolean checkToken(String user, String token){
+        return usersRepository.existsByUserAndToken(user, token);
+    }
+
     public List<String> getMails(List<String> userList) {
         return usersRepository.getEmailsByUserList(userList);
     }

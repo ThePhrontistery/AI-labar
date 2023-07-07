@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UsersEntityTest {
     @Test
@@ -41,6 +41,14 @@ class UsersEntityTest {
         UsersEntity usersEntity = new UsersEntity();
         usersEntity.setEmail(email);
         Assertions.assertEquals(email, usersEntity.getEmail());
+    }
+
+    @Test
+    void testToken() {
+        String token = "tokentoken";
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setToken(token);
+        Assertions.assertEquals(token, usersEntity.getToken());
     }
 
     @Test
