@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="right-container">
+    <form class="login-form" (submit)="login($event)">
+      <div class="form-group">
+        <label for="username">Usuario: </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Ingrese su nombre de usuario"
+          [(ngModel)]="username"
+          #usernameInput
+        />
+        <span id="usernameError" class="error-message">{{
+          usernameError
+        }}</span>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Ingrese su contraseña"
+          [(ngModel)]="password"
+          #passwordInput
+        />
+        <span id="passwordError" class="error-message">{{
+          passwordError
+        }}</span>
+      </div>
+      <div class="form-button">
+        <button id="loginButton" name="loginButton" type="submit">Login</button>
+      </div>
+      <div class="support-text-container">
+        <p class="support-text">
+          Si necesitas soporte para resolver tus dudas o problemas técnicos,
+          envíanos un email a
+          <strong><u>ccsw.support@capgemini.com</u></strong
+          >.
+        </p>
+      </div>
+    </form>
+  </div>
+  <div class="left-container">
+    <div class="animationArea">
+      <ul class="figures">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+    <img class="logo" src="./assets/capgemini.png" alt="Logo" />
+  </div>
+</div>
