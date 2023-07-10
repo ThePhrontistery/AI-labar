@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Fake John Doe\",\r\n  \"password\": \"pass123\",\r\n  \"email\": \"fake.john.doe@example.com\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Fake John Doe\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"fake.john.does@example.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -50,7 +50,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Fake John Doe\",\r\n  \"password\": \"pass123\",\r\n  \"newUser\": \"Updated User\",\r\n  \"newPassword\": \"updated_password\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Fake John Doe\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"token\": \"3b542a39e72f6819a7e236c9cfc3bddde75c82f20c91c9931c7823eaef5fe463\",\r\n  \"newUser\": \"Updated User\",\r\n  \"newPassword\": \"updated_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -78,7 +78,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Updated User\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Updated User\",\r\n  \"token\": \"3b542a39e72f6819a7e236c9cfc3bddde75c82f20c91c9931c7823eaef5fe463\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -350,7 +350,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user\": \"Beni\"\r\n}",
+							"raw": "{\r\n    \"user\": \"Beni\",\r\n    \"token\": \"89021a6b792b80b472502a2c9a832506cc17a3968954e33e3c9aa459dc4cb067\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -378,7 +378,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 15\r\n}",
+							"raw": "{\r\n    \"id\": 15,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"89021a6b792b80b472502a2c9a832506cc17a3968954e33e3c9aa459dc4cb067\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -406,7 +406,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Topic de prueba de email 2\",\r\n  \"type\": \"TEXT_SINGLE\",\r\n  \"question\": \"Visítame\",\r\n  \"options\": \"Sí, No, Puede\",\r\n  \"author\": \"Beni\",\r\n  \"members\": \"Beni\"\r\n}",
+							"raw": "{\r\n  \"title\": \"Topic de prueba de email 3\",\r\n  \"type\": \"TEXT_SINGLE\",\r\n  \"question\": \"Visítame\",\r\n  \"options\": \"Sí, No, Puede\",\r\n  \"user\": \"Beni\",\r\n  \"members\": \"Beni, MRX\",\r\n  \"token\": \"89021a6b792b80b472502a2c9a832506cc17a3968954e33e3c9aa459dc4cb067\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,7 +434,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 19,\r\n    \"user\": \"MRX\"\r\n}",
+							"raw": "{\r\n    \"id\": 19,\r\n    \"user\": \"MRX\",\r\n    \"token\": \"031d585a46a5a05aeefe871fe342e73759290ed5bdfe86f1eb73c37fb7d63f1e\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -462,7 +462,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 21,\r\n    \"title\": \"Topic de prueba de email\",\r\n    \"type\": \"TEXT_SINGLE\",\r\n    \"question\": \"Visítame\",\r\n    \"options\": \"Sí, No, Puede\",\r\n    \"author\": \"Beni\",\r\n    \"members\": \"Beni, Luffy, Yamato\",\r\n    \"user\": \"Beni\"\r\n}",
+							"raw": "{\r\n    \"id\": 21,\r\n    \"title\": \"Topic de prueba de email 4\",\r\n    \"type\": \"TEXT_SINGLE\",\r\n    \"question\": \"Visítame\",\r\n    \"options\": \"Sí, No, Puede\",\r\n    \"author\": \"Beni\",\r\n    \"members\": \"Beni, Luffy, Yamato\",\r\n    \"user\": \"Beni\",\r\n    \"token\": \"89021a6b792b80b472502a2c9a832506cc17a3968954e33e3c9aa459dc4cb067\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -490,7 +490,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3,\r\n    \"user\": \"John Doe\"\r\n}",
+							"raw": "{\r\n    \"id\": 22,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"89021a6b792b80b472502a2c9a832506cc17a3968954e33e3c9aa459dc4cb067\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -518,7 +518,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3,\r\n    \"user\": \"John Doe\"\r\n}",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"user\": \"John Doe\",\r\n    \"token\": \"93f54223440563b2e69549cc6c696563ee50a341c7b935eec9122eb559508b59\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -565,7 +565,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 20,\r\n    \"votation\": [\"No\", \"Sí\"],\r\n    \"user\": \"Luffy\"\r\n}",
+							"raw": "{\r\n    \"id\": 20,\r\n    \"votation\": [\"No\", \"Sí\"],\r\n    \"user\": \"Luffy\",\r\n    \"token\": \"925748b6113818fc29e769e5acb24367e134a09664d853423d97b11d5a83e302\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -593,7 +593,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 20,\r\n    \"user\": \"MRX\"\r\n}",
+							"raw": "{\r\n    \"id\": 20,\r\n    \"user\": \"MRX\",\r\n    \"token\": \"031d585a46a5a05aeefe871fe342e73759290ed5bdfe86f1eb73c37fb7d63f1e\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

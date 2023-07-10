@@ -4,6 +4,7 @@ import com.capgemini.beni.ailabar.dto.UsersDto;
 import com.capgemini.beni.ailabar.entity.UsersEntity;
 import com.capgemini.beni.ailabar.service.UsersService;
 import com.capgemini.beni.ailabar.utils.SpecialResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,30 +100,63 @@ class UsersControllerTest {
     }
 
     @Test
-    void testCreateUser_Success() {
+    void testCreateUser_UserEntityIsNull() {
         UsersDto userDto = new UsersDto();
-        userDto.setUser("newUser");
-        userDto.setPassword("password");
-        userDto.setEmail("newuser@example.com");
-        userDto.setToken("token");
+        userDto.setUser("exampleUser");
+        userDto.setPassword("examplePassword");
+        userDto.setEmail("example@example.com");
+
+        UsersEntity userEntity = null;
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User not found");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
 
         when(usersService.checkUser(userDto.getUser())).thenReturn(false);
         when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
-        doNothing().when(usersService).saveUser(any(UsersEntity.class));
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "User created successfully");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
+        ResponseEntity<String> actualResponse = usersController.createUser(userDto);
 
-        ResponseEntity<String> response = usersController.createUser(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
         verify(usersService, times(1)).checkUser(userDto.getUser());
         verify(usersService, times(1)).existsByEmail(userDto.getEmail());
-        verify(usersService, times(1)).saveUser(any(UsersEntity.class));
+    }
+
+    @Test
+    void testCreateUser_Success() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setPassword("examplePassword");
+        userDto.setEmail("example@example.com");
+
+        UsersEntity userEntity = new UsersEntity();
+        userEntity.setId(1);
+        userEntity.setUser("exampleUser");
+        userEntity.setPassword("examplePassword");
+        userEntity.setEmail("example@example.com");
+        userEntity.setToken("token");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User created successfully");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.OK);
+
+        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
+        when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
+        when(usersService.findByUser(userDto.getUser())).thenReturn(userEntity);
+
+        ResponseEntity<String> actualResponse = usersController.createUser(userDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).existsByEmail(userDto.getEmail());
+        verify(usersService, times(2)).saveUser(any(UsersEntity.class));
+        verify(usersService, times(2)).findByUser(userDto.getUser());
+        verify(usersService, times(1)).saveUser(userEntity);
         verifyNoMoreInteractions(usersService);
     }
+
 
     @Test
     void testEditUser_Successful() {

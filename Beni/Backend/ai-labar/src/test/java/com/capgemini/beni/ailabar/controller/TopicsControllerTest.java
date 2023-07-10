@@ -3,6 +3,7 @@ package com.capgemini.beni.ailabar.controller;
 import com.capgemini.beni.ailabar.dto.TopicsDto;
 import com.capgemini.beni.ailabar.dto.UsersDto;
 import com.capgemini.beni.ailabar.entity.TopicsEntity;
+import com.capgemini.beni.ailabar.entity.UsersEntity;
 import com.capgemini.beni.ailabar.service.MailService;
 import com.capgemini.beni.ailabar.service.TopicsService;
 import com.capgemini.beni.ailabar.service.UsersService;
@@ -49,17 +50,54 @@ class TopicsControllerTest {
     @Test
     void login_WithValidCredentials_ReturnsOkResponse() {
         UsersDto userDto = new UsersDto();
-        userDto.setUser("username");
-        userDto.setPassword("password");
+        userDto.setUser("exampleUser");
+        userDto.setPassword("examplePassword");
+
+        UsersEntity userEntity = new UsersEntity();
+        userEntity.setUser("exampleUser");
+        userEntity.setPassword(DigestUtils.sha256Hex("examplePassword"));
+        userEntity.setToken("exampleToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "exampleToken");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.OK);
+
         when(topicsService.login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()))).thenReturn(true);
+        when(usersService.findByUser(userDto.getUser())).thenReturn(userEntity);
 
-        ResponseEntity<String> response = topicsController.login(userDto);
+        ResponseEntity<String> actualResponse = topicsController.login(userDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        JSONObject responseJson = new JSONObject(response.getBody());
-        assertEquals("525c8db4ea1954ea3028e05fa6a4ce7159961dd969306a2818e2b7382e508f68", responseJson.getString("message"));
-        verify(topicsService).login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()));
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(topicsService, times(1)).login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()));
+        verify(usersService, times(1)).findByUser(userDto.getUser());
+        verifyNoMoreInteractions(topicsService);
+        verifyNoMoreInteractions(usersService);
     }
+
+    @Test
+    void login_WithValidCredentials_UserNotFound() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setPassword("examplePassword");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User not found");
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+
+        when(topicsService.login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()))).thenReturn(true);
+        when(usersService.findByUser(userDto.getUser())).thenReturn(null);
+
+        ResponseEntity<String> actualResponse = topicsController.login(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        verify(topicsService, times(1)).login(userDto.getUser(), DigestUtils.sha256Hex(userDto.getPassword()));
+        verify(usersService, times(1)).findByUser(userDto.getUser());
+        verifyNoMoreInteractions(topicsService);
+        verifyNoMoreInteractions(usersService);
+    }
+
 
     @Test
     void login_WithEmptyUserOrPassword_ReturnsBadRequestResponse() {

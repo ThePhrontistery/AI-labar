@@ -3,6 +3,7 @@ package com.capgemini.beni.ailabar.controller;
 import com.capgemini.beni.ailabar.dto.TopicsDto;
 import com.capgemini.beni.ailabar.dto.UsersDto;
 import com.capgemini.beni.ailabar.entity.TopicsEntity;
+import com.capgemini.beni.ailabar.entity.UsersEntity;
 import com.capgemini.beni.ailabar.service.MailService;
 import com.capgemini.beni.ailabar.service.TopicsService;
 import com.capgemini.beni.ailabar.service.UsersService;
@@ -47,7 +48,14 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.UNAUTHORIZED);
         }
 
-        responseJson.put("message", DigestUtils.sha256Hex(userDto.getUser()+DigestUtils.sha256Hex(userDto.getPassword())));
+        UsersEntity userEntity = usersService.findByUser(userDto.getUser());
+
+        if(userEntity == null) {
+            responseJson.put("message", "User not found");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
+        responseJson.put("message", userEntity.getToken());
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
     }
 

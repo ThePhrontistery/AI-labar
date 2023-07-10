@@ -58,12 +58,25 @@ public class UsersController implements SpecialResponseInterface {
 
         String hashedPassword = DigestUtils.sha256Hex(userDto.getPassword());
 
-        String token = DigestUtils.sha256Hex(userDto.getUser()+hashedPassword);
-
         UsersEntity userEntity = new UsersEntity(userDto);
         userEntity.setPassword(hashedPassword);
-        userEntity.setToken(token);
+        userEntity.setToken("");
         usersService.saveUser(userEntity);
+
+        userEntity = usersService.findByUser(userDto.getUser());
+
+        if(userEntity == null) {
+            responseJson.put("message", "User not found");
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.NOT_FOUND);
+        }
+
+        String token = DigestUtils.sha256Hex(userDto.getUser()+hashedPassword+userEntity.getId());
+        userEntity.setToken(token);
+
+        usersService.saveUser(userEntity);
+
+        userEntity = usersService.findByUser(userDto.getUser());
+
         responseJson.put("message", "User created successfully");
         return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
     }
@@ -99,15 +112,17 @@ public class UsersController implements SpecialResponseInterface {
 
         UsersEntity userEntity = usersService.findByUser(userDto.getUser());
 
-        if(!userDto.getNewUser().isBlank()) {
+        if(userDto.getNewUser() != null && !userDto.getNewUser().isBlank()) {
             userEntity.setUser(userDto.getNewUser().strip());
         }
 
-        if(!userDto.getNewPassword().isBlank()) {
+        if(userDto.getNewPassword() != null && !userDto.getNewPassword().isBlank()) {
             String hashedPassword = DigestUtils.sha256Hex(userDto.getNewPassword());
             userEntity.setPassword(hashedPassword);
-            userEntity.setToken(userDto.getUser()+hashedPassword);
         }
+
+        String token = DigestUtils.sha256Hex(userEntity.getUser()+userEntity.getPassword()+userEntity.getId());
+        userEntity.setToken(token);
 
         usersService.saveUser(userEntity);
         responseJson.put("message", "User modified successfully");
