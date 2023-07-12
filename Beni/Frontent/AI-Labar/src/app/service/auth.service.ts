@@ -6,21 +6,38 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private cookie: CookieService, private router: Router) {}
+  constructor(private cookie: CookieService, private router: Router) {
+    setInterval(this.checkCookies.bind(this), 1000);
+  }
+
+  checkUserCookie(): boolean {
+    return this.cookie.check('user');
+  }
+
+  checTokenCookie(): boolean {
+    return this.cookie.check('token');
+  }
+
+  checkCookies() {
+    const userCookie = this.checkUserCookie();
+    const tokenCookie = this.checTokenCookie();
+
+    if (!userCookie || !tokenCookie) {
+      this.cookie.delete("user");
+      this.cookie.delete("token");
+      this.toLogin();
+    }
+  }
 
   login(): boolean {
-    const userCookie = this.cookie.check('user');
-    const tokenCookie = this.cookie.check('token');
-    if(userCookie && tokenCookie) {
+    if(this.checkUserCookie() && this.checTokenCookie()) {
       this.toTopics();
     }
     return true;
   }
 
   logout(): boolean {
-    const userCookie = this.cookie.check('user');
-    const tokenCookie = this.cookie.check('token');
-    if(!userCookie || !tokenCookie) {
+    if(!this.checkUserCookie() || !this.checTokenCookie()) {
       this.toLogin();
     }
     return true;
