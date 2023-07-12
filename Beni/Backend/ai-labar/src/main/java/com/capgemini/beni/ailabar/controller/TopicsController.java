@@ -153,7 +153,7 @@ public class TopicsController implements SpecialResponseInterface {
             mailService.sendEmail(topicDto);
 
             topicsService.saveTopic(topicEntity);
-            responseJson.put("message", "Group saved successfully");
+            responseJson.put("message", "Topic created successfully");
             return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
         } catch (Exception e) {
             JSONObject responseJson = new JSONObject();
@@ -423,7 +423,7 @@ public class TopicsController implements SpecialResponseInterface {
 
         Map<String, String> optionsMap = new HashMap<>();
 
-        Arrays.stream(topicEntity.getOptions().split(","))
+        Arrays.stream(topicEntity.getOptions().split(";"))
                 .map(option -> option.split(":"))
                 .filter(parts -> parts.length == 2)
                 .forEach(parts -> optionsMap.put(parts[0].strip(), parts[1].strip()));
@@ -441,7 +441,7 @@ public class TopicsController implements SpecialResponseInterface {
     }
 
     private List<String> getOnlyOptions(String options) {
-        return Arrays.stream(options.split(","))
+        return Arrays.stream(options.split(";"))
                 .map(option -> option.split(":")[0].strip())
                 .collect(Collectors.toList());
     }
@@ -449,7 +449,7 @@ public class TopicsController implements SpecialResponseInterface {
     private String updateVotation(String options, List<String> votation) {
         Map<String, Integer> optionsMap = new HashMap<>();
 
-        Arrays.stream(options.split(","))
+        Arrays.stream(options.split(";"))
                 .map(option -> option.split(":"))
                 .filter(parts -> parts.length == 2)
                 .forEach(parts -> optionsMap.put(parts[0].strip(), Integer.parseInt(parts[1].strip())));
@@ -460,7 +460,7 @@ public class TopicsController implements SpecialResponseInterface {
 
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, Integer> entry : optionsMap.entrySet()) {
-            result.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
+            result.append(entry.getKey()).append(":").append(entry.getValue()).append("; ");
         }
         if (result.length() > 1) {
             result.setLength(result.length() - 2);

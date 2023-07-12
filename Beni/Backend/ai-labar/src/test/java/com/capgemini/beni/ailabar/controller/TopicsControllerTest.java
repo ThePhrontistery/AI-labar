@@ -496,7 +496,7 @@ class TopicsControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONObject responseJson = new JSONObject(response.getBody());
-        assertEquals("Group saved successfully", responseJson.getString("message"));
+        assertEquals("Topic created successfully", responseJson.getString("message"));
         verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
@@ -1550,7 +1550,7 @@ class TopicsControllerTest {
         topicEntity.setMembers("members");
         topicEntity.setAuthor("validUser");
         topicEntity.setType("TEXT_MULTIPLE");
-        topicEntity.setOptions("Option1:10, Option2:5");
+        topicEntity.setOptions("Option1:10; Option2:5");
 
         when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
