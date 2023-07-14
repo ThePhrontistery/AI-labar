@@ -8,130 +8,113 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class TopicsEntityTest {
     @Test
-    void testId() {
-        Integer id = 1;
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setId(id);
-        Assertions.assertEquals(id, topicsEntity.getId());
+    void testIdProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setId(1);
+        assertEquals(1, entity.getId());
     }
 
     @Test
-    void testTitle() {
-        String title = "Test Title";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setTitle(title);
-        Assertions.assertEquals(title, topicsEntity.getTitle());
+    void testTitleProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setTitle("Topic 1");
+        assertEquals("Topic 1", entity.getTitle());
     }
 
     @Test
-    void testType() {
-        String type = "Test Type";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setType(type);
-        Assertions.assertEquals(type, topicsEntity.getType());
+    void testTypeProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setType("Type 1");
+        assertEquals("Type 1", entity.getType());
     }
 
     @Test
-    void testQuestion() {
-        String question = "Test Question";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setQuestion(question);
-        Assertions.assertEquals(question, topicsEntity.getQuestion());
+    void testQuestionProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setQuestion("Question 1");
+        assertEquals("Question 1", entity.getQuestion());
     }
 
     @Test
-    void testOptions() {
-        String options = "Test Options";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setOptions(options);
-        Assertions.assertEquals(options, topicsEntity.getOptions());
+    void testOptionsProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setOptions("[option1, option2]");
+        assertEquals("[option1, option2]", entity.getOptions());
     }
 
     @Test
-    void testVotedBy() {
-        String votedBy = "Test Voted By";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setVotedBy(votedBy);
-        Assertions.assertEquals(votedBy, topicsEntity.getVotedBy());
+    void testVotedByProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setVotedBy("user1");
+        assertEquals("user1", entity.getVotedBy());
     }
 
     @Test
-    void testAuthor() {
-        String author = "Test Author";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setAuthor(author);
-        Assertions.assertEquals(author, topicsEntity.getAuthor());
+    void testAuthorProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setAuthor("author1");
+        assertEquals("author1", entity.getAuthor());
     }
 
     @Test
-    void testMembers() {
-        String members = "Test Members";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setMembers(members);
-        Assertions.assertEquals(members, topicsEntity.getMembers());
+    void testMembersProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setMembers("[member1, member2]");
+        assertEquals("[member1, member2]", entity.getMembers());
     }
 
     @Test
-    void testCloseDate() {
-        String closeDate = "Test Close Date";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setCloseDate(closeDate);
-        Assertions.assertEquals(closeDate, topicsEntity.getCloseDate());
+    void testCloseDateProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setCloseDate("2023-07-01");
+        assertEquals("2023-07-01", entity.getCloseDate());
     }
 
     @Test
-    void testVisits() {
-        Integer visits = 10;
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setVisits(visits);
-        Assertions.assertEquals(visits, topicsEntity.getVisits());
+    void testVisitsProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setVisits(5);
+        assertEquals(5, entity.getVisits());
     }
 
     @Test
-    void testStatus() {
-        String status = "Test Status";
-        TopicsEntity topicsEntity = new TopicsEntity();
-        topicsEntity.setStatus(status);
-        Assertions.assertEquals(status, topicsEntity.getStatus());
+    void testStatusProperty() {
+        TopicsEntity entity = new TopicsEntity();
+        entity.setStatus("open");
+        assertEquals("open", entity.getStatus());
     }
 
     @Test
-    void testConstructor() {
-        TopicsDto topicDto = Mockito.mock(TopicsDto.class);
-        String title = "Test Title";
-        String type = "Test Type";
-        String question = "Test Question";
-        String options = "Test Options";
-        String author = "Test Author";
-        String members = "Test Members";
-        String closeDate = "Test Close Date";
-        Integer visits = 10;
-        String status = "Test Status";
+    void testConstructorWithTopicsDto() {
+        TopicsDto dto = new TopicsDto();
+        dto.setTitle("Topic 1");
+        dto.setType("Type 1");
+        dto.setQuestion("Question 1");
+        dto.getOptions().add("option1");
+        dto.getOptions().add("option2");
+        dto.setAuthor("author1");
+        dto.getMembers().add("member1");
+        dto.getMembers().add("member2");
+        dto.setCloseDate("2023-07-01");
+        dto.setVisits(5);
+        dto.setStatus("open");
 
-        Mockito.when(topicDto.getTitle()).thenReturn(title);
-        Mockito.when(topicDto.getType()).thenReturn(type);
-        Mockito.when(topicDto.getQuestion()).thenReturn(question);
-        Mockito.when(topicDto.getOptions()).thenReturn(options);
-        Mockito.when(topicDto.getAuthor()).thenReturn(author);
-        Mockito.when(topicDto.getMembers()).thenReturn(members);
-        Mockito.when(topicDto.getCloseDate()).thenReturn(closeDate);
-        Mockito.when(topicDto.getVisits()).thenReturn(visits);
-        Mockito.when(topicDto.getStatus()).thenReturn(status);
+        TopicsEntity entity = new TopicsEntity(dto);
 
-        TopicsEntity topicsEntity = new TopicsEntity(topicDto);
-
-        Assertions.assertEquals(title, topicsEntity.getTitle());
-        Assertions.assertEquals(type, topicsEntity.getType());
-        Assertions.assertEquals(question, topicsEntity.getQuestion());
-        Assertions.assertEquals(options, topicsEntity.getOptions());
-        Assertions.assertEquals(author, topicsEntity.getAuthor());
-        Assertions.assertEquals(members, topicsEntity.getMembers());
-        Assertions.assertEquals(closeDate, topicsEntity.getCloseDate());
-        Assertions.assertEquals(visits, topicsEntity.getVisits());
-        Assertions.assertEquals(status, topicsEntity.getStatus());
+        assertEquals("Topic 1", entity.getTitle());
+        assertEquals("Type 1", entity.getType());
+        assertEquals("Question 1", entity.getQuestion());
+        assertEquals("[option1, option2]", entity.getOptions());
+        assertEquals("author1", entity.getAuthor());
+        assertEquals("[member1, member2]", entity.getMembers());
+        assertEquals("2023-07-01", entity.getCloseDate());
+        assertEquals(5, entity.getVisits());
+        assertEquals("open", entity.getStatus());
     }
 }

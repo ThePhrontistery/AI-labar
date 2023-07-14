@@ -40,9 +40,9 @@ public class TopicsEntity {
         this.title = topicDto.getTitle();
         this.type = topicDto.getType();
         this.question = topicDto.getQuestion();
-        this.options = topicDto.getOptions();
+        this.options = topicDto.getOptions().toString();
         this.author = topicDto.getAuthor();
-        this.members = topicDto.getMembers();
+        this.members = topicDto.getMembers().toString();
         this.closeDate = topicDto.getCloseDate();
         this.visits = topicDto.getVisits();
         this.status = topicDto.getStatus();

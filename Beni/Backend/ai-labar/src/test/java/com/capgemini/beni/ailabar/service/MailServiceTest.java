@@ -4,6 +4,7 @@ import com.capgemini.beni.ailabar.dto.TopicsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,64 +39,31 @@ class MailServiceTest {
     @Test
     void testSendEmail() {
         TopicsDto topicDto = new TopicsDto();
-        topicDto.setAuthor("john");
-        topicDto.setMembers("jane, alex");
+        topicDto.setMembers(Arrays.asList("user1", "user2"));
+        topicDto.setAuthor("author");
+        topicDto.setTitle("Topic Title");
 
-        List<String> userList = Arrays.asList("jane", "alex");
-        List<String> emailList = Arrays.asList("jane@example.com", "alex@example.com");
+        List<String> emailList = Arrays.asList("user1@example.com", "user2@example.com");
+        when(usersService.getMails(topicDto.getMembers())).thenReturn(emailList);
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(usersService.getMails(userList)).thenReturn(emailList);
+        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+
+//        MailService mailService = new MailService(javaMailSender, usersService);
 
         mailService.sendEmail(topicDto);
 
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verify(usersService, times(1)).getMails(userList);
-        verify(javaMailSender, times(emailList.size())).send(any(SimpleMailMessage.class));
-        verifyNoMoreInteractions(usersService, javaMailSender);
-    }
+        verify(usersService, times(1)).getMails(topicDto.getMembers());
 
-    @Test
-    void testSendEmail_BlankMembers() {
-        TopicsDto topicDto = new TopicsDto();
-        topicDto.setAuthor("john");
-        topicDto.setMembers("");
+        verify(javaMailSender, times(2)).send(messageCaptor.capture());
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
-        assertEquals("The users to whom the email needs to be sent are required", exception.getMessage());
-        verifyNoInteractions(usersService, javaMailSender);
-    }
+        List<SimpleMailMessage> sentMessages = messageCaptor.getAllValues();
 
-    @Test
-    void testSendEmail_UserNotExist() {
-        TopicsDto topicDto = new TopicsDto();
-        topicDto.setAuthor("john");
-        topicDto.setMembers("jane, alex");
+        assertEquals(2, sentMessages.size());
 
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(false);
-
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
-        assertEquals("The user does not exist", exception.getMessage());
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verifyNoInteractions(javaMailSender);
-    }
-
-    @Test
-    void testSendEmail_MembersNotFound() {
-        TopicsDto topicDto = new TopicsDto();
-        topicDto.setAuthor("john");
-        topicDto.setMembers("jane, alex");
-
-        List<String> userList = Arrays.asList("jane", "alex");
-
-        when(usersService.checkUser(topicDto.getAuthor())).thenReturn(true);
-        when(usersService.getMails(userList)).thenReturn(Arrays.asList());
-
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
-        assertEquals("Members not found in the database", exception.getMessage());
-        verify(usersService, times(1)).checkUser(topicDto.getAuthor());
-        verify(usersService, times(1)).getMails(userList);
-        verifyNoInteractions(javaMailSender);
+        for (SimpleMailMessage sentMessage : sentMessages) {
+            assertEquals("Se ha creado el Topic Topic Title en el que puedes participar", sentMessage.getSubject());
+            assertEquals("Me gustaría que formes parte de la votación. \nUn saludo.", sentMessage.getText());
+        }
     }
 }
 

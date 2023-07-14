@@ -34,20 +34,33 @@ class UsersServiceTest {
     @Test
     void testCheckUser() {
         String user = "john";
-        boolean expectedResult = true;
 
-        when(usersRepository.existsByUser(user)).thenReturn(expectedResult);
+        when(usersRepository.existsByUser(user)).thenReturn(true);
 
         boolean result = usersService.checkUser(user);
 
-        assertEquals(expectedResult, result);
+        assertTrue(result);
         verify(usersRepository, times(1)).existsByUser(user);
         verifyNoMoreInteractions(usersRepository);
     }
 
     @Test
+    void testUserMatches() {
+        String matcher = "jo";
+        List<String> expectedUsers = Arrays.asList("john", "joe");
+
+        when(usersRepository.findUsersByUsernameContaining(matcher)).thenReturn(expectedUsers);
+
+        List<String> result = usersService.userMatches(matcher);
+
+        assertEquals(expectedUsers, result);
+        verify(usersRepository, times(1)).findUsersByUsernameContaining(matcher);
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+    @Test
     void testCheckToken() {
-        String user = "exampleUser";
+        String user = "john";
         String token = "exampleToken";
         boolean expected = true;
 
@@ -62,8 +75,8 @@ class UsersServiceTest {
 
     @Test
     void testGetMails() {
-        List<String> userList = Arrays.asList("john", "jane");
-        List<String> expectedEmails = Arrays.asList("john@example.com", "jane@example.com");
+        List<String> userList = Arrays.asList("john", "emma");
+        List<String> expectedEmails = Arrays.asList("john@example.com", "emma@example.com");
 
         when(usersRepository.getEmailsByUserList(userList)).thenReturn(expectedEmails);
 
@@ -75,12 +88,40 @@ class UsersServiceTest {
     }
 
     @Test
+    void testExistsByEmail() {
+        String email = "john@example.com";
+
+        when(usersRepository.existsByEmail(email)).thenReturn(true);
+
+        boolean result = usersService.existsByEmail(email);
+
+        assertTrue(result);
+        verify(usersRepository, times(1)).existsByEmail(email);
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+    @Test
+    void testFindByUser() {
+        String user = "john";
+        UsersEntity expectedEntity = new UsersEntity();
+
+        when(usersRepository.findByUser(user)).thenReturn(expectedEntity);
+
+        UsersEntity result = usersService.findByUser(user);
+
+        assertEquals(expectedEntity, result);
+        verify(usersRepository, times(1)).findByUser(user);
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+    /* Los siguientes casos de uso son específicos para pruebas internas */
+
+    @Test
     void testSaveUser() {
         UsersEntity userEntity = new UsersEntity();
 
         usersService.saveUser(userEntity);
 
-        // Assert
         verify(usersRepository, times(1)).save(userEntity);
         verifyNoMoreInteractions(usersRepository);
     }
@@ -97,7 +138,9 @@ class UsersServiceTest {
 
     @Test
     void testGetAllUsersData() {
-        List<UsersEntity> expectedUsers = Arrays.asList(new UsersEntity(), new UsersEntity());
+        UsersEntity user1 = new UsersEntity();
+        UsersEntity user2 = new UsersEntity();
+        List<UsersEntity> expectedUsers = Arrays.asList(user1, user2);
 
         when(usersRepository.findAll()).thenReturn(expectedUsers);
 
@@ -107,33 +150,4 @@ class UsersServiceTest {
         verify(usersRepository, times(1)).findAll();
         verifyNoMoreInteractions(usersRepository);
     }
-
-    @Test
-    void testExistsByEmail() {
-        String email = "john@example.com";
-        boolean expectedResult = true;
-
-        when(usersRepository.existsByEmail(email)).thenReturn(expectedResult);
-
-        boolean result = usersService.existsByEmail(email);
-
-        assertEquals(expectedResult, result);
-        verify(usersRepository, times(1)).existsByEmail(email);
-        verifyNoMoreInteractions(usersRepository);
-    }
-
-    @Test
-    void testFindByUser() {
-        String user = "john";
-        UsersEntity expectedUser = new UsersEntity();
-
-        when(usersRepository.findByUser(user)).thenReturn(expectedUser);
-
-        UsersEntity result = usersService.findByUser(user);
-
-        assertEquals(expectedUser, result);
-        verify(usersRepository, times(1)).findByUser(user);
-        verifyNoMoreInteractions(usersRepository);
-    }
 }
-

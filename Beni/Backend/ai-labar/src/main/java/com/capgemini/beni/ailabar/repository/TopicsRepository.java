@@ -11,7 +11,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.password = :password")
     boolean existsByUserAndPassword(@Param("user") String user, @Param("password") String password);
 
-    @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user OR t.members LIKE %:user%")
+    @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user OR t.members LIKE CONCAT('%', :user, '%')")
     List<TopicsEntity> findByUser(@Param("user") String user);
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")

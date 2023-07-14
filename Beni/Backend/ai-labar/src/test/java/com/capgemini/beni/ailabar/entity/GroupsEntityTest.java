@@ -12,66 +12,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class GroupsEntityTest {
     @Test
-    void testId() {
-        GroupsEntity groupsEntity = new GroupsEntity();
-
-        Integer expectedId = 1;
-        groupsEntity.setId(expectedId);
-
-        Integer actualId = groupsEntity.getId();
-
-        assertEquals(expectedId, actualId);
+    void testIdProperty() {
+        GroupsEntity entity = new GroupsEntity();
+        entity.setId(1);
+        assertEquals(1, entity.getId());
     }
 
     @Test
-    void testGroupName() {
-        GroupsEntity groupsEntity = new GroupsEntity();
-
-        String expectedGroupName = "TestGroup";
-        groupsEntity.setGroupName(expectedGroupName);
-
-        String actualGroupName = groupsEntity.getGroupName();
-
-        assertEquals(expectedGroupName, actualGroupName);
+    void testGroupNameProperty() {
+        GroupsEntity entity = new GroupsEntity();
+        entity.setGroupName("Group 1");
+        assertEquals("Group 1", entity.getGroupName());
     }
 
     @Test
-    void testMembers() {
-        GroupsEntity groupsEntity = new GroupsEntity();
-
-        String expectedMembers = "Member1, Member2, Member3";
-        groupsEntity.setMembers(expectedMembers);
-
-        String actualMembers = groupsEntity.getMembers();
-
-        assertEquals(expectedMembers, actualMembers);
+    void testMembersProperty() {
+        GroupsEntity entity = new GroupsEntity();
+        entity.setMembers("[member1, member2]");
+        assertEquals("[member1, member2]", entity.getMembers());
     }
 
     @Test
-    void testAdmin() {
-        GroupsEntity groupsEntity = new GroupsEntity();
-
-        String expectedAdmin = "AdminUser";
-        groupsEntity.setAdmin(expectedAdmin);
-
-        String actualAdmin = groupsEntity.getAdmin();
-
-        assertEquals(expectedAdmin, actualAdmin);
+    void testAdminProperty() {
+        GroupsEntity entity = new GroupsEntity();
+        entity.setAdmin("admin");
+        assertEquals("admin", entity.getAdmin());
     }
 
     @Test
-    void testConstructor() {
-        GroupsDto groupsDto = new GroupsDto();
-        groupsDto.setGroupName("TestGroup");
-        groupsDto.setMembers("Member1, Member2, Member3");
-        groupsDto.setAdmin("AdminUser");
+    void testConstructorWithGroupsDto() {
+        GroupsDto dto = new GroupsDto();
+        dto.setGroupName("Group 1");
+        dto.getMembers().add("member1");
+        dto.getMembers().add("member2");
+        dto.setAdmin("admin");
 
-        GroupsEntity groupsEntity = new GroupsEntity(groupsDto);
+        GroupsEntity entity = new GroupsEntity(dto);
 
-        assertEquals(groupsDto.getGroupName(), groupsEntity.getGroupName());
-        assertEquals(groupsDto.getMembers(), groupsEntity.getMembers());
-        assertEquals(groupsDto.getAdmin(), groupsEntity.getAdmin());
+        assertEquals("Group 1", entity.getGroupName());
+        assertEquals("[member1, member2]", entity.getMembers());
+        assertEquals("admin", entity.getAdmin());
     }
-
 }
 

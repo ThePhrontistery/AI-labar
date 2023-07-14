@@ -35,13 +35,12 @@ class TopicsServiceTest {
     void testLogin() {
         String user = "john";
         String password = "password";
-        boolean expectedResult = true;
 
-        when(topicsRepository.existsByUserAndPassword(user, password)).thenReturn(expectedResult);
+        when(topicsRepository.existsByUserAndPassword(user, password)).thenReturn(true);
 
         boolean result = topicsService.login(user, password);
 
-        assertEquals(expectedResult, result);
+        assertTrue(result);
         verify(topicsRepository, times(1)).existsByUserAndPassword(user, password);
         verifyNoMoreInteractions(topicsRepository);
     }
@@ -49,7 +48,9 @@ class TopicsServiceTest {
     @Test
     void testLoadTopics() {
         String user = "john";
-        List<TopicsEntity> expectedTopics = Arrays.asList(new TopicsEntity(), new TopicsEntity());
+        TopicsEntity topic1 = new TopicsEntity();
+        TopicsEntity topic2 = new TopicsEntity();
+        List<TopicsEntity> expectedTopics = Arrays.asList(topic1, topic2);
 
         when(topicsRepository.findByUser(user)).thenReturn(expectedTopics);
 
@@ -63,13 +64,13 @@ class TopicsServiceTest {
     @Test
     void testOpenTopic() {
         Integer id = 1;
-        TopicsEntity expectedTopic = new TopicsEntity();
+        TopicsEntity expectedEntity = new TopicsEntity();
 
-        when(topicsRepository.findTopicsEntityById(id)).thenReturn(expectedTopic);
+        when(topicsRepository.findTopicsEntityById(id)).thenReturn(expectedEntity);
 
         TopicsEntity result = topicsService.openTopic(id);
 
-        assertEquals(expectedTopic, result);
+        assertEquals(expectedEntity, result);
         verify(topicsRepository, times(1)).findTopicsEntityById(id);
         verifyNoMoreInteractions(topicsRepository);
     }
@@ -87,13 +88,13 @@ class TopicsServiceTest {
     @Test
     void testGetTopicForEdit() {
         Integer id = 1;
-        TopicsEntity expectedTopic = new TopicsEntity();
+        TopicsEntity expectedEntity = new TopicsEntity();
 
-        when(topicsRepository.findByIdIfExists(id)).thenReturn(expectedTopic);
+        when(topicsRepository.findByIdIfExists(id)).thenReturn(expectedEntity);
 
         TopicsEntity result = topicsService.getTopicForEdit(id);
 
-        assertEquals(expectedTopic, result);
+        assertEquals(expectedEntity, result);
         verify(topicsRepository, times(1)).findByIdIfExists(id);
         verifyNoMoreInteractions(topicsRepository);
     }
@@ -110,7 +111,9 @@ class TopicsServiceTest {
 
     @Test
     void testGetAllTopicsData() {
-        List<TopicsEntity> expectedTopics = Arrays.asList(new TopicsEntity(), new TopicsEntity());
+        TopicsEntity topic1 = new TopicsEntity();
+        TopicsEntity topic2 = new TopicsEntity();
+        List<TopicsEntity> expectedTopics = Arrays.asList(topic1, topic2);
 
         when(topicsRepository.findAll()).thenReturn(expectedTopics);
 
@@ -124,13 +127,12 @@ class TopicsServiceTest {
     @Test
     void testExistsById() {
         Integer id = 1;
-        boolean expectedResult = true;
 
-        when(topicsRepository.existsById(id)).thenReturn(expectedResult);
+        when(topicsRepository.existsById(id)).thenReturn(true);
 
         boolean result = topicsService.existsById(id);
 
-        assertEquals(expectedResult, result);
+        assertTrue(result);
         verify(topicsRepository, times(1)).existsById(id);
         verifyNoMoreInteractions(topicsRepository);
     }
@@ -138,65 +140,53 @@ class TopicsServiceTest {
     @Test
     void testFindTopicsEntityById() {
         Integer id = 1;
-        TopicsEntity expectedTopic = new TopicsEntity();
+        TopicsEntity expectedEntity = new TopicsEntity();
 
-        when(topicsRepository.findTopicsEntityById(id)).thenReturn(expectedTopic);
+        when(topicsRepository.findTopicsEntityById(id)).thenReturn(expectedEntity);
 
         TopicsEntity result = topicsService.findTopicsEntityById(id);
 
-        assertEquals(expectedTopic, result);
+        assertEquals(expectedEntity, result);
         verify(topicsRepository, times(1)).findTopicsEntityById(id);
         verifyNoMoreInteractions(topicsRepository);
     }
 
     @Test
     void testExistsByTitleAndAuthor() {
-        String title = "Topic A";
-        String author = "John";
-        boolean expectedResult = true;
+        String title = "Topic";
+        String author = "john";
 
-        when(topicsRepository.existsByTitleAndAuthor(title, author)).thenReturn(expectedResult);
+        when(topicsRepository.existsByTitleAndAuthor(title, author)).thenReturn(true);
 
         boolean result = topicsService.existsByTitleAndAuthor(title, author);
 
-        assertEquals(expectedResult, result);
+        assertTrue(result);
         verify(topicsRepository, times(1)).existsByTitleAndAuthor(title, author);
         verifyNoMoreInteractions(topicsRepository);
     }
 
     @Test
-    void testInitiateVotingWithOptions() {
-        String options = "Option 1, Option 2, Option 3";
-        String expectedResult = "Option 1:0, Option 2:0, Option 3:0";
-
-        String result = topicsService.initiateVoting(options);
-
-        assertEquals(expectedResult, result);
-    }
-
-    @Test
-    void testInitiateVotingWithList() {
-        List<String> list = Arrays.asList("Option 1", "Option 2", "Option 3");
-        String expectedResult = "Option 1:0, Option 2:0, Option 3:0";
+    void testInitiateVoting() {
+        List<String> list = Arrays.asList("Option1", "Option2", "Option3");
+        String expectedJson = "{\"Option1\":0,\"Option2\":0,\"Option3\":0}";
 
         String result = topicsService.initiateVoting(list);
 
-        assertEquals(expectedResult, result);
+        assertEquals(expectedJson, result);
     }
 
     @Test
     void testFindTopicByIdAndUser() {
         Integer id = 1;
-        String user = "John";
-        TopicsEntity expectedTopic = new TopicsEntity();
+        String user = "john";
+        TopicsEntity expectedEntity = new TopicsEntity();
 
-        when(topicsRepository.findTopicByIdAndUser(id, user)).thenReturn(expectedTopic);
+        when(topicsRepository.findTopicByIdAndUser(id, user)).thenReturn(expectedEntity);
 
         TopicsEntity result = topicsService.findTopicByIdAndUser(id, user);
 
-        assertEquals(expectedTopic, result);
+        assertEquals(expectedEntity, result);
         verify(topicsRepository, times(1)).findTopicByIdAndUser(id, user);
         verifyNoMoreInteractions(topicsRepository);
     }
 }
-

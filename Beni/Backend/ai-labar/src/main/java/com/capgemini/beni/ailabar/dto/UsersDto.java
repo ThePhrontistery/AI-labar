@@ -1,5 +1,6 @@
 package com.capgemini.beni.ailabar.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.List;
@@ -11,11 +12,13 @@ public class UsersDto {
     private String password;
     private String email;
     private String token;
-
-    /* Inicio tributos sólo necesarios para realizar pruebas */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String matcher;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String newUser;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String newPassword;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> usersList;
-    /* Fin tributos sólo necesarios para realizar pruebas */
 }
 

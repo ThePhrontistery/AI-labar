@@ -6,7 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,171 +16,113 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class TopicsDtoTest {
     @Test
-    void testId() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        Integer expectedId = 1;
-        topicsDto.setId(expectedId);
-
-        Integer actualId = topicsDto.getId();
-
-        assertEquals(expectedId, actualId);
+    void testIdProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setId(1);
+        assertEquals(1, dto.getId());
     }
 
     @Test
-    void testTitle() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedTitle = "Test Topic";
-        topicsDto.setTitle(expectedTitle);
-
-        String actualTitle = topicsDto.getTitle();
-
-        assertEquals(expectedTitle, actualTitle);
+    void testTitleProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setTitle("Topic Title");
+        assertEquals("Topic Title", dto.getTitle());
     }
 
     @Test
-    void testType() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedType = "Question";
-        topicsDto.setType(expectedType);
-
-        String actualType = topicsDto.getType();
-
-        assertEquals(expectedType, actualType);
+    void testTypeProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setType("Type");
+        assertEquals("Type", dto.getType());
     }
 
     @Test
-    void testQuestion() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedQuestion = "What is your favorite color?";
-        topicsDto.setQuestion(expectedQuestion);
-
-        String actualQuestion = topicsDto.getQuestion();
-
-        assertEquals(expectedQuestion, actualQuestion);
+    void testQuestionProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setQuestion("Question");
+        assertEquals("Question", dto.getQuestion());
     }
 
     @Test
-    void testOptions() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedOptions = "Red, Blue, Green";
-        topicsDto.setOptions(expectedOptions);
-
-        String actualOptions = topicsDto.getOptions();
-
-        assertEquals(expectedOptions, actualOptions);
+    void testOptionsProperty() {
+        TopicsDto dto = new TopicsDto();
+        List<String> options = Arrays.asList("Option 1", "Option 2");
+        dto.setOptions(options);
+        assertEquals(options, dto.getOptions());
     }
 
     @Test
-    void testVotedBy() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedVotedBy = "John, Jane, Bob";
-        topicsDto.setVotedBy(expectedVotedBy);
-
-        String actualVotedBy = topicsDto.getVotedBy();
-
-        assertEquals(expectedVotedBy, actualVotedBy);
+    void testOptionsMapProperty() {
+        TopicsDto dto = new TopicsDto();
+        Map<String, Integer> optionsMap = new HashMap<>();
+        optionsMap.put("Option 1", 1);
+        optionsMap.put("Option 2", 2);
+        dto.setOptionsMap(optionsMap);
+        assertEquals(optionsMap, dto.getOptionsMap());
     }
 
     @Test
-    void testAuthor() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedAuthor = "AuthorUser";
-        topicsDto.setAuthor(expectedAuthor);
-
-        String actualAuthor = topicsDto.getAuthor();
-
-        assertEquals(expectedAuthor, actualAuthor);
+    void testVotedByProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setVotedBy("User1");
+        assertEquals("User1", dto.getVotedBy());
     }
 
     @Test
-    void testMembers() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedMembers = "John, Jane, Bob";
-        topicsDto.setMembers(expectedMembers);
-
-        String actualMembers = topicsDto.getMembers();
-
-        assertEquals(expectedMembers, actualMembers);
+    void testAuthorProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setAuthor("Author");
+        assertEquals("Author", dto.getAuthor());
     }
 
     @Test
-    void testCloseDate() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedCloseDate = "2023-07-31";
-        topicsDto.setCloseDate(expectedCloseDate);
-
-        String actualCloseDate = topicsDto.getCloseDate();
-
-        assertEquals(expectedCloseDate, actualCloseDate);
+    void testMembersProperty() {
+        TopicsDto dto = new TopicsDto();
+        List<String> members = Arrays.asList("User1", "User2");
+        dto.setMembers(members);
+        assertEquals(members, dto.getMembers());
     }
 
     @Test
-    void testVisits() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        Integer expectedVisits = 10;
-        topicsDto.setVisits(expectedVisits);
-
-        Integer actualVisits = topicsDto.getVisits();
-
-        assertEquals(expectedVisits, actualVisits);
+    void testCloseDateProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setCloseDate("2023-07-01");
+        assertEquals("2023-07-01", dto.getCloseDate());
     }
 
     @Test
-    void testStatus() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedStatus = "Open";
-        topicsDto.setStatus(expectedStatus);
-
-        String actualStatus = topicsDto.getStatus();
-
-        assertEquals(expectedStatus, actualStatus);
+    void testVisitsProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setVisits(10);
+        assertEquals(10, dto.getVisits());
     }
 
     @Test
-    void testUser() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedUser = "User1";
-        topicsDto.setUser(expectedUser);
-
-        String actualUser = topicsDto.getUser();
-
-        assertEquals(expectedUser, actualUser);
+    void testStatusProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setStatus("Open");
+        assertEquals("Open", dto.getStatus());
     }
 
     @Test
-    void testToken() {
-        TopicsDto topicsDto = new TopicsDto();
-
-        String expectedToken = "token";
-        topicsDto.setToken(expectedToken);
-
-        String actualToken = topicsDto.getToken();
-
-        assertEquals(expectedToken, actualToken);
+    void testUserProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setUser("User");
+        assertEquals("User", dto.getUser());
     }
 
     @Test
-    void testVotation() {
-        TopicsDto topicsDto = new TopicsDto();
+    void testTokenProperty() {
+        TopicsDto dto = new TopicsDto();
+        dto.setToken("Token");
+        assertEquals("Token", dto.getToken());
+    }
 
-        List<String> expectedVotation = Arrays.asList("Option1", "Option2", "Option3");
-        topicsDto.setVotation(expectedVotation);
-
-        List<String> actualVotation = topicsDto.getVotation();
-
-        assertEquals(expectedVotation, actualVotation);
+    @Test
+    void testVotationProperty() {
+        TopicsDto dto = new TopicsDto();
+        List<String> votation = Arrays.asList("Option 1", "Option 2");
+        dto.setVotation(votation);
+        assertEquals(votation, dto.getVotation());
     }
 }
-

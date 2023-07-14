@@ -1,6 +1,7 @@
 package com.capgemini.beni.ailabar.Utils;
 
 import com.capgemini.beni.ailabar.utils.SpecialResponse;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +15,17 @@ class SpecialResponseTest {
     @Test
     void testGetEntity() {
         Object entity = Mockito.mock(Object.class);
-        SpecialResponse specialResponse = new SpecialResponse(entity, "Test Message");
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", "Test Message");
+        SpecialResponse specialResponse = new SpecialResponse(entity, responseJson.getString("message"));
         Assertions.assertSame(entity, specialResponse.getEntity());
     }
 
     @Test
     void testGetMessage() {
-        SpecialResponse specialResponse = new SpecialResponse(new Object(), "Test Message");
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", "Test Message");
+        SpecialResponse specialResponse = new SpecialResponse(new Object(), responseJson.getString("message"));
         Assertions.assertEquals("Test Message", specialResponse.getMessage());
     }
 }
-

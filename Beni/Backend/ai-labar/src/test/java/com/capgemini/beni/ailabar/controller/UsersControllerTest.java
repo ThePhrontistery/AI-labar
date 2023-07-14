@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -38,93 +39,93 @@ class UsersControllerTest {
     }
 
     @Test
-    void testCreateUser_AllDataRequired() {
+    void testCreateUser_DataMissing_ReturnsBadRequest() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("");
-        userDto.setPassword("");
-        userDto.setEmail("");
+        userDto.setPassword("examplePassword");
+        userDto.setEmail("example@example.com");
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "All data is required to create a new user");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_GATEWAY);
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "All data is required to create a new user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
 
-        ResponseEntity<String> response = usersController.createUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.createUser(userDto);
 
-        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verifyNoInteractions(usersService);
     }
 
     @Test
-    void testCreateUser_UserAlreadyExists() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("existingUser");
-        userDto.setPassword("password");
-        userDto.setEmail("email@example.com");
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "The user already exists");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
-
-        ResponseEntity<String> response = usersController.createUser(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
-        verifyNoMoreInteractions(usersService);
-    }
-
-    @Test
-    void testCreateUser_EmailAlreadyExists() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("newUser");
-        userDto.setPassword("password");
-        userDto.setEmail("existing@example.com");
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "The email already exists");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
-        when(usersService.existsByEmail(userDto.getEmail())).thenReturn(true);
-
-        ResponseEntity<String> response = usersController.createUser(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
-        verify(usersService, times(1)).existsByEmail(userDto.getEmail());
-        verifyNoMoreInteractions(usersService);
-    }
-
-    @Test
-    void testCreateUser_UserEntityIsNull() {
+    void testCreateUser_UserAlreadyExists_ReturnsUserAlreadyExists() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("exampleUser");
         userDto.setPassword("examplePassword");
         userDto.setEmail("example@example.com");
 
-        UsersEntity userEntity = null;
-
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "User not found");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+        expectedResponseJson.put("message", "The user already exists");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
-        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
-        when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
+        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
 
-        ResponseEntity<String> actualResponse = usersController.createUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.createUser(userDto);
 
-        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
-        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkUser(userDto.getUser());
-        verify(usersService, times(1)).existsByEmail(userDto.getEmail());
+        verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testCreateUser_Success() {
+    void testCreateUser_EmailAlreadyExists_ReturnsEmailAlreadyExists() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setPassword("examplePassword");
+        userDto.setEmail("example@example.com");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The email already exists");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
+        when(usersService.existsByEmail(userDto.getEmail())).thenReturn(true);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.createUser(userDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).existsByEmail(userDto.getEmail());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void createUser_UserNotFound_ReturnsNotFoundResponse() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("testUser");
+        userDto.setPassword("testPassword");
+        userDto.setEmail("test@example.com");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User not found");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
+        when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
+        when(usersService.findByUser(userDto.getUser())).thenReturn(null);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.createUser(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkUser(userDto.getUser());
+        verify(usersService, times(1)).existsByEmail(userDto.getEmail());
+        verify(usersService, times(1)).findByUser(userDto.getUser());
+    }
+
+    @Test
+    void testCreateUser_AllDataProvided_UserCreatedSuccessfully() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("exampleUser");
         userDto.setPassword("examplePassword");
@@ -133,312 +134,251 @@ class UsersControllerTest {
         UsersEntity userEntity = new UsersEntity();
         userEntity.setId(1);
         userEntity.setUser("exampleUser");
-        userEntity.setPassword("examplePassword");
+        userEntity.setPassword(DigestUtils.sha256Hex("examplePassword"));
         userEntity.setEmail("example@example.com");
-        userEntity.setToken("token");
+        userEntity.setToken("");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "User created successfully");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.OK);
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
         when(usersService.checkUser(userDto.getUser())).thenReturn(false);
         when(usersService.existsByEmail(userDto.getEmail())).thenReturn(false);
         when(usersService.findByUser(userDto.getUser())).thenReturn(userEntity);
+        doNothing().when(usersService).saveUser(any(UsersEntity.class));
 
-        ResponseEntity<String> actualResponse = usersController.createUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.createUser(userDto);
 
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
-        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkUser(userDto.getUser());
         verify(usersService, times(1)).existsByEmail(userDto.getEmail());
-        verify(usersService, times(2)).saveUser(any(UsersEntity.class));
-        verify(usersService, times(2)).findByUser(userDto.getUser());
-        verify(usersService, times(1)).saveUser(userEntity);
-        verifyNoMoreInteractions(usersService);
-    }
-
-
-    @Test
-    void testEditUser_Successful() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("existingUser");
-        userDto.setPassword("password");
-        userDto.setToken("token");
-        userDto.setNewUser("newUser");
-        userDto.setNewPassword("newPassword");
-
-        UsersEntity existingUserEntity = new UsersEntity();
-        existingUserEntity.setUser("existingUser");
-        existingUserEntity.setPassword("hashedPassword");
-        existingUserEntity.setEmail("email");
-        existingUserEntity.setToken("token");
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
-        when(usersService.checkUser(userDto.getNewUser().strip())).thenReturn(false);
-        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
-        when(usersService.findByUser(userDto.getUser())).thenReturn(existingUserEntity);
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "User modified successfully");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
-
-        ResponseEntity<String> response = usersController.editUser(userDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
-        verify(usersService, times(1)).checkUser(userDto.getNewUser().strip());
-        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(usersService, times(1)).findByUser(userDto.getUser());
-        verify(usersService, times(1)).saveUser(existingUserEntity);
+        verify(usersService, times(2)).saveUser(any(UsersEntity.class));
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testEditUser_BlankUserData() {
+    void testEditUser_DataMissing_ReturnsBadRequest() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("");
         userDto.setPassword("");
         userDto.setToken("");
-        userDto.setNewUser("");
-        userDto.setNewPassword("");
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "All data is required to edit a user");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_GATEWAY);
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "All data is required to edit a user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
 
-        ResponseEntity<String> response = usersController.editUser(userDto);
+        UsersService usersService = mock(UsersService.class);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editUser(userDto);
 
-        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verifyNoInteractions(usersService);
-    }
-
-    @Test
-    void testEditUser_NoValuesToUpdate() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("existingUser");
-        userDto.setPassword("password");
-        userDto.setToken("token");
-        userDto.setNewUser("");
-        userDto.setNewPassword("");
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "There are no values to update.");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_GATEWAY);
-
-        ResponseEntity<String> response = usersController.editUser(userDto);
-
-        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verifyNoInteractions(usersService);
-    }
-
-    @Test
-    void testEditUser_UserNotFound() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("nonExistingUser");
-        userDto.setPassword("password");
-        userDto.setToken("token");
-        userDto.setNewUser("newUser");
-        userDto.setNewPassword("");
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "The user does not exist");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_REQUEST);
-
-        ResponseEntity<String> response = usersController.editUser(userDto);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testEditUser_NewUsernameAlreadyExists() {
+    void testEditUser_InvalidToken_ReturnsNotFound() {
+        // Arrange
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
-        userDto.setPassword("password");
-        userDto.setToken("token");
-        userDto.setNewUser("existingUser");
-        userDto.setNewPassword("");
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
-        when(usersService.checkUser(userDto.getNewUser().strip())).thenReturn(true);
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "The new username already exists");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_REQUEST);
-
-        ResponseEntity<String> response = usersController.editUser(userDto);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(2)).checkUser(userDto.getUser());
-        verify(usersService, times(2)).checkUser(userDto.getNewUser().strip());
-        verifyNoMoreInteractions(usersService);
-    }
-
-    @Test
-    void testEditUser_TokenDoesNotMatch() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("oldUser");
-        userDto.setPassword("password");
-        userDto.setNewUser("newUser");
-        userDto.setToken("incorrectToken");
+        userDto.setPassword("existingPassword");
+        userDto.setToken("invalidToken");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The token does not match");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
 
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
         when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
 
-        ResponseEntity<String> actualResponse = usersController.editUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editUser(userDto);
 
         assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
-        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
-        verify(usersService, times(1)).checkUser(userDto.getNewUser().strip());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testDeleteUser_UserNameRequired() {
+    void testEditUser_NoValuesToUpdate_ReturnsBadRequest() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("existingUser");
+        userDto.setPassword("existingPassword");
+        userDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "There are no values to update.");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editUser(userDto);
+
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testEditUser_NewUsernameAlreadyExists_ReturnsBadRequest() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("existingUser");
+        userDto.setPassword("existingPassword");
+        userDto.setToken("validToken");
+        userDto.setNewUser("existingUser2");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The new username already exists");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_REQUEST);
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        when(usersService.checkUser(userDto.getNewUser().strip())).thenReturn(true);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editUser(userDto);
+
+        assertEquals(HttpStatus.BAD_REQUEST, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verify(usersService, times(1)).checkUser(userDto.getNewUser());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testEditUser_AllDataProvided_UserModifiedSuccessfully() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("existingUser");
+        userDto.setPassword("existingPassword");
+        userDto.setToken("validToken");
+        userDto.setNewUser("newUser");
+        userDto.setNewPassword("newPassword");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User modified successfully");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        UsersEntity userEntity = new UsersEntity();
+        userEntity.setUser(userDto.getUser());
+        userEntity.setPassword(userDto.getPassword());
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        when(usersService.checkUser(userDto.getNewUser().strip())).thenReturn(false);
+        when(usersService.findByUser(userDto.getUser())).thenReturn(userEntity);
+        doNothing().when(usersService).saveUser(any(UsersEntity.class));
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editUser(userDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verify(usersService, times(1)).checkUser(userDto.getNewUser());
+        verify(usersService, times(1)).findByUser(userDto.getUser());
+        verify(usersService, times(1)).saveUser(any(UsersEntity.class));
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testDeleteUser_UserMissing_ReturnsBadRequest() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("");
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "User name is required to delete a user");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.BAD_GATEWAY);
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User name is required to delete a user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
 
-        ResponseEntity<String> response = usersController.deleteUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.deleteUser(userDto);
 
-        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verifyNoInteractions(usersService);
-    }
-
-    @Test
-    void testDeleteUser_UserNotFound() {
-        UsersDto userDto = new UsersDto();
-        userDto.setUser("nonExistingUser");
-
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "The user does not exist");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.NOT_FOUND);
-
-        when(usersService.checkUser(userDto.getUser())).thenReturn(false);
-
-        ResponseEntity<String> response = usersController.deleteUser(userDto);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testDeleteUser_TokenDoesNotMatch() {
+    void testDeleteUser_TokenMismatch_ReturnsNotFound() {
         UsersDto userDto = new UsersDto();
-        userDto.setUser("exampleUser");
-        userDto.setToken("incorrectToken");
+        userDto.setUser("existingUser");
+        userDto.setToken("invalidToken");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The token does not match");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedResponseJson.toString(), HttpStatus.NOT_FOUND);
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
 
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
         when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
 
-        ResponseEntity<String> actualResponse = usersController.deleteUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.deleteUser(userDto);
 
         assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
-        assertEquals(expectedResponse.getBody(), actualResponse.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testDeleteUser_SuccessfulDeletion() {
+    void testDeleteUser_UserDeletedSuccessfully() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("existingUser");
-        userDto.setToken("token");
+        userDto.setToken("validToken");
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "User deleted successfully");
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedJsonResponse.toString(), HttpStatus.OK);
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User deleted successfully");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
-        when(usersService.checkUser(userDto.getUser())).thenReturn(true);
         when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        doNothing().when(usersService).deleteUser(userDto.getUser());
 
-        ResponseEntity<String> response = usersController.deleteUser(userDto);
+        ResponseEntity<SpecialResponse> actualResponse = usersController.deleteUser(userDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-        verify(usersService, times(1)).checkUser(userDto.getUser());
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(usersService, times(1)).deleteUser(userDto.getUser());
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testGetAllUsersData_NoUsersFound() {
+    void testGetAllUsersData_NoUsersInDatabase_ReturnsEmptyList() {
         List<UsersEntity> usersList = new ArrayList<>();
 
-        JSONObject expectedJsonResponse = new JSONObject();
-        expectedJsonResponse.put("message", "There are no users in database");
-        SpecialResponse expectedSpecialResponse = new SpecialResponse(usersList, expectedJsonResponse.toString());
-        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(expectedSpecialResponse, HttpStatus.OK);
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "There are no users in database");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(usersList, expectedResponseJson), HttpStatus.OK);
 
         when(usersService.getAllUsersData()).thenReturn(usersList);
 
-        ResponseEntity<SpecialResponse> response = usersController.getAllUsersDataAll();
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getAllUsersDataAll();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody().getMessage(), response.getBody().getMessage());
-        assertEquals(expectedResponse.getBody().getEntity(), response.getBody().getEntity());
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).getAllUsersData();
         verifyNoMoreInteractions(usersService);
     }
 
     @Test
-    void testGetAllUsersDataAll_Successful() {
-        UsersEntity userEntity1 = new UsersEntity();
-        userEntity1.setId(1);
-        userEntity1.setUser("user1");
-        userEntity1.setPassword("password1");
-        userEntity1.setEmail("email1");
-        userEntity1.setToken("token1");
-
-        UsersEntity userEntity2 = new UsersEntity();
-        userEntity2.setId(2);
-        userEntity2.setUser("user2");
-        userEntity2.setPassword("password2");
-        userEntity2.setEmail("email2");
-        userEntity2.setToken("token2");
-
+    void testGetAllUsersData_UsersInDatabase_ReturnsUserList() {
         List<UsersEntity> usersList = new ArrayList<>();
-        usersList.add(userEntity1);
-        usersList.add(userEntity2);
 
-        SpecialResponse expectedSpecialResponse = new SpecialResponse(usersList, "{\"message\":\"OK\"}");
-        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(expectedSpecialResponse, HttpStatus.OK);
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setId(1);
+        usersEntity.setUser("user");
+        usersEntity.setPassword("pass");
+
+        usersList.add(usersEntity);
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "OK");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(usersList, expectedResponseJson), HttpStatus.OK);
 
         when(usersService.getAllUsersData()).thenReturn(usersList);
 
-        ResponseEntity<SpecialResponse> response = usersController.getAllUsersDataAll();
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getAllUsersDataAll();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse.getBody().getMessage(), response.getBody().getMessage());
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).getAllUsersData();
         verifyNoMoreInteractions(usersService);
     }
+
 
 }
 

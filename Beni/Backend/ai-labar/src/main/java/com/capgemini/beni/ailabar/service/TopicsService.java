@@ -2,6 +2,7 @@ package com.capgemini.beni.ailabar.service;
 
 import com.capgemini.beni.ailabar.entity.TopicsEntity;
 import com.capgemini.beni.ailabar.repository.TopicsRepository;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -58,18 +59,13 @@ public class TopicsService {
         return topicsRepository.existsByTitleAndAuthor(title, author);
     }
 
-    public String initiateVoting(String options) {
-        List<String> optionsList = Arrays.asList(options.split(", "));
-
-        return optionsList.stream()
-                .map(element -> element + ":0")
-                .collect(Collectors.joining(", "));
-    }
-
     public String initiateVoting(List<String> list) {
-        return list.stream()
-                .map(element -> element + ":0")
-                .collect(Collectors.joining(", "));
+        Map<String, Integer> map = new LinkedHashMap<>();
+        for (String element : list) {
+            map.put(element, 0);
+        }
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
 
     public TopicsEntity findTopicByIdAndUser(Integer id, String user) {

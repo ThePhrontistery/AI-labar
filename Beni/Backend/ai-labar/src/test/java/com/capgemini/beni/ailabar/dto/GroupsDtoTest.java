@@ -5,69 +5,62 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class GroupsDtoTest {
     @Test
-    void testId() {
-        GroupsDto groupsDto = new GroupsDto();
-
-        Integer expectedId = 1;
-        groupsDto.setId(expectedId);
-
-        Integer actualId = groupsDto.getId();
-
-        assertEquals(expectedId, actualId);
+    void testIdProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setId(1);
+        assertEquals(1, dto.getId());
     }
 
     @Test
-    void testGroupName() {
-        GroupsDto groupsDto = new GroupsDto();
-
-        String expectedGroupName = "Test Group";
-        groupsDto.setGroupName(expectedGroupName);
-
-        String actualGroupName = groupsDto.getGroupName();
-
-        assertEquals(expectedGroupName, actualGroupName);
+    void testGroupNameProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setGroupName("Group Name");
+        assertEquals("Group Name", dto.getGroupName());
     }
 
     @Test
-    void testMembers() {
-        GroupsDto groupsDto = new GroupsDto();
-
-        String expectedMembers = "John, Jane, Bob";
-        groupsDto.setMembers(expectedMembers);
-
-        String actualMembers = groupsDto.getMembers();
-
-        assertEquals(expectedMembers, actualMembers);
+    void testMembersProperty() {
+        GroupsDto dto = new GroupsDto();
+        List<String> members = Arrays.asList("Member1", "Member2");
+        dto.setMembers(members);
+        assertEquals(members, dto.getMembers());
     }
 
     @Test
-    void testAdmin() {
-        GroupsDto groupsDto = new GroupsDto();
-
-        String expectedAdmin = "AdminUser";
-        groupsDto.setAdmin(expectedAdmin);
-
-        String actualAdmin = groupsDto.getAdmin();
-
-        assertEquals(expectedAdmin, actualAdmin);
+    void testAdminProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setAdmin("Admin");
+        assertEquals("Admin", dto.getAdmin());
     }
 
     @Test
-    void testNewGroupName() {
-        GroupsDto groupsDto = new GroupsDto();
+    void testNewGroupNameProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setNewGroupName("New Group Name");
+        assertEquals("New Group Name", dto.getNewGroupName());
+    }
 
-        String expectedNewGroupName = "New Group";
-        groupsDto.setNewGroupName(expectedNewGroupName);
+    @Test
+    void testUserProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setUser("User");
+        assertEquals("User", dto.getUser());
+    }
 
-        String actualNewGroupName = groupsDto.getNewGroupName();
-
-        assertEquals(expectedNewGroupName, actualNewGroupName);
+    @Test
+    void testTokenProperty() {
+        GroupsDto dto = new GroupsDto();
+        dto.setToken("Token");
+        assertEquals("Token", dto.getToken());
     }
 }
 

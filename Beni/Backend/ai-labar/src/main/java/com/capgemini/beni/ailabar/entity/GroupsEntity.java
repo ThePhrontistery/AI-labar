@@ -24,7 +24,7 @@ public class GroupsEntity {
 
     public GroupsEntity(GroupsDto groupsDto) {
         this.groupName = groupsDto.getGroupName();
-        this.members = groupsDto.getMembers();
+        this.members = groupsDto.getMembers().toString();
         this.admin = groupsDto.getAdmin();
     }
 }

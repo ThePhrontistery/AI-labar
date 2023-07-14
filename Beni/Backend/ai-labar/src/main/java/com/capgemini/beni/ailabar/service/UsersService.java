@@ -21,6 +21,10 @@ public class UsersService {
         return usersRepository.existsByUser(user);
     }
 
+    public List<String> userMatches(String matcher){
+        return usersRepository.findUsersByUsernameContaining(matcher);
+    }
+
     public Boolean checkToken(String user, String token){
         return usersRepository.existsByUserAndToken(user, token);
     }
@@ -50,5 +54,4 @@ public class UsersService {
     public UsersEntity findByUser(String user) {
         return usersRepository.findByUser(user);
     }
-
 }

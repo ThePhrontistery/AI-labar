@@ -2,6 +2,7 @@ package com.capgemini.beni.ailabar.Utils;
 
 import com.capgemini.beni.ailabar.utils.SpecialResponse;
 import com.capgemini.beni.ailabar.utils.SpecialResponseInterface;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,14 +28,12 @@ class SpecialResponseInterfaceTest {
 
     @Test
     void testSpecialResponse() {
-        // Arrange
-        String message = "Success";
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", "Success");
 
-        // Act
-        SpecialResponse specialResponse = specialResponseInterface.specialResponse(entity, message);
+        SpecialResponse specialResponse = specialResponseInterface.specialResponse(entity, responseJson);
 
-        // Assert
         assertEquals(entity, specialResponse.getEntity());
-        assertEquals(message, specialResponse.getMessage());
+        assertEquals(responseJson, specialResponse.getMessage());
     }
 }

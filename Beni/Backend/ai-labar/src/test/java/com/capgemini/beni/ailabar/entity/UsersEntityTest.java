@@ -8,63 +8,57 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UsersEntityTest {
     @Test
-    void testId() {
-        Integer id = 1;
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setId(id);
-        Assertions.assertEquals(id, usersEntity.getId());
+    void testIdProperty() {
+        UsersEntity entity = new UsersEntity();
+        entity.setId(1);
+        assertEquals(1, entity.getId());
     }
 
     @Test
-    void testUser() {
-        String user = "testuser";
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setUser(user);
-        Assertions.assertEquals(user, usersEntity.getUser());
+    void testUserProperty() {
+        UsersEntity entity = new UsersEntity();
+        entity.setUser("user1");
+        assertEquals("user1", entity.getUser());
     }
 
     @Test
-    void testPassword() {
-        String password = "testpassword";
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setPassword(password);
-        Assertions.assertEquals(password, usersEntity.getPassword());
+    void testPasswordProperty() {
+        UsersEntity entity = new UsersEntity();
+        entity.setPassword("password");
+        assertEquals("password", entity.getPassword());
     }
 
     @Test
-    void testEmail() {
-        String email = "test@example.com";
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setEmail(email);
-        Assertions.assertEquals(email, usersEntity.getEmail());
+    void testEmailProperty() {
+        UsersEntity entity = new UsersEntity();
+        entity.setEmail("user1@example.com");
+        assertEquals("user1@example.com", entity.getEmail());
     }
 
     @Test
-    void testToken() {
-        String token = "tokentoken";
-        UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setToken(token);
-        Assertions.assertEquals(token, usersEntity.getToken());
+    void testTokenProperty() {
+        UsersEntity entity = new UsersEntity();
+        entity.setToken("token123");
+        assertEquals("token123", entity.getToken());
     }
 
     @Test
-    void testConstructor() {
-        UsersDto usersDto = Mockito.mock(UsersDto.class);
-        String user = "testuser";
-        String password = "testpassword";
-        String email = "test@example.com";
-        Mockito.when(usersDto.getUser()).thenReturn(user);
-        Mockito.when(usersDto.getPassword()).thenReturn(password);
-        Mockito.when(usersDto.getEmail()).thenReturn(email);
+    void testConstructorWithUsersDto() {
+        UsersDto dto = new UsersDto();
+        dto.setUser("user1");
+        dto.setPassword("password");
+        dto.setEmail("user1@example.com");
 
-        UsersEntity usersEntity = new UsersEntity(usersDto);
+        UsersEntity entity = new UsersEntity(dto);
 
-        Assertions.assertEquals(user, usersEntity.getUser());
-        Assertions.assertEquals(password, usersEntity.getPassword());
-        Assertions.assertEquals(email, usersEntity.getEmail());
+        assertEquals("user1", entity.getUser());
+        assertEquals("password", entity.getPassword());
+        assertEquals("user1@example.com", entity.getEmail());
     }
 }

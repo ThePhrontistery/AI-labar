@@ -23,7 +23,7 @@ public class MailService {
     }
 
     public void sendEmail(TopicsDto topicDto) {
-        if(topicDto.getMembers().isBlank()) {
+        if(topicDto.getMembers().isEmpty()) {
             throw new NullPointerException("The users to whom the email needs to be sent are required");
         }
 
@@ -31,12 +31,10 @@ public class MailService {
             throw new NullPointerException("The user does not exist");
         }
 
-        String[] usersArray = topicDto.getMembers().split("[,;]");
 
-        List<String> userList = new ArrayList<>();
-        Arrays.stream(usersArray).forEach(user -> userList.add(user.strip()));
-
+        List<String> userList = topicDto.getMembers();
         List<String> emailList = usersService.getMails(userList);
+
 
         if(emailList.isEmpty()) {
             throw new NullPointerException("Members not found in the database");
