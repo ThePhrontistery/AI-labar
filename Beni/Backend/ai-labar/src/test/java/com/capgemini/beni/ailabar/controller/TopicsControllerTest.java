@@ -24,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -187,7 +186,7 @@ class TopicsControllerTest {
         topic1.setTitle("Topic 1");
         topic1.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topic1.setQuestion("Question 1");
-        topic1.setOptions("[\"Option 1\",\"Option 2\",\"Option 3\"]");
+        topic1.setOptions("{\"Lunes, Martes\":0,\"Miércoles\":0,\"Jueves, Viernes\":0}");
         topic1.setAuthor("Author 1");
         topic1.setMembers("[\"Member 1\",\"Member 2\"]");
         topic1.setVisits(5);
@@ -198,7 +197,7 @@ class TopicsControllerTest {
         topic2.setTitle("Topic 2");
         topic2.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topic2.setQuestion("Question 2");
-        topic2.setOptions("[\"Option 4\",\"Option 5\"]");
+        topic2.setOptions("{\"Lunes, Martes\":0,\"Miércoles\":0,\"Jueves, Viernes\":0}");
         topic2.setAuthor("Author 2");
         topic2.setMembers("[\"Member 3\"]");
         topic2.setVisits(3);
@@ -372,7 +371,7 @@ class TopicsControllerTest {
         topicEntity.setTitle("Topic 1");
         topicEntity.setType("Type 1");
         topicEntity.setQuestion("Question 1");
-        topicEntity.setOptions("[\"Option 1\",\"Option 2\",\"Option 3\"]");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
         topicEntity.setAuthor("exampleUser");
         topicEntity.setMembers("[\"Member 1\",\"Member 2\"]");
         topicEntity.setVisits(5);
@@ -383,9 +382,9 @@ class TopicsControllerTest {
         expectedTopicsDto.setTitle(topicEntity.getTitle());
         expectedTopicsDto.setType(topicEntity.getType());
         expectedTopicsDto.setQuestion(topicEntity.getQuestion());
-        expectedTopicsDto.setOptions(Arrays.asList("Option 1", "Option 2", "Option 3"));
+        expectedTopicsDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
         expectedTopicsDto.setAuthor(topicEntity.getAuthor());
-        expectedTopicsDto.setMembers(Arrays.asList("Member 1", "Member 2"));
+        expectedTopicsDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
         expectedTopicsDto.setVisits(topicEntity.getVisits());
         expectedTopicsDto.setStatus(topicEntity.getStatus());
 
@@ -501,27 +500,27 @@ class TopicsControllerTest {
         assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
-        verifyNoMoreInteractions(usersService, topicsService, topicsController);
+        verifyNoMoreInteractions(usersService, topicsService);
     }
 
     @Test
     void testCreateTopic_InternalServerError_ReturnsInternalServerError() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setTitle("Title");
-        topicDto.setType("Type 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topicDto.setQuestion("Question 1");
-        topicDto.setOptions(Arrays.asList("Option 1", "Option 2"));
+        topicDto.setOptions(List.of("[\"Option 1\", \"Option 2\"]"));
         topicDto.setUser("exampleUser");
-        topicDto.setMembers(Arrays.asList("Member 1", "Member 2"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "An error occurred --> Sample error message");
+        expectedResponseJson.put("message", "An error occurred --> java.lang.NullPointerException: The topic type is not valid");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.INTERNAL_SERVER_ERROR);
 
         when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
-        doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
+        doThrow(new NullPointerException("The topic type is not valid")).when(mailService).sendEmail(topicDto);
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.createTopic(topicDto);
 
@@ -530,30 +529,18 @@ class TopicsControllerTest {
         verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
-        verify(topicsService, times(1)).saveTopic(any(TopicsEntity.class));
-        verifyNoMoreInteractions(usersService, topicsService, topicsController);
+        verifyNoMoreInteractions(usersService, topicsService);
     }
 
     @Test
     void testCreateTopic_ValidInput_ReturnsOk() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setTitle("Topic 1");
-        topicDto.setType("Type 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topicDto.setQuestion("Question 1");
-        topicDto.setOptions(Arrays.asList("Option 1", "Option 2"));
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
         topicDto.setUser("exampleUser");
-        topicDto.setMembers(Arrays.asList("Member 1", "Member 2"));
-
-        TopicsEntity topicEntity = new TopicsEntity();
-        topicEntity.setId(1);
-        topicEntity.setTitle(topicDto.getTitle().strip());
-        topicEntity.setType(topicDto.getType());
-        topicEntity.setQuestion(topicDto.getQuestion());
-        topicEntity.setOptions("[\"Option 1\", \"Option 2\"]");
-        topicEntity.setAuthor(topicDto.getUser().strip());
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
-        topicEntity.setVisits(0);
-        topicEntity.setStatus(Constants.STATUS_OPENED);
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "Topic created successfully");
@@ -574,7 +561,7 @@ class TopicsControllerTest {
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
         verify(topicsService, times(1)).saveTopic(any(TopicsEntity.class));
         verify(mailService, times(1)).sendEmail(topicDto);
-        verifyNoMoreInteractions(usersService, topicsService, topicsController, mailService);
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
     @Test
@@ -608,37 +595,37 @@ class TopicsControllerTest {
 
     @Test
     void testEditTopic_AllDataProvided_TopicEditedSuccessfully() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
         TopicsDto topicDto = new TopicsDto();
         topicDto.setId(1);
         topicDto.setTitle("Topic 1");
-        topicDto.setType("Type 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topicDto.setQuestion("Question 1");
-        topicDto.setOptions(Arrays.asList("Option 1", "Option 2"));
-        topicDto.setAuthor("Author 1");
-        topicDto.setMembers(Arrays.asList("Member 1", "Member 2"));
-        topicDto.setUser("exampleUser");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
         topicDto.setToken("validToken");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "Topic edited successfully");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
-        TopicsEntity topicEntity = new TopicsEntity();
-        topicEntity.setId(topicDto.getId());
-        topicEntity.setTitle(topicDto.getTitle());
-        topicEntity.setType(topicDto.getType());
-        topicEntity.setQuestion(topicDto.getQuestion());
-        topicEntity.setOptions("Option 1,Option 2");
-        topicEntity.setAuthor(topicDto.getAuthor());
-        topicEntity.setMembers(new Gson().toJson(topicDto.getMembers()));
-        topicEntity.setCloseDate(topicDto.getCloseDate());
-        topicEntity.setVisits(topicDto.getVisits() != null ? topicDto.getVisits() : 0);
-        topicEntity.setStatus(topicDto.getStatus() != null ? topicDto.getStatus() : Constants.STATUS_OPENED);
-
         when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsById(topicDto.getId())).thenReturn(true);
         when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
-        when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("Option 1,Option 2");
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
+        when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("{\"Option 1\": 1, \"Option 2\": 2}");
         doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
@@ -648,9 +635,10 @@ class TopicsControllerTest {
         verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsById(topicDto.getId());
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
         verify(topicsService, times(1)).saveTopic(topicEntity);
-        verifyNoMoreInteractions(usersService, topicsService, topicsController);
+        verifyNoMoreInteractions(usersService, topicsService);
     }
 
     @Test
@@ -897,7 +885,6 @@ class TopicsControllerTest {
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
         assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
 
-
         List<TopicsDto> actualTopicsDtoList = (List<TopicsDto>) Objects.requireNonNull(actualResponse.getBody()).getEntity();
         assertEquals(topicsList.size(), actualTopicsDtoList.size());
         for (int i = 0; i < topicsList.size(); i++) {
@@ -911,7 +898,7 @@ class TopicsControllerTest {
             assertEquals(expectedOptionsMap, topicsDto.getOptionsMap());
             assertEquals(topicEntity.getVotedBy(), topicsDto.getVotedBy());
             assertEquals(topicEntity.getAuthor(), topicsDto.getAuthor());
-            assertEquals(topicEntity.getMembers(), topicsDto.getMembers().toString());
+            assertEquals(new Gson().fromJson(topicEntity.getMembers(), new TypeToken<List<String>>() {}.getType()), topicsDto.getMembers());
             assertEquals(topicEntity.getVisits(), topicsDto.getVisits());
             assertEquals(topicEntity.getStatus(), topicsDto.getStatus());
         }
@@ -1031,9 +1018,10 @@ class TopicsControllerTest {
     void testVote_UserAlreadyVoted_ReturnsUserAlreadyVoted() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_MULTIPLE));
         topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
         topicEntity.setVotedBy("User 1");
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
         topicEntity.setAuthor("Author 1");
 
         TopicsDto topicDto = new TopicsDto();
@@ -1062,10 +1050,10 @@ class TopicsControllerTest {
     void testVote_InvalidTopicTypeForMultipleVotingOptions_ReturnsTopicTypeNotValid() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
-        topicEntity.setType("Type 1");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
         topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
         topicEntity.setVotedBy(null);
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
         topicEntity.setAuthor("Author 1");
 
         TopicsDto topicDto = new TopicsDto();
@@ -1094,16 +1082,17 @@ class TopicsControllerTest {
     void testVote_InvalidVotesList_ReturnsListVotesDoesNotMatchOptions() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_MULTIPLE));
         topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
         topicEntity.setVotedBy(null);
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
         topicEntity.setAuthor("Author 1");
 
         TopicsDto topicDto = new TopicsDto();
         topicDto.setUser("User 1");
         topicDto.setToken("validToken");
         topicDto.setId(1);
-        topicDto.setVotation(Arrays.asList("Option 1", "Option 3"));
+        topicDto.setVotation(Arrays.asList("Option 3", "Option 4"));
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The list of votes does not match the options of the topic");
@@ -1125,9 +1114,10 @@ class TopicsControllerTest {
     void testVote_UserAuthorized_ValidVote_ReturnsVotationUpdatedSuccessfully() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_MULTIPLE));
         topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
         topicEntity.setVotedBy(null);
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
         topicEntity.setAuthor("Author 1");
 
         TopicsDto topicDto = new TopicsDto();
@@ -1267,7 +1257,7 @@ class TopicsControllerTest {
         topicEntity.setStatus(Constants.STATUS_CLOSED);
         topicEntity.setType("Type 1");
         topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
-        topicEntity.setMembers("[\"Member 1\", \"Member 2\"]");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
         topicEntity.setAuthor("Author 1");
 
         TopicsDto topicDto = new TopicsDto();

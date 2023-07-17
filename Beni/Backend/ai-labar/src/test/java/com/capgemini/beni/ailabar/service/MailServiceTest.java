@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,23 +38,63 @@ class MailServiceTest {
     }
 
     @Test
-    void testSendEmail() {
+    void testSendEmail_EmptyMembers() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setMembers(Collections.emptyList());
+
+        assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
+    }
+
+    @Test
+    void testSendEmail_UserNotFound() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setMembers(Collections.singletonList("user@example.com"));
+        topicDto.setUser("nonExistentUser");
+
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(false);
+
+        assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
+
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testSendEmail_EmailsNotFound() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setMembers(Collections.singletonList("user@example.com"));
+        topicDto.setUser("existingUser");
+
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
+        when(usersService.getMails(topicDto.getMembers())).thenReturn(Collections.emptyList());
+
+        assertThrows(NullPointerException.class, () -> mailService.sendEmail(topicDto));
+
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
+        verify(usersService, times(1)).getMails(topicDto.getMembers());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testSendEmail_Successful() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setMembers(Arrays.asList("user1", "user2"));
-        topicDto.setAuthor("author");
+        topicDto.setUser("user");
         topicDto.setTitle("Topic Title");
 
         List<String> emailList = Arrays.asList("user1@example.com", "user2@example.com");
+
         when(usersService.getMails(topicDto.getMembers())).thenReturn(emailList);
+        when(usersService.checkUser(topicDto.getUser())).thenReturn(true);
 
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
 
-//        MailService mailService = new MailService(javaMailSender, usersService);
+        MailService mailService = new MailService(usersService, javaMailSender);
 
         mailService.sendEmail(topicDto);
 
         verify(usersService, times(1)).getMails(topicDto.getMembers());
-
+        verify(usersService, times(1)).checkUser(topicDto.getUser());
         verify(javaMailSender, times(2)).send(messageCaptor.capture());
 
         List<SimpleMailMessage> sentMessages = messageCaptor.getAllValues();

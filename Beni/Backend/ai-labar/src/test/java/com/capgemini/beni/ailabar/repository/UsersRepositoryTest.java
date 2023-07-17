@@ -1,7 +1,6 @@
 package com.capgemini.beni.ailabar.repository;
 
 import com.capgemini.beni.ailabar.entity.UsersEntity;
-import com.capgemini.beni.ailabar.service.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,6 +104,4 @@ class UsersRepositoryTest {
         verify(usersRepository, times(1)).getEmailsByUserList(userList);
         verifyNoMoreInteractions(usersRepository);
     }
-
 }
-

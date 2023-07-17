@@ -34,6 +34,6 @@ class SpecialResponseInterfaceTest {
         SpecialResponse specialResponse = specialResponseInterface.specialResponse(entity, responseJson);
 
         assertEquals(entity, specialResponse.getEntity());
-        assertEquals(responseJson, specialResponse.getMessage());
+        assertEquals(responseJson.getString("message"), specialResponse.getMessage());
     }
 }

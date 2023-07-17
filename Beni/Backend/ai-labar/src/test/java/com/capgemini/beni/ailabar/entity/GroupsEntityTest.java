@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -43,8 +45,7 @@ class GroupsEntityTest {
     void testConstructorWithGroupsDto() {
         GroupsDto dto = new GroupsDto();
         dto.setGroupName("Group 1");
-        dto.getMembers().add("member1");
-        dto.getMembers().add("member2");
+        dto.setMembers(Collections.singletonList("member1, member2"));
         dto.setAdmin("admin");
 
         GroupsEntity entity = new GroupsEntity(dto);
@@ -54,4 +55,3 @@ class GroupsEntityTest {
         assertEquals("admin", entity.getAdmin());
     }
 }
-

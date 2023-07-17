@@ -1,9 +1,13 @@
 package com.capgemini.beni.ailabar.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,9 +17,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -36,6 +44,16 @@ class CorsConfigTest {
         assertThat(responseHeaders).isNotNull();
         assertThat(responseHeaders.size()).isBetween(0, 15);
     }
+
+    @Test
+    void testConfigureMessageConverters() {
+        CorsConfig corsConfig = new CorsConfig();
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        corsConfig.configureMessageConverters(converters);
+        assertFalse(converters.isEmpty());
+        HttpMessageConverter<?> converter = converters.get(0);
+        assertTrue(converter instanceof MappingJackson2HttpMessageConverter);
+        ObjectMapper objectMapper = ((MappingJackson2HttpMessageConverter) converter).getObjectMapper();
+        assertTrue(objectMapper.isEnabled(SerializationFeature.WRITE_NULL_MAP_VALUES));
+    }
 }
-
-

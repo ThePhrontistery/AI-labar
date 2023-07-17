@@ -1,12 +1,12 @@
 package com.capgemini.beni.ailabar.entity;
 
 import com.capgemini.beni.ailabar.dto.TopicsDto;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -96,11 +96,9 @@ class TopicsEntityTest {
         dto.setTitle("Topic 1");
         dto.setType("Type 1");
         dto.setQuestion("Question 1");
-        dto.getOptions().add("option1");
-        dto.getOptions().add("option2");
+        dto.setOptions(Collections.singletonList("option1, option2"));
         dto.setAuthor("author1");
-        dto.getMembers().add("member1");
-        dto.getMembers().add("member2");
+        dto.setMembers(Collections.singletonList("member1, member2"));
         dto.setCloseDate("2023-07-01");
         dto.setVisits(5);
         dto.setStatus("open");

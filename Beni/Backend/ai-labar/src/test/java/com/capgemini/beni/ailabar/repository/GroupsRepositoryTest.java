@@ -87,7 +87,6 @@ class GroupsRepositoryTest {
         verifyNoMoreInteractions(groupsRepository);
     }
 
-
     @Test
     void testDeleteByGroupNameAndAdmin() {
         String groupName = "group1";
@@ -98,6 +97,4 @@ class GroupsRepositoryTest {
         verify(groupsRepository, times(1)).deleteByGroupNameAndAdmin(groupName, admin);
         verifyNoMoreInteractions(groupsRepository);
     }
-
 }
-

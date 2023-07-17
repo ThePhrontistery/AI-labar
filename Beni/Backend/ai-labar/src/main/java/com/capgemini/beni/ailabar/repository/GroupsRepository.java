@@ -24,5 +24,4 @@ public interface GroupsRepository extends JpaRepository<GroupsEntity, String> {
     @Modifying
     @Query("DELETE FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     void deleteByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
-
 }

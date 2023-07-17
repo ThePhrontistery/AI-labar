@@ -113,5 +113,4 @@ class TopicsRepositoryTest {
         verify(topicsRepository, times(1)).findTopicByIdAndUser(id, user);
         verifyNoMoreInteractions(topicsRepository);
     }
-
 }

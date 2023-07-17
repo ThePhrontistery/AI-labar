@@ -5,8 +5,6 @@ import com.capgemini.beni.ailabar.entity.UsersEntity;
 import com.capgemini.beni.ailabar.service.UsersService;
 import com.capgemini.beni.ailabar.utils.SpecialResponse;
 import com.capgemini.beni.ailabar.utils.SpecialResponseInterface;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

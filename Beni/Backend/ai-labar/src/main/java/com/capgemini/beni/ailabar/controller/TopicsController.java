@@ -203,7 +203,7 @@ public class TopicsController implements SpecialResponseInterface {
             JSONObject responseJson = new JSONObject();
 
             if(topicDto.getId() == null || topicDto.getTitle().isBlank() || topicDto.getType().isBlank() || topicDto.getQuestion().isBlank()
-                    || topicDto.getOptions().isEmpty() || topicDto.getAuthor().isBlank() || topicDto.getMembers().isEmpty() ||topicDto.getUser().isBlank()) {
+                    || topicDto.getOptions().isEmpty() || topicDto.getMembers().isEmpty() || topicDto.getUser().isBlank()) {
                 responseJson.put("message", "All data is required to edit a topic");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
             }
@@ -214,12 +214,12 @@ public class TopicsController implements SpecialResponseInterface {
             }
 
             if(Boolean.TRUE.equals(topicsService.existsById(topicDto.getId()))) {
-                if (!topicDto.getUser().equals(topicDto.getAuthor())) {
+                TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+
+                if (!topicDto.getUser().equals(topicEntity.getAuthor())) {
                     responseJson.put("message", "The user is not the author of the topic");
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                 }
-
-                TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
 
                 if(topicEntity.getStatus().equals(Constants.STATUS_CLOSED)) {
                     responseJson.put("message", "The topic is closed");
@@ -227,7 +227,7 @@ public class TopicsController implements SpecialResponseInterface {
                 }
 
                 if(!topicDto.getTitle().equals(topicEntity.getTitle())) {
-                    if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getAuthor()))) {
+                    if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
                         responseJson.put("message", "There is already a topic assigned to the author with that name");
                         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                     } else {

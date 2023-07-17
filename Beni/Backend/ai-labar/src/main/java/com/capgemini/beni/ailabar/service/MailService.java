@@ -6,8 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -27,7 +25,7 @@ public class MailService {
             throw new NullPointerException("The users to whom the email needs to be sent are required");
         }
 
-        if(Boolean.FALSE.equals(usersService.checkUser(topicDto.getAuthor()))) {
+        if(Boolean.FALSE.equals(usersService.checkUser(topicDto.getUser()))) {
             throw new NullPointerException("The user does not exist");
         }
 
