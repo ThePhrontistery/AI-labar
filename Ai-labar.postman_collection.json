@@ -100,6 +100,34 @@
 					"response": []
 				},
 				{
+					"name": "getAllUsers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": \"Test\",\r\n  \"token\": \"98abc355cd2a6553f4fdbca6910662b31ef20a92818d190b88d17cf52b676f68\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/getAllUsers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getAllUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getAllUsersData",
 					"request": {
 						"method": "GET",
@@ -434,7 +462,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 13,\r\n    \"title\": \"¿Cuándo preferís ir a la oficina?\",\r\n    \"type\": \"TEXT_MULTIPLE\",\r\n    \"question\": \"¡Ey! ¿Cuándo preferís ir a la oficina?\",\r\n    \"options\": [\r\n      \"Lunes, Martes\",\r\n      \"Miércoles, Jueves\",\r\n      \"Viernes\"\r\n    ],\r\n    \"author\": \"Beni\",\r\n    \"members\": [\r\n      \"Beni\",\r\n      \"Lester\"\r\n    ],\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
+							"raw": "{\r\n    \"id\": 13,\r\n    \"title\": \"¿Cuándo preferís ir a la oficina?\",\r\n    \"type\": \"TEXT_MULTIPLE\",\r\n    \"question\": \"¡Ey! ¿Cuándo preferís ir a la oficina?\",\r\n    \"options\": [\r\n      \"Lunes, Martes\",\r\n      \"Miércoles, Jueves\",\r\n      \"Viernes\"\r\n    ],\r\n    \"members\": [\r\n      \"Beni\",\r\n      \"Lester\"\r\n    ],\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -478,6 +506,34 @@
 							"path": [
 								"topics",
 								"closeTopic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reOpenTopic",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 16,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/topics/reOpenTopic",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"topics",
+								"reOpenTopic"
 							]
 						}
 					},
