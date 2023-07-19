@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -186,7 +187,7 @@ class UsersControllerTest {
         userDto.setToken("invalidToken");
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "The token does not match");
+        expectedResponseJson.put("message", "Unauthorized user");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
 
         when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
@@ -284,7 +285,7 @@ class UsersControllerTest {
         userDto.setUser("");
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "User name is required to delete a user");
+        expectedResponseJson.put("message", "User name and token are required to delete a user");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
 
         ResponseEntity<SpecialResponse> actualResponse = usersController.deleteUser(userDto);
@@ -301,7 +302,7 @@ class UsersControllerTest {
         userDto.setToken("invalidToken");
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "The token does not match");
+        expectedResponseJson.put("message", "Unauthorized user");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
 
         when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
@@ -333,6 +334,56 @@ class UsersControllerTest {
         assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
         verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
         verify(usersService, times(1)).deleteUser(userDto.getUser());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testGetAllUsers_InsufficientData() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("john");
+        userDto.setToken("");
+
+        ResponseEntity<SpecialResponse> response = usersController.getAllUsers(userDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+        assertEquals("User name and token are required to delete a user", Objects.requireNonNull(response.getBody()).getMessage());
+        verifyNoInteractions(usersService);
+    }
+
+    @Test
+    void testGetAllUsers_UnauthorizedUser() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("john");
+        userDto.setToken("invalidToken");
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> response = usersController.getAllUsers(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Unauthorized user", Objects.requireNonNull(response.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testGetAllUsers_Success() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("john");
+        userDto.setToken("validToken");
+
+        List<String> expectedUsersList = Arrays.asList("user1", "user2");
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        when(usersService.getAllUsers()).thenReturn(expectedUsersList);
+
+        ResponseEntity<SpecialResponse> response = usersController.getAllUsers(userDto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("List of users obtained successfully", Objects.requireNonNull(response.getBody()).getMessage());
+
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verify(usersService, times(1)).getAllUsers();
         verifyNoMoreInteractions(usersService);
     }
 

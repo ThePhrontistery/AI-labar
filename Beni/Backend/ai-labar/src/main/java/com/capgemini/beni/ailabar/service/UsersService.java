@@ -33,6 +33,10 @@ public class UsersService {
         return usersRepository.getEmailsByUserList(userList);
     }
 
+    public List<String> getAllUsers() {
+        return usersRepository.findAllUsers();
+    }
+
     /* Inicio de métodos sólo para realizar pruebas */
     public void saveUser(UsersEntity userEntity) {
         usersRepository.save(userEntity);

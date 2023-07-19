@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface GroupsRepository extends JpaRepository<GroupsEntity, String> {
     @Query("SELECT g FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     GroupsEntity findByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);

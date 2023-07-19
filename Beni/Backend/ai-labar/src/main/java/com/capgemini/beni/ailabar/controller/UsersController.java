@@ -82,7 +82,7 @@ public class UsersController implements SpecialResponseInterface {
         }
 
         if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
-            responseJson.put("message", "The token does not match");
+            responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
@@ -119,19 +119,38 @@ public class UsersController implements SpecialResponseInterface {
     public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersDto userDto) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank()) {
-            responseJson.put("message", "User name is required to delete a user");
+        if(userDto.getUser().isBlank() || userDto.getToken().isBlank()) {
+            responseJson.put("message", "User name and token are required to delete a user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
         if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
-            responseJson.put("message", "The token does not match");
+            responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
         usersService.deleteUser(userDto.getUser());
         responseJson.put("message", "User deleted successfully");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    @PostMapping("/getAllUsers")
+    public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersDto userDto) {
+        JSONObject responseJson = new JSONObject();
+
+        if(userDto.getUser().isBlank() || userDto.getToken().isBlank()) {
+            responseJson.put("message", "User name and token are required to delete a user");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
+        }
+
+        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+            responseJson.put("message", "Unauthorized user");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
+        }
+
+        List<String> usersList = usersService.getAllUsers();
+        responseJson.put("message", "List of users obtained successfully");
+        return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
 
     @GetMapping("/getAllUsersData")

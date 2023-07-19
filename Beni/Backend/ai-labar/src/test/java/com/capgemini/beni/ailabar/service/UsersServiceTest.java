@@ -137,6 +137,21 @@ class UsersServiceTest {
     }
 
     @Test
+    void testGetAllUsers() {
+        List<String> expectedUsersList = Arrays.asList("user1", "user2");
+
+        when(usersRepository.findAllUsers()).thenReturn(expectedUsersList);
+
+        List<String> actualUsersList = usersService.getAllUsers();
+
+        assertEquals(expectedUsersList, actualUsersList);
+
+        verify(usersRepository, times(1)).findAllUsers();
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+
+    @Test
     void testGetAllUsersData() {
         UsersEntity user1 = new UsersEntity();
         UsersEntity user2 = new UsersEntity();

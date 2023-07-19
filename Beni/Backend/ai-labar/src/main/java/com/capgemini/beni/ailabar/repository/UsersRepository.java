@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface  UsersRepository extends JpaRepository<UsersEntity, String> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.user = :user")
     Boolean existsByUser(@Param("user") String user);
@@ -27,6 +29,9 @@ public interface  UsersRepository extends JpaRepository<UsersEntity, String> {
     @Modifying
     @Query("DELETE FROM UsersEntity u WHERE u.user = :user")
     void deleteByUser(@Param("user") String user);
+
+    @Query("SELECT u.user FROM UsersEntity u")
+    List<String> findAllUsers();
 
     @Query("SELECT u.email FROM UsersEntity u WHERE u.user IN :userList")
     List<String> getEmailsByUserList(@Param("userList") List<String> userList);

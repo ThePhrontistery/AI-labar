@@ -4,9 +4,11 @@ import com.capgemini.beni.ailabar.entity.TopicsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.password = :password")
     boolean existsByUserAndPassword(@Param("user") String user, @Param("password") String password);
@@ -17,8 +19,8 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity findTopicsEntityById(@Param("id") Integer id);
 
-    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM TopicsEntity t WHERE t.title = :title AND t.author = :author")
-    Boolean existsByTitleAndAuthor(@Param("title") String title, @Param("author") String author);
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM TopicsEntity t WHERE t.title = :title AND t.author = :user")
+    Boolean existsByTitleAndAuthor(@Param("title") String title, @Param("user") String user);
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity findByIdIfExists(@Param("id") Integer id);

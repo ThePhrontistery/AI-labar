@@ -226,13 +226,11 @@ public class TopicsController implements SpecialResponseInterface {
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                 }
 
-                if(!topicDto.getTitle().equals(topicEntity.getTitle())) {
-                    if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
-                        responseJson.put("message", "There is already a topic assigned to the author with that name");
-                        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-                    } else {
-                        topicEntity.setTitle(topicDto.getTitle().strip());
-                    }
+                if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
+                    responseJson.put("message", "There is already a topic assigned to the author with that name");
+                    return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+                } else {
+                    topicEntity.setTitle(topicDto.getTitle().strip());
                 }
 
                 if(checkTopicType(topicDto.getType()).equals("KO")) {
@@ -293,13 +291,45 @@ public class TopicsController implements SpecialResponseInterface {
         }
 
         if(topicEntity.getStatus().equals(Constants.STATUS_CLOSED)) {
-            responseJson.put("message", "The topic is closed");
+            responseJson.put("message", "The topic is currently closed");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
         topicEntity.setStatus(Constants.STATUS_CLOSED);
         topicsService.saveTopic(topicEntity);
         responseJson.put("message", "The topic has been closed");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    @PutMapping("/reOpenTopic")
+    public ResponseEntity<SpecialResponse> reOpenTopic(@RequestBody TopicsDto topicDto) {
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+
+        JSONObject responseJson = new JSONObject();
+
+        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            responseJson.put("message", "Unauthorized user");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
+        }
+
+        if(topicEntity == null) {
+            responseJson.put("message", "There is no topic with that id");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+        }
+
+        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
+            responseJson.put("message", "The user is not the author of the topic");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+        }
+
+        if(topicEntity.getStatus().equals(Constants.STATUS_OPENED)) {
+            responseJson.put("message", "The topic is currently open");
+            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+        }
+
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+        topicsService.saveTopic(topicEntity);
+        responseJson.put("message", "Topic reopened");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 

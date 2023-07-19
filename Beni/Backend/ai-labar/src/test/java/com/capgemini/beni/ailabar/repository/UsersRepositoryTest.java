@@ -92,6 +92,20 @@ class UsersRepositoryTest {
     }
 
     @Test
+    void testFindAllUsers_Success() {
+        List<String> expectedUsersList = Arrays.asList("user1", "user2", "user3");
+
+        when(usersRepository.findAllUsers()).thenReturn(expectedUsersList);
+
+        List<String> actualUsersList = usersRepository.findAllUsers();
+
+        assertEquals(expectedUsersList, actualUsersList);
+
+        verify(usersRepository, times(1)).findAllUsers();
+        verifyNoMoreInteractions(usersRepository);
+    }
+
+    @Test
     void testGetEmailsByUserList() {
         List<String> userList = Arrays.asList("john", "emma");
         List<String> expectedEmails = Arrays.asList("john@example.com", "emma@example.com");

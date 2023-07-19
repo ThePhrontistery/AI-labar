@@ -594,6 +594,219 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testEditTopic_AllDataRequired_ReturnsBadGateway() {
+        TopicsDto topicDto = new TopicsDto();
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "All data is required to edit a topic");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_UnauthorizedUser_ReturnsNotFound() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Unauthorized user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_UnauthorizedAuthor_ReturnsOk() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 2");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The user is not the author of the topic");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_ClosedTopic_ReturnsOk() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_CLOSED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The topic is closed");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_DuplicateTopic_ReturnsOk() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 1");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "There is already a topic assigned to the author with that name");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_InvalidTopicType_ReturnsBadGateway() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType("Type");
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The topic type is not valid");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
     void testEditTopic_AllDataProvided_TopicEditedSuccessfully() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
@@ -639,6 +852,27 @@ class TopicsControllerTest {
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verifyNoMoreInteractions(usersService, topicsService);
+    }
+
+    @Test
+    void testCloseTopic_UnauthorizedUser() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Unauthorized user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.closeTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
     }
 
     @Test
@@ -704,7 +938,7 @@ class TopicsControllerTest {
         topicEntity.setStatus(Constants.STATUS_CLOSED);
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "The topic is closed");
+        expectedResponseJson.put("message", "The topic is currently closed");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
         when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
@@ -740,6 +974,135 @@ class TopicsControllerTest {
         doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.closeTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verify(topicsService, times(1)).saveTopic(topicEntity);
+        verifyNoMoreInteractions(usersService, topicsService);
+    }
+
+    @Test
+    void testReOpenTopic_UnauthorizedUser() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Unauthorized user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.reOpenTopic(topicDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testReOpenTopic_TopicNotFound_ReturnsTopicNotFound() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "There is no topic with that id");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(null);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.reOpenTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService);
+    }
+
+    @Test
+    void testReOpenTopic_UserNotAuthor_ReturnsUserNotAuthor() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(topicDto.getId());
+        topicEntity.setAuthor("differentUser");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The user is not the author of the topic");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.reOpenTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService);
+    }
+
+    @Test
+    void testReOpenTopic_TopicAlreadyClosed_ReturnsTopicClosed() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(topicDto.getId());
+        topicEntity.setAuthor(topicDto.getUser());
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The topic is currently open");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.reOpenTopic(topicDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService);
+    }
+
+    @Test
+    void testReOpenTopic_TopicClosedSuccessfully() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setUser("exampleUser");
+        topicDto.setToken("validToken");
+
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(topicDto.getId());
+        topicEntity.setAuthor(topicDto.getUser());
+        topicEntity.setStatus(Constants.STATUS_CLOSED);
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Topic reopened");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+        doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.reOpenTopic(topicDto);
 
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
         assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
