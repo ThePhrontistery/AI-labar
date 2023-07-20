@@ -31,30 +31,6 @@ public class GroupsController implements SpecialResponseInterface {
         this.usersService = usersService;
     }
 
-    @PostMapping("/getUsers")
-    public ResponseEntity<SpecialResponse> getUsers(@RequestBody UsersDto userDto) {
-        JSONObject responseJson = new JSONObject();
-
-        if(userDto.getUser().isBlank() || userDto.getMatcher().isBlank() || userDto.getToken().isBlank()) {
-            responseJson.put("message", "User, matcher and token are required");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
-        }
-
-        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
-            responseJson.put("message", "Unauthorized user");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
-        }
-
-        List<String> userMatchesList = usersService.userMatches(userDto.getMatcher());
-        if(userMatchesList == null) {
-            responseJson.put("message", "Not matches");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
-        }
-
-        responseJson.put("message", userMatchesList.size() + " matches");
-        return new ResponseEntity<>(specialResponse(userMatchesList, responseJson), HttpStatus.OK);
-    }
-
     @PostMapping("/createGroup")
     public ResponseEntity<SpecialResponse> createGroup(@RequestBody GroupsDto groupDto) {
         JSONObject responseJson = new JSONObject();

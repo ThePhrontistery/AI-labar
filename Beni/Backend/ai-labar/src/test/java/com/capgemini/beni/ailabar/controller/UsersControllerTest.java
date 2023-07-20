@@ -338,6 +338,93 @@ class UsersControllerTest {
     }
 
     @Test
+    void testGetUsers_MissingFields() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("");
+        userDto.setMatcher("");
+        userDto.setToken("");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "User and token are required");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getUsers(userDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verifyNoInteractions(usersService);
+    }
+
+    @Test
+    void testGetUsers_UnauthorizedUser() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setMatcher("exampleMatcher");
+        userDto.setToken("exampleToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Unauthorized user");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getUsers(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testGetUsers_NoMatchesFound() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setMatcher("exampleMatcher");
+        userDto.setToken("exampleToken");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "Not matches");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(null, expectedResponseJson), HttpStatus.NOT_FOUND);
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        when(usersService.userMatches(userDto.getMatcher())).thenReturn(null);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getUsers(userDto);
+
+        assertEquals(HttpStatus.NOT_FOUND, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verify(usersService, times(1)).userMatches(userDto.getMatcher());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
+    void testGetUsers_ValidUser_MatchesFound() {
+        UsersDto userDto = new UsersDto();
+        userDto.setUser("exampleUser");
+        userDto.setMatcher("exampleMatcher");
+        userDto.setToken("exampleToken");
+
+        List<String> userMatchesList = Arrays.asList("Match1", "Match2");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "2 matches");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(usersController.specialResponse(userMatchesList, expectedResponseJson), HttpStatus.OK);
+
+        when(usersService.checkToken(userDto.getUser(), userDto.getToken())).thenReturn(true);
+        when(usersService.userMatches(userDto.getMatcher())).thenReturn(userMatchesList);
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.getUsers(userDto);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(userDto.getUser(), userDto.getToken());
+        verify(usersService, times(1)).userMatches(userDto.getMatcher());
+        verifyNoMoreInteractions(usersService);
+    }
+
+    @Test
     void testGetAllUsers_InsufficientData() {
         UsersDto userDto = new UsersDto();
         userDto.setUser("john");
