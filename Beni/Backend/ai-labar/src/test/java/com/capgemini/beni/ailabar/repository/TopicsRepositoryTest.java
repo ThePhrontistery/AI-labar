@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,6 +112,21 @@ class TopicsRepositoryTest {
 
         assertEquals(expectedEntity, result);
         verify(topicsRepository, times(1)).findTopicByIdAndUser(id, user);
+        verifyNoMoreInteractions(topicsRepository);
+    }
+
+    @Test
+    void testFindByStatusAndCloseDateLessThanEqual() {
+        String status = "Abierto";
+        String date = "20230731";
+        List<TopicsEntity> expectedTopicsList = new ArrayList<>();
+
+        when(topicsRepository.findByStatusAndCloseDateLessThanEqual(status, date)).thenReturn(expectedTopicsList);
+
+        List<TopicsEntity> actualTopicsList = topicsRepository.findByStatusAndCloseDateLessThanEqual(status, date);
+
+        assertEquals(expectedTopicsList, actualTopicsList);
+        verify(topicsRepository, times(1)).findByStatusAndCloseDateLessThanEqual(status, date);
         verifyNoMoreInteractions(topicsRepository);
     }
 }

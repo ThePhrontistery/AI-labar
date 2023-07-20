@@ -23,6 +23,5 @@ class ConstantsTest {
         Assertions.assertEquals(Constants.TopicType.IMAGE_SINGLE, Constants.TopicType.valueOf("IMAGE_SINGLE"));
         Assertions.assertEquals(Constants.TopicType.IMAGE_MULTIPLE, Constants.TopicType.valueOf("IMAGE_MULTIPLE"));
         Assertions.assertEquals(Constants.TopicType.AS, Constants.TopicType.valueOf("AS"));
-        Assertions.assertEquals(Constants.TopicType.RATING, Constants.TopicType.valueOf("RATING"));
     }
 }

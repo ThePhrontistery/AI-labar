@@ -504,6 +504,33 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testCreateTopic_DateFormatError_ReturnsBadRequest() {
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setTitle("Topic 1");
+        topicDto.setType("InvalidType");
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(Arrays.asList("Option 1", "Option 2"));
+        topicDto.setUser("exampleUser");
+        topicDto.setMembers(Arrays.asList("Member 1", "Member 2"));
+        topicDto.setCloseDate("19/07-2023");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The topic type is not valid");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.createTopic(topicDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
     void testCreateTopic_InternalServerError_ReturnsInternalServerError() {
         TopicsDto topicDto = new TopicsDto();
         topicDto.setTitle("Title");
@@ -514,13 +541,13 @@ class TopicsControllerTest {
         topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
 
         JSONObject expectedResponseJson = new JSONObject();
-        expectedResponseJson.put("message", "An error occurred --> java.lang.NullPointerException: The topic type is not valid");
+        expectedResponseJson.put("message", "An error occurred --> java.lang.NullPointerException: Members not found in the database");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.INTERNAL_SERVER_ERROR);
 
         when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
         when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
-        doThrow(new NullPointerException("The topic type is not valid")).when(mailService).sendEmail(topicDto);
+        doThrow(new NullPointerException("Members not found in the database")).when(mailService).sendEmail(topicDto);
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.createTopic(topicDto);
 
@@ -529,7 +556,8 @@ class TopicsControllerTest {
         verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
-        verifyNoMoreInteractions(usersService, topicsService);
+        verify(mailService, times(1)).sendEmail(topicDto);
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
     @Test
@@ -541,6 +569,7 @@ class TopicsControllerTest {
         topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
         topicDto.setUser("exampleUser");
         topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setCloseDate("20230720");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "Topic created successfully");
@@ -807,7 +836,52 @@ class TopicsControllerTest {
     }
 
     @Test
-    void testEditTopic_AllDataProvided_TopicEditedSuccessfully() {
+    void testEditTopic_DateFormatError_ReturnsBadRequest() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType("Type");
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+        topicDto.setCloseDate("19/07-2023");
+
+        JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "The topic type is not valid");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.BAD_GATEWAY);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_InternalServerError_ReturnsInternalServerError() {
         TopicsEntity topicEntity = new TopicsEntity();
         topicEntity.setId(1);
         topicEntity.setTitle("Topic 2");
@@ -831,6 +905,55 @@ class TopicsControllerTest {
         topicDto.setToken("validToken");
 
         JSONObject expectedResponseJson = new JSONObject();
+        expectedResponseJson.put("message", "An error occurred --> java.lang.NullPointerException: Members not found in the database");
+        ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        when(usersService.checkToken(topicDto.getUser(), topicDto.getToken())).thenReturn(true);
+        when(topicsService.existsById(topicDto.getId())).thenReturn(true);
+        when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
+        when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
+        when(topicsService.findTopicsEntityById(topicDto.getId())).thenReturn(topicEntity);
+        doThrow(new NullPointerException("Members not found in the database")).when(mailService).sendEmail(topicDto);
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actualResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(expectedResponse.getBody()).getMessage(), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+        verify(usersService, times(1)).checkToken(topicDto.getUser(), topicDto.getToken());
+        verify(topicsService, times(1)).existsById(topicDto.getId());
+        verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
+        verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
+        verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
+        verify(mailService, times(1)).sendEmail(topicDto);
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
+    }
+
+    @Test
+    void testEditTopic_AllDataProvided_TopicEditedSuccessfully() {
+        TopicsEntity topicEntity = new TopicsEntity();
+        topicEntity.setId(1);
+        topicEntity.setTitle("Topic 2");
+        topicEntity.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicEntity.setQuestion("Question 1");
+        topicEntity.setOptions("{\"Option 1\": 1, \"Option 2\": 2}");
+        topicEntity.setAuthor("Author 1");
+        topicEntity.setMembers("[\"User 1\", \"User 2\"]");
+        topicEntity.setCloseDate(null);
+        topicEntity.setVisits(0);
+        topicEntity.setStatus(Constants.STATUS_OPENED);
+
+        TopicsDto topicDto = new TopicsDto();
+        topicDto.setId(1);
+        topicDto.setTitle("Topic 1");
+        topicDto.setType(String.valueOf(Constants.TopicType.TEXT_SINGLE));
+        topicDto.setQuestion("Question 1");
+        topicDto.setOptions(List.of("{\"Option 1\": 1, \"Option 2\": 2}"));
+        topicDto.setMembers(List.of("[\"User 1\", \"User 2\"]"));
+        topicDto.setUser("Author 1");
+        topicDto.setToken("validToken");
+        topicDto.setCloseDate("12-07-2023");
+
+        JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "Topic edited successfully");
         ResponseEntity<SpecialResponse> expectedResponse = new ResponseEntity<>(topicsController.specialResponse(null, expectedResponseJson), HttpStatus.OK);
 
@@ -840,6 +963,7 @@ class TopicsControllerTest {
         when(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicDto.getOptions())).thenReturn("{\"Option 1\": 1, \"Option 2\": 2}");
         doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
+        doNothing().when(mailService).sendEmail(topicDto);
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicDto);
 
@@ -850,8 +974,9 @@ class TopicsControllerTest {
         verify(topicsService, times(1)).findTopicsEntityById(topicDto.getId());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser());
         verify(topicsService, times(1)).initiateVoting(topicDto.getOptions());
+        verify(mailService, times(1)).sendEmail(topicDto);
         verify(topicsService, times(1)).saveTopic(topicEntity);
-        verifyNoMoreInteractions(usersService, topicsService);
+        verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
     @Test

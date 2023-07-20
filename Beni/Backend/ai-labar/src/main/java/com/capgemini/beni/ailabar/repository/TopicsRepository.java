@@ -27,4 +27,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id AND (t.author = :user OR :user IN (t.members))")
     TopicsEntity findTopicByIdAndUser(@Param("id") Integer id, @Param("user") String user);
+
+    @Query("SELECT t FROM TopicsEntity t WHERE t.status = :status AND t.closeDate <= :date")
+    List<TopicsEntity> findByStatusAndCloseDateLessThanEqual(@Param("status") String status, @Param("date") String date);
 }

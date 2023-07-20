@@ -21,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @RestController
@@ -184,6 +187,16 @@ public class TopicsController implements SpecialResponseInterface {
             topicEntity.setOptions(topicsService.initiateVoting(topicDto.getOptions()));
             topicEntity.setMembers(new Gson().toJson(topicDto.getMembers()));
 
+            if(topicDto.getCloseDate() != null && !topicDto.getCloseDate().isBlank()) {
+                String dateString = formatDateToYYYYMMdd(topicDto.getCloseDate());
+                if(dateString.contains("KO")) {
+                    responseJson.put("message", dateString);
+                    return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
+                } else {
+                    topicEntity.setCloseDate(topicDto.getCloseDate());
+                }
+            }
+
             mailService.sendEmail(topicDto);
 
             topicsService.saveTopic(topicEntity);
@@ -254,7 +267,17 @@ public class TopicsController implements SpecialResponseInterface {
                 topicEntity.setVisits(topicDto.getVisits() != null ? topicDto.getVisits() : 0);
                 topicEntity.setStatus(topicDto.getStatus() != null ? topicDto.getStatus() : Constants.STATUS_OPENED);
 
-                //mailService.sendEmail(topicDto);
+                if(topicDto.getCloseDate() != null && !topicDto.getCloseDate().isBlank()) {
+                    String dateString = formatDateToYYYYMMdd(topicDto.getCloseDate());
+                    if(dateString.contains("KO")) {
+                        responseJson.put("message", dateString);
+                        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
+                    } else {
+                        topicEntity.setCloseDate(topicDto.getCloseDate());
+                    }
+                }
+
+                mailService.sendEmail(topicDto);
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");
@@ -519,6 +542,18 @@ public class TopicsController implements SpecialResponseInterface {
             return "KO";
         } else {
             return gson.toJson(optionsMap);
+        }
+    }
+
+    private String formatDateToYYYYMMdd(String inputDate) {
+        String cleanedDate = inputDate.replaceAll("\\s+", "");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[yyyy-MM-dd][yyyy/MM/dd][dd-MM-yyyy][dd/MM/yyyy][MM/dd/yyyy][yyyyMMdd]");
+        try {
+            LocalDate localDate = LocalDate.parse(cleanedDate, formatter);
+            return localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        } catch (DateTimeParseException e) {
+            return "KO - Error while parsing the date: " + e.getMessage();
         }
     }
 }
