@@ -100,6 +100,34 @@
 					"response": []
 				},
 				{
+					"name": "getUsers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": \"Test\",\r\n    \"matcher\": \"\",\r\n    \"token\": \"98abc355cd2a6553f4fdbca6910662b31ef20a92818d190b88d17cf52b676f68\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/getUsers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getAllUsers",
 					"request": {
 						"method": "POST",
@@ -151,34 +179,6 @@
 		{
 			"name": "Groups",
 			"item": [
-				{
-					"name": "getUsers",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"user\": \"Test\",\r\n    \"matcher\": \"est\",\r\n    \"token\": \"98abc355cd2a6553f4fdbca6910662b31ef20a92818d190b88d17cf52b676f68\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/groups/getUsers",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"groups",
-								"getUsers"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "createGroup",
 					"request": {
