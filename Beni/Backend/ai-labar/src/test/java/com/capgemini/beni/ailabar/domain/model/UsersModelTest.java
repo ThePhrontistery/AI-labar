@@ -42,6 +42,20 @@ class UsersModelTest {
     }
 
     @Test
+    void testGenderProperty() {
+        UsersModel dto = new UsersModel();
+        dto.setGender("H");
+        assertEquals("H", dto.getGender());
+    }
+
+    @Test
+    void testPhotoProperty() {
+        UsersModel dto = new UsersModel();
+        dto.setPhoto("photo");
+        assertEquals("photo", dto.getPhoto());
+    }
+
+    @Test
     void testTokenProperty() {
         UsersModel dto = new UsersModel();
         dto.setToken("Token");

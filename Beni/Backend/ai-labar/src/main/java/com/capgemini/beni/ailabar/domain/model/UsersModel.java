@@ -11,6 +11,8 @@ public class UsersModel {
     private String user;
     private String password;
     private String email;
+    private String gender;
+    private String photo;
     private String token;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String matcher;

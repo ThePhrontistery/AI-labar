@@ -45,6 +45,8 @@ class UsersControllerTest {
         userDto.setUser("");
         userDto.setPassword("examplePassword");
         userDto.setEmail("example@example.com");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "All data is required to create a new user");
@@ -63,6 +65,8 @@ class UsersControllerTest {
         userDto.setUser("exampleUser");
         userDto.setPassword("examplePassword");
         userDto.setEmail("example@example.com");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The user already exists");
@@ -84,6 +88,8 @@ class UsersControllerTest {
         userDto.setUser("exampleUser");
         userDto.setPassword("examplePassword");
         userDto.setEmail("example@example.com");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The email already exists");
@@ -107,6 +113,8 @@ class UsersControllerTest {
         userDto.setUser("testUser");
         userDto.setPassword("testPassword");
         userDto.setEmail("test@example.com");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "User not found");
@@ -131,12 +139,16 @@ class UsersControllerTest {
         userDto.setUser("exampleUser");
         userDto.setPassword("examplePassword");
         userDto.setEmail("example@example.com");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         UsersEntity userEntity = new UsersEntity();
         userEntity.setId(1);
         userEntity.setUser("exampleUser");
         userEntity.setPassword(DigestUtils.sha256Hex("examplePassword"));
         userEntity.setEmail("example@example.com");
+        userEntity.setGender("H");
+        userEntity.setPhoto("photo");
         userEntity.setToken("");
 
         JSONObject expectedResponseJson = new JSONObject();
@@ -165,6 +177,8 @@ class UsersControllerTest {
         userDto.setUser("");
         userDto.setPassword("");
         userDto.setToken("");
+        userDto.setGender("");
+        userDto.setPhoto("");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "All data is required to edit a user");
@@ -180,11 +194,12 @@ class UsersControllerTest {
 
     @Test
     void testEditUser_InvalidToken_ReturnsNotFound() {
-        // Arrange
         UsersModel userDto = new UsersModel();
         userDto.setUser("existingUser");
         userDto.setPassword("existingPassword");
         userDto.setToken("invalidToken");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "Unauthorized user");
@@ -206,6 +221,8 @@ class UsersControllerTest {
         userDto.setUser("existingUser");
         userDto.setPassword("existingPassword");
         userDto.setToken("validToken");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "There are no values to update.");
@@ -229,6 +246,8 @@ class UsersControllerTest {
         userDto.setPassword("existingPassword");
         userDto.setToken("validToken");
         userDto.setNewUser("existingUser2");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "The new username already exists");
@@ -254,6 +273,8 @@ class UsersControllerTest {
         userDto.setToken("validToken");
         userDto.setNewUser("newUser");
         userDto.setNewPassword("newPassword");
+        userDto.setGender("H");
+        userDto.setPhoto("photo");
 
         JSONObject expectedResponseJson = new JSONObject();
         expectedResponseJson.put("message", "User modified successfully");

@@ -40,6 +40,20 @@ class UsersEntityTest {
     }
 
     @Test
+    void testGenderProperty() {
+        UsersEntity dto = new UsersEntity();
+        dto.setGender("H");
+        assertEquals("H", dto.getGender());
+    }
+
+    @Test
+    void testPhotoProperty() {
+        UsersEntity dto = new UsersEntity();
+        dto.setPhoto("photo");
+        assertEquals("photo", dto.getPhoto());
+    }
+
+    @Test
     void testTokenProperty() {
         UsersEntity entity = new UsersEntity();
         entity.setToken("token123");

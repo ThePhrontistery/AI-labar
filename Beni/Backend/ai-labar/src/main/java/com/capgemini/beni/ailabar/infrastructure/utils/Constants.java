@@ -10,6 +10,7 @@ public class Constants {
         TEXT_MULTIPLE,
         IMAGE_SINGLE,
         IMAGE_MULTIPLE,
-        AS
+        AS,
+        RATING
     }
 }

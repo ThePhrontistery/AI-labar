@@ -34,7 +34,8 @@ public class UsersController implements SpecialResponseInterface {
     public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel userDto) {
         JSONObject responseJson = new JSONObject();
 
-        if (userDto.getUser().isBlank() || userDto.getPassword().isBlank() || userDto.getEmail().isBlank()) {
+        if (userDto.getUser().isBlank() || userDto.getPassword().isBlank() || userDto.getEmail().isBlank()
+            || userDto.getGender().isBlank() || userDto.getPhoto().isBlank()) {
             responseJson.put("message", "All data is required to create a new user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
@@ -105,6 +106,14 @@ public class UsersController implements SpecialResponseInterface {
         if(userDto.getNewPassword() != null && !userDto.getNewPassword().isBlank()) {
             String hashedPassword = DigestUtils.sha256Hex(userDto.getNewPassword());
             userEntity.setPassword(hashedPassword);
+        }
+
+        if(userDto.getGender() != null && !userDto.getGender().isBlank()) {
+            userEntity.setGender(userDto.getGender());
+        }
+
+        if(userDto.getPhoto() != null && !userDto.getPhoto().isBlank()) {
+            userEntity.setPhoto(userDto.getPhoto());
         }
 
         String token = DigestUtils.sha256Hex(userEntity.getUser()+userEntity.getPassword()+userEntity.getId());

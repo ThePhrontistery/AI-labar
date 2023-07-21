@@ -19,6 +19,10 @@ public class UsersEntity {
     private String password;
     @Column(name = "email")
     private String email;
+    @Column(name = "gender")
+    private String gender;
+    @Column(name = "photo")
+    private String photo;
     @Column(name = "token")
     private String token;
 
