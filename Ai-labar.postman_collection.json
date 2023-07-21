@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"beni@test.com\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Super\",\r\n  \"password\": \"8185c8ac4656219f4aa5541915079f7b3743e1b5f48bacfcc3386af016b55320\",\r\n  \"email\": \"super@test.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,7 +434,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Sobre el ánimo\",\r\n  \"type\": \"TEXT_SINGLE\",\r\n  \"question\": \"¿Qué tal ha ido el Spring?\",\r\n  \"options\": [\r\n      \"Bueno\",\r\n      \"Regular\",\r\n      \"Mal\",\r\n      \"Quiero llorar\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"members\": [\r\n      \"Beni\",\r\n      \"Lester\"\r\n  ],\r\n  \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
+							"raw": "{\r\n  \"title\": \"Cierre a través del batch\",\r\n  \"type\": \"TEXT_SINGLE\",\r\n  \"question\": \"¿Funcionará?\",\r\n  \"options\": [\r\n      \"Sí\",\r\n      \"No\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"members\": [\r\n      \"Beni\",\r\n      \"Lester\",\r\n      \"Test\"\r\n  ],\r\n  \"closeDate\": \"19/07/2023\",\r\n  \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -546,7 +546,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 14,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
+							"raw": "{\r\n    \"id\": 15,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

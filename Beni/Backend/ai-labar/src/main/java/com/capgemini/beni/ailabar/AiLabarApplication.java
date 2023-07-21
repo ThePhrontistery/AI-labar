@@ -10,5 +10,4 @@ public class AiLabarApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AiLabarApplication.class, args);
 	}
-
 }
