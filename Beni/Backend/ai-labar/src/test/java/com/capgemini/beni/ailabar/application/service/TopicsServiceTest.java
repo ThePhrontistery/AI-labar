@@ -2,6 +2,8 @@ package com.capgemini.beni.ailabar.application.service;
 
 import com.capgemini.beni.ailabar.infrastructure.entity.TopicsEntity;
 import com.capgemini.beni.ailabar.infrastructure.repository.TopicsRepository;
+import com.capgemini.beni.ailabar.infrastructure.utils.Constants;
+import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -166,13 +168,31 @@ class TopicsServiceTest {
     }
 
     @Test
-    void testInitiateVoting() {
-        List<String> list = Arrays.asList("Option1", "Option2", "Option3");
-        String expectedJson = "{\"Option1\":0,\"Option2\":0,\"Option3\":0}";
+    void testInitiateVoting_ImageType() {
+        List<OptionsData> list = Arrays.asList(
+                new OptionsData("imagen1", "Opción 1", 0),
+                new OptionsData("imagen2", "Opción 2", 0)
+        );
+        String type = Constants.TopicType.IMAGE_SINGLE.toString();
 
-        String result = topicsService.initiateVoting(list);
+        String result = topicsService.initiateVoting(type, list);
 
-        assertEquals(expectedJson, result);
+        String expected = "[{\"image\":\"imagen1\",\"option\":\"Opción 1\",\"votes\":0},{\"image\":\"imagen2\",\"option\":\"Opción 2\",\"votes\":0}]";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testInitiateVoting_NonImageType() {
+        List<OptionsData> list = Arrays.asList(
+                new OptionsData("Opción 1", 0),
+                new OptionsData("Opción 2", 0)
+        );
+        String type = Constants.TopicType.TEXT_SINGLE.toString();
+
+        String result = topicsService.initiateVoting(type, list);
+
+        String expected = "[{\"option\":\"Opción 1\",\"votes\":0},{\"option\":\"Opción 2\",\"votes\":0}]";
+        assertEquals(expected, result);
     }
 
     @Test

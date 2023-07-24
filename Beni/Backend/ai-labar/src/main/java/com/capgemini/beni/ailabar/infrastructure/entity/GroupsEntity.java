@@ -22,9 +22,9 @@ public class GroupsEntity {
 
     public GroupsEntity() {}
 
-    public GroupsEntity(GroupsModel groupsDto) {
-        this.groupName = groupsDto.getGroupName();
-        this.members = groupsDto.getMembers().toString();
-        this.admin = groupsDto.getAdmin();
+    public GroupsEntity(GroupsModel groupsModel) {
+        this.groupName = groupsModel.getGroupName();
+        this.members = groupsModel.getMembers().toString();
+        this.admin = groupsModel.getAdmin();
     }
 }

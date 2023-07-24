@@ -1,10 +1,10 @@
 package com.capgemini.beni.ailabar.domain.model;
 
+import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class TopicsModel {
@@ -12,9 +12,9 @@ public class TopicsModel {
     private String title;
     private String type;
     private String question;
-    private List<String> options;
+    private List<OptionsData> options;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Map<String, Integer> optionsMap;
+    List<OptionsData> optionsDataList;
     private String votedBy;
     private String author;
     private List<String> members;

@@ -1,5 +1,6 @@
 package com.capgemini.beni.ailabar.domain.model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,81 +14,77 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UsersModelTest {
+
+    private UsersModel usersModel;
+
+    @BeforeEach
+    void setUp() {
+        usersModel = new UsersModel();
+    }
     @Test
     void testIdProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setId(1);
-        assertEquals(1, dto.getId());
+        usersModel.setId(1);
+        assertEquals(1, usersModel.getId());
     }
 
     @Test
     void testUserProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setUser("Username");
-        assertEquals("Username", dto.getUser());
+        usersModel.setUser("Username");
+        assertEquals("Username", usersModel.getUser());
     }
 
     @Test
     void testPasswordProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setPassword("Password");
-        assertEquals("Password", dto.getPassword());
+        usersModel.setPassword("Password");
+        assertEquals("Password", usersModel.getPassword());
     }
 
     @Test
     void testEmailProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setEmail("email@example.com");
-        assertEquals("email@example.com", dto.getEmail());
+        usersModel.setEmail("email@example.com");
+        assertEquals("email@example.com", usersModel.getEmail());
     }
 
     @Test
     void testGenderProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setGender("H");
-        assertEquals("H", dto.getGender());
+        usersModel.setGender("H");
+        assertEquals("H", usersModel.getGender());
     }
 
     @Test
     void testPhotoProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setPhoto("photo");
-        assertEquals("photo", dto.getPhoto());
+        usersModel.setPhoto("photo");
+        assertEquals("photo", usersModel.getPhoto());
     }
 
     @Test
     void testTokenProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setToken("Token");
-        assertEquals("Token", dto.getToken());
+        usersModel.setToken("Token");
+        assertEquals("Token", usersModel.getToken());
     }
 
     @Test
     void testMatcherProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setMatcher("Matcher");
-        assertEquals("Matcher", dto.getMatcher());
+        usersModel.setMatcher("Matcher");
+        assertEquals("Matcher", usersModel.getMatcher());
     }
 
     @Test
     void testNewUserProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setNewUser("NewUser");
-        assertEquals("NewUser", dto.getNewUser());
+        usersModel.setNewUser("NewUser");
+        assertEquals("NewUser", usersModel.getNewUser());
     }
 
     @Test
     void testNewPasswordProperty() {
-        UsersModel dto = new UsersModel();
-        dto.setNewPassword("NewPassword");
-        assertEquals("NewPassword", dto.getNewPassword());
+        usersModel.setNewPassword("NewPassword");
+        assertEquals("NewPassword", usersModel.getNewPassword());
     }
 
     @Test
     void testUsersListProperty() {
-        UsersModel dto = new UsersModel();
         List<String> usersList = Arrays.asList("User1", "User2");
-        dto.setUsersList(usersList);
-        assertEquals(usersList, dto.getUsersList());
+        usersModel.setUsersList(usersList);
+        assertEquals(usersList, usersModel.getUsersList());
     }
 }

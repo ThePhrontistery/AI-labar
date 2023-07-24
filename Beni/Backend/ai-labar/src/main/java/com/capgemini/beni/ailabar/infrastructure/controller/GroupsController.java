@@ -31,47 +31,47 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     @PostMapping("/createGroup")
-    public ResponseEntity<SpecialResponse> createGroup(@RequestBody GroupsModel groupDto) {
+    public ResponseEntity<SpecialResponse> createGroup(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(groupDto.getGroupName().isBlank() || groupDto.getMembers().isEmpty() || groupDto.getUser().isBlank() || groupDto.getToken().isBlank()) {
+        if(groupModel.getGroupName().isBlank() || groupModel.getMembers().isEmpty() || groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
             responseJson.put("message", "All data is required to save a group");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(groupDto.getUser(), groupDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(groupModel.getUser(), groupModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        if(Boolean.TRUE.equals(groupsService.existsByGroupNameAndAdmin(groupDto.getGroupName().strip(), groupDto.getUser()))) {
+        if(Boolean.TRUE.equals(groupsService.existsByGroupNameAndAdmin(groupModel.getGroupName().strip(), groupModel.getUser()))) {
             responseJson.put("message", "The user already has a group with that name");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        GroupsEntity groupEntity = new GroupsEntity(groupDto);
-        groupEntity.setAdmin(groupDto.getUser().strip());
-        groupEntity.setMembers(new Gson().toJson(groupDto.getMembers()));
+        GroupsEntity groupEntity = new GroupsEntity(groupModel);
+        groupEntity.setAdmin(groupModel.getUser().strip());
+        groupEntity.setMembers(new Gson().toJson(groupModel.getMembers()));
         groupsService.saveGroup(groupEntity);
         responseJson.put("message", "Group created successfully");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
     @PostMapping("/getGroup")
-    public ResponseEntity<SpecialResponse> getGroup(@RequestBody GroupsModel groupDto) {
+    public ResponseEntity<SpecialResponse> getGroup(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(groupDto.getGroupName().isBlank() || groupDto.getUser().isBlank() || groupDto.getToken().isBlank()) {
+        if(groupModel.getGroupName().isBlank() || groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
             responseJson.put("message", "Group name and user are required");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(groupDto.getUser(), groupDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(groupModel.getUser(), groupModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        GroupsEntity groupEntity = groupsService.getGroup(groupDto.getGroupName(), groupDto.getUser());
+        GroupsEntity groupEntity = groupsService.getGroup(groupModel.getGroupName(), groupModel.getUser());
 
         if(groupEntity == null) {
             responseJson.put("message", "The user does not have a group with that name");
@@ -92,34 +92,34 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     @PutMapping("/editGroup")
-    public ResponseEntity<SpecialResponse> editGroup(@RequestBody GroupsModel groupDto) {
+    public ResponseEntity<SpecialResponse> editGroup(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(groupDto.getId() == null || groupDto.getGroupName().isBlank() || groupDto.getMembers().isEmpty() || groupDto.getUser().isBlank() || groupDto.getToken().isBlank()) {
+        if(groupModel.getId() == null || groupModel.getGroupName().isBlank() || groupModel.getMembers().isEmpty() || groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
             responseJson.put("message", "All data is required to save a group");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(groupDto.getUser(), groupDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(groupModel.getUser(), groupModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        GroupsEntity groupEntity = groupsService.findGroupsEntityById(groupDto.getId());
+        GroupsEntity groupEntity = groupsService.findGroupsEntityById(groupModel.getId());
 
-        if(!groupEntity.getAdmin().equals(groupDto.getUser())) {
+        if(!groupEntity.getAdmin().equals(groupModel.getUser())) {
             responseJson.put("message", "The user is not the group administrator");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        groupEntity.setMembers(new Gson().toJson(groupDto.getMembers()));
+        groupEntity.setMembers(new Gson().toJson(groupModel.getMembers()));
 
-        if(groupDto.getNewGroupName() != null && !groupDto.getNewGroupName().isBlank()) {
-            if(Boolean.TRUE.equals(groupsService.existsByGroupNameAndAdmin(groupDto.getNewGroupName().strip(), groupDto.getUser()))) {
+        if(groupModel.getNewGroupName() != null && !groupModel.getNewGroupName().isBlank()) {
+            if(Boolean.TRUE.equals(groupsService.existsByGroupNameAndAdmin(groupModel.getNewGroupName().strip(), groupModel.getUser()))) {
                 responseJson.put("message", "The user already has a group with that name");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
             } else {
-                groupEntity.setGroupName(groupDto.getNewGroupName().strip());
+                groupEntity.setGroupName(groupModel.getNewGroupName().strip());
             }
         }
         groupsService.saveGroup(groupEntity);
@@ -128,20 +128,20 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     @PostMapping("/getGroupsByUser")
-    public ResponseEntity<SpecialResponse> getGroupsByUser(@RequestBody GroupsModel groupDto) {
+    public ResponseEntity<SpecialResponse> getGroupsByUser(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(groupDto.getUser().isBlank() || groupDto.getToken().isBlank()) {
+        if(groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
             responseJson.put("message", "User and token are required");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(groupDto.getUser(), groupDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(groupModel.getUser(), groupModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        List<String> groupsList = groupsService.getGroupForEdit(groupDto.getUser());
+        List<String> groupsList = groupsService.getGroupForEdit(groupModel.getUser());
         if(groupsList.isEmpty()) {
             responseJson.put("message", "The user is not part of any group");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
@@ -152,25 +152,25 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     @DeleteMapping("/deleteGroup")
-    public ResponseEntity<SpecialResponse> deleteGroup(@RequestBody GroupsModel groupDto) {
+    public ResponseEntity<SpecialResponse> deleteGroup(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(groupDto.getGroupName().isBlank() || groupDto.getUser().isBlank() || groupDto.getToken().isBlank()) {
+        if(groupModel.getGroupName().isBlank() || groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
             responseJson.put("message", "Group name and administrator are required to delete a group");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(groupDto.getUser(), groupDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(groupModel.getUser(), groupModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        if(Boolean.FALSE.equals(groupsService.existsByGroupNameAndAdmin(groupDto.getGroupName().strip(), groupDto.getUser()))) {
+        if(Boolean.FALSE.equals(groupsService.existsByGroupNameAndAdmin(groupModel.getGroupName().strip(), groupModel.getUser()))) {
             responseJson.put("message", "The user does not have a group with that name");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        groupsService.deleteGroup(groupDto.getGroupName().strip(), groupDto.getUser());
+        groupsService.deleteGroup(groupModel.getGroupName().strip(), groupModel.getUser());
         responseJson.put("message", "Group deleted successfully");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
@@ -181,28 +181,28 @@ public class GroupsController implements SpecialResponseInterface {
         JSONObject responseJson = new JSONObject();
 
         List<GroupsEntity> groupsList = groupsService.getAllGroupsData();
-        List<GroupsModel> groupsDtoList = new ArrayList<>();
+        List<GroupsModel> groupsModelList = new ArrayList<>();
 
         if (groupsList.isEmpty()) {
             responseJson.put("message", "There are no groups in the database");
-            return new ResponseEntity<>(specialResponse(groupsDtoList, responseJson), HttpStatus.OK);
+            return new ResponseEntity<>(specialResponse(groupsModelList, responseJson), HttpStatus.OK);
         }
 
         for (GroupsEntity groupEntity : groupsList) {
-            GroupsModel groupDto = new GroupsModel();
-            groupDto.setId(groupEntity.getId());
-            groupDto.setGroupName(groupEntity.getGroupName());
+            GroupsModel groupModel = new GroupsModel();
+            groupModel.setId(groupEntity.getId());
+            groupModel.setGroupName(groupEntity.getGroupName());
 
             Gson gson = new Gson();
             Type listType = new TypeToken<List<String>>() {}.getType();
-            groupDto.setMembers(gson.fromJson(groupEntity.getMembers(), listType));
-            groupDto.setAdmin(groupEntity.getAdmin());
+            groupModel.setMembers(gson.fromJson(groupEntity.getMembers(), listType));
+            groupModel.setAdmin(groupEntity.getAdmin());
 
-            groupsDtoList.add(groupDto);
+            groupsModelList.add(groupModel);
         }
 
         responseJson.put("message", "OK");
-        return new ResponseEntity<>(specialResponse(groupsDtoList, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(groupsModelList, responseJson), HttpStatus.OK);
     }
     /* Fin métodos sólo para pruebas */
 }

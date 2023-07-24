@@ -11,9 +11,8 @@ import com.capgemini.beni.ailabar.infrastructure.utils.Constants;
 import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
 import com.capgemini.beni.ailabar.infrastructure.utils.SpecialResponseInterface;
 import com.capgemini.beni.ailabar.infrastructure.utils.SpecialResponse;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import net.minidev.json.JSONArray;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/topics")
@@ -83,38 +83,37 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        List<TopicsModel> topicsDtoList = new ArrayList<>();
+        List<TopicsModel> topicsModelList = new ArrayList<>();
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
 
         topicsList.forEach(topic -> {
-            TopicsModel topicDto = new TopicsModel();
-            topicDto.setId(topic.getId());
-            topicDto.setTitle(topic.getTitle());
-            topicDto.setType(topic.getType());
-            topicDto.setQuestion(topic.getQuestion());
-            String options = getOnlyOptions(topic.getOptions());
-            topicDto.setOptions(gson.fromJson(options, listType));
-            topicDto.setAuthor(topic.getAuthor());
-            topicDto.setMembers(gson.fromJson(topic.getMembers(), listType));
-            topicDto.setVisits(topic.getVisits());
-            topicDto.setStatus(topic.getStatus());
-            topicsDtoList.add(topicDto);
+            TopicsModel topicModel = new TopicsModel();
+            topicModel.setId(topic.getId());
+            topicModel.setTitle(topic.getTitle());
+            topicModel.setType(topic.getType());
+            topicModel.setQuestion(topic.getQuestion());
+            topicModel.setOptionsDataList(getOptionsWithoutVotes(topic.getOptions()));
+            topicModel.setAuthor(topic.getAuthor());
+            topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
+            topicModel.setVisits(topic.getVisits());
+            topicModel.setStatus(topic.getStatus());
+            topicsModelList.add(topicModel);
         });
 
         responseJson.put("message", "OK");
-        return new ResponseEntity<>(specialResponse(topicsDtoList, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(topicsModelList, responseJson), HttpStatus.OK);
     }
 
     @PostMapping("openTopic")
-    public ResponseEntity<SpecialResponse> openTopic(@RequestBody TopicsModel topicDto) {JSONObject responseJson = new JSONObject();
+    public ResponseEntity<SpecialResponse> openTopic(@RequestBody TopicsModel topicModel) {JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        TopicsEntity topicEntity = topicsService.getTopicForEdit(topicDto.getId());
+        TopicsEntity topicEntity = topicsService.getTopicForEdit(topicModel.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
@@ -126,7 +125,7 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not the author of the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
@@ -137,69 +136,75 @@ public class TopicsController implements SpecialResponseInterface {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
 
-        TopicsModel topicsDto = new TopicsModel();
-        topicsDto.setId(topicEntity.getId());
-        topicsDto.setTitle(topicEntity.getTitle());
-        topicsDto.setType(topicEntity.getType());
-        topicsDto.setQuestion(topicEntity.getQuestion());
-        String options = getOnlyOptions(topicEntity.getOptions());
-        topicsDto.setOptions(gson.fromJson(options, listType));
-        topicsDto.setAuthor(topicEntity.getAuthor());
-        topicsDto.setMembers(gson.fromJson(topicEntity.getMembers(), listType));
-        topicsDto.setVisits(topicEntity.getVisits());
-        topicsDto.setStatus(topicEntity.getStatus());
+        TopicsModel topicsModel = new TopicsModel();
+        topicsModel.setId(topicEntity.getId());
+        topicsModel.setTitle(topicEntity.getTitle());
+        topicsModel.setType(topicEntity.getType());
+        topicsModel.setQuestion(topicEntity.getQuestion());
+        topicsModel.setOptionsDataList(getOptionsWithoutVotes(topicEntity.getOptions()));
+        topicsModel.setAuthor(topicEntity.getAuthor());
+        topicsModel.setMembers(gson.fromJson(topicEntity.getMembers(), listType));
+        topicsModel.setVisits(topicEntity.getVisits());
+        topicsModel.setStatus(topicEntity.getStatus());
 
         responseJson.put("message", "OK");
-        return new ResponseEntity<>(specialResponse(topicsDto, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(topicsModel, responseJson), HttpStatus.OK);
     }
 
     /* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente *//* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente */
     @PostMapping("/createTopic")
-    public ResponseEntity<SpecialResponse> createTopic(@RequestBody TopicsModel topicDto) {
+    public ResponseEntity<SpecialResponse> createTopic(@RequestBody TopicsModel topicModel) {
         try {
             JSONObject responseJson = new JSONObject();
 
-            if(topicDto.getTitle().isBlank() || topicDto.getType().isBlank() || topicDto.getQuestion().isBlank()
-                    || topicDto.getOptions().isEmpty() || topicDto.getUser().isBlank() || topicDto.getMembers().isEmpty()) {
+            if(topicModel.getTitle().isBlank() || topicModel.getType().isBlank() || topicModel.getQuestion().isBlank() || topicModel.getOptions().isEmpty()
+                    || topicModel.getUser().isBlank() || topicModel.getMembers().isEmpty()) {
                 responseJson.put("message", "All data is required to edit a topic");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
             }
 
-            if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
                 responseJson.put("message", "Unauthorized user");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
             }
 
-            if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
+            if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser()))) {
                 responseJson.put("message", "There is already a topic assigned to the author with that name");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
             }
 
-            topicDto.setTitle(topicDto.getTitle().strip());
-            topicDto.setAuthor(topicDto.getUser().strip());
-            if(checkTopicType(topicDto.getType()).equals("KO")) {
+            topicModel.setTitle(topicModel.getTitle().strip());
+            topicModel.setAuthor(topicModel.getUser().strip());
+            if(checkTopicType(topicModel.getType()).equals("KO")) {
                 responseJson.put("message", "The topic type is not valid");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
             }
-            topicDto.setType(topicDto.getType());
-            topicDto.setVisits(topicDto.getVisits() != null ? topicDto.getVisits() : 0);
-            topicDto.setStatus(topicDto.getStatus() != null ? topicDto.getStatus() : Constants.STATUS_OPENED);
+            topicModel.setType(topicModel.getType());
 
-            TopicsEntity topicEntity = new TopicsEntity(topicDto);
-            topicEntity.setOptions(topicsService.initiateVoting(topicDto.getOptions()));
-            topicEntity.setMembers(new Gson().toJson(topicDto.getMembers()));
+            if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString()))
+                && !validateOptionsDataList(topicModel.getOptions())) {
+                responseJson.put("message", "It is mandatory to send the images and options for this type of topic");
+                return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
+            }
 
-            if(topicDto.getCloseDate() != null && !topicDto.getCloseDate().isBlank()) {
-                String dateString = formatDateToYYYYMMdd(topicDto.getCloseDate());
+            topicModel.setVisits(topicModel.getVisits() != null ? topicModel.getVisits() : 0);
+            topicModel.setStatus(topicModel.getStatus() != null ? topicModel.getStatus() : Constants.STATUS_OPENED);
+
+            TopicsEntity topicEntity = new TopicsEntity(topicModel);
+            topicEntity.setOptions(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions()));
+            topicEntity.setMembers(new Gson().toJson(topicModel.getMembers()));
+
+            if(topicModel.getCloseDate() != null && !topicModel.getCloseDate().isBlank()) {
+                String dateString = formatDateToYYYYMMdd(topicModel.getCloseDate());
                 if(dateString.contains("KO")) {
                     responseJson.put("message", dateString);
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                 } else {
-                    topicEntity.setCloseDate(topicDto.getCloseDate());
+                    topicEntity.setCloseDate(topicModel.getCloseDate());
                 }
             }
 
-            mailService.sendEmail(topicDto);
+            mailService.sendEmail(topicModel);
 
             topicsService.saveTopic(topicEntity);
             responseJson.put("message", "Topic created successfully");
@@ -213,25 +218,25 @@ public class TopicsController implements SpecialResponseInterface {
 
     /* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente */
     @PutMapping("/editTopic")
-    public ResponseEntity<SpecialResponse> editTopic(@RequestBody TopicsModel topicDto) {
+    public ResponseEntity<SpecialResponse> editTopic(@RequestBody TopicsModel topicModel) {
         try {
             JSONObject responseJson = new JSONObject();
 
-            if(topicDto.getId() == null || topicDto.getTitle().isBlank() || topicDto.getType().isBlank() || topicDto.getQuestion().isBlank()
-                    || topicDto.getOptions().isEmpty() || topicDto.getMembers().isEmpty() || topicDto.getUser().isBlank()) {
+            if(topicModel.getId() == null || topicModel.getTitle().isBlank() || topicModel.getType().isBlank() || topicModel.getQuestion().isBlank()
+                    || topicModel.getOptions().isEmpty() || topicModel.getMembers().isEmpty() || topicModel.getUser().isBlank()) {
                 responseJson.put("message", "All data is required to edit a topic");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
             }
 
-            if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+            if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
                 responseJson.put("message", "Unauthorized user");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
             }
 
-            if(Boolean.TRUE.equals(topicsService.existsById(topicDto.getId()))) {
-                TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+            if(Boolean.TRUE.equals(topicsService.existsById(topicModel.getId()))) {
+                TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
-                if (!topicDto.getUser().equals(topicEntity.getAuthor())) {
+                if (!topicModel.getUser().equals(topicEntity.getAuthor())) {
                     responseJson.put("message", "The user is not the author of the topic");
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                 }
@@ -241,45 +246,63 @@ public class TopicsController implements SpecialResponseInterface {
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                 }
 
-                if(Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicDto.getTitle().strip(), topicDto.getUser()))) {
+                if(!topicModel.getTitle().equals(topicEntity.getTitle()) && Boolean.TRUE.equals(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser()))) {
                     responseJson.put("message", "There is already a topic assigned to the author with that name");
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
                 } else {
-                    topicEntity.setTitle(topicDto.getTitle().strip());
+                    topicEntity.setTitle(topicModel.getTitle().strip());
                 }
 
-                if(checkTopicType(topicDto.getType()).equals("KO")) {
+                if(checkTopicType(topicModel.getType()).equals("KO")) {
                     responseJson.put("message", "The topic type is not valid");
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                 }
 
-                topicEntity.setQuestion(topicDto.getQuestion());
-
-                if(!topicDto.getOptions().toString().equals(getOnlyOptions(topicEntity.getOptions())) || !topicDto.getType().equals(topicEntity.getType())) {
-                    topicEntity.setType(topicDto.getType());
-                    topicEntity.setOptions(topicsService.initiateVoting(topicDto.getOptions()));
-                    topicEntity.setVotedBy(null);
-                } else {
-                    topicEntity.setType(topicDto.getType());
+                if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString()))
+                        && !validateOptionsDataList(topicModel.getOptions())) {
+                    responseJson.put("message", "It is mandatory to send the images and options for this type of topic");
+                    return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                 }
 
-                topicEntity.setAuthor(topicDto.getAuthor());
-                topicEntity.setMembers(new Gson().toJson(topicDto.getMembers()));
-                topicEntity.setCloseDate(topicDto.getCloseDate());
-                topicEntity.setVisits(topicDto.getVisits() != null ? topicDto.getVisits() : 0);
-                topicEntity.setStatus(topicDto.getStatus() != null ? topicDto.getStatus() : Constants.STATUS_OPENED);
+                topicEntity.setQuestion(topicModel.getQuestion());
 
-                if(topicDto.getCloseDate() != null && !topicDto.getCloseDate().isBlank()) {
-                    String dateString = formatDateToYYYYMMdd(topicDto.getCloseDate());
+                if(!topicModel.getOptions().toString().equals(getOptionsWithoutVotes(topicEntity.getOptions())) || !topicModel.getType().equals(topicEntity.getType())) {
+                    topicEntity.setType(topicModel.getType());
+                    topicEntity.setOptions(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions()));
+                    topicEntity.setVotedBy(null);
+                } else {
+                    topicEntity.setType(topicModel.getType());
+                }
+
+                topicEntity.setAuthor(topicModel.getUser());
+                topicEntity.setMembers(new Gson().toJson(topicModel.getMembers()));
+
+                if(topicModel.getCloseDate() != null) {
+                    if(topicModel.getCloseDate().isBlank() && topicEntity.getCloseDate() != null) {
+                        topicEntity.setCloseDate(null);
+                    } else {
+                        topicEntity.setCloseDate(topicModel.getCloseDate());
+                    }
+                } else {
+                    if(topicEntity.getCloseDate() != null) {
+                        topicEntity.setCloseDate(null);
+                    }
+                }
+
+                topicEntity.setVisits(topicModel.getVisits() != null ? topicModel.getVisits() : 0);
+                topicEntity.setStatus(topicModel.getStatus() != null ? topicModel.getStatus() : Constants.STATUS_OPENED);
+
+                if(topicModel.getCloseDate() != null && !topicModel.getCloseDate().isBlank()) {
+                    String dateString = formatDateToYYYYMMdd(topicModel.getCloseDate());
                     if(dateString.contains("KO")) {
                         responseJson.put("message", dateString);
                         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                     } else {
-                        topicEntity.setCloseDate(topicDto.getCloseDate());
+                        topicEntity.setCloseDate(topicModel.getCloseDate());
                     }
                 }
 
-                mailService.sendEmail(topicDto);
+                mailService.sendEmail(topicModel);
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");
@@ -295,12 +318,12 @@ public class TopicsController implements SpecialResponseInterface {
     }
 
     @PutMapping("/closeTopic")
-    public ResponseEntity<SpecialResponse> closeTopic(@RequestBody TopicsModel topicDto) {
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+    public ResponseEntity<SpecialResponse> closeTopic(@RequestBody TopicsModel topicModel) {
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
         JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
@@ -310,7 +333,7 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not the author of the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
@@ -327,12 +350,12 @@ public class TopicsController implements SpecialResponseInterface {
     }
 
     @PutMapping("/reOpenTopic")
-    public ResponseEntity<SpecialResponse> reOpenTopic(@RequestBody TopicsModel topicDto) {
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+    public ResponseEntity<SpecialResponse> reOpenTopic(@RequestBody TopicsModel topicModel) {
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
         JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
@@ -342,7 +365,7 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not the author of the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
@@ -359,27 +382,27 @@ public class TopicsController implements SpecialResponseInterface {
     }
 
     @DeleteMapping("/deleteTopic")
-    public ResponseEntity<SpecialResponse> deleteTopic(@RequestBody TopicsModel topicDto) {
+    public ResponseEntity<SpecialResponse> deleteTopic(@RequestBody TopicsModel topicModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(!topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not the author of the topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        topicsService.deleteTopic(topicDto.getId());
+        topicsService.deleteTopic(topicModel.getId());
         responseJson.put("message", "The topic has been deleted");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
@@ -391,74 +414,76 @@ public class TopicsController implements SpecialResponseInterface {
 
         JSONObject responseJson = new JSONObject();
 
-        if(topicsList.isEmpty()) {
+        if (topicsList.isEmpty()) {
             responseJson.put("message", "There are no topics in database");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        List<TopicsModel> topicsDtoList = new ArrayList<>();
+        List<TopicsModel> topicsModelList = new ArrayList<>();
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
 
         topicsList.forEach(topic -> {
-            TopicsModel topicDto = new TopicsModel();
-            topicDto.setId(topic.getId());
-            topicDto.setTitle(topic.getTitle());
-            topicDto.setType(topic.getType());
-            topicDto.setQuestion(topic.getQuestion());
-            Map<String, Integer> map = gson.fromJson(topic.getOptions(), new TypeToken<Map<String, Integer>>() {}.getType());
-            topicDto.setOptionsMap(map);
-            topicDto.setVotedBy(topic.getVotedBy());
-            topicDto.setAuthor(topic.getAuthor());
-            topicDto.setMembers(gson.fromJson(topic.getMembers(), listType));
-            topicDto.setVisits(topic.getVisits());
-            topicDto.setStatus(topic.getStatus());
-            topicsDtoList.add(topicDto);
+            TopicsModel topicModel = new TopicsModel();
+            topicModel.setId(topic.getId());
+            topicModel.setTitle(topic.getTitle());
+            topicModel.setType(topic.getType());
+            topicModel.setQuestion(topic.getQuestion());
+
+            List<OptionsData> optionsDataList = gson.fromJson(topic.getOptions(), new TypeToken<List<OptionsData>>() {}.getType());
+            topicModel.setOptionsDataList(optionsDataList);
+
+            topicModel.setVotedBy(topic.getVotedBy());
+            topicModel.setAuthor(topic.getAuthor());
+            topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
+            topicModel.setVisits(topic.getVisits());
+            topicModel.setStatus(topic.getStatus());
+            topicsModelList.add(topicModel);
         });
 
         responseJson.put("message", "OK");
-        return new ResponseEntity<>(specialResponse(topicsDtoList, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(topicsModelList, responseJson), HttpStatus.OK);
     }
     /* Fin del método únicamente para desarrollo */
 
     @PutMapping("/vote")
-    public ResponseEntity<SpecialResponse> vote(@RequestBody TopicsModel topicDto) {
+    public ResponseEntity<SpecialResponse> vote(@RequestBody TopicsModel topicModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(topicDto.getVotation().isEmpty()) {
+        if(topicModel.getVotation().isEmpty()) {
             responseJson.put("message", "The voting cannot be empty");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(!topicEntity.getMembers().contains(topicDto.getUser()) && !topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getMembers().contains(topicModel.getUser()) && !topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not allowed to vote on this topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(topicEntity.getVotedBy() != null && topicEntity.getVotedBy().contains(topicDto.getUser())) {
+        if(topicEntity.getVotedBy() != null && topicEntity.getVotedBy().contains(topicModel.getUser())) {
             responseJson.put("message", "The user has already voted");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
         Constants.TopicType topicType = Constants.TopicType.valueOf(topicEntity.getType());
-        if (topicDto.getVotation().size() > 1 && !(topicType == Constants.TopicType.TEXT_MULTIPLE || topicType == Constants.TopicType.IMAGE_MULTIPLE)) {
+        if (topicModel.getVotation().size() > 1 && !(topicType == Constants.TopicType.TEXT_MULTIPLE || topicType == Constants.TopicType.IMAGE_MULTIPLE)) {
             responseJson.put("message", "The topic type is not valid for multiple voting options");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        String vote = updateVotation(topicEntity.getOptions(), topicDto.getVotation());
+        String vote = updateVotation(topicEntity.getOptions(), topicModel.getVotation());
 
         if(vote.equals("KO")) {
             responseJson.put("message", "The list of votes does not match the options of the topic");
@@ -468,9 +493,9 @@ public class TopicsController implements SpecialResponseInterface {
         topicEntity.setOptions(vote);
 
         if(topicEntity.getVotedBy() == null) {
-            topicEntity.setVotedBy(topicDto.getUser());
+            topicEntity.setVotedBy(topicModel.getUser());
         } else {
-            topicEntity.setVotedBy(topicEntity.getVotedBy().concat(", ").concat(topicDto.getUser()));
+            topicEntity.setVotedBy(topicEntity.getVotedBy().concat(", ").concat(topicModel.getUser()));
         }
 
         topicsService.saveTopic(topicEntity);
@@ -478,16 +503,16 @@ public class TopicsController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
-    @GetMapping("/votingResults")
-    public ResponseEntity<SpecialResponse> votingResults(@RequestBody TopicsModel topicDto) {
+    @PostMapping("/votingResults")
+    public ResponseEntity<SpecialResponse> votingResults(@RequestBody TopicsModel topicModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(Boolean.FALSE.equals(usersService.checkToken(topicDto.getUser(), topicDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicDto.getId());
+        TopicsEntity topicEntity = topicsService.findTopicsEntityById(topicModel.getId());
 
         if(topicEntity == null) {
             responseJson.put("message", "There is no topic with that id");
@@ -499,20 +524,17 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if(!topicEntity.getMembers().contains(topicDto.getUser()) && !topicEntity.getAuthor().equals(topicDto.getUser())) {
+        if(!topicEntity.getMembers().contains(topicModel.getUser()) && !topicEntity.getAuthor().equals(topicModel.getUser())) {
             responseJson.put("message", "The user is not allowed to view the results on this topic");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
         Gson gson = new Gson();
-        Map<String, Integer> optionsMap = gson.fromJson(topicEntity.getOptions(), new TypeToken<Map<String, Integer>>() {}.getType());
-
-        List<OptionsData> optionDataList = optionsMap.entrySet().stream()
-                .map(entry -> new OptionsData(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        List<OptionsData> optionsDataList = gson.fromJson(topicEntity.getOptions(), new TypeToken<List<OptionsData>>() {}.getType());
+        topicModel.setOptionsDataList(optionsDataList);
 
         responseJson.put("message", topicEntity.getType());
-        return new ResponseEntity<>(specialResponse(optionDataList, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(optionsDataList, responseJson), HttpStatus.OK);
     }
 
     private String checkTopicType(String type) {
@@ -523,31 +545,44 @@ public class TopicsController implements SpecialResponseInterface {
         }
     }
 
-    private String getOnlyOptions(String input) {
-        Gson gson = new Gson();
-        Map<String, Integer> map = gson.fromJson(input, new TypeToken<Map<String, Integer>>() {}.getType());
+    private boolean validateOptionsDataList(List<OptionsData> list) {
+        return list.stream()
+                .allMatch(optionsData -> optionsData.getImage() != null
+                        && !optionsData.getImage().isEmpty()
+                        && optionsData.getOption() != null
+                        && !optionsData.getOption().isEmpty());
+    }
 
-        return JSONArray.toJSONString(new ArrayList<>(map.keySet()));
+    private List<OptionsData> getOptionsWithoutVotes(String input) {
+        Gson gson = new Gson();
+        JsonElement jsonElement = JsonParser.parseString(input);
+
+        return StreamSupport.stream(jsonElement.getAsJsonArray().spliterator(), false)
+                .map(JsonElement::getAsJsonObject)
+                .map(jsonObject -> {
+                    jsonObject.remove("votes");
+                    return gson.fromJson(jsonObject, OptionsData.class);
+                })
+                .collect(Collectors.toList());
     }
 
     private String updateVotation(String options, List<String> votation) {
         boolean coincidence = false;
 
         Gson gson = new Gson();
-        Map<String, Integer> optionsMap = gson.fromJson(options, new TypeToken<Map<String, Integer>>() {}.getType());
+        List<OptionsData> optionsDataList = gson.fromJson(options, new TypeToken<List<OptionsData>>() {}.getType());
 
-        for (String key : votation) {
-            if (optionsMap.containsKey(key)) {
-                int value = optionsMap.get(key);
-                optionsMap.put(key, value + 1);
+        for (OptionsData optionsData : optionsDataList) {
+            if (votation.contains(optionsData.getOption())) {
+                optionsData.setVotes(optionsData.getVotes() + 1);
                 coincidence = true;
             }
         }
 
-        if(Boolean.FALSE.equals(coincidence)) {
-            return "KO";
+        if (coincidence) {
+            return gson.toJson(optionsDataList);
         } else {
-            return gson.toJson(optionsMap);
+            return "KO";
         }
     }
 

@@ -42,13 +42,13 @@ class GroupsEntityTest {
     }
 
     @Test
-    void testConstructorWithGroupsDto() {
-        GroupsModel dto = new GroupsModel();
-        dto.setGroupName("Group 1");
-        dto.setMembers(Collections.singletonList("member1, member2"));
-        dto.setAdmin("admin");
+    void testConstructorWithGroupsModel() {
+        GroupsModel model = new GroupsModel();
+        model.setGroupName("Group 1");
+        model.setMembers(Collections.singletonList("member1, member2"));
+        model.setAdmin("admin");
 
-        GroupsEntity entity = new GroupsEntity(dto);
+        GroupsEntity entity = new GroupsEntity(model);
 
         assertEquals("Group 1", entity.getGroupName());
         assertEquals("[member1, member2]", entity.getMembers());

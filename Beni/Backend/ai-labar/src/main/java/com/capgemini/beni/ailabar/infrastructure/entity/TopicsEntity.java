@@ -36,15 +36,15 @@ public class TopicsEntity {
 
     public TopicsEntity() {}
 
-    public TopicsEntity(TopicsModel topicDto) {
-        this.title = topicDto.getTitle();
-        this.type = topicDto.getType();
-        this.question = topicDto.getQuestion();
-        this.options = topicDto.getOptions().toString();
-        this.author = topicDto.getAuthor();
-        this.members = topicDto.getMembers().toString();
-        this.closeDate = topicDto.getCloseDate();
-        this.visits = topicDto.getVisits();
-        this.status = topicDto.getStatus();
+    public TopicsEntity(TopicsModel topicModel) {
+        this.title = topicModel.getTitle();
+        this.type = topicModel.getType();
+        this.question = topicModel.getQuestion();
+        this.options = topicModel.getOptions().toString();
+        this.author = topicModel.getAuthor();
+        this.members = topicModel.getMembers().toString();
+        this.closeDate = topicModel.getCloseDate();
+        this.visits = topicModel.getVisits();
+        this.status = topicModel.getStatus();
     }
 }

@@ -31,40 +31,40 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     @PostMapping("/createUser")
-    public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel userDto) {
+    public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if (userDto.getUser().isBlank() || userDto.getPassword().isBlank() || userDto.getEmail().isBlank()
-            || userDto.getGender().isBlank() || userDto.getPhoto().isBlank()) {
+        if (userModel.getUser().isBlank() || userModel.getPassword().isBlank() || userModel.getEmail().isBlank()
+            || userModel.getGender().isBlank() || userModel.getPhoto().isBlank()) {
             responseJson.put("message", "All data is required to create a new user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if (Boolean.TRUE.equals(usersService.checkUser(userDto.getUser()))) {
+        if (Boolean.TRUE.equals(usersService.checkUser(userModel.getUser()))) {
             responseJson.put("message", "The user already exists");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        if (Boolean.TRUE.equals(usersService.existsByEmail(userDto.getEmail()))) {
+        if (Boolean.TRUE.equals(usersService.existsByEmail(userModel.getEmail()))) {
             responseJson.put("message", "The email already exists");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
-        String hashedPassword = DigestUtils.sha256Hex(userDto.getPassword());
+        String hashedPassword = DigestUtils.sha256Hex(userModel.getPassword());
 
-        UsersEntity userEntity = new UsersEntity(userDto);
+        UsersEntity userEntity = new UsersEntity(userModel);
         userEntity.setPassword(hashedPassword);
         userEntity.setToken("");
         usersService.saveUser(userEntity);
 
-        userEntity = usersService.findByUser(userDto.getUser());
+        userEntity = usersService.findByUser(userModel.getUser());
 
         if(userEntity == null) {
             responseJson.put("message", "User not found");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        String token = DigestUtils.sha256Hex(userDto.getUser()+hashedPassword+userEntity.getId());
+        String token = DigestUtils.sha256Hex(userModel.getUser()+hashedPassword+userEntity.getId());
         userEntity.setToken(token);
 
         usersService.saveUser(userEntity);
@@ -74,46 +74,46 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     @PutMapping("/editUser")
-    public ResponseEntity<SpecialResponse> editUser(@RequestBody UsersModel userDto) {
+    public ResponseEntity<SpecialResponse> editUser(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank() || userDto.getPassword().isBlank() || userDto.getToken().isBlank()) {
+        if(userModel.getUser().isBlank() || userModel.getPassword().isBlank() || userModel.getToken().isBlank()) {
             responseJson.put("message", "All data is required to edit a user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(userModel.getUser(), userModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        if((userDto.getNewUser() == null || userDto.getNewUser().isBlank()) && (userDto.getNewPassword() == null || userDto.getNewPassword().isBlank())) {
+        if((userModel.getNewUser() == null || userModel.getNewUser().isBlank()) && (userModel.getNewPassword() == null || userModel.getNewPassword().isBlank())) {
             responseJson.put("message", "There are no values to update.");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.TRUE.equals(usersService.checkUser(userDto.getNewUser().strip()))) {
+        if(Boolean.TRUE.equals(usersService.checkUser(userModel.getNewUser().strip()))) {
             responseJson.put("message", "The new username already exists");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_REQUEST);
         }
 
-        UsersEntity userEntity = usersService.findByUser(userDto.getUser());
+        UsersEntity userEntity = usersService.findByUser(userModel.getUser());
 
-        if(userDto.getNewUser() != null && !userDto.getNewUser().isBlank()) {
-            userEntity.setUser(userDto.getNewUser().strip());
+        if(userModel.getNewUser() != null && !userModel.getNewUser().isBlank()) {
+            userEntity.setUser(userModel.getNewUser().strip());
         }
 
-        if(userDto.getNewPassword() != null && !userDto.getNewPassword().isBlank()) {
-            String hashedPassword = DigestUtils.sha256Hex(userDto.getNewPassword());
+        if(userModel.getNewPassword() != null && !userModel.getNewPassword().isBlank()) {
+            String hashedPassword = DigestUtils.sha256Hex(userModel.getNewPassword());
             userEntity.setPassword(hashedPassword);
         }
 
-        if(userDto.getGender() != null && !userDto.getGender().isBlank()) {
-            userEntity.setGender(userDto.getGender());
+        if(userModel.getGender() != null && !userModel.getGender().isBlank()) {
+            userEntity.setGender(userModel.getGender());
         }
 
-        if(userDto.getPhoto() != null && !userDto.getPhoto().isBlank()) {
-            userEntity.setPhoto(userDto.getPhoto());
+        if(userModel.getPhoto() != null && !userModel.getPhoto().isBlank()) {
+            userEntity.setPhoto(userModel.getPhoto());
         }
 
         String token = DigestUtils.sha256Hex(userEntity.getUser()+userEntity.getPassword()+userEntity.getId());
@@ -125,39 +125,39 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     @DeleteMapping("/deleteUser")
-    public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersModel userDto) {
+    public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank() || userDto.getToken().isBlank()) {
+        if(userModel.getUser().isBlank() || userModel.getToken().isBlank()) {
             responseJson.put("message", "User name and token are required to delete a user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(userModel.getUser(), userModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        usersService.deleteUser(userDto.getUser());
+        usersService.deleteUser(userModel.getUser());
         responseJson.put("message", "User deleted successfully");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
     @PostMapping("/getUsers")
-    public ResponseEntity<SpecialResponse> getUsers(@RequestBody UsersModel userDto) {
+    public ResponseEntity<SpecialResponse> getUsers(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank() || userDto.getToken().isBlank()) {
+        if(userModel.getUser().isBlank() || userModel.getToken().isBlank()) {
             responseJson.put("message", "User and token are required");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(userModel.getUser(), userModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }
 
-        List<String> userMatchesList = usersService.userMatches(userDto.getMatcher());
+        List<String> userMatchesList = usersService.userMatches(userModel.getMatcher());
         if(userMatchesList == null) {
             responseJson.put("message", "Not matches");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
@@ -168,15 +168,15 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     @PostMapping("/getAllUsers")
-    public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersModel userDto) {
+    public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if(userDto.getUser().isBlank() || userDto.getToken().isBlank()) {
+        if(userModel.getUser().isBlank() || userModel.getToken().isBlank()) {
             responseJson.put("message", "User name and token are required to delete a user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
-        if(Boolean.FALSE.equals(usersService.checkToken(userDto.getUser(), userDto.getToken()))) {
+        if(Boolean.FALSE.equals(usersService.checkToken(userModel.getUser(), userModel.getToken()))) {
             responseJson.put("message", "Unauthorized user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
         }

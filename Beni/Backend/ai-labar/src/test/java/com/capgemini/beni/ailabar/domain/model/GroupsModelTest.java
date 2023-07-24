@@ -1,5 +1,6 @@
 package com.capgemini.beni.ailabar.domain.model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,54 +14,55 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class GroupsModelTest {
+
+    private GroupsModel groupsModel;
+
+    @BeforeEach
+    void setUp() {
+        groupsModel = new GroupsModel();
+    }
+
     @Test
     void testIdProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setId(1);
-        assertEquals(1, dto.getId());
+        groupsModel.setId(1);
+        assertEquals(1, groupsModel.getId());
     }
 
     @Test
     void testGroupNameProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setGroupName("Group Name");
-        assertEquals("Group Name", dto.getGroupName());
+        groupsModel.setGroupName("Group Name");
+        assertEquals("Group Name", groupsModel.getGroupName());
     }
 
     @Test
     void testMembersProperty() {
-        GroupsModel dto = new GroupsModel();
         List<String> members = Arrays.asList("Member1", "Member2");
-        dto.setMembers(members);
-        assertEquals(members, dto.getMembers());
+        groupsModel.setMembers(members);
+        assertEquals(members, groupsModel.getMembers());
     }
 
     @Test
     void testAdminProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setAdmin("Admin");
-        assertEquals("Admin", dto.getAdmin());
+        groupsModel.setAdmin("Admin");
+        assertEquals("Admin", groupsModel.getAdmin());
     }
 
     @Test
     void testNewGroupNameProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setNewGroupName("New Group Name");
-        assertEquals("New Group Name", dto.getNewGroupName());
+        groupsModel.setNewGroupName("New Group Name");
+        assertEquals("New Group Name", groupsModel.getNewGroupName());
     }
 
     @Test
     void testUserProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setUser("User");
-        assertEquals("User", dto.getUser());
+        groupsModel.setUser("User");
+        assertEquals("User", groupsModel.getUser());
     }
 
     @Test
     void testTokenProperty() {
-        GroupsModel dto = new GroupsModel();
-        dto.setToken("Token");
-        assertEquals("Token", dto.getToken());
+        groupsModel.setToken("Token");
+        assertEquals("Token", groupsModel.getToken());
     }
 }
 

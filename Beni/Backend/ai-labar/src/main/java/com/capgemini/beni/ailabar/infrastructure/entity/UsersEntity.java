@@ -28,9 +28,9 @@ public class UsersEntity {
 
     public UsersEntity() {}
 
-    public UsersEntity(UsersModel usersDto) {
-        this.user = usersDto.getUser();
-        this.password = usersDto.getPassword();
-        this.email = usersDto.getEmail();
+    public UsersEntity(UsersModel usersModel) {
+        this.user = usersModel.getUser();
+        this.password = usersModel.getPassword();
+        this.email = usersModel.getEmail();
     }
 }

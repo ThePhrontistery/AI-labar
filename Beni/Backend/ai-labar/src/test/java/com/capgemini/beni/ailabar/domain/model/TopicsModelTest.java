@@ -1,128 +1,122 @@
 package com.capgemini.beni.ailabar.domain.model;
 
+import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class TopicsModelTest {
+
+    private TopicsModel topicsModel;
+
+    @BeforeEach
+    void setUp() {
+        topicsModel = new TopicsModel();
+    }
     @Test
     void testIdProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setId(1);
-        assertEquals(1, dto.getId());
+        topicsModel.setId(1);
+        assertEquals(1, topicsModel.getId());
     }
 
     @Test
     void testTitleProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setTitle("Topic Title");
-        assertEquals("Topic Title", dto.getTitle());
+        topicsModel.setTitle("Topic Title");
+        assertEquals("Topic Title", topicsModel.getTitle());
     }
 
     @Test
     void testTypeProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setType("Type");
-        assertEquals("Type", dto.getType());
+        topicsModel.setType("Type");
+        assertEquals("Type", topicsModel.getType());
     }
 
     @Test
     void testQuestionProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setQuestion("Question");
-        assertEquals("Question", dto.getQuestion());
+        topicsModel.setQuestion("Question");
+        assertEquals("Question", topicsModel.getQuestion());
     }
 
     @Test
     void testOptionsProperty() {
-        TopicsModel dto = new TopicsModel();
-        List<String> options = Arrays.asList("Option 1", "Option 2");
-        dto.setOptions(options);
-        assertEquals(options, dto.getOptions());
+        OptionsData option1 = new OptionsData("Option 1", 0);
+        OptionsData option2 = new OptionsData("Option 2", 0);
+        List<OptionsData> options = Arrays.asList(option1, option2);
+        topicsModel.setOptions(options);
+        assertEquals(options, topicsModel.getOptions());
     }
 
     @Test
-    void testOptionsMapProperty() {
-        TopicsModel dto = new TopicsModel();
-        Map<String, Integer> optionsMap = new HashMap<>();
-        optionsMap.put("Option 1", 1);
-        optionsMap.put("Option 2", 2);
-        dto.setOptionsMap(optionsMap);
-        assertEquals(optionsMap, dto.getOptionsMap());
+    void testOptionsDataListProperty() {
+        OptionsData option1 = new OptionsData("Option 1", 0);
+        OptionsData option2 = new OptionsData("Option 2", 0);
+        List<OptionsData> options = Arrays.asList(option1, option2);
+        topicsModel.setOptionsDataList(options);
+        assertEquals(options, topicsModel.getOptionsDataList());
     }
 
     @Test
     void testVotedByProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setVotedBy("User1");
-        assertEquals("User1", dto.getVotedBy());
+        topicsModel.setVotedBy("User1");
+        assertEquals("User1", topicsModel.getVotedBy());
     }
 
     @Test
     void testAuthorProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setAuthor("Author");
-        assertEquals("Author", dto.getAuthor());
+        topicsModel.setAuthor("Author");
+        assertEquals("Author", topicsModel.getAuthor());
     }
 
     @Test
     void testMembersProperty() {
-        TopicsModel dto = new TopicsModel();
         List<String> members = Arrays.asList("User1", "User2");
-        dto.setMembers(members);
-        assertEquals(members, dto.getMembers());
+        topicsModel.setMembers(members);
+        assertEquals(members, topicsModel.getMembers());
     }
 
     @Test
     void testCloseDateProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setCloseDate("2023-07-01");
-        assertEquals("2023-07-01", dto.getCloseDate());
+        topicsModel.setCloseDate("2023-07-01");
+        assertEquals("2023-07-01", topicsModel.getCloseDate());
     }
 
     @Test
     void testVisitsProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setVisits(10);
-        assertEquals(10, dto.getVisits());
+        topicsModel.setVisits(10);
+        assertEquals(10, topicsModel.getVisits());
     }
 
     @Test
     void testStatusProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setStatus("Open");
-        assertEquals("Open", dto.getStatus());
+        topicsModel.setStatus("Open");
+        assertEquals("Open", topicsModel.getStatus());
     }
 
     @Test
     void testUserProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setUser("User");
-        assertEquals("User", dto.getUser());
+        topicsModel.setUser("User");
+        assertEquals("User", topicsModel.getUser());
     }
 
     @Test
     void testTokenProperty() {
-        TopicsModel dto = new TopicsModel();
-        dto.setToken("Token");
-        assertEquals("Token", dto.getToken());
+        topicsModel.setToken("Token");
+        assertEquals("Token", topicsModel.getToken());
     }
 
     @Test
     void testVotationProperty() {
-        TopicsModel dto = new TopicsModel();
         List<String> votation = Arrays.asList("Option 1", "Option 2");
-        dto.setVotation(votation);
-        assertEquals(votation, dto.getVotation());
+        topicsModel.setVotation(votation);
+        assertEquals(votation, topicsModel.getVotation());
     }
 }

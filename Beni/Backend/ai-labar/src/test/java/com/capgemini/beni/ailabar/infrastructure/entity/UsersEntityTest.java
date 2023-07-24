@@ -41,16 +41,16 @@ class UsersEntityTest {
 
     @Test
     void testGenderProperty() {
-        UsersEntity dto = new UsersEntity();
-        dto.setGender("H");
-        assertEquals("H", dto.getGender());
+        UsersEntity model = new UsersEntity();
+        model.setGender("H");
+        assertEquals("H", model.getGender());
     }
 
     @Test
     void testPhotoProperty() {
-        UsersEntity dto = new UsersEntity();
-        dto.setPhoto("photo");
-        assertEquals("photo", dto.getPhoto());
+        UsersEntity model = new UsersEntity();
+        model.setPhoto("photo");
+        assertEquals("photo", model.getPhoto());
     }
 
     @Test
@@ -61,13 +61,13 @@ class UsersEntityTest {
     }
 
     @Test
-    void testConstructorWithUsersDto() {
-        UsersModel dto = new UsersModel();
-        dto.setUser("user1");
-        dto.setPassword("password");
-        dto.setEmail("user1@example.com");
+    void testConstructorWithUsersModel() {
+        UsersModel model = new UsersModel();
+        model.setUser("user1");
+        model.setPassword("password");
+        model.setEmail("user1@example.com");
 
-        UsersEntity entity = new UsersEntity(dto);
+        UsersEntity entity = new UsersEntity(model);
 
         assertEquals("user1", entity.getUser());
         assertEquals("password", entity.getPassword());
