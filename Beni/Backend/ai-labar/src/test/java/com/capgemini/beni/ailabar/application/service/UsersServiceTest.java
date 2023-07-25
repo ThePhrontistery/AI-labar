@@ -1,6 +1,6 @@
 package com.capgemini.beni.ailabar.application.service;
 
-import com.capgemini.beni.ailabar.domain.repository.UsersRepositoryInterface;
+import com.capgemini.beni.ailabar.domain.port.UsersRepositoryPort;
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class UsersServiceTest {
     @Mock
-    private UsersRepositoryInterface usersRepository;
+    private UsersRepositoryPort usersRepository;
 
     @InjectMocks
     private UsersService usersService;

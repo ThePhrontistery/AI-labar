@@ -1,6 +1,6 @@
 package com.capgemini.beni.ailabar.infrastructure.adapters;
 
-import com.capgemini.beni.ailabar.domain.repository.UsersRepositoryInterface;
+import com.capgemini.beni.ailabar.domain.port.UsersRepositoryPort;
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
 import com.capgemini.beni.ailabar.infrastructure.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class UsersRepositoryAdapter implements UsersRepositoryInterface {
+public class UsersRepositoryAdapter implements UsersRepositoryPort {
     private final UsersRepository usersRepository;
 
     @Autowired

@@ -1,10 +1,10 @@
-package com.capgemini.beni.ailabar.domain.repository;
+package com.capgemini.beni.ailabar.domain.port;
 
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
 
 import java.util.List;
 
-public interface UsersRepositoryInterface {
+public interface UsersRepositoryPort {
     Boolean existsByUser(String user);
     Boolean existsByUserAndToken(String user, String token);
     List<String> findUsersByUsernameContaining(String matcher);

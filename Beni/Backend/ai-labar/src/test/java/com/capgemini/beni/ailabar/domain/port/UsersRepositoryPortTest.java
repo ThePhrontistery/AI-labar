@@ -1,12 +1,10 @@
-package com.capgemini.beni.ailabar.domain.repository;
+package com.capgemini.beni.ailabar.domain.port;
 
-import com.capgemini.beni.ailabar.infrastructure.adapters.UsersRepositoryAdapter;
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
 import com.capgemini.beni.ailabar.infrastructure.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class UsersRepositoryInterfaceTest {
+class UsersRepositoryPortTest {
     @Mock
     private UsersRepository usersRepository;
 

@@ -1,6 +1,6 @@
 package com.capgemini.beni.ailabar.application.service;
 
-import com.capgemini.beni.ailabar.domain.repository.UsersRepositoryInterface;
+import com.capgemini.beni.ailabar.domain.port.UsersRepositoryPort;
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +10,10 @@ import java.util.List;
 @Service
 @Transactional
 public class UsersService {
-    private final UsersRepositoryInterface usersRepository;
+    private final UsersRepositoryPort usersRepository;
 
     @Autowired
-    public UsersService(UsersRepositoryInterface usersRepository) {
+    public UsersService(UsersRepositoryPort usersRepository) {
         this.usersRepository = usersRepository;
     }
 
