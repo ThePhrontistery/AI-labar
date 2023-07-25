@@ -97,6 +97,9 @@ public class TopicsController implements SpecialResponseInterface {
             topicModel.setAuthor(topic.getAuthor());
             topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
             topicModel.setVisits(topic.getVisits());
+            if(topic.getCloseDate() != null && !topic.getCloseDate().isBlank()) {
+                topicModel.setCloseDate(topic.getCloseDate());
+            }
             topicModel.setStatus(topic.getStatus());
             topicsModelList.add(topicModel);
         });
@@ -144,6 +147,9 @@ public class TopicsController implements SpecialResponseInterface {
         topicsModel.setOptionsDataList(getOptionsWithoutVotes(topicEntity.getOptions()));
         topicsModel.setAuthor(topicEntity.getAuthor());
         topicsModel.setMembers(gson.fromJson(topicEntity.getMembers(), listType));
+        if(topicEntity.getCloseDate() != null && !topicEntity.getCloseDate().isBlank()) {
+            topicsModel.setCloseDate(topicEntity.getCloseDate());
+        }
         topicsModel.setVisits(topicEntity.getVisits());
         topicsModel.setStatus(topicEntity.getStatus());
 
@@ -204,7 +210,7 @@ public class TopicsController implements SpecialResponseInterface {
                 }
             }
 
-            mailService.sendEmail(topicModel);
+//            mailService.sendEmail(topicModel);
 
             topicsService.saveTopic(topicEntity);
             responseJson.put("message", "Topic created successfully");
@@ -302,7 +308,7 @@ public class TopicsController implements SpecialResponseInterface {
                     }
                 }
 
-                mailService.sendEmail(topicModel);
+//                mailService.sendEmail(topicModel);
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");
@@ -437,6 +443,9 @@ public class TopicsController implements SpecialResponseInterface {
             topicModel.setAuthor(topic.getAuthor());
             topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
             topicModel.setVisits(topic.getVisits());
+            if(topic.getCloseDate() != null && !topic.getCloseDate().isBlank()) {
+                topicModel.setCloseDate(topic.getCloseDate());
+            }
             topicModel.setStatus(topic.getStatus());
             topicsModelList.add(topicModel);
         });
