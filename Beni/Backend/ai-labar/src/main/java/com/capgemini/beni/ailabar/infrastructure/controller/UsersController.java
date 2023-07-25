@@ -35,7 +35,7 @@ public class UsersController implements SpecialResponseInterface {
         JSONObject responseJson = new JSONObject();
 
         if (userModel.getUser().isBlank() || userModel.getPassword().isBlank() || userModel.getEmail().isBlank()
-            || userModel.getGender().isBlank() || userModel.getPhoto().isBlank()) {
+            || userModel.getGender().isBlank()) {
             responseJson.put("message", "All data is required to create a new user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
