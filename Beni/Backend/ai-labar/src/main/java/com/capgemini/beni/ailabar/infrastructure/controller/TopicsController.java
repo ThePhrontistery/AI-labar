@@ -161,7 +161,9 @@ public class TopicsController implements SpecialResponseInterface {
                 }
             }
 
-            mailService.sendEmail(topicModel);
+            if(topicsService.checkMailActivate()) {
+                mailService.sendEmail(topicModel);
+            }
 
             topicsService.saveTopic(topicEntity);
             responseJson.put("message", "Topic created successfully");
@@ -258,7 +260,9 @@ public class TopicsController implements SpecialResponseInterface {
                     }
                 }
 
-                mailService.sendEmail(topicModel);
+                if(topicsService.checkMailActivate()) {
+                    mailService.sendEmail(topicModel);
+                }
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");

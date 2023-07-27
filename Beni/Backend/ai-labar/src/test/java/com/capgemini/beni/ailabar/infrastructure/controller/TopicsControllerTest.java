@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -426,7 +427,7 @@ class TopicsControllerTest {
     }
 
     @Test
-    void testCreateTopic_InternalServerError_ReturnsInternalServerError() {
+    void testCreateTopic_InternalServerError_ReturnsInternalServerError() throws IOException {
         OptionsData option1 = new OptionsData("Option 1", 0);
         OptionsData option2 = new OptionsData("Option 2", 0);
         List<OptionsData> options = Arrays.asList(option1, option2);
@@ -446,6 +447,7 @@ class TopicsControllerTest {
         when(usersService.checkToken(topicModel.getUser(), topicModel.getToken())).thenReturn(true);
         when(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
+        when(topicsService.checkMailActivate()).thenReturn(true);
         doThrow(new NullPointerException("Members not found in the database")).when(mailService).sendEmail(topicModel);
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.createTopic(topicModel);
@@ -455,12 +457,13 @@ class TopicsControllerTest {
         verify(usersService, times(1)).checkToken(topicModel.getUser(), topicModel.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser());
         verify(topicsService, times(1)).initiateVoting(topicModel.getType(), topicModel.getOptions());
+        verify(topicsService, times(1)).checkMailActivate();
         verify(mailService, times(1)).sendEmail(topicModel);
         verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
     @Test
-    void testCreateTopic_ValidInput_ReturnsOk() {
+    void testCreateTopic_ValidInput_ReturnsOk() throws IOException {
         OptionsData option1 = new OptionsData("Option 1", 0);
         OptionsData option2 = new OptionsData("Option 2", 0);
         List<OptionsData> options = Arrays.asList(option1, option2);
@@ -481,6 +484,7 @@ class TopicsControllerTest {
         when(usersService.checkToken(topicModel.getUser(), topicModel.getToken())).thenReturn(true);
         when(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
+        when(topicsService.checkMailActivate()).thenReturn(true);
         doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
         doNothing().when(mailService).sendEmail(topicModel);
 
@@ -491,8 +495,9 @@ class TopicsControllerTest {
         verify(usersService, times(1)).checkToken(topicModel.getUser(), topicModel.getToken());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser());
         verify(topicsService, times(1)).initiateVoting(topicModel.getType(), topicModel.getOptions());
-        verify(topicsService, times(1)).saveTopic(any(TopicsEntity.class));
+        verify(topicsService, times(1)).checkMailActivate();
         verify(mailService, times(1)).sendEmail(topicModel);
+        verify(topicsService, times(1)).saveTopic(any(TopicsEntity.class));
         verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
@@ -860,7 +865,7 @@ class TopicsControllerTest {
     }
 
     @Test
-    void testEditTopic_InternalServerError_ReturnsInternalServerError() {
+    void testEditTopic_InternalServerError_ReturnsInternalServerError() throws IOException {
         OptionsData option1 = new OptionsData("Option 1", 0);
         OptionsData option2 = new OptionsData("Option 2", 0);
         List<OptionsData> options = Arrays.asList(option1, option2);
@@ -896,6 +901,7 @@ class TopicsControllerTest {
         when(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions())).thenReturn("[\"Option 1\", \"Option 2\"]");
         when(topicsService.findTopicsEntityById(topicModel.getId())).thenReturn(topicEntity);
+        when(topicsService.checkMailActivate()).thenReturn(true);
         doThrow(new NullPointerException("Members not found in the database")).when(mailService).sendEmail(topicModel);
 
         ResponseEntity<SpecialResponse> actualResponse = topicsController.editTopic(topicModel);
@@ -907,12 +913,13 @@ class TopicsControllerTest {
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser());
         verify(topicsService, times(1)).initiateVoting(topicModel.getType(), topicModel.getOptions());
         verify(topicsService, times(1)).findTopicsEntityById(topicModel.getId());
+        verify(topicsService, times(1)).checkMailActivate();
         verify(mailService, times(1)).sendEmail(topicModel);
         verifyNoMoreInteractions(usersService, topicsService, mailService);
     }
 
     @Test
-    void testEditTopic_AllDataProvided_TopicEditedSuccessfully() {
+    void testEditTopic_AllDataProvided_TopicEditedSuccessfully() throws IOException {
         OptionsData option1 = new OptionsData("Option 1", 0);
         OptionsData option2 = new OptionsData("Option 2", 0);
         List<OptionsData> options = Arrays.asList(option1, option2);
@@ -949,6 +956,7 @@ class TopicsControllerTest {
         when(topicsService.findTopicsEntityById(topicModel.getId())).thenReturn(topicEntity);
         when(topicsService.existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser())).thenReturn(false);
         when(topicsService.initiateVoting(topicModel.getType(), topicModel.getOptions())).thenReturn("{\"Option 1\": 1, \"Option 2\": 2}");
+        when(topicsService.checkMailActivate()).thenReturn(true);
         doNothing().when(topicsService).saveTopic(any(TopicsEntity.class));
         doNothing().when(mailService).sendEmail(topicModel);
 
@@ -961,6 +969,7 @@ class TopicsControllerTest {
         verify(topicsService, times(1)).findTopicsEntityById(topicModel.getId());
         verify(topicsService, times(1)).existsByTitleAndAuthor(topicModel.getTitle().strip(), topicModel.getUser());
         verify(topicsService, times(1)).initiateVoting(topicModel.getType(), topicModel.getOptions());
+        verify(topicsService, times(1)).checkMailActivate();
         verify(mailService, times(1)).sendEmail(topicModel);
         verify(topicsService, times(1)).saveTopic(topicEntity);
         verifyNoMoreInteractions(usersService, topicsService, mailService);

@@ -6,8 +6,11 @@ import com.capgemini.beni.ailabar.infrastructure.utils.Constants;
 import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,10 +18,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class TopicsService {
     private final TopicsRepository topicsRepository;
+    private final Properties properties;
 
     @Autowired
-    public TopicsService(TopicsRepository topicsRepository) {
+    public TopicsService(TopicsRepository topicsRepository, @Value("${activate.mail}") String activateMailProperty) throws IOException {
         this.topicsRepository = topicsRepository;
+        this.properties = new Properties();
+        properties.load(new StringReader("activate.mail=" + activateMailProperty));
     }
 
     public Boolean login(String user, String password) {
@@ -27,10 +33,6 @@ public class TopicsService {
 
     public List<TopicsEntity> loadTopics(String user) {
         return topicsRepository.findByUser(user);
-    }
-
-    public TopicsEntity openTopic(Integer id) {
-        return topicsRepository.findTopicsEntityById(id);
     }
 
     public void saveTopic(TopicsEntity topicEntity) {
@@ -74,6 +76,10 @@ public class TopicsService {
 
         Gson gson = new Gson();
         return gson.toJson(optionsDataList);
+    }
+
+    public boolean checkMailActivate() {
+        return !"false".equals(properties.getProperty("activate.mail"));
     }
     
     public TopicsEntity findTopicByIdAndUser(Integer id, String user) {

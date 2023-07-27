@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -32,6 +33,9 @@ class TopicsServiceTest {
     void setUp() {
         Mockito.reset(topicsRepository);
     }
+
+    @Value("${activate.mail}")
+    private String activateMailProperty;
 
     @Test
     void testLogin() {
@@ -60,20 +64,6 @@ class TopicsServiceTest {
 
         assertEquals(expectedTopics, result);
         verify(topicsRepository, times(1)).findByUser(user);
-        verifyNoMoreInteractions(topicsRepository);
-    }
-
-    @Test
-    void testOpenTopic() {
-        Integer id = 1;
-        TopicsEntity expectedEntity = new TopicsEntity();
-
-        when(topicsRepository.findTopicsEntityById(id)).thenReturn(expectedEntity);
-
-        TopicsEntity result = topicsService.openTopic(id);
-
-        assertEquals(expectedEntity, result);
-        verify(topicsRepository, times(1)).findTopicsEntityById(id);
         verifyNoMoreInteractions(topicsRepository);
     }
 
@@ -193,6 +183,12 @@ class TopicsServiceTest {
 
         String expected = "[{\"option\":\"Opción 1\",\"votes\":0},{\"option\":\"Opción 2\",\"votes\":0}]";
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testCheckMailActivate() {
+        boolean result = topicsService.checkMailActivate();
+        assertTrue(result);
     }
 
     @Test
