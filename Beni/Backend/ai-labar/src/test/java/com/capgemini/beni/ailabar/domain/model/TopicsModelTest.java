@@ -114,6 +114,12 @@ class TopicsModelTest {
     }
 
     @Test
+    void testCanVoteProperty() {
+        topicsModel.setCanVote(true);
+        assertEquals(true, topicsModel.getCanVote());
+    }
+
+    @Test
     void testVotationProperty() {
         List<String> votation = Arrays.asList("Option 1", "Option 2");
         topicsModel.setVotation(votation);

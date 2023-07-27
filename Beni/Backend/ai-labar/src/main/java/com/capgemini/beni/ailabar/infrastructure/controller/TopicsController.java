@@ -97,6 +97,7 @@ public class TopicsController implements SpecialResponseInterface {
             topicModel.setAuthor(topic.getAuthor());
             topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
             topicModel.setVisits(topic.getVisits());
+            topicModel.setCanVote(topic.getVotedBy() == null || !containsExactMatch(Collections.singletonList(topic.getVotedBy()), userDto.getUser()));
             if(topic.getCloseDate() != null && !topic.getCloseDate().isBlank()) {
                 topicModel.setCloseDate(topic.getCloseDate());
             }
@@ -108,56 +109,6 @@ public class TopicsController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(topicsModelList, responseJson), HttpStatus.OK);
     }
 
-    @PostMapping("openTopic")
-    public ResponseEntity<SpecialResponse> openTopic(@RequestBody TopicsModel topicModel) {JSONObject responseJson = new JSONObject();
-
-        if(Boolean.FALSE.equals(usersService.checkToken(topicModel.getUser(), topicModel.getToken()))) {
-            responseJson.put("message", "Unauthorized user");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
-        }
-
-        TopicsEntity topicEntity = topicsService.getTopicForEdit(topicModel.getId());
-
-        if(topicEntity == null) {
-            responseJson.put("message", "There is no topic with that id");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-        }
-
-        if(topicEntity.getStatus().equals(Constants.STATUS_CLOSED)) {
-            responseJson.put("message", "The topic is closed");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-        }
-
-        if(!topicEntity.getAuthor().equals(topicModel.getUser())) {
-            responseJson.put("message", "The user is not the author of the topic");
-            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-        }
-
-        topicEntity.setVisits(topicEntity.getVisits() + 1);
-        topicsService.saveTopic(topicEntity);
-
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<String>>() {}.getType();
-
-        TopicsModel topicsModel = new TopicsModel();
-        topicsModel.setId(topicEntity.getId());
-        topicsModel.setTitle(topicEntity.getTitle());
-        topicsModel.setType(topicEntity.getType());
-        topicsModel.setQuestion(topicEntity.getQuestion());
-        topicsModel.setOptionsDataList(getOptionsWithoutVotes(topicEntity.getOptions()));
-        topicsModel.setAuthor(topicEntity.getAuthor());
-        topicsModel.setMembers(gson.fromJson(topicEntity.getMembers(), listType));
-        if(topicEntity.getCloseDate() != null && !topicEntity.getCloseDate().isBlank()) {
-            topicsModel.setCloseDate(topicEntity.getCloseDate());
-        }
-        topicsModel.setVisits(topicEntity.getVisits());
-        topicsModel.setStatus(topicEntity.getStatus());
-
-        responseJson.put("message", "OK");
-        return new ResponseEntity<>(specialResponse(topicsModel, responseJson), HttpStatus.OK);
-    }
-
-    /* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente *//* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente */
     @PostMapping("/createTopic")
     public ResponseEntity<SpecialResponse> createTopic(@RequestBody TopicsModel topicModel) {
         try {
@@ -210,7 +161,7 @@ public class TopicsController implements SpecialResponseInterface {
                 }
             }
 
-//            mailService.sendEmail(topicModel);
+            mailService.sendEmail(topicModel);
 
             topicsService.saveTopic(topicEntity);
             responseJson.put("message", "Topic created successfully");
@@ -222,7 +173,6 @@ public class TopicsController implements SpecialResponseInterface {
         }
     }
 
-    /* Hay que trabajar las fechas de cierre y crear una forma de que se cierren automáticamente */
     @PutMapping("/editTopic")
     public ResponseEntity<SpecialResponse> editTopic(@RequestBody TopicsModel topicModel) {
         try {
@@ -308,7 +258,7 @@ public class TopicsController implements SpecialResponseInterface {
                     }
                 }
 
-//                mailService.sendEmail(topicModel);
+                mailService.sendEmail(topicModel);
 
                 topicsService.saveTopic(topicEntity);
                 responseJson.put("message", "Topic edited successfully");
@@ -499,6 +449,7 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
 
+        topicEntity.setVisits(topicEntity.getVisits() + 1);
         topicEntity.setOptions(vote);
 
         if(topicEntity.getVotedBy() == null) {
@@ -538,6 +489,9 @@ public class TopicsController implements SpecialResponseInterface {
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
+        topicEntity.setVisits(topicEntity.getVisits() + 1);
+        topicsService.saveTopic(topicEntity);
+
         Gson gson = new Gson();
         List<OptionsData> optionsDataList = gson.fromJson(topicEntity.getOptions(), new TypeToken<List<OptionsData>>() {}.getType());
         topicModel.setOptionsDataList(optionsDataList);
@@ -552,6 +506,10 @@ public class TopicsController implements SpecialResponseInterface {
         } catch (IllegalArgumentException e) {
             return "KO";
         }
+    }
+
+    private boolean containsExactMatch(List<String> userList, String userToFind) {
+        return userList.stream().anyMatch(user -> user.equals(userToFind));
     }
 
     private boolean validateOptionsDataList(List<OptionsData> list) {

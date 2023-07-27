@@ -26,5 +26,7 @@ public class TopicsModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String token;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean canVote;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> votation;
 }
