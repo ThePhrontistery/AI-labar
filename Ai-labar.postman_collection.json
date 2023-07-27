@@ -401,34 +401,6 @@
 					"response": []
 				},
 				{
-					"name": "openTopic",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 13,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/topics/openTopic",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"topics",
-								"openTopic"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "createTopic",
 					"request": {
 						"method": "POST",
@@ -622,7 +594,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 16,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
+							"raw": "{\r\n    \"id\": 12,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
