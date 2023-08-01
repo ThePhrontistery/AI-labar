@@ -36,6 +36,9 @@ public interface  UsersRepository extends JpaRepository<UsersEntity, String> {
     @Query("SELECT u.email FROM UsersEntity u WHERE u.user IN :userList")
     List<String> getEmailsByUserList(@Param("userList") List<String> userList);
 
+    @Query("SELECT u.photo FROM UsersEntity u WHERE u.user = :user")
+    String getUserPhotoByOption(@Param("user") String user);
+
     @Override
     <S extends UsersEntity> S save(S entity);
 

@@ -15,4 +15,5 @@ public interface UsersRepositoryPort {
     List<String> getEmailsByUserList(List<String> userList);
     <S extends UsersEntity> S save(S entity);
     List<UsersEntity> findAll();
+    String getUserPhotoByOption(String option);
 }

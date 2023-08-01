@@ -2,6 +2,7 @@ package com.capgemini.beni.ailabar.application.service;
 
 import com.capgemini.beni.ailabar.domain.port.UsersRepositoryPort;
 import com.capgemini.beni.ailabar.infrastructure.entity.UsersEntity;
+import com.capgemini.beni.ailabar.infrastructure.utils.OptionsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -57,5 +58,15 @@ public class UsersService {
 
     public UsersEntity findByUser(String user) {
         return usersRepository.findByUser(user);
+    }
+
+    public List<OptionsData> getUsersPhotos(List<OptionsData> optionsDataList) {
+        for (OptionsData optionData : optionsDataList) {
+            String userPhoto = usersRepository.getUserPhotoByOption(optionData.getOption());
+            if (userPhoto != null && !userPhoto.isEmpty()) {
+                optionData.setImage(userPhoto);
+            }
+        }
+        return optionsDataList;
     }
 }

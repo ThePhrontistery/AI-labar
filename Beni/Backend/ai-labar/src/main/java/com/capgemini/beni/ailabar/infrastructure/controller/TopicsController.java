@@ -138,8 +138,8 @@ public class TopicsController implements SpecialResponseInterface {
             }
             topicModel.setType(topicModel.getType());
 
-            if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString()) ||
-                    topicModel.getType().equals(Constants.TopicType.AS.toString())) && !validateOptionsDataList(topicModel.getOptions())) {
+            if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString()))
+                    && !validateOptionsDataList(topicModel.getOptions())) {
                 responseJson.put("message", "It is mandatory to send the images and options for this type of topic");
                 return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
             }
@@ -216,8 +216,8 @@ public class TopicsController implements SpecialResponseInterface {
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                 }
 
-                if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString()) ||
-                        topicModel.getType().equals(Constants.TopicType.AS.toString())) && !validateOptionsDataList(topicModel.getOptions())) {
+                if ((topicModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString())
+                        && !validateOptionsDataList(topicModel.getOptions()))) {
                     responseJson.put("message", "It is mandatory to send the images and options for this type of topic");
                     return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
                 }
@@ -498,6 +498,9 @@ public class TopicsController implements SpecialResponseInterface {
 
         Gson gson = new Gson();
         List<OptionsData> optionsDataList = gson.fromJson(topicEntity.getOptions(), new TypeToken<List<OptionsData>>() {}.getType());
+        if(topicEntity.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+            optionsDataList = usersService.getUsersPhotos(optionsDataList);
+        }
         topicModel.setOptionsDataList(optionsDataList);
 
         responseJson.put("message", topicEntity.getType());

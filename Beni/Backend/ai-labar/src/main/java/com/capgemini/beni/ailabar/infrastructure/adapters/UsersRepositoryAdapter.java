@@ -66,4 +66,9 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     public List<UsersEntity> findAll() {
         return usersRepository.findAll();
     }
+
+    @Override
+    public String getUserPhotoByOption(String option) {
+        return usersRepository.getUserPhotoByOption(option);
+    }
 }
