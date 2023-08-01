@@ -94,6 +94,9 @@ public class TopicsController implements SpecialResponseInterface {
             topicModel.setType(topic.getType());
             topicModel.setQuestion(topic.getQuestion());
             topicModel.setOptionsDataList(getOptionsWithoutVotes(topic.getOptions()));
+            if(topic.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                topicModel.setOptionsDataList(usersService.getUsersPhotos(topicModel.getOptionsDataList()));
+            }
             topicModel.setAuthor(topic.getAuthor());
             topicModel.setMembers(gson.fromJson(topic.getMembers(), listType));
             topicModel.setVisits(topic.getVisits());
