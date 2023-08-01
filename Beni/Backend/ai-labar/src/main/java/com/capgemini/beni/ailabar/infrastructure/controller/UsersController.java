@@ -34,8 +34,7 @@ public class UsersController implements SpecialResponseInterface {
     public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel userModel) {
         JSONObject responseJson = new JSONObject();
 
-        if (userModel.getUser().isBlank() || userModel.getPassword().isBlank() || userModel.getEmail().isBlank()
-            || userModel.getGender().isBlank()) {
+        if (userModel.getUser().isBlank() || userModel.getPassword().isBlank() || userModel.getEmail().isBlank()) {
             responseJson.put("message", "All data is required to create a new user");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
         }
@@ -48,6 +47,11 @@ public class UsersController implements SpecialResponseInterface {
         if (Boolean.TRUE.equals(usersService.existsByEmail(userModel.getEmail()))) {
             responseJson.put("message", "The email already exists");
             return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+        }
+
+        if (userModel.getGender() != null && !userModel.getUser().isBlank() && (!userModel.getGender().equals("H") && !userModel.getGender().equals("M"))) {
+                responseJson.put("message", "The gender must be equal to 'H' or 'M'");
+                return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
         }
 
         String hashedPassword = DigestUtils.sha256Hex(userModel.getPassword());

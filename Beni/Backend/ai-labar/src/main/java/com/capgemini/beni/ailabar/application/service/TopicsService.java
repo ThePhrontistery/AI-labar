@@ -66,7 +66,8 @@ public class TopicsService {
     public String initiateVoting(String type, List<OptionsData> list) {
         List<OptionsData> optionsDataList = list.stream()
                 .map(element -> {
-                    if (type.equals(Constants.TopicType.IMAGE_SINGLE.toString()) || type.equals(Constants.TopicType.IMAGE_MULTIPLE.toString())) {
+                    if (type.equals(Constants.TopicType.IMAGE_SINGLE.toString()) || type.equals(Constants.TopicType.IMAGE_MULTIPLE.toString()) ||
+                        type.equals(Constants.TopicType.AS.toString())) {
                         return new OptionsData(element.getImage(), element.getOption(), 0);
                     } else {
                         return new OptionsData(element.getOption(), 0);

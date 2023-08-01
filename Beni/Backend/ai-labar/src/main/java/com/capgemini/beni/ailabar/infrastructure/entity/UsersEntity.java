@@ -33,5 +33,6 @@ public class UsersEntity {
         this.password = usersModel.getPassword();
         this.email = usersModel.getEmail();
         this.gender = usersModel.getGender();
+        this.photo = usersModel.getPhoto();
     }
 }
