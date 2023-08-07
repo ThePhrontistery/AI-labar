@@ -3,9 +3,11 @@ package com.capgemini.ailabar.groups.infraestructure.adapters.out;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.groups.infraestructure.repositories.GroupsRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     private final GroupsRepository groupsRepository;
 
@@ -24,8 +26,28 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
+    public void editGroup(GroupsEntity groupsEntity) {
+        groupsRepository.save(groupsEntity);
+    }
+
+    @Override
+    public void deleteGroup(Integer id) {
+        groupsRepository.deleteById(id);
+    }
+
+    @Override
+    public List<GroupsEntity> getGroupsDatabase() {
+        return groupsRepository.findAll();
+    }
+
+    @Override
     public boolean checkAuthorization(String user, String token) {
         return groupsRepository.checkAuthorization(user, token);
+    }
+
+    @Override
+    public boolean checkByGroupIdAndAdmin(Integer id, String admin) {
+        return groupsRepository.checkByGroupIdAndAdmin(id, admin);
     }
 
     @Override
@@ -36,6 +58,11 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     @Override
     public GroupsEntity getGroupById(Integer id) {
         return groupsRepository.getGroupById(id);
+    }
+
+    @Override
+    public Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin) {
+        return groupsRepository.getGroupIdByGroupNameAndAdmin(groupName, admin);
     }
 
     @Override

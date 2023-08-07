@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SQLiteDialectTest {
     @Test
     void testSQLiteDialect() {
-        SQLiteDialect sqliteDialect = new SQLiteDialect();
+        SQLiteDialectConfiguration sqliteDialect = new SQLiteDialectConfiguration();
 
         assertEquals("integer", sqliteDialect.getTypeName(Types.BIT));
         assertEquals("tinyint", sqliteDialect.getTypeName(Types.TINYINT));
@@ -65,7 +65,7 @@ class SQLiteDialectTest {
 
     @Test
     void testGetLimitString() {
-        SQLiteDialect sqliteDialect = new SQLiteDialect();
+        SQLiteDialectConfiguration sqliteDialect = new SQLiteDialectConfiguration();
         String query = "SELECT * FROM table";
         boolean hasOffset = true;
 
@@ -76,7 +76,7 @@ class SQLiteDialectTest {
 
     @Test
     void testSupportsTemporaryTables() {
-        SQLiteDialect sqliteDialect = new SQLiteDialect();
+        SQLiteDialectConfiguration sqliteDialect = new SQLiteDialectConfiguration();
 
         boolean supportsTemporaryTables = sqliteDialect.supportsTemporaryTables();
 

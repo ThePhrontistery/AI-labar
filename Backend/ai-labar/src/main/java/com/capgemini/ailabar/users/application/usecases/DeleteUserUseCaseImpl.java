@@ -5,8 +5,7 @@ import com.capgemini.ailabar.users.domain.ports.in.DeleteUserUseCase;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -20,13 +19,13 @@ public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
     @Override
     public void deleteUser(UsersModel usersModel) {
         if(usersModel.getUser().isBlank() || usersModel.getToken().isBlank()) {
-            throw new DeleteUserException("User name and token are required to delete a user");
+            throw new DeleteUserException("User name and token are required to delete your account");
         }
 
         if(Boolean.FALSE.equals(usersRepositoryPort.checkAuthorization(usersModel.getUser(), usersModel.getToken()))) {
             throw new DeleteUserException("Unauthorized user");
         }
 
-        usersRepositoryPort.deleteUser(usersModel.getUser());
+        usersRepositoryPort.deleteUser(usersRepositoryPort.getUserByName(usersModel.getUser()).getId());
     }
 }

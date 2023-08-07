@@ -5,11 +5,12 @@ import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.*;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUseCase, DeleteUserUseCase,
+        GetUsersByMatchUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase {
+    private final LoginUseCase loginUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final EditUserUseCase editUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
@@ -17,9 +18,11 @@ public class UsersService {
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUsersDatabaseUseCase getUsersDatabaseUseCase;
 
-    public UsersService(CreateUserUseCase createUserUseCase, EditUserUseCase editUserUseCase,
-                        DeleteUserUseCase deleteUserUseCase, GetUsersByMatchUseCase getUsersByMatch,
-                        GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase) {
+    public UsersService(LoginUseCase loginUseCase, CreateUserUseCase createUserUseCase,
+                        EditUserUseCase editUserUseCase, DeleteUserUseCase deleteUserUseCase,
+                        GetUsersByMatchUseCase getUsersByMatch, GetAllUsersUseCase getAllUsersUseCase,
+                        GetUsersDatabaseUseCase getUsersDatabaseUseCase) {
+        this.loginUseCase = loginUseCase;
         this.createUserUseCase = createUserUseCase;
         this.editUserUseCase = editUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
@@ -28,6 +31,16 @@ public class UsersService {
         this.getUsersDatabaseUseCase = getUsersDatabaseUseCase;
     }
 
+    @Override
+    public String login(UsersModel usersModel) {
+        try {
+            return loginUseCase.login(usersModel);
+        } catch (LoginException loginException) {
+            throw loginException;
+        }
+    }
+
+    @Override
     public void createUser(UsersModel usersModel) {
         try {
             createUserUseCase.createUser(usersModel);
@@ -36,6 +49,7 @@ public class UsersService {
         }
     }
 
+    @Override
     public void editUser(UsersModel usersModel) {
         try {
             editUserUseCase.editUser(usersModel);
@@ -44,6 +58,7 @@ public class UsersService {
         }
     }
 
+    @Override
     public void deleteUser(UsersModel usersModel) {
         try {
             deleteUserUseCase.deleteUser(usersModel);
@@ -52,6 +67,7 @@ public class UsersService {
         }
     }
 
+    @Override
     public List<String> getUsersByMatch(UsersModel usersModel) {
         try {
             return this.getUsersByMatch.getUsersByMatch(usersModel);
@@ -60,6 +76,7 @@ public class UsersService {
         }
     }
 
+    @Override
     public List<String> getAllUsers(UsersModel usersModel) {
         try {
             return getAllUsersUseCase.getAllUsers(usersModel);
@@ -68,6 +85,7 @@ public class UsersService {
         }
     }
 
+    @Override
     public List<UsersEntity> getUsersDatabase() {
         try {
             return this.getUsersDatabaseUseCase.getUsersDatabase();

@@ -8,8 +8,8 @@ import org.hibernate.type.StringType;
 
 import java.sql.Types;
 
-public class SQLiteDialect extends Dialect {
-    public SQLiteDialect() {
+public class SQLiteDialectConfiguration extends Dialect {
+    public SQLiteDialectConfiguration() {
         registerColumnType(Types.BIT, "integer");
         registerColumnType(Types.TINYINT, "tinyint");
         registerColumnType(Types.SMALLINT, "smallint");

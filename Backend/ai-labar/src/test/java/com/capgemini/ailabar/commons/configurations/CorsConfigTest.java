@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CorsConfigTest {
     @Test
     void testCorsFilterBean() throws Exception {
-        CorsConfig corsConfig = new CorsConfig();
+        CorsConfiguration corsConfig = new CorsConfiguration();
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(corsConfig).build();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/all").contentType(MediaType.APPLICATION_JSON))
@@ -47,7 +47,7 @@ class CorsConfigTest {
 
     @Test
     void testConfigureMessageConverters() {
-        CorsConfig corsConfig = new CorsConfig();
+        CorsConfiguration corsConfig = new CorsConfiguration();
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
         corsConfig.configureMessageConverters(converters);
         assertFalse(converters.isEmpty());

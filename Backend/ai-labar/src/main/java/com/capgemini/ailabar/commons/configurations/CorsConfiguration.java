@@ -15,7 +15,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @EnableSwagger2
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")

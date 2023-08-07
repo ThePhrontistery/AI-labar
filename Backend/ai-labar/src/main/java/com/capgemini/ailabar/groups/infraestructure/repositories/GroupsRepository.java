@@ -10,12 +10,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GroupsRepository extends JpaRepository<GroupsEntity, String> {
+public interface GroupsRepository extends JpaRepository<GroupsEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.token = :token")
     boolean checkAuthorization(@Param("user") String user, @Param("token") String token);
 
     @Query("SELECT g FROM GroupsEntity g WHERE g.id = :id")
     GroupsEntity getGroupById(@Param("id") Integer id);
+
+    @Query("SELECT g.id FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
+    Integer getGroupIdByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
 
     @Query("SELECT g FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     GroupsEntity getGroupByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
@@ -26,7 +29,6 @@ public interface GroupsRepository extends JpaRepository<GroupsEntity, String> {
     @Query("SELECT CASE WHEN COUNT(g) > 0 THEN true ELSE false END FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     boolean checkByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
 
-    @Modifying
-    @Query("DELETE FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
-    void deleteByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
+    @Query("SELECT CASE WHEN COUNT(g) > 0 THEN true ELSE false END FROM GroupsEntity g WHERE g.id = :id AND g.admin = :admin")
+    boolean checkByGroupIdAndAdmin(@Param("id") Integer id, @Param("admin") String admin);
 }

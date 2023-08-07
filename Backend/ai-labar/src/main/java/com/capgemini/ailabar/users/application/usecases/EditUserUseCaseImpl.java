@@ -7,8 +7,7 @@ import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional

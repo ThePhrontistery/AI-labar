@@ -3,7 +3,6 @@ package com.capgemini.ailabar.users.infraestructure.adapters.out;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import com.capgemini.ailabar.users.infraestructure.repositories.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,14 +11,18 @@ import java.util.List;
 public class UsersRepositoryAdapter implements UsersRepositoryPort {
     private final UsersRepository usersRepository;
 
-    @Autowired
     public UsersRepositoryAdapter(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 
     @Override
+    public boolean login(String user, String password) {
+        return usersRepository.checkLogin(user, password);
+    }
+
+    @Override
     public void createUser(UsersEntity usersEntity) {
-        this.usersRepository.save(usersEntity);
+        usersRepository.save(usersEntity);
     }
 
     @Override
@@ -28,8 +31,8 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public void deleteUser(String user) {
-        usersRepository.deleteUserByName(user);
+    public void deleteUser(Integer id) {
+        usersRepository.deleteById(id);
     }
 
     @Override

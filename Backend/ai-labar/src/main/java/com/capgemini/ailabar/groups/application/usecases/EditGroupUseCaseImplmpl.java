@@ -6,7 +6,11 @@ import com.capgemini.ailabar.groups.domain.ports.in.EditGroupUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.google.gson.Gson;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
     private final GroupsRepositoryPort groupsRepositoryPort;
 
@@ -26,20 +30,22 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
             throw new EditGroupException("Unauthorized user");
         }
 
-        GroupsEntity groupEntity = groupsRepositoryPort.getGroupById(groupsModel.getId());
+        GroupsEntity groupsEntity = groupsRepositoryPort.getGroupById(groupsModel.getId());
 
-        if(!groupEntity.getAdmin().equals(groupsModel.getUser())) {
+        if(!groupsEntity.getAdmin().equals(groupsModel.getUser())) {
             throw new EditGroupException("The user is not the group administrator");
         }
 
-        groupEntity.setMembers(new Gson().toJson(groupsModel.getMembers()));
+        groupsEntity.setMembers(new Gson().toJson(groupsModel.getMembers()));
 
         if(groupsModel.getNewGroupName() != null && !groupsModel.getNewGroupName().isBlank()) {
             if(Boolean.TRUE.equals(groupsRepositoryPort.checkByGroupNameAndAdmin(groupsModel.getNewGroupName().strip(), groupsModel.getUser()))) {
                 throw new EditGroupException("The user already has a group with that name");
             } else {
-                groupEntity.setGroupName(groupsModel.getNewGroupName().strip());
+                groupsEntity.setGroupName(groupsModel.getNewGroupName().strip());
             }
         }
+
+        groupsRepositoryPort.editGroup(groupsEntity);
     }
 }

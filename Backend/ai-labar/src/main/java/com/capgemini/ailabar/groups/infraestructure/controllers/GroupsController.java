@@ -2,10 +2,7 @@ package com.capgemini.ailabar.groups.infraestructure.controllers;
 
 import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.EditGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.GetGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsByUserException;
+import com.capgemini.ailabar.groups.domain.exceptions.*;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.application.services.GroupsService;
@@ -65,59 +62,22 @@ public class GroupsController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(groupsList, responseJson), HttpStatus.OK);
     }
 
-//    @DeleteMapping("/deleteGroup")
-//    public ResponseEntity<SpecialResponse> deleteGroup(@RequestBody GroupsModel groupModel) {
-//        JSONObject responseJson = new JSONObject();
-//
-//        if(groupModel.getGroupName().isBlank() || groupModel.getUser().isBlank() || groupModel.getToken().isBlank()) {
-//            responseJson.put("message", "Group name and administrator are required to delete a group");
-//            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.BAD_GATEWAY);
-//        }
-//
-//        if(Boolean.FALSE.equals(usersService.checkAuthorization(groupModel.getUser(), groupModel.getToken()))) {
-//            responseJson.put("message", "Unauthorized user");
-//            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.NOT_FOUND);
-//        }
-//
-//        if(Boolean.FALSE.equals(groupsService.existsByGroupNameAndAdmin(groupModel.getGroupName().strip(), groupModel.getUser()))) {
-//            responseJson.put("message", "The user does not have a group with that name");
-//            return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-//        }
-//
-//        groupsService.deleteGroup(groupModel.getGroupName().strip(), groupModel.getUser());
-//        responseJson.put("message", "Group deleted successfully");
-//        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
-//    }
-//
-//    /* Inicio métodos sólo para pruebas */
-//    @GetMapping("/getAllGroupsData")
-//    public ResponseEntity<SpecialResponse> getAllGroupsData() {
-//        JSONObject responseJson = new JSONObject();
-//
-//        List<GroupsEntity> groupsList = groupsService.getAllGroupsData();
-//        List<GroupsModel> groupsModelList = new ArrayList<>();
-//
-//        if (groupsList.isEmpty()) {
-//            responseJson.put("message", "There are no groups in the database");
-//            return new ResponseEntity<>(specialResponse(groupsModelList, responseJson), HttpStatus.OK);
-//        }
-//
-//        for (GroupsEntity groupEntity : groupsList) {
-//            GroupsModel groupModel = new GroupsModel();
-//            groupModel.setId(groupEntity.getId());
-//            groupModel.setGroupName(groupEntity.getGroupName());
-//
-//            Gson gson = new Gson();
-//            Type listType = new TypeToken<List<String>>() {}.getType();
-//            groupModel.setMembers(gson.fromJson(groupEntity.getMembers(), listType));
-//            groupModel.setAdmin(groupEntity.getAdmin());
-//
-//            groupsModelList.add(groupModel);
-//        }
-//
-//        responseJson.put("message", "OK");
-//        return new ResponseEntity<>(specialResponse(groupsModelList, responseJson), HttpStatus.OK);
-//    }
+    @DeleteMapping("/deleteGroup")
+    public ResponseEntity<SpecialResponse> deleteGroup(@RequestBody GroupsModel groupModel) {
+        JSONObject responseJson = new JSONObject();
+        groupsService.deleteGroup(groupModel);
+        responseJson.put("message", "Group deleted successfully");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    /* Inicio métodos sólo para pruebas */
+    @GetMapping("/getGroupsDatabase")
+    public ResponseEntity<SpecialResponse> getGroupsDatabase() {
+        JSONObject responseJson = new JSONObject();
+        List<GroupsEntity> groupsList = groupsService.getGroupsDatabase();
+        responseJson.put("message", "OK");
+        return new ResponseEntity<>(specialResponse(groupsList, responseJson), HttpStatus.OK);
+    }
     /* Fin métodos sólo para pruebas */
 
     @ExceptionHandler(CreateGroupException.class)
@@ -145,6 +105,20 @@ public class GroupsController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerGetGroupsByUserException (GetGroupsByUserException getGroupsByUserException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", getGroupsByUserException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DeleteGroupException.class)
+    ResponseEntity<SpecialResponse> handlerDeleteGroupException (DeleteGroupException deleteGroupException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", deleteGroupException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(GetGroupsDatabaseException.class)
+    ResponseEntity<SpecialResponse> handlerGetGroupsDatabaseException (GetGroupsDatabaseException getGroupsDatabaseException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", getGroupsDatabaseException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -12,12 +12,11 @@ import java.util.List;
 @Service
 @Transactional
 public class MailService {
-    private final UsersService usersService;
+//    private final UsersService usersService;
     private final JavaMailSender javaMailSender;
 
     @Autowired
-    public MailService(UsersService usersService, JavaMailSender javaMailSender) {
-        this.usersService = usersService;
+    public MailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
 

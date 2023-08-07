@@ -10,17 +10,21 @@ import java.util.List;
 
 @Repository
 public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.password = :password")
-    boolean existsByUserAndPassword(@Param("user") String user, @Param("password") String password);
-
     @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user OR t.members LIKE CONCAT('%', :user, '%')")
-    List<TopicsEntity> findByUser(@Param("user") String user);
+    List<TopicsEntity> loadTopicsByUser(@Param("user") String user);
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
-    TopicsEntity findTopicsEntityById(@Param("id") Integer id);
+    TopicsEntity getTopicsEntityById(@Param("id") Integer id);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.token = :token")
+    boolean checkAuthorization(@Param("user") String user, @Param("token") String token);
 
     @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM TopicsEntity t WHERE t.title = :title AND t.author = :user")
-    Boolean existsByTitleAndAuthor(@Param("title") String title, @Param("user") String user);
+    boolean checkByTitleAndAuthor(@Param("title") String title, @Param("user") String user);
+
+
+
+
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity findByIdIfExists(@Param("id") Integer id);

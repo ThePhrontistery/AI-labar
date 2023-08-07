@@ -1,88 +1,146 @@
 package com.capgemini.ailabar.topics.application.services;
 
-import com.capgemini.ailabar.commons.utils.Constants;
-import com.capgemini.ailabar.commons.utils.OptionsData;
+import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsDatabaseException;
+import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsDatabaseUseCase;
+import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
+import com.capgemini.ailabar.topics.domain.exceptions.*;
+import com.capgemini.ailabar.topics.domain.models.TopicsModel;
+import com.capgemini.ailabar.topics.domain.ports.in.*;
 import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
-import com.capgemini.ailabar.topics.infraestructure.repositories.TopicsRepository;
-import com.google.gson.Gson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.capgemini.ailabar.users.domain.models.UsersModel;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TopicsService {
-    private final TopicsRepository topicsRepository;
-    private final Properties properties;
+public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, EditTopicUseCase, CloseTopicUseCase,
+        ReOpenTopicUseCase, DeleteTopicUseCase, GetTopicsDatabaseUseCase {
+    private final LoadTopicUseCase loadTopicUseCase;
+    private final CreateTopicUseCase createTopicUseCase;
+    private final EditTopicUseCase editTopicUseCase;
+    private final CloseTopicUseCase closeTopicUseCase;
+    private final ReOpenTopicUseCase reOpenTopicUseCase;
+    private final DeleteTopicUseCase deleteTopicUseCase;
+    private final GetTopicsDatabaseUseCase getTopicsDatabaseUseCase;
 
-    @Autowired
-    public TopicsService(TopicsRepository topicsRepository, @Value("${activate.mail}") String activateMailProperty) throws IOException {
-        this.topicsRepository = topicsRepository;
-        this.properties = new Properties();
-        properties.load(new StringReader("activate.mail=" + activateMailProperty));
+    public TopicsService(LoadTopicUseCase loadTopicUseCase, CreateTopicUseCase createTopicUseCase,
+                         EditTopicUseCase editTopicUseCase, CloseTopicUseCase closeTopicUseCase,
+                         ReOpenTopicUseCase reOpenTopicUseCase, DeleteTopicUseCase deleteTopicUseCase,
+                         GetTopicsDatabaseUseCase getTopicsDatabaseUseCase) {
+        this.loadTopicUseCase = loadTopicUseCase;
+        this.createTopicUseCase = createTopicUseCase;
+        this.editTopicUseCase = editTopicUseCase;
+        this.closeTopicUseCase = closeTopicUseCase;
+        this.reOpenTopicUseCase = reOpenTopicUseCase;
+        this.deleteTopicUseCase = deleteTopicUseCase;
+        this.getTopicsDatabaseUseCase = getTopicsDatabaseUseCase;
     }
 
-    public Boolean login(String user, String password) {
-        return topicsRepository.existsByUserAndPassword(user, password);
+    @Override
+    public List<TopicsEntity> loadTopics(UsersModel usersModel) {
+        try {
+            return loadTopicUseCase.loadTopics(usersModel);
+        } catch (LoadTopicException loadTopicsException) {
+            throw loadTopicsException;
+        }
     }
 
-    public List<TopicsEntity> loadTopics(String user) {
-        return topicsRepository.findByUser(user);
+    @Override
+    public void createTopic(TopicsModel topicsModel) {
+        try {
+            createTopicUseCase.createTopic(topicsModel);
+        } catch (CreateTopicException createTopicsException) {
+            throw createTopicsException;
+        }
     }
 
-    public void saveTopic(TopicsEntity topicEntity) {
-        topicsRepository.save(topicEntity);
+    @Override
+    public void editTopic(TopicsModel topicsModel) {
+        try {
+            editTopicUseCase.editTopic(topicsModel);
+        } catch (EditTopicException editTopicsException) {
+            throw editTopicsException;
+        }
     }
 
-    public TopicsEntity getTopicForEdit (Integer id) {
-        return topicsRepository.findByIdIfExists(id);
+    @Override
+    public void closeTopic(TopicsModel topicsModel) {
+        try {
+            closeTopicUseCase.closeTopic(topicsModel);
+        } catch (CloseTopicException closeTopicsException) {
+            throw closeTopicsException;
+        }
     }
 
-    public void deleteTopic(Integer id) {
-        topicsRepository.deleteById(id);
+    @Override
+    public void reOpenTopic(TopicsModel topicsModel) {
+        try {
+            reOpenTopicUseCase.reOpenTopic(topicsModel);
+        } catch (ReOpenTopicException reOpenTopicsException) {
+            throw reOpenTopicsException;
+        }
     }
 
-    public List<TopicsEntity> getAllTopicsData() {
-        return topicsRepository.findAll();
+    @Override
+    public void deleteTopic(TopicsModel topicsModel) {
+        try {
+            deleteTopicUseCase.deleteTopic(topicsModel);
+        } catch (DeleteTopicException deleteTopicException) {
+            throw deleteTopicException;
+        }
     }
 
-    public Boolean existsById (Integer id) {
-        return topicsRepository.existsById(id);
+    @Override
+    public List<TopicsEntity> getTopicsDatabase() {
+        try {
+            return getTopicsDatabaseUseCase.getTopicsDatabase();
+        } catch (GetGroupsDatabaseException getGroupsDatabaseException) {
+            throw getGroupsDatabaseException;
+        }
     }
 
-    public TopicsEntity findTopicsEntityById (Integer id) {
-        return topicsRepository.findTopicsEntityById(id);
-    }
-
-    public Boolean existsByTitleAndAuthor(String title, String author) {
-        return topicsRepository.existsByTitleAndAuthor(title, author);
-    }
-
-    public String initiateVoting(String type, List<OptionsData> list) {
-        List<OptionsData> optionsDataList = list.stream()
-                .map(element -> {
-                    if (type.equals(Constants.TopicType.IMAGE_SINGLE.toString()) || type.equals(Constants.TopicType.IMAGE_MULTIPLE.toString())) {
-                        return new OptionsData(element.getImage(), element.getOption(), 0);
-                    } else {
-                        return new OptionsData(element.getOption(), 0);
-                    }
-                })
-                .collect(Collectors.toList());
-
-        Gson gson = new Gson();
-        return gson.toJson(optionsDataList);
-    }
-
-    public boolean checkMailActivate() {
-        return !"false".equals(properties.getProperty("activate.mail"));
-    }
-    
-    public TopicsEntity findTopicByIdAndUser(Integer id, String user) {
-        return topicsRepository.findTopicByIdAndUser(id, user);
-    }
+//    public Boolean login(String user, String password) {
+//        return topicsRepository.existsByUserAndPassword(user, password);
+//    }
+//
+//    public List<TopicsEntity> loadTopics(String user) {
+//        return topicsRepository.findByUser(user);
+//    }
+//
+//    public void saveTopic(TopicsEntity topicEntity) {
+//        topicsRepository.save(topicEntity);
+//    }
+//
+//    public TopicsEntity getTopicForEdit (Integer id) {
+//        return topicsRepository.findByIdIfExists(id);
+//    }
+//
+//    public void deleteTopic(Integer id) {
+//        topicsRepository.deleteById(id);
+//    }
+//
+//    public List<TopicsEntity> getAllTopicsData() {
+//        return topicsRepository.findAll();
+//    }
+//
+//    public Boolean existsById (Integer id) {
+//        return topicsRepository.existsById(id);
+//    }
+//
+//    public TopicsEntity findTopicsEntityById (Integer id) {
+//        return topicsRepository.findTopicsEntityById(id);
+//    }
+//
+//    public Boolean existsByTitleAndAuthor(String title, String author) {
+//        return topicsRepository.existsByTitleAndAuthor(title, author);
+//    }
+//
+//
+//
+//
+//
+//    public TopicsEntity findTopicByIdAndUser(Integer id, String user) {
+//        return topicsRepository.findTopicByIdAndUser(id, user);
+//    }
 }

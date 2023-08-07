@@ -6,9 +6,11 @@ import com.capgemini.ailabar.groups.domain.ports.in.CreateGroupUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.google.gson.Gson;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class CreateGroupUseCaseImpl implements CreateGroupUseCase {
     private final GroupsRepositoryPort groupsRepositoryPort;
 

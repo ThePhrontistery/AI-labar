@@ -2,6 +2,7 @@ package com.capgemini.ailabar.users.infraestructure.controllers;
 
 import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
+import com.capgemini.ailabar.users.domain.exceptions.LoginException;
 import com.capgemini.ailabar.users.domain.exceptions.*;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
@@ -22,6 +23,14 @@ public class UsersController implements SpecialResponseInterface {
     @Autowired
     public UsersController(UsersService usersService) {
         this.usersService = usersService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        String token = usersService.login(usersModel);
+        responseJson.put("message", "Login successful");
+        return new ResponseEntity<>(specialResponse(token, responseJson), HttpStatus.OK);
     }
 
     @PostMapping("/createUser")
@@ -73,6 +82,13 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
     /* Fin métodos sólo para realizar pruebas */
+
+    @ExceptionHandler(LoginException.class)
+    ResponseEntity<SpecialResponse> handlerLoginException (LoginException loginException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", loginException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(CreateUserException.class)
     ResponseEntity<SpecialResponse> handlerCreateUserException (CreateUserException createUserException){

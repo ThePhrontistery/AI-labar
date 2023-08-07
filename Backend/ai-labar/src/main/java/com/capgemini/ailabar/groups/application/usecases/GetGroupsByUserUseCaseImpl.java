@@ -4,9 +4,13 @@ import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsByUserException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsByUserUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
+@Transactional(readOnly = true)
 public class GetGroupsByUserUseCaseImpl implements GetGroupsByUserUseCase {
     private final GroupsRepositoryPort groupsRepositoryPort;
 

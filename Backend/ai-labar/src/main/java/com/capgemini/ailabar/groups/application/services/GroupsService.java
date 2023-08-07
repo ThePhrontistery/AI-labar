@@ -1,37 +1,34 @@
 package com.capgemini.ailabar.groups.application.services;
 
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.EditGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.GetGroupException;
-import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsByUserException;
+import com.capgemini.ailabar.groups.domain.exceptions.*;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
-import com.capgemini.ailabar.groups.domain.ports.in.CreateGroupUseCase;
-import com.capgemini.ailabar.groups.domain.ports.in.EditGroupUseCase;
-import com.capgemini.ailabar.groups.domain.ports.in.GetGroupUseCase;
-import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsByUserUseCase;
+import com.capgemini.ailabar.groups.domain.ports.in.*;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
-import com.capgemini.ailabar.groups.infraestructure.repositories.GroupsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
-public class GroupsService {
+public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditGroupUseCase, GetGroupsByUserUseCase,
+        DeleteGroupUseCase, GetGroupsDatabaseUseCase {
     private final CreateGroupUseCase createGroupUseCase;
     private final GetGroupUseCase getGroupUseCase;
     private final EditGroupUseCase editGroupUseCase;
     private final GetGroupsByUserUseCase getGroupsByUserUseCase;
+    private final DeleteGroupUseCase deleteGroupUseCase;
+    private final GetGroupsDatabaseUseCase getGroupsDatabaseUseCase;
 
     public GroupsService(CreateGroupUseCase createGroupUseCase, GetGroupUseCase getGroupUseCase,
-                         EditGroupUseCase editGroupUseCase, GetGroupsByUserUseCase getGroupsByUserUseCase) {
+                         EditGroupUseCase editGroupUseCase, GetGroupsByUserUseCase getGroupsByUserUseCase,
+                         DeleteGroupUseCase deleteGroupUseCase, GetGroupsDatabaseUseCase getGroupsDatabaseUseCase) {
         this.createGroupUseCase = createGroupUseCase;
         this.getGroupUseCase = getGroupUseCase;
         this.editGroupUseCase = editGroupUseCase;
         this.getGroupsByUserUseCase = getGroupsByUserUseCase;
+        this.deleteGroupUseCase = deleteGroupUseCase;
+        this.getGroupsDatabaseUseCase = getGroupsDatabaseUseCase;
     }
 
+    @Override
     public void createGroup(GroupsModel groupsModel) {
         try {
             createGroupUseCase.createGroup(groupsModel);
@@ -40,6 +37,7 @@ public class GroupsService {
         }
     }
 
+    @Override
     public GroupsEntity getGroup(GroupsModel groupsModel) {
         try {
             return getGroupUseCase.getGroup(groupsModel);
@@ -48,6 +46,7 @@ public class GroupsService {
         }
     }
 
+    @Override
     public void editGroup(GroupsModel groupsModel) {
         try {
             editGroupUseCase.editGroup(groupsModel);
@@ -56,6 +55,16 @@ public class GroupsService {
         }
     }
 
+    @Override
+    public void deleteGroup(GroupsModel groupsModel) {
+        try {
+            deleteGroupUseCase.deleteGroup(groupsModel);
+        } catch (DeleteGroupException deleteGroupException) {
+            throw deleteGroupException;
+        }
+    }
+
+    @Override
     public List<String> getGroupsByUser(GroupsModel groupsModel) {
         try {
             return getGroupsByUserUseCase.getGroupsByUser(groupsModel);
@@ -63,6 +72,16 @@ public class GroupsService {
             throw getGroupsByUserException;
         }
     }
+
+    @Override
+    public List<GroupsEntity> getGroupsDatabase() {
+        try {
+            return getGroupsDatabaseUseCase.getGroupsDatabase();
+        } catch (GetGroupsDatabaseException getGroupsDatabaseException) {
+            throw getGroupsDatabaseException;
+        }
+    }
+
 
 //    public Boolean existsByGroupNameAndAdmin(String groupName, String admin){
 //        return groupsRepository.existsByGroupNameAndAdmin(groupName, admin);

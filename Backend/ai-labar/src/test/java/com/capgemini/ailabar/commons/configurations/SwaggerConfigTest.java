@@ -13,7 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class SwaggerConfigTest {
     @Test
     void testSwaggerConfig() {
-        SwaggerConfig swaggerConfig = new SwaggerConfig();
+        SwaggerConfiguration swaggerConfig = new SwaggerConfiguration();
 
         Docket result = swaggerConfig.api();
 

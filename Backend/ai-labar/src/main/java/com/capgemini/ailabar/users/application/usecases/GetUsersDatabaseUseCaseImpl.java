@@ -5,10 +5,12 @@ import com.capgemini.ailabar.users.domain.ports.in.GetUsersDatabaseUseCase;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class GetUsersDatabaseUseCaseImpl implements GetUsersDatabaseUseCase {
     private final UsersRepositoryPort usersRepositoryPort;
 
