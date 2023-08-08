@@ -6,6 +6,7 @@ import { AnyadirGruposTopicComponent } from '../anyadir-grupos-topic/anyadir-gru
 import { IUser } from '../interfaces/emoji.model';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TopicsListService } from '../topics-list/topics-list.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-anyadir-candidatos-topic',
@@ -97,7 +98,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
   }
 
   getUsers(){
-    const url = 'http://localhost:8080/users/getAllUsers';
+    const url = `${environment.apiUrl}/users/getAllUsers`;
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")

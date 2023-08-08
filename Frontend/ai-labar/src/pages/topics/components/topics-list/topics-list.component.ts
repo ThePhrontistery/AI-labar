@@ -9,6 +9,7 @@ import { TopicResultComponent } from '../topic-result/topic-result.component';
 import { ValoracionResultComponent } from '../valoracion-result/valoracion-result.component';
 import { AsResultsComponent } from '../as-results/as-results.component';
 import { ImageTextResultComponent } from '../image-text-result/image-text-result.component';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-topics-list',
   templateUrl: './topics-list.component.html',
@@ -50,7 +51,7 @@ export class TopicsListComponent implements OnInit {
   }
 
   getTopicList(){
-    const url = 'http://localhost:8080/topics/loadTopics';
+    const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
@@ -65,7 +66,7 @@ export class TopicsListComponent implements OnInit {
     );
   }
   reOpen(votation: any){
-    const url = 'http://localhost:8080/topics/reOpenTopic';
+    const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
@@ -78,7 +79,7 @@ export class TopicsListComponent implements OnInit {
       }
   });   }
   close(votation: any){
-    const url = 'http://localhost:8080/topics/closeTopic';
+    const url = `${environment.apiUrl}/topics/closeTopic`;
     const closingData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
@@ -92,7 +93,7 @@ export class TopicsListComponent implements OnInit {
     });
   }
   delete(votation: any){
-    const url = 'http://localhost:8080/topics/deleteTopic';
+    const url = `${environment.apiUrl}/topics/deleteTopic`;
     const deletionData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
