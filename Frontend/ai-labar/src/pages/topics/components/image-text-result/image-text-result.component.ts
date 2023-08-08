@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-image-text-result',
@@ -23,7 +24,7 @@ export class ImageTextResultComponent implements OnInit {
     this.loadResults();
   }
   loadResults(){
-    const url = 'http://localhost:8080/topics/votingResults';
+    const url = `${environment.apiUrl}/topics/votingResults`;
     const resultData = {
       "id": this.data.votacion.id,
       "user": this.cookie.get("user"),

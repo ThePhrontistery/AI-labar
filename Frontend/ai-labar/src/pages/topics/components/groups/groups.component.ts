@@ -4,6 +4,8 @@ import { IUser } from '../interfaces/emoji.model';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-groups',
   templateUrl: './groups.component.html',
@@ -30,7 +32,7 @@ export class GroupsComponent implements OnInit {
     this.getUsers();
   }
   getUsers(){
-    const url = 'http://localhost:8080/users/getAllUsers';
+    const url = `${environment.apiUrl}/users/getAllUsers`;
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
@@ -91,7 +93,7 @@ export class GroupsComponent implements OnInit {
     }
   }
   saveGroup(){
-    const url = 'http://localhost:8080/groups/createGroup';
+    const url = `${environment.apiUrl}/groups/createGroup`;
     const groupBody =  {
       "groupName": this.groupsForm.value.groupName,
       "members": this.selectedUsers,

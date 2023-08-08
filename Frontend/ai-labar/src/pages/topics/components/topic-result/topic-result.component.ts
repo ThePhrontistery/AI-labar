@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { IResult } from '../interfaces/emoji.model';
 import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class TopicResultComponent implements OnInit {
     this.loadResults();
   }
   loadResults(){
-    const url = 'http://localhost:8080/topics/votingResults';
+    const url = `${environment.apiUrl}/topics/votingResults`;
     const resultData = {
       "id": this.data.votacion.id,
       "user": this.cookie.get("user"),
