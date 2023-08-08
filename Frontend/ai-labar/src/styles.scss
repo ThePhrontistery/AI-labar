@@ -1,0 +1,136 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@include mat-core();
+
+$my-theme: mat-light-theme(
+  $primary: mat-palette($mat-indigo),
+  $accent:  mat-palette($mat-pink),
+  $warn:    mat-palette($mat-red)
+);
+
+@include angular-material-theme($my-theme);
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.capBlue{
+    color: #0070ad;
+  }
+  .toolbar {
+    padding-left: 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: #1976d2;
+    color: white;
+    font-weight: 600;
+  }
+  .content {
+    display: flex;
+    padding: 8px 16px;
+    align-items: center;
+  }
+
+  /* Estilos específicos para navegadores Firefox */
+@supports (-moz-appearance: none) {
+  .inline-container {
+    width: -moz-available;
+  }
+}
+
+/* Estilos específicos para navegadores WebKit */
+@supports (-webkit-appearance: none) {
+  .inline-container {
+    width: -webkit-fill-available;
+  }
+}
+
+  .login-button {
+    margin-top: 16px;
+    background-color: #fff;
+    color:  #29ABE2;
+    border: none;
+    border-radius: 25px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+
+  .login-button:hover {
+    animation: pulse-animation 1s ease-in-out infinite;
+  }
+  .mr16{
+    margin-right: 16px;
+  }
+
+  .hover{}
+  .hover:hover{
+    cursor: pointer;
+  }
+
+    /* Estilos para resoluciones pequeñas o iguales a 768px */
+@media (max-width: 768px) {
+  .modal .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 3px;
+    width: 40%;
+    position: relative;
+    .padding-content{
+      padding-bottom: 40px;
+        padding-top: 10px;
+    }
+  }
+}
+
+/* Estilos para resoluciones mayores a 768px */
+@media (min-width: 769px) {
+  .modal .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 3px;
+    width: 20%;
+    position: relative;
+    .padding-content{
+      padding-bottom: 40px;
+        padding-top: 10px;
+    }
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .button-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    button {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  }
+}
+
+
+ .rightButton{
+  float: right;
+ }

@@ -1,0 +1,6 @@
+<h1>{{ data.votacion.title }}</h1>
+<div *ngFor="let dato of result" class="dato">
+    <span class="opcion bold">{{ '('+dato.votes+')' }}</span>
+    <span class="bold">{{ dato.option }}</span>
+  </div>
+<button class="rightButton" mat-button color="accent" [mat-dialog-close]= "true">Cerrar</button>

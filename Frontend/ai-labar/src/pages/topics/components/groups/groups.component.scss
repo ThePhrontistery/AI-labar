@@ -1,0 +1,88 @@
+.hidden{
+    display: none;
+}
+mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  mat-checkbox {
+    display: block;
+    width: 100%;
+  }
+  .selectionPanel {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #f2f2f2;
+    padding: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    border: solid 1px #0070ad;
+    border-radius: 5px;
+  }
+
+  mat-checkbox {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    background-color: #f2f2f2;
+  }
+
+  mat-checkbox:hover {
+    background-color: #d6e4f0;
+  }
+  .ml16{
+    margin-left: 16px;
+  }
+  h1 {
+    font-weight: bold;
+    color: #0070ad;
+  }
+
+  .wizard-navigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .left-button {
+    order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+  }
+
+  .right-button {
+    float: right;
+  }
+
+  /* Estilos para resoluciones pequeñas o iguales a 768px */
+@media (max-width: 768px) {
+  .wizard-navigation {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+
+  .button {
+    margin-top: 10px;
+  }
+}
+
+/* Estilos para resoluciones mayores a 768px */
+@media (min-width: 769px) {
+  .wizard-navigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .left-button {
+    order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+  }
+
+  .right-button {
+    float: right;
+  }
+}

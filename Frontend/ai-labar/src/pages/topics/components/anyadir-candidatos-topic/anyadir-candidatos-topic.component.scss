@@ -1,0 +1,86 @@
+/* Estilo para los radio buttons */
+.mat-radio-button {
+  margin-right: 60px; /* Ajusta el espacio entre los radio buttons */
+  border-radius: 50%; /* Hace que el radio button sea circular */
+  width: 30px; /* Ajusta el tamaño del radio button */
+  height: 30px; /* Ajusta el tamaño del radio button */
+}
+
+.content {
+  padding-top: 15px;
+  padding-left: 0;
+  padding-right: 0;
+  width:fit-content;
+  display:table;
+}
+
+.hidden{
+  display: none;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-checkbox {
+  display: block;
+  width: 100%;
+}
+
+.selectionPanel {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f2f2f2;
+  padding: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  border: solid 1px #0070ad;
+  border-radius: 5px;
+}
+
+mat-checkbox {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  background-color: #f2f2f2;
+}
+
+mat-checkbox:hover {
+  background-color: #d6e4f0;
+}
+.ml16{
+  margin-left: 16px;
+}
+
+.error{
+  color: red;
+}
+
+.wizard-navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.left-button {
+  order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+}
+
+/* Estilo para la lista de usuarios */
+ul {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Estilo para los ítems de la lista de usuarios */
+li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.right-button {
+  float: right;
+}
