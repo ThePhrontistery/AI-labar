@@ -57,13 +57,6 @@ mat-checkbox:hover {
   color: red;
 }
 
-.wizard-navigation {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-}
-
 .left-button {
   order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
 }
@@ -81,6 +74,34 @@ li {
   margin-bottom: 8px;
 }
 
-.right-button {
-  float: right;
-}
+
+  /* Estilos para resoluciones pequeñas o iguales a 768px */
+  @media (max-width: 768px) {
+    .wizard-navigation {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+
+    .button {
+      margin-top: 10px;
+    }
+  }
+
+  /* Estilos para resoluciones mayores a 768px */
+  @media (min-width: 769px) {
+    .wizard-navigation {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .right-button {
+      float: right;
+    }
+  }
+
+
