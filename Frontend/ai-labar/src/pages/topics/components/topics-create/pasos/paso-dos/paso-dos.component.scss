@@ -1,0 +1,136 @@
+/* Estilo para el título */
+.titulo h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.emojis-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emojis {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  margin: 0.5rem;
+}
+
+.checkbox-wrapper {
+  display: inline-block;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+.checkbox-wrapper input[type="checkbox"] + label {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+}
+
+/* Estilo del checkbox circular cuando está seleccionado */
+.checkbox-wrapper input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + label {
+  color: white;
+}
+
+.empleados-container {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 0.5rem;
+}
+
+.blue-button {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.blue-button:hover {
+  background-color: darkblue; /* Color cuando el mouse está sobre el botón */
+}
+
+.blue-button:active {
+  background-color: royalblue; /* Color cuando el botón está presionado */
+}
+
+/* Estilo para el input de texto */
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Estilo para el botón */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Estilo para la lista de candidatos y participantes */
+ul {
+  list-style: none;
+  padding: 0;
+  max-height: 150px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+/* Estilo para la imagen seleccionada */
+img {
+  max-width: 100%;
+  max-height: 200px;
+  margin-bottom: 10px;
+}
+
+/* Estilo para el mat-form-field (Angular Material) */
+mat-form-field {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .formulario {
+    width: 40%;
+    align-items: center;
+    display: inline-grid;
+    margin: 20px;
+  }
+}
+
+/* Estilos para resoluciones mayores a 768px */
+@media (min-width: 769px) {
+  .formulario {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .formulario div {
+    padding-right: 50px;
+  }
+}
