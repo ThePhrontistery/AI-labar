@@ -5,6 +5,7 @@ import { TopicsRoutingModule } from './topics-routing.module';
 import { TopicsCreateComponent } from './components/topics-create/topics-create.component';
 import { TopicsListComponent } from './components/topics-list/topics-list.component';
 import { TopicsListService } from '../topics/components/topics-list/topics-list.service';
+import { TopicsListServiceMock } from '../topics/components/topics-list/topics-list.service.mock';
 import { PasoUnoComponent } from './components/topics-create/pasos/paso-uno/paso-uno.component';
 import { PasoDosComponent } from './components/topics-create/pasos/paso-dos/paso-dos.component';
 import { FormsModule } from '@angular/forms';
@@ -78,6 +79,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatMenuModule,
     FlexLayoutModule
   ],
-  providers: [TopicsListService, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
+  providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
 })
 export class TopicsModule { }

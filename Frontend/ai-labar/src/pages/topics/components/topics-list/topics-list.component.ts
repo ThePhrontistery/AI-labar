@@ -10,6 +10,8 @@ import { ValoracionResultComponent } from '../valoracion-result/valoracion-resul
 import { AsResultsComponent } from '../as-results/as-results.component';
 import { ImageTextResultComponent } from '../image-text-result/image-text-result.component';
 import { environment } from 'src/environments/environment';
+import { TopicsListServiceMock } from './topics-list.service.mock';
+
 @Component({
   selector: 'app-topics-list',
   templateUrl: './topics-list.component.html',
@@ -43,6 +45,7 @@ export class TopicsListComponent implements OnInit {
   titleEncuesta: string= '';
 
   constructor(private topicListService: TopicsListService,
+    private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
     private cookie: CookieService) { }
 
@@ -55,58 +58,98 @@ export class TopicsListComponent implements OnInit {
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
-  }
-    this.topicListService.post(loadTopicsBody, url).subscribe(
+    }
+    if (environment.mockup) {
+      this.topicsListServiceMock.loadTopics_post(loadTopicsBody).subscribe(
         response => {
-          if (response){
+          if (response) {
             this.dataSource.data = response.entity;
             this.dataSource.sort = this.sort;
           }
         }
-    );
+      );
+    } else {
+      this.topicListService.post(loadTopicsBody, url).subscribe(
+        response => {
+          if (response) {
+            this.dataSource.data = response.entity;
+            this.dataSource.sort = this.sort;
+          }
+        }
+      );
+    }
   }
-  reOpen(votation: any){
+  reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
+    }
+
+    if (environment.mockup) {
+      this.topicsListServiceMock.reopenTopic(closingData).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    } else {
+      this.topicListService.put(closingData, url).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    }
   }
-  this.topicListService.put(closingData, url).subscribe(
-    response => {
-      if (response){
-        this.getTopicList();
-      }
-  });   }
-  close(votation: any){
+  close(votation: any) {
     const url = `${environment.apiUrl}/topics/closeTopic`;
     const closingData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
+    }
+    if (environment.mockup) {
+      this.topicsListServiceMock.closeTopic(closingData).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    } else {
+      this.topicListService.put(closingData, url).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    }
   }
-  this.topicListService.put(closingData, url).subscribe(
-    response => {
-      if (response){
-        this.getTopicList();
-      }
-    });
-  }
-  delete(votation: any){
+  delete(votation: any) {
     const url = `${environment.apiUrl}/topics/deleteTopic`;
     const deletionData = {
       "id": votation.id,
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
+    }
+    if (environment.mockup) {
+      this.topicsListServiceMock.deleteTopic(deletionData).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    } else {
+      this.topicListService.delete(deletionData, url).subscribe(
+        response => {
+          if (response) {
+            this.getTopicList();
+          }
+        });
+    }
   }
-  this.topicListService.delete(deletionData, url).subscribe(
-    response => {
-      if (response){
-        this.getTopicList();
-      }
-    });
-  }
-  vote(votation: any){
+  vote(votation: any) {
     console.log(votation);
     this.idVotation = votation.id;
     this.optionsVotacion = votation.optionsDataList
