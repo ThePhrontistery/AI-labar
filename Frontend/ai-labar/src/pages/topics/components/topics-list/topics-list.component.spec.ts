@@ -51,6 +51,8 @@ describe('TopicsListComponent', () => {
     mockTopicListService = TestBed.inject(TopicsListServiceMock) as jasmine.SpyObj<TopicsListServiceMock>;
     mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     mockCookieService = TestBed.inject(CookieService) as jasmine.SpyObj<CookieService>;
+    const mockResponse = { entity: [] };
+    mockTopicListService.loadTopics_post.and.returnValue(of(mockResponse));
 
     mockCookieService.get.and.returnValue('testUser');
   });
@@ -68,7 +70,6 @@ describe('TopicsListComponent', () => {
     // Arrange
    // mockTopicListService.post.and.returnValue(of({ entity: [] }));
     const mockResponse = { entity: [] };
-    mockTopicListService.loadTopics_post.and.returnValue(of(mockResponse));
     // Act
     fixture.detectChanges();
 
@@ -112,10 +113,10 @@ describe('TopicsListComponent', () => {
     //mockTopicListService.put.and.returnValue(of({}));
     const mockResponse = {};
     mockTopicListService.reopenTopic.and.returnValue(of(mockResponse));
-console.error("1");
+ 
     // Act
     component.reOpen(votation);
-    console.error("1");
+     
 
     // Assert
     expect(mockTopicListService.reopenTopic).toHaveBeenCalledWith({
@@ -124,11 +125,11 @@ console.error("1");
       token: 'testUser' // Adjust this based on your actual logic
     } ); // Make sure correct URL is used
 
-    console.error("1");
+    
     // Verify that getTopicList is called after reopening
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
     
-    console.error("1");
+    
     /*expect(mockTopicListService.put).toHaveBeenCalledWith({
       id: votation.id,
       user: 'testUser',

@@ -155,6 +155,9 @@ export class TopicsCreateComponent implements OnInit {
             if (response){
               this.router.navigate(['/topics/topics-list']);
             }
+          },
+          error=> {
+            alert("Se produjo un error al crear el topic, compruebe que todo los datos estan rellenos incluido los participantes.")
           }
       );
     }
