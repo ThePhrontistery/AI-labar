@@ -1,89 +1,174 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 
 import { TopicsListComponent } from './topics-list.component';
 import { TopicsListService } from './topics-list.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TopicsListServiceMock } from './topics-list.service.mock';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
-xdescribe('TopicsListComponent', () => {
+// Importa el componente app-modal-votacion
+import { ModalVotacionComponent } from '../modal-votacion/modal-votacion.component'; 
+import { HttpClientModule } from '@angular/common/http'; // Agrega esta línea
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from 'src/environments/environment'; // Asegúrate de importar el environment
+
+import { of } from 'rxjs';
+import { Console } from 'console';
+
+describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
   let fixture: ComponentFixture<TopicsListComponent>;
-
-
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TopicsListComponent ],
-      imports: [MatDialogModule]
-    })
-    .compileComponents();
-  });
+  let mockTopicListService: jasmine.SpyObj<TopicsListServiceMock>;
+  let mockDialog: jasmine.SpyObj<MatDialog>;
+  let mockCookieService: jasmine.SpyObj<CookieService>;
 
   beforeEach(() => {
+    environment.mockup = true; // Configura el environment.mockup a true para las pruebas
+
+    const mockServiceSpy = jasmine.createSpyObj('TopicsListServiceMock', ['loadTopics_post', 'reopenTopic', 'deleteTopic', 'closeTopic']);
+    //const mockServiceSpy = jasmine.createSpyObj('TopicsListService', ['post', 'put', 'delete']);
+    const mockDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    const mockCookieServiceSpy = jasmine.createSpyObj('CookieService', ['get']);
+
+    TestBed.configureTestingModule({
+      declarations: [TopicsListComponent,ModalVotacionComponent],
+      providers: [
+        { provide: TopicsListService, useValue: mockServiceSpy },
+        { provide: TopicsListServiceMock, useValue: mockServiceSpy },
+        { provide: MatDialog, useValue: mockDialogSpy },
+        { provide: CookieService, useValue: mockCookieServiceSpy }
+      ],
+      imports: [MatSortModule, MatTableModule,
+        BrowserAnimationsModule,HttpClientModule,
+        MatDialogModule]
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TopicsListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    mockTopicListService = TestBed.inject(TopicsListServiceMock) as jasmine.SpyObj<TopicsListServiceMock>;
+    mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
+    mockCookieService = TestBed.inject(CookieService) as jasmine.SpyObj<CookieService>;
+
+    mockCookieService.get.and.returnValue('testUser');
+  });
+  afterEach(() => {
+    environment.mockup = false; // Restablece el environment.mockup después de las pruebas
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
 
 
-xdescribe('TopicsListComponent', () => {
-  let component: TopicsListComponent;
-  let fixture: ComponentFixture<TopicsListComponent>;
-  let httpMock: HttpTestingController;
-  let topicListService: TopicsListService;
-  let cookieService: CookieService;
+  // Add more tests for other methods and scenarios as needed
+  it('should call getTopicList on init', () => {
+    // Arrange
+   // mockTopicListService.post.and.returnValue(of({ entity: [] }));
+    const mockResponse = { entity: [] };
+    mockTopicListService.loadTopics_post.and.returnValue(of(mockResponse));
+    // Act
+    fixture.detectChanges();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TopicsListComponent ],
-      imports: [ HttpClientTestingModule ],
-      providers: [ CookieService, topicListService ]
-    })
-    .compileComponents();
+    // Assert
+    //expect(mockTopicListService.post).toHaveBeenCalled();
+    expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
+    expect(component.dataSource.data).toEqual(mockResponse.entity);
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TopicsListComponent);
-    component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-    topicListService = TestBed.inject(TopicsListService);
-    cookieService = TestBed.inject(CookieService);
 
-    spyOn(cookieService, 'get').and.returnValue('example-token');
+
+  it('should add option to selectedOptions when onOptionChange is called', () => {
+    // Arrange
+    const option = 'Option 1';
+
+    // Act
+    component.onOptionChange(option);
+
+    // Assert
+    expect(component.selectedOptions).toContain(option);
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  it('should remove option from selectedOptions when onOptionChange is called with existing option', () => {
+    // Arrange
+    const option = 'Option 1';
+    component.selectedOptions = [option];
+
+    // Act
+    component.onOptionChange(option);
+
+    // Assert
+    expect(component.selectedOptions).not.toContain(option);
   });
 
-  it('should load topics and set the data source', fakeAsync(() => {
-    const url = 'http://localhost:8080/topics/loadTopics';
-    const loadTopicsBody = {
-      user: 'example-user',
-      token: 'example-token'
-    };
-    const response = {
-      entity: [
-        { id: 1, name: 'Topic 1' },
-        { id: 2, name: 'Topic 2' },
-        { id: 3, name: 'Topic 3' }
-      ]
-    };
 
-    component.getTopicList();
+  it('should reOpen a votation', () => {
+    // Arrange
+    const votation = { id: 12 };
 
-    const req = httpMock.expectOne(url);
-    expect(req.request.method).toEqual('POST');
-    expect(req.request.body).toEqual(loadTopicsBody);
+    // Mock the service response
+    //mockTopicListService.put.and.returnValue(of({}));
+    const mockResponse = {};
+    mockTopicListService.reopenTopic.and.returnValue(of(mockResponse));
+console.error("1");
+    // Act
+    component.reOpen(votation);
+    console.error("1");
 
-    req.flush(response);
+    // Assert
+    expect(mockTopicListService.reopenTopic).toHaveBeenCalledWith({
+      id: votation.id,
+      user: 'testUser',
+      token: 'testUser' // Adjust this based on your actual logic
+    } ); // Make sure correct URL is used
 
-    tick();
+    console.error("1");
+    // Verify that getTopicList is called after reopening
+    expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
+    
+    console.error("1");
+    /*expect(mockTopicListService.put).toHaveBeenCalledWith({
+      id: votation.id,
+      user: 'testUser',
+      token: 'testUser' // Adjust this based on your actual logic
+    }, 'http://localhost:8080/topics/reOpenTopic'); // Make sure correct URL is used
 
-  }));
+    // Verify that getTopicList is called after reopening
+    expect(mockTopicListService.post).toHaveBeenCalled();*/
+  });
+  it('should close a votation', () => {
+    // Arrange
+    const votation = { id: 1 };
+
+    // Mock the service response
+    //mockTopicListService.put.and.returnValue(of({}));
+    const mockResponse = { entity: [] };
+    mockTopicListService.closeTopic.and.returnValue(of(mockResponse));
+
+    // Act
+    component.close(votation);
+
+    // Assert
+    expect(mockTopicListService.closeTopic).toHaveBeenCalledWith({
+      id: votation.id,
+      user: 'testUser',
+      token: 'testUser' // Adjust this based on your actual logic
+    } ); // Make sure correct URL is used
+
+    // Verify that getTopicList is called after closing
+    expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
+    /*expect(mockTopicListService.put).toHaveBeenCalledWith({
+      id: votation.id,
+      user: 'testUser',
+      token: 'testUser' // Adjust this based on your actual logic
+    }, 'http://localhost:8080/topics/closeTopic'); // Make sure correct URL is used
+
+    // Verify that getTopicList is called after closing
+    expect(mockTopicListService.post).toHaveBeenCalled();*/
+  });
+
+
+  /** */
 });
