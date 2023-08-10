@@ -1,0 +1,29 @@
+ /* Estilos para resoluciones pequeñas o iguales a 768px */
+ @media (max-width: 768px) {
+  .wizard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+
+}
+
+/* Estilos para resoluciones mayores a 768px */
+@media (min-width: 769px) {
+  .wizard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .left-button {
+    order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+  }
+
+  .right-button {
+    float: right;
+  }
+}
