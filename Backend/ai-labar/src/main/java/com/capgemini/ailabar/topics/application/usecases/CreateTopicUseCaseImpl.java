@@ -149,6 +149,10 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
             topicsEntity.setGroupId(groupId);
         } else {
             topicsEntity.setGroupId(topicsRepositoryPort.getGroupIdByGroupNameAndAdmin(topicsModel.getGroupName(), topicsModel.getUser()));
+
+            if(topicsEntity.getGroupId() == null) {
+                throw new CreateTopicException("The user does not have any group with the indicated name");
+            }
         }
     }
 
