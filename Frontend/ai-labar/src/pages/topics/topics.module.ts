@@ -39,6 +39,7 @@ import { AnyadirCandidatosTopicComponent } from './components/anyadir-candidatos
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ConfirmarEliminacionTopicComponent } from './components/confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
 @NgModule({
   declarations: [
     TopicsComponent,
@@ -54,7 +55,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ValoracionResultComponent,
     AsResultsComponent,
     ImageTextResultComponent,
-    AnyadirCandidatosTopicComponent
+    AnyadirCandidatosTopicComponent,
+    ConfirmarEliminacionTopicComponent
   ],
   imports: [
     TopicsRoutingModule,
