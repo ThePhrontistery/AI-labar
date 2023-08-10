@@ -1,0 +1,51 @@
+.my-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.my-button:hover {
+  background-color: #0056b3;
+}
+
+.button {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.wizard-content{
+  width:fit-content;
+}
+
+  /* Estilos para resoluciones pequeñas o iguales a 768px */
+  @media (max-width: 768px) {
+    .wizard-navigation {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+
+  }
+
+  /* Estilos para resoluciones mayores a 768px */
+  @media (min-width: 769px) {
+    .wizard-navigation {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .left-button {
+      order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+    }
+
+    .right-button {
+      float: right;
+    }
+  }

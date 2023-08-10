@@ -1,0 +1,7 @@
+<div class="modal">
+  <h2>{{titleEncuesta}}</h2>
+  <ul>
+    <li *ngFor="let item of items">({{ item.votes }}) {{item.option}}</li>
+  </ul>
+  <button class="rightButton" mat-button color="accent" (click)="onCloseModal()">Cancelar</button>
+</div>

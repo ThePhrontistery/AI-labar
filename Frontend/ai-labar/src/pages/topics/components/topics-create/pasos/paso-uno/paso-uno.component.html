@@ -1,0 +1,8 @@
+<h1>Elige un tipo de encuesta:</h1>
+<h3>(Selecciona la imagen de el tipo de encuesta que desees)</h3>
+
+<div class="imagenes-container">
+  <div *ngFor="let imagen of imagenes" (click)="seleccionarImagen(imagen)" class="img-border image">
+    <img [src]="imagen.ruta" alt="{{ imagen.nombre }}">
+  </div>
+</div>

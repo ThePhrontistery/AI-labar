@@ -1,0 +1,51 @@
+h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.emoji-option {
+  display: flex;
+  //justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 2rem;
+  margin: 0.5rem;
+  align-items: center;
+}
+
+.item-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item-option img {
+  max-width: 50px;
+  max-height: 50px;
+  margin-right: 10px;
+}
+
+.item-option span {
+  align-items: center;
+}
+
+.left-button {
+  order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+}
+
+.right-button {
+  float: right;
+}
+
+.wizard-content{
+  width:fit-content;
+}
