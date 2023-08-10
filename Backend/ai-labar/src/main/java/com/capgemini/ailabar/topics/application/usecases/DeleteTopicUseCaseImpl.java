@@ -35,6 +35,13 @@ public class DeleteTopicUseCaseImpl implements DeleteTopicUseCase {
             throw new DeleteTopicException("The user is not the author of the topic");
         }
 
+        String groupName = topicsRepositoryPort.getGroupNameByGroupId(topicsEntity.getGroupId());
+        if(groupName.startsWith("*temp*")) {
+            topicsRepositoryPort.deleteMembersByGroupId(topicsEntity.getGroupId());
+            topicsRepositoryPort.deleteGroup(topicsEntity.getGroupId());
+        }
+        topicsRepositoryPort.deleteOptions(topicsModel.getId());
+        topicsRepositoryPort.deleteVotedByOnTopic(topicsModel.getId());
         topicsRepositoryPort.deleteTopic(topicsModel.getId());
     }
 }

@@ -1,36 +1,15 @@
 package com.capgemini.ailabar.topics.infraestructure.controllers;
 
-import com.capgemini.ailabar.commons.utils.Constants;
-import com.capgemini.ailabar.commons.utils.OptionsData;
-import com.capgemini.ailabar.commons.utils.SpecialResponse;
-import com.capgemini.ailabar.topics.domain.models.TopicsModel;
-import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
-import com.capgemini.ailabar.users.domain.models.UsersModel;
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.commons.utils.MailService;
 import com.capgemini.ailabar.topics.application.services.TopicsService;
 import com.capgemini.ailabar.users.application.services.UsersService;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

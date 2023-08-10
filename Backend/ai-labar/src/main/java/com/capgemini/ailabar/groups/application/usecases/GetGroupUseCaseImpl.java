@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
+import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.exceptions.GetGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.GetGroupUseCase;
@@ -7,6 +8,11 @@ import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +24,7 @@ public class GetGroupUseCaseImpl implements GetGroupUseCase {
     }
 
     @Override
-    public GroupsEntity getGroup(GroupsModel groupsModel) {
+    public GroupsModel getGroup(GroupsModel groupsModel) {
         if(groupsModel.getGroupName().isBlank() || groupsModel.getUser().isBlank()
                 || groupsModel.getToken().isBlank()) {
             throw new GetGroupException("Group name and user are required");
@@ -34,14 +40,18 @@ public class GetGroupUseCaseImpl implements GetGroupUseCase {
             throw new GetGroupException("The user does not have a group with that name");
         }
 
-        GroupsEntity matchedGroup = new GroupsEntity();
-        matchedGroup.setId(groupEntity.getId());
-        matchedGroup.setGroupName(groupEntity.getGroupName());
+        List<Integer> membersIdList = groupsRepositoryPort.getMembersId(groupEntity.getId());
+        List<String> membersList = new ArrayList<>();
+        membersIdList.forEach(id -> {
+            try {
+                membersList.add(groupsRepositoryPort.getUserNameByUserId(id));
+            } catch (GetGroupException getGroupException) {
+                throw new GetGroupException("An error occurred while retrieving group members");
+            }
+        });
 
-//        Gson gson = new Gson();
-//        Type listType = new TypeToken<List<String>>() {}.getType();
-//        matchedGroup.setMembers(gson.fromJson(groupEntity.getMembers(), listType));
-//        matchedGroup.setAdmin(groupEntity.getAdmin());
+        GroupsModel matchedGroup = new GroupsModel(groupEntity);
+        matchedGroup.setMembers(membersList);
 
         return matchedGroup;
     }

@@ -3,6 +3,7 @@ package com.capgemini.ailabar.groups.infraestructure.adapters.out;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.groups.infraestructure.repositories.GroupsRepository;
+import com.capgemini.ailabar.members.infraestructure.entities.MembersEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,6 +42,21 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
+    public void insertMember(Integer groupId, Integer userId) {
+        groupsRepository.insertMember(groupId, userId);
+    }
+
+    @Override
+    public void deleteMembersByGroupId(Integer groupId) {
+        groupsRepository.deleteMembersByGroupId(groupId);
+    }
+
+    @Override
+    public List<Integer> getMembersId(Integer groupId) {
+        return groupsRepository.getMembersId(groupId);
+    }
+
+    @Override
     public boolean checkAuthorization(String user, String token) {
         return groupsRepository.checkAuthorization(user, token);
     }
@@ -56,6 +72,11 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
+    public boolean checkMember(String member) {
+        return groupsRepository.checkMember(member);
+    }
+
+    @Override
     public GroupsEntity getGroupById(Integer id) {
         return groupsRepository.getGroupById(id);
     }
@@ -63,6 +84,16 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     @Override
     public Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin) {
         return groupsRepository.getGroupIdByGroupNameAndAdmin(groupName, admin);
+    }
+
+    @Override
+    public Integer getUserIdByUserName(String user) {
+        return groupsRepository.getUserIdByUserName(user);
+    }
+
+    @Override
+    public String getUserNameByUserId(Integer id) {
+        return groupsRepository.getUserNameByUserId(id);
     }
 
     @Override

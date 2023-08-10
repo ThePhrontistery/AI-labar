@@ -36,6 +36,7 @@ public class DeleteGroupUseCaseImpl implements DeleteGroupUseCase {
                 throw new DeleteGroupException("The user does not have a group with that name");
             }
 
+            groupsRepositoryPort.deleteMembersByGroupId(groupsRepositoryPort.getGroupIdByGroupNameAndAdmin(groupsModel.getGroupName().strip(), groupsModel.getUser()));
             groupsRepositoryPort.deleteGroup(groupsRepositoryPort.getGroupIdByGroupNameAndAdmin(groupsModel.getGroupName().strip(), groupsModel.getUser()));
             return;
         }
@@ -44,6 +45,7 @@ public class DeleteGroupUseCaseImpl implements DeleteGroupUseCase {
             throw new DeleteGroupException("The user does not have a group with that id");
         }
 
+        groupsRepositoryPort.deleteMembersByGroupId(groupsModel.getId());
         groupsRepositoryPort.deleteGroup(groupsModel.getId());
 
     }

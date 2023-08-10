@@ -34,11 +34,11 @@ public class CloseTopicUseCaseImpl implements CloseTopicUseCase {
             throw new CloseTopicException("The user is not the author of the topic");
         }
 
-        if(topicEntity.getStatus().equals(Constants.STATUS_CLOSED)) {
+        if(topicEntity.getStatus().equals(0)) {
             throw new CloseTopicException("The topic is currently closed");
         }
 
-        topicEntity.setStatus(Constants.STATUS_CLOSED);
+        topicEntity.setStatus(0);
 
         topicsRepositoryPort.closeTopic(topicEntity);
     }

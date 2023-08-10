@@ -39,19 +39,19 @@ class DailyBatchServiceTest {
         LocalDate currentDate = LocalDate.now();
 
         TopicsEntity topic1 = new TopicsEntity();
-        topic1.setStatus(Constants.STATUS_OPENED);
+        topic1.setStatus(1);
         topic1.setCloseDate(currentDate.minusDays(1).format(dateFormatter));
 
         TopicsEntity topic2 = new TopicsEntity();
-        topic2.setStatus(Constants.STATUS_OPENED);
+        topic2.setStatus(1);
         topic2.setCloseDate(currentDate.format(dateFormatter));
 
         List<TopicsEntity> topics = Arrays.asList(topic1, topic2);
 
-        when(topicsRepository.findByStatusAndCloseDateLessThanEqual(Constants.STATUS_OPENED, currentDate.format(dateFormatter))).thenReturn(topics);
+        when(topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter))).thenReturn(topics);
 
         dailyBatchService.closeExpiredTopics();
 
-        verify(topicsRepository, times(1)).findByStatusAndCloseDateLessThanEqual(Constants.STATUS_OPENED, currentDate.format(dateFormatter));
+        verify(topicsRepository, times(1)).getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter));
     }
 }

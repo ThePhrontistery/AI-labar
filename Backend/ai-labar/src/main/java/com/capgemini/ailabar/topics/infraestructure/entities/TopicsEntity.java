@@ -19,20 +19,16 @@ public class TopicsEntity {
     private String type;
     @Column(name = "question")
     private String question;
-    @Column(name = "options")
-    private String options;
-    @Column(name = "voted_by")
-    private String votedBy;
     @Column(name = "author")
     private String author;
-    @Column(name = "members")
-    private String members;
+    @Column(name = "group_id")
+    private Integer groupId;
     @Column(name = "close_date")
     private String closeDate;
     @Column(name = "visits")
     private Integer visits;
     @Column(name = "status")
-    private String status;
+    private Integer status;
 
     public TopicsEntity() {}
 
@@ -40,9 +36,8 @@ public class TopicsEntity {
         this.title = topicModel.getTitle();
         this.type = topicModel.getType();
         this.question = topicModel.getQuestion();
-        this.options = topicModel.getOptions().toString();
         this.author = topicModel.getAuthor();
-        this.members = topicModel.getMembers().toString();
+        this.groupId = topicModel.getGroupId();
         this.closeDate = topicModel.getCloseDate();
         this.visits = topicModel.getVisits();
         this.status = topicModel.getStatus();

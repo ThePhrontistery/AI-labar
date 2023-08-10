@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/groups")
@@ -41,7 +42,7 @@ public class GroupsController implements SpecialResponseInterface {
     @PostMapping("/getGroup")
     public ResponseEntity<SpecialResponse> getGroup(@RequestBody GroupsModel groupModel) {
         JSONObject responseJson = new JSONObject();
-        GroupsEntity matchedGroup = groupsService.getGroup(groupModel);
+        GroupsModel matchedGroup = groupsService.getGroup(groupModel);
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(matchedGroup, responseJson), HttpStatus.OK);
     }
@@ -74,7 +75,7 @@ public class GroupsController implements SpecialResponseInterface {
     @GetMapping("/getGroupsDatabase")
     public ResponseEntity<SpecialResponse> getGroupsDatabase() {
         JSONObject responseJson = new JSONObject();
-        List<GroupsEntity> groupsList = groupsService.getGroupsDatabase();
+        List<GroupsModel> groupsList = groupsService.getGroupsDatabase();
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(groupsList, responseJson), HttpStatus.OK);
     }

@@ -6,6 +6,7 @@ import com.capgemini.ailabar.groups.domain.ports.in.*;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditGroupUseCase, GetGroupsByUserUseCase,
@@ -38,7 +39,7 @@ public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditG
     }
 
     @Override
-    public GroupsEntity getGroup(GroupsModel groupsModel) {
+    public GroupsModel getGroup(GroupsModel groupsModel) {
         try {
             return getGroupUseCase.getGroup(groupsModel);
         } catch (GetGroupException getGroupException) {
@@ -74,7 +75,7 @@ public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditG
     }
 
     @Override
-    public List<GroupsEntity> getGroupsDatabase() {
+    public List<GroupsModel> getGroupsDatabase() {
         try {
             return getGroupsDatabaseUseCase.getGroupsDatabase();
         } catch (GetGroupsDatabaseException getGroupsDatabaseException) {

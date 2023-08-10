@@ -34,11 +34,11 @@ public class ReOpenTopicUseCaseImpl implements ReOpenTopicUseCase {
             throw new ReOpenTopicException("The user is not the author of the topic");
         }
 
-        if(topicsEntity.getStatus().equals(Constants.STATUS_OPENED)) {
+        if(topicsEntity.getStatus() == 1) {
             throw new ReOpenTopicException("The topic is currently open");
         }
 
-        topicsEntity.setStatus(Constants.STATUS_OPENED);
+        topicsEntity.setStatus(1);
 
         topicsRepositoryPort.reOpenTopic(topicsEntity);
     }

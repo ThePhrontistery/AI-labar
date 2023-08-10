@@ -10,12 +10,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 class ConstantsTest {
     @Test
-    void testConstants() {
-        Assertions.assertEquals("Abierto", Constants.STATUS_OPENED);
-        Assertions.assertEquals("Cerrado", Constants.STATUS_CLOSED);
-    }
-
-    @Test
     void testTopicType() {
         Assertions.assertEquals(Constants.TopicType.TEXT_SINGLE, Constants.TopicType.valueOf("TEXT_SINGLE"));
         Assertions.assertEquals(Constants.TopicType.TEXT_MULTIPLE, Constants.TopicType.valueOf("TEXT_MULTIPLE"));

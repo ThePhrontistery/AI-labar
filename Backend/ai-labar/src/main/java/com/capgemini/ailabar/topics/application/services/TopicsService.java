@@ -1,12 +1,10 @@
 package com.capgemini.ailabar.topics.application.services;
 
 import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsDatabaseException;
-import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsDatabaseUseCase;
-import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
+import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.*;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.*;
-import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -15,7 +13,8 @@ import java.util.*;
 @Service
 @Transactional
 public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, EditTopicUseCase, CloseTopicUseCase,
-        ReOpenTopicUseCase, DeleteTopicUseCase, GetTopicsDatabaseUseCase {
+        ReOpenTopicUseCase, DeleteTopicUseCase, GetTopicsDatabaseUseCase, VoteTopicUseCase,
+        VotingResultsTopicUseCase {
     private final LoadTopicUseCase loadTopicUseCase;
     private final CreateTopicUseCase createTopicUseCase;
     private final EditTopicUseCase editTopicUseCase;
@@ -23,11 +22,14 @@ public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, Edit
     private final ReOpenTopicUseCase reOpenTopicUseCase;
     private final DeleteTopicUseCase deleteTopicUseCase;
     private final GetTopicsDatabaseUseCase getTopicsDatabaseUseCase;
+    private final VoteTopicUseCase voteTopicUseCase;
+    private final VotingResultsTopicUseCase votingResultsTopicUseCase;
 
     public TopicsService(LoadTopicUseCase loadTopicUseCase, CreateTopicUseCase createTopicUseCase,
                          EditTopicUseCase editTopicUseCase, CloseTopicUseCase closeTopicUseCase,
                          ReOpenTopicUseCase reOpenTopicUseCase, DeleteTopicUseCase deleteTopicUseCase,
-                         GetTopicsDatabaseUseCase getTopicsDatabaseUseCase) {
+                         GetTopicsDatabaseUseCase getTopicsDatabaseUseCase, VoteTopicUseCase voteTopicUseCase,
+                         VotingResultsTopicUseCase votingResultsTopicUseCase) {
         this.loadTopicUseCase = loadTopicUseCase;
         this.createTopicUseCase = createTopicUseCase;
         this.editTopicUseCase = editTopicUseCase;
@@ -35,10 +37,12 @@ public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, Edit
         this.reOpenTopicUseCase = reOpenTopicUseCase;
         this.deleteTopicUseCase = deleteTopicUseCase;
         this.getTopicsDatabaseUseCase = getTopicsDatabaseUseCase;
+        this.voteTopicUseCase = voteTopicUseCase;
+        this.votingResultsTopicUseCase = votingResultsTopicUseCase;
     }
 
     @Override
-    public List<TopicsEntity> loadTopics(UsersModel usersModel) {
+    public List<TopicsModel> loadTopics(UsersModel usersModel) {
         try {
             return loadTopicUseCase.loadTopics(usersModel);
         } catch (LoadTopicException loadTopicsException) {
@@ -92,7 +96,7 @@ public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, Edit
     }
 
     @Override
-    public List<TopicsEntity> getTopicsDatabase() {
+    public List<TopicsModel> getTopicsDatabase() {
         try {
             return getTopicsDatabaseUseCase.getTopicsDatabase();
         } catch (GetGroupsDatabaseException getGroupsDatabaseException) {
@@ -100,47 +104,21 @@ public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, Edit
         }
     }
 
-//    public Boolean login(String user, String password) {
-//        return topicsRepository.existsByUserAndPassword(user, password);
-//    }
-//
-//    public List<TopicsEntity> loadTopics(String user) {
-//        return topicsRepository.findByUser(user);
-//    }
-//
-//    public void saveTopic(TopicsEntity topicEntity) {
-//        topicsRepository.save(topicEntity);
-//    }
-//
-//    public TopicsEntity getTopicForEdit (Integer id) {
-//        return topicsRepository.findByIdIfExists(id);
-//    }
-//
-//    public void deleteTopic(Integer id) {
-//        topicsRepository.deleteById(id);
-//    }
-//
-//    public List<TopicsEntity> getAllTopicsData() {
-//        return topicsRepository.findAll();
-//    }
-//
-//    public Boolean existsById (Integer id) {
-//        return topicsRepository.existsById(id);
-//    }
-//
-//    public TopicsEntity findTopicsEntityById (Integer id) {
-//        return topicsRepository.findTopicsEntityById(id);
-//    }
-//
-//    public Boolean existsByTitleAndAuthor(String title, String author) {
-//        return topicsRepository.existsByTitleAndAuthor(title, author);
-//    }
-//
-//
-//
-//
-//
-//    public TopicsEntity findTopicByIdAndUser(Integer id, String user) {
-//        return topicsRepository.findTopicByIdAndUser(id, user);
-//    }
+    @Override
+    public void vote(TopicsModel topicsModel) {
+        try {
+            voteTopicUseCase.vote(topicsModel);
+        } catch (VoteTopicException voteException) {
+            throw voteException;
+        }
+    }
+
+    @Override
+    public Map<String, List<OptionsModel>> votingResults(TopicsModel topicsModel) {
+        try {
+            return votingResultsTopicUseCase.votingResults(topicsModel);
+        } catch (VotingResultsTopicException votingResultsTopicException) {
+            throw votingResultsTopicException;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
+import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.exceptions.EditGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.EditGroupUseCase;
@@ -36,7 +37,11 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
             throw new EditGroupException("The user is not the group administrator");
         }
 
-        groupsEntity.setMembers(new Gson().toJson(groupsModel.getMembers()));
+        groupsModel.getMembers().forEach(member -> {
+            if (!groupsRepositoryPort.checkMember(member)) {
+                throw new EditGroupException("The member "+ member +" is not a valid user");
+            }
+        });
 
         if(groupsModel.getNewGroupName() != null && !groupsModel.getNewGroupName().isBlank()) {
             if(Boolean.TRUE.equals(groupsRepositoryPort.checkByGroupNameAndAdmin(groupsModel.getNewGroupName().strip(), groupsModel.getUser()))) {
@@ -45,6 +50,18 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
                 groupsEntity.setGroupName(groupsModel.getNewGroupName().strip());
             }
         }
+
+        groupsRepositoryPort.deleteMembersByGroupId(groupsModel.getId());
+
+        groupsModel.getMembers().forEach(member -> {
+            try {
+                if(!groupsEntity.getAdmin().equals(member)) {
+                    groupsRepositoryPort.insertMember(groupsModel.getId(), groupsRepositoryPort.getUserIdByUserName(member));
+                }
+            } catch (EditGroupException editGroupException) {
+                throw new EditGroupException("An error occurred during the registration of group members");
+            }
+        });
 
         groupsRepositoryPort.editGroup(groupsEntity);
     }

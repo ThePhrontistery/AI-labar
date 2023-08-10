@@ -25,10 +25,10 @@ public class DailyBatchService {
     public void closeExpiredTopics() {
         LocalDate currentDate = LocalDate.now();
 
-        List<TopicsEntity> topics = topicsRepository.findByStatusAndCloseDateLessThanEqual(Constants.STATUS_OPENED, currentDate.format(dateFormatter));
+        List<TopicsEntity> topics = topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter));
 
         for (TopicsEntity topic : topics) {
-            topic.setStatus(Constants.STATUS_CLOSED);
+            topic.setStatus(0);
             topicsRepository.save(topic);
         }
     }

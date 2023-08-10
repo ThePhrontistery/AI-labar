@@ -5,6 +5,8 @@ import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.CreateGroupUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
+import com.capgemini.ailabar.members.domain.models.MembersModel;
+import com.capgemini.ailabar.members.infraestructure.entities.MembersEntity;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +35,27 @@ public class CreateGroupUseCaseImpl implements CreateGroupUseCase {
             throw new CreateGroupException("The user already has a group with that name");
         }
 
-        GroupsEntity groupEntity = new GroupsEntity(groupsModel);
-        groupEntity.setAdmin(groupsModel.getUser().strip());
-        groupEntity.setMembers(new Gson().toJson(groupsModel.getMembers()));
+        groupsModel.getMembers().forEach(member -> {
+            if (!groupsRepositoryPort.checkMember(member)) {
+                throw new CreateGroupException("The member "+ member +" is not a valid user");
+            }
+        });
 
-        groupsRepositoryPort.createGroup(groupEntity);
+        GroupsEntity groupsEntity = new GroupsEntity(groupsModel);
+
+        groupsRepositoryPort.createGroup(groupsEntity);
+
+        Integer groupId = groupsRepositoryPort.getGroupIdByGroupNameAndAdmin(groupsEntity.getGroupName(), groupsEntity.getAdmin());
+
+        groupsModel.getMembers().forEach(member -> {
+            try {
+                if(!groupsEntity.getAdmin().equals(member)) {
+                    groupsRepositoryPort.insertMember(groupId, groupsRepositoryPort.getUserIdByUserName(member));
+                }
+            } catch (CreateGroupException createGroupException) {
+                groupsRepositoryPort.deleteGroup(groupId);
+                throw new CreateGroupException("An error occurred during the registration of group members");
+            }
+        });
     }
 }

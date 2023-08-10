@@ -15,8 +15,6 @@ public class GroupsEntity {
     private Integer id;
     @Column(name = "group_name")
     private String groupName;
-    @Column(name = "members")
-    private String members;
     @Column(name = "admin")
     private String admin;
 
@@ -24,7 +22,6 @@ public class GroupsEntity {
 
     public GroupsEntity(GroupsModel groupsModel) {
         this.groupName = groupsModel.getGroupName();
-        this.members = groupsModel.getMembers().toString();
-        this.admin = groupsModel.getAdmin();
+        this.admin = groupsModel.getUser().strip();
     }
 }
