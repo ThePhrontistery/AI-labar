@@ -30,6 +30,7 @@ export class TopicsCreateComponent implements OnInit {
   tipoSeleccionado: string = '';
 
   members: string[] = [];
+  groupSelectedParticipantes: string[] = [];
 
   constructor(private cookie: CookieService, private topicsCreateService: TopicsCreateService, private router: Router, private dialog: MatDialog) { }
 
@@ -103,7 +104,8 @@ export class TopicsCreateComponent implements OnInit {
     }
 
     if(this.componenteHijo.users.length > 0){
-      this.members = this.componenteHijo.users
+      this.members = this.componenteHijo.users;
+      this.groupSelectedParticipantes = this.componenteHijo.selectedGroup;
     }
     this.createTopics();
   }
@@ -146,7 +148,7 @@ export class TopicsCreateComponent implements OnInit {
         "question": "prueba",
         "options": this.opcionesEncuesta,
         "user": this.cookie.get("user"),
-        "members": this.members,
+        "groupName": this.groupSelectedParticipantes,
         "closeDate": this.componenteHijo.fechaCierre,
         "token": this.cookie.get("token")
     }
