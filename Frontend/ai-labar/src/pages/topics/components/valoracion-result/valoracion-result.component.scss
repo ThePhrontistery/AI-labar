@@ -1,0 +1,40 @@
+.dato {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .opcion {
+    margin-right: 1rem;
+    width: 13%;
+  }
+
+  .votos {
+    font-weight: bold;
+  }
+
+.emoji-option {
+  display: -webkit-box;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 2rem;
+  margin: 0.5rem;
+  width: 60px;
+  height: 60px;
+}
+.inline{
+  display: flex;
+}
+.divided-container{
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+.resultEmoji{
+  font-size: 8em;
+  margin-top: 46px;
+}
+.optionEmoji{
+  margin-top: 16px;
+  font-size: 2em;
+}

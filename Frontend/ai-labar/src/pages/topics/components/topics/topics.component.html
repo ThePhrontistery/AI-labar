@@ -1,0 +1,42 @@
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <span class="hover" (click)="back()">AILabar</span>
+
+  <div class="right">
+    <div class="user-info">
+      <i class="material-icons user-icon">account_circle</i>
+      <span class="username">{{user}}</span>
+    </div>
+
+    <div fxHide fxShow.sm="true"  fxShow.gt-md="true">
+      <button mat-raised-button class="login-button ml16" color="white" (click)="anadirGrupo()">
+        Añadir grupo
+      </button>
+
+      <button mat-raised-button class="login-button ml16" color="white" (click)="anyadirTopic()">
+        Añadir topic
+      </button>
+      <button mat-raised-button color="white" class="login-button ml16" (click)="logOut()">
+        Logout
+      </button>
+    </div>
+
+    <div fxHide fxShow.xs>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu  #menu="matMenu">
+        <button mat-menu-item (click)="anadirGrupo()">
+          Añadir grupo
+        </button>
+        <button mat-menu-item (click)="anyadirTopic()">
+          Añadir topic
+        </button>
+        <button mat-menu-item (click)="logOut()">
+          Logout
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+<router-outlet class="content"></router-outlet>

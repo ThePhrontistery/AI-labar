@@ -1,0 +1,33 @@
+<div class="modal">
+  <div class="modal-content">
+    <h2>{{data.votacion.title}}</h2>
+    <div class="padding-content">
+      <div class="inline">
+        <div class="divided-container" fxHide fxShow.sm="true" fxShow.gt-md="true">
+          <div *ngFor="let dato of results" class="dato">
+            <label class="resultEmoji" [for]="dato.emoji.id">{{ dato.emoji.icon }}</label>
+          </div>
+        </div>
+        <div class="divided-container">
+          <div>
+            <div *ngFor="let dato of results" class="dato" fxHide fxShow.xs>
+              <label class="resultEmoji" [for]="dato.emoji.id">{{ dato.emoji.icon }}</label>
+            </div>
+            <br>
+            <br>
+            <div *ngFor="let dato of optionsVoted" class="dato">
+              <label class="optionEmoji" [for]="dato.emoji.id">{{ dato.emoji.icon }}</label>
+              <span class="votos">{{ dato.votes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="rightButton" mat-button color="accent" [mat-dialog-close]= "true">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+
