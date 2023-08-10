@@ -33,6 +33,8 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         List<Integer> groupsIdList = topicsRepositoryPort.getGroupsWithMemberId(topicsRepositoryPort.getUserIdByUserName(usersModel.getUser()));
         List<TopicsEntity> topicsListByMember = new ArrayList<>();
 
+        Integer userId = topicsRepositoryPort.getUserIdByUserName(usersModel.getUser());
+
         groupsIdList.forEach(groupId -> {
             try {
                 List<TopicsEntity> loadedTopics = topicsRepositoryPort.loadTopicsByGroupId(groupId);
@@ -53,13 +55,13 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         allTopics.addAll(topicsListByMember);
         allTopics.addAll(topicsListByAuthor);
 
-
         List<TopicsModel> allModels = new ArrayList<>();
         allTopics.stream()
                 .map(topicEntity -> {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
                     topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
                     topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
+                    topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
                     return topicsModel;
                 })
                 .forEach(allModels::add);
