@@ -6,17 +6,22 @@
 <mat-form-field appearance="fill">
     <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher">
   </mat-form-field>
-  <p>{{ filteredUsers.length }} usuarios encontrados</p>
-  <div class="selectionPanel">
+  <div *ngIf="mostrarUsuarios">
+  <p>{{ users.length }} usuarios encontrados</p>
+  <div class="selectionPanel" #checkboxContainer>
     <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
       {{ user.name }}
     </mat-checkbox>
   </div>
-
+</div>
+<div [class.oculto]="!mostrarSelected">
+  <p>Usuarios seleccionados: {{selectedUsers.length}}</p>
   <mat-form-field appearance="fill">
     <textarea  formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3"></textarea>
   </mat-form-field>
+</div>
 </form>
+
 
 <div class="wizard-navigation">
   <div class="button left-button">

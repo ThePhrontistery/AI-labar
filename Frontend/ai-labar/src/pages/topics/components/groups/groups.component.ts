@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IUser } from '../interfaces/emoji.model';
 import { CookieService } from 'ngx-cookie-service';
@@ -22,14 +22,22 @@ export class GroupsComponent implements OnInit {
     searcher: [''],
     currentSelection:['']
   });
+  mostrarUsuarios: boolean = false;
+  matcher: string = "";
+  mostrarSelected: boolean = false;
+
+  @ViewChild('checkboxContainer')
+  checkboxContainer!: ElementRef;
+
   constructor(private fb: FormBuilder,
     private cookie: CookieService,
     private topicListService: TopicsListService,
+    private cdRef: ChangeDetectorRef,
     public dialogRef: MatDialogRef<GroupsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    this.getUsers();
+    //this.getUsers();
   }
   getUsers(){
     const url = `${environment.apiUrl}/users/getAllUsers`;
@@ -50,7 +58,7 @@ export class GroupsComponent implements OnInit {
     this.usersNames.map(item => {
         let user = {
           name: item,
-          checked: false,
+          checked: this.selectedUsers.includes(item),
           hidden: false
         }
         this.users.push(user);
@@ -67,29 +75,33 @@ export class GroupsComponent implements OnInit {
 
   filterUsers(): void {
     this.filtering = true;
+    this.users = [];
     let search = this.groupsForm.value.searcher.toLowerCase();
-    this.filteredUsers = [];
-    this.users.map(user => user.hidden = false);
-    this.filteredUsers = this.users
-      .filter(user => user.name.toLowerCase().includes(search))
-      .map(user => ({ name: user.name, checked: false , hidden: false}));
-      this.users.forEach(user => {
-        if (!this.filteredUsers.find(filteredUser => filteredUser.name === user.name)) {
-          user.hidden = true;
-        }
-      });
-      this.filtering = false;
+    if(search.length >= 3){
+      this.matcher = search;
+      this.getUsersFilter();
+      this.mostrarUsuarios = true;
+    } else {
+      this.mostrarUsuarios = false;
+    }
   }
 
   selectUser(user: IUser): void {
     user.checked = !user.checked;
     if (user.checked) {
-      this.selectedUsers.push(user.name);
+      if(!this.selectedUsers.includes(user.name)){
+        this.selectedUsers.push(user.name);
+      }
     } else {
       const index = this.selectedUsers.indexOf(user.name);
       if (index !== -1) {
         this.selectedUsers.splice(index, 1);
       }
+    }
+    if(this.selectedUsers.length > 0){
+      this.mostrarSelected = true;
+    } else {
+      this.mostrarSelected = false;
     }
   }
   saveGroup(){
@@ -112,11 +124,32 @@ export class GroupsComponent implements OnInit {
   clearSelection(){
     this.users.forEach(user => user.checked = false);
     this.selectedUsers = [];
+    this.mostrarUsuarios = false;
+    this.mostrarSelected = false;
+    this.users = [];
+    this.cdRef.detectChanges();
   }
 
   //solo para los test
   setCookie(){
     this.cookie.set('user', 'testUser');
     this.cookie.set('token', 'testToken');
+  }
+
+  getUsersFilter(){
+    const url = `${environment.apiUrl}/users/getUsersByMatch`;
+    const loadTopicsBody = {
+      "user": this.cookie.get("user"),
+      "token": this.cookie.get("token"),
+      "matcher": this.matcher
+  }
+    this.topicListService.postResponse(loadTopicsBody, url).subscribe(
+        response => {
+          if (response && response.body){
+            this.usersNames = response.body.entity;
+            this.loadForm();
+          }
+        }
+    );
   }
 }
