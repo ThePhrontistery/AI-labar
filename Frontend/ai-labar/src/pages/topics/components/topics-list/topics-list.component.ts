@@ -58,7 +58,9 @@ export class TopicsListComponent implements OnInit {
     const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
-      "token": this.cookie.get("token")
+      "token": this.cookie.get("token"),
+      "page" : 1,
+      "elements": 100
     }
     if (environment.mockup) {
       this.topicsListServiceMock.loadTopics_post(loadTopicsBody).subscribe(
