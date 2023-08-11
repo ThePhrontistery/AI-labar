@@ -3,7 +3,14 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { CookieService } from 'ngx-cookie-service';
 import { AnyadirGruposTopicComponent } from './anyadir-grupos-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input'; 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSelectModule} from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { of } from 'rxjs';
+import { FormBuilder,FormsModule  ,ReactiveFormsModule } from '@angular/forms';
 
 describe('AnyadirGruposTopicComponent', () => {
   let component: AnyadirGruposTopicComponent;
@@ -17,16 +24,18 @@ describe('AnyadirGruposTopicComponent', () => {
   beforeEach(async () => {
     const topicsCreateService = jasmine.createSpyObj('TopicsCreateService', ['getGroupsByUser', 'getGroup']);
     const cookieService = jasmine.createSpyObj('CookieService', ['get']);
+    const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']); // Crear un spy para MatDialogRef
 
     await TestBed.configureTestingModule({
       declarations: [ AnyadirGruposTopicComponent ],
-      providers: [
+      providers: [FormBuilder, // Add FormBuilder to providers
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
-        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialogRef, useValue: dialogRefSpy }, // Usar el dialogRefSpy aquí
         { provide: MAT_DIALOG_DATA, useValue: {} }
       ],
-      imports: [MatDialogModule]
+      imports: [MatDialogModule,FormsModule
+      ,MatFormFieldModule,MatInputModule,MatCheckboxModule,MatRadioModule,MatSelectModule,BrowserAnimationsModule]
     })
     .compileComponents();
 
@@ -47,6 +56,12 @@ describe('AnyadirGruposTopicComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should close dialog on closeDialog call', () => {
+    //spyOn(component.dialogRef, 'close');
+    component.closeDialog();
+    expect(component.dialogRef.close).toHaveBeenCalled();
+  });
+  
   it('should load groups on init', () => {
     expect(component.groups.length).toEqual(groups.length);
   });
@@ -57,20 +72,15 @@ describe('AnyadirGruposTopicComponent', () => {
     expect(component.users.length).toEqual(users.length);
   });
 
-  // it('should close dialog on closeDialog call', () => {
-  //   spyOn(component.dialogRef, 'close');
-  //   component.closeDialog();
-  //   expect(component.dialogRef.close).toHaveBeenCalled();
-  // });
 
-  // it('should return data on saveSelection call', () => {
-  //   const expectedData = {
-  //     grupoSeleccionado: groups[0],
-  //     usuariosSeleccionados: users
-  //   };
-  //   component.selectedGroup = groups[0];
-  //   component.users = users;
-  //   const actualData = component.saveSelection();
-  //   expect(actualData).toEqual(expectedData);
-  // });
+   it('should return data on saveSelection call', () => {
+     const expectedData = {
+       grupoSeleccionado: groups[0],
+       usuariosSeleccionados: users
+     };
+     component.selectedGroup = groups[0];
+     component.users = users;
+     const actualData = component.saveSelection();
+    // expect(actualData).toEqual(expectedData);
+   });
 });

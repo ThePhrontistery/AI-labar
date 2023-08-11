@@ -1,17 +1,19 @@
 <h2>Añadir candidatos</h2>
 <p>Elegir por grupo o por usuario:</p>
 
-<mat-radio-group [(ngModel)]="selectedOption">
+<form [formGroup]="groupsForm">
+<mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
   <mat-radio-button color="primary" value="group">Grupo</mat-radio-button>
   <mat-radio-button color="primary" value="user">Usuario</mat-radio-button>
 </mat-radio-group>
 <div class="content" *ngIf="selectedOption == 'group'">
   <mat-form-field>
     <mat-label>Seleccionar Grupo de Usuarios</mat-label>
-    <mat-select [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
+    <mat-select formControlName="selectedGroup" (selectionChange)="loadUsers()">
       <mat-option *ngFor="let group of groups" [value]="group">{{ group }}</mat-option>
     </mat-select>
   </mat-form-field>
+  
 
   <h3>Usuarios del Grupo Seleccionado</h3>
   <!-- Listado de usuarios del grupo seleccionado -->
@@ -22,46 +24,56 @@
         {{ user }}
       </li>
       <li *ngIf="i === 5 && usersGroups.length > 6">...</li>
-      <p *ngIf="i === 7 && usersGroups.length > limiteCandidatos" class="error">El número de candidatos para esta encuesta no puede ser mayor que {{limiteCandidatos}}</p>
+      <p *ngIf="i === 7 && usersGroups.length > limiteCandidatos" class="error">El número de candidatos para esta
+        encuesta no puede ser mayor que {{limiteCandidatos}}</p>
     </ng-container>
   </ul>
 
   <div class="wizard-navigation">
     <div class="button right-button">
-      <button class="button" (click)="closeDialog()" mat-button color="accent">Cerrar</button>
-      <button class="button login-button ml16" mat-raised-button color="white" (click)="saveSelection()">Guardar selección</button>
+      <button class="button" (click)="closeDialog()" mat-button color="accent" name="cerrar">Cerrar</button>
+      <button class="button login-button ml16" mat-raised-button color="white" (click)="saveSelection()" name="guardarSelec">Guardar
+        selección</button>
     </div>
   </div>
 </div>
 
 <div class="content" *ngIf="selectedOption == 'user'">
-<form class="login-form" [formGroup]="groupsForm">
-<mat-form-field appearance="fill">
-    <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher">
-  </mat-form-field>
-  <p>{{ filteredUsers.length }} usuarios encontrados</p>
-  <div class="selectionPanel">
-    <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
-      {{ user.name }}
+  <!--<form class="login-form" [formGroup]="groupsForm">-->
+    <mat-form-field appearance="fill">
+      <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher" name="searcher">
+    </mat-form-field>
+    <p>{{ filteredUsers.length }} usuarios encontrados</p>
+    <div class="selectionPanel">
+      <!--<mat-checkbox color="primary" *ngFor="let user of users" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
+        <input type="checkbox" [formControl]="groupsForm.get(user.name)">
+        {{ user.name }}
+      -->
+      <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
+        {{ user.name }}
     </mat-checkbox>
-  </div>
-  <p *ngIf="selectedUsers.length > 8" class="error">No se pueden seleccionar mas de 8 candidatos</p>
+    
+    </div>
+    <p *ngIf="selectedUsers.length > 8" class="error">No se pueden seleccionar mas de 8 candidatos</p>
 
-  <mat-form-field appearance="fill">
-    <textarea  formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3"></textarea>
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <textarea formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3" name="currentSelection"></textarea>
+    </mat-form-field>
+ <!-- </form>-->
+
+  <div class="wizard-navigation">
+    <div class="button left-button">
+      <button mat-raised-button color="white" class="login-button" (click)="clearSelection()" name="limpiar"> Limpiar selección
+      </button>
+    </div>
+    <div class="button right-button"> 
+      <button class="button" mat-button color="accent" [mat-dialog-close]="true" name="cancelar">Cancelar</button>
+      <button [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid" mat-raised-button color="white"
+        class="login-button ml16 rightButton" (click)="saveGroup()" name="guardar">
+        Guardar selección
+      </button>
+    </div>
+  </div>
+</div>
+
 </form>
-
-<div class="wizard-navigation">
-  <div class="button left-button">
-    <button mat-raised-button color="white" class="login-button" (click)="clearSelection()"> Limpiar selección </button>
-  </div>
-  <div class="button right-button">
-    <button class="rightButton" mat-button color="accent" [mat-dialog-close]= "true">Cancelar</button>
-    <button [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid" mat-raised-button color="white" class="login-button ml16 rightButton"
-(click)="saveGroup()">
-Guardar selección
-</button>
-  </div>
-</div>
-</div>
