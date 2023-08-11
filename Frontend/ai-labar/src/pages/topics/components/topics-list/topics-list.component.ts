@@ -76,8 +76,8 @@ export class TopicsListComponent implements OnInit {
           this.dataSource.sort = this.sort;
         }
       },
-      (error) => {
-        console.error('Error al obtener los topicos:', error);
+      error => {
+        alert('Error al obtener los topicos: '+ error);
       }
     );
   }
@@ -101,8 +101,8 @@ export class TopicsListComponent implements OnInit {
           this.getTopicList();
         }
       },
-      (error) => {
-        console.error('Error al abrir el topico:', error);
+      error => {
+        alert('Error al abrir el topico: '+ error);
       }
     );
 
@@ -127,8 +127,8 @@ export class TopicsListComponent implements OnInit {
           this.getTopicList();
         }
       },
-      (error) => {
-        console.error('Error al cerrar el topico:', error);
+      error => {
+        alert('Error al cerrar el topico: '+ error);
       }
     );
 
@@ -166,15 +166,15 @@ export class TopicsListComponent implements OnInit {
               this.getTopicList();
             }
           },
-          (error) => {
-            console.error('Error al borrar el topico:', error);
+          error => {
+            alert('Error al borrar el topico: '+ error);
           }
         );
       }
     });
   }
   vote(votation: any) {
-    console.log(votation);
+    //console.log(votation);
     this.idVotation = votation.id;
     //this.optionsVotacion = votation.optionsDataList;
     this.optionsVotacion = votation.options;
