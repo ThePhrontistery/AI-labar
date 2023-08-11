@@ -18,7 +18,7 @@ export class TopicsListServiceMock {
             author: 'Test',
             members: ['Beni', 'Lester'],
             visits: 4,
-            status: 'Abierto',
+            status: 1,
             canVote: false,
           },
           {
@@ -37,7 +37,7 @@ export class TopicsListServiceMock {
             author: 'Beni',
             members: ['Beni', 'Lester'],
             visits: 2,
-            status: 'Abierto',
+            status: 1,
             canVote: true,
           },
     ];
@@ -49,7 +49,7 @@ export class TopicsListServiceMock {
     const topicIndex = this.topics.findIndex(topic => topic.id === topicId);
 
     if (topicIndex !== -1) {
-      this.topics[topicIndex].status = 'Abierto';
+      this.topics[topicIndex].status = 1;//Abrir
     }
 
     return of({ message: 'Topic reopened' });
@@ -60,7 +60,7 @@ export class TopicsListServiceMock {
     const topicIndex = this.topics.findIndex(topic => topic.id === topicId);
 
     if (topicIndex !== -1) {
-      this.topics[topicIndex].status = 'Cerrado';
+      this.topics[topicIndex].status = 0;//cerrar
     }
 
     return of({ message: 'The topic has been closed' });

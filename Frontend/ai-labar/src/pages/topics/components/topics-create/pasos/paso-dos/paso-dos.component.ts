@@ -85,8 +85,19 @@ export class PasoDosComponent implements OnInit, OnDestroy {
 
   usersCandidatos: string[] = [];
   selectedGroupCandidatos: string[] = [];
+  minDate:Date;
+  // Función para filtrar fechas anteriores al día actual
+  dateFilter = (date: Date | null): boolean => {
+    if (date === null) {
+      return false; // Otra opción sería permitir todas las fechas si date es null
+    }
+    
+    const currentDate = new Date();
+    return date >= currentDate;
+  }
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) { 
+    this.minDate = new Date();}
 
   ngOnInit(): void {
     this.opcionesAMostrar();
@@ -132,6 +143,10 @@ export class PasoDosComponent implements OnInit, OnDestroy {
     // Aquí puedes obtener la fecha seleccionada del evento y enviarla mediante tu web service (ws)
     this.fechaCierre = this.formatearFecha(event.value);
     const isFechaValida = this.esFechaMayorQueActual(this.fechaCierre);
+    if(!isFechaValida){
+      this.fechaCierre='';
+      event.target.value = '';
+    }
    // console.log('Fecha seleccionada:',  this.fechaCierre);
    // console.log('Fecha valida:', isFechaValida);
 

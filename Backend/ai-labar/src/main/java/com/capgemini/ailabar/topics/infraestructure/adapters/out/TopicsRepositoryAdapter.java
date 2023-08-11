@@ -171,19 +171,9 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
         topicsRepository.insertOption(topicId, image, option, votes);
     }
 
-//    @Override
-//    public List<TopicsEntity> loadTopics(String user, Integer groupId) {
-//        return topicsRepository.loadTopics(user, groupId);
-//    }
-
     @Override
-    public List<TopicsEntity> loadTopicsByAuthor(String user) {
-        return topicsRepository.loadTopicsByAuthor(user);
-    }
-
-    @Override
-    public List<TopicsEntity> loadTopicsByGroupId(Integer groupId) {
-        return topicsRepository.loadTopicsByGroupId(groupId);
+    public List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset) {
+        return topicsRepository.loadTopics(user, groupIds, limit, offset);
     }
 
     @Override

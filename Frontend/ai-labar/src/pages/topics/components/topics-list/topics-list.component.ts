@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TopicListInterface } from './complements/interfaces';
 import { TopicsListService } from './topics-list.service';
 import { MatSort } from '@angular/material/sort';
@@ -41,9 +41,9 @@ export class TopicsListComponent implements OnInit {
   isEnquestaImagenTextoSimple: Boolean = false;
   isEnquestaImagenTextoMultiple: Boolean = false;
 
-  listItems: any[] = [{option:'Elemento 1', votes:1}, {option:'Elemento 2', votes: 2}, {option:'Elemento 3', votes:5}, {option:'Elemento 4', votes:0}];
+  listItems: any[] = [{ option: 'Elemento 1', votes: 1 }, { option: 'Elemento 2', votes: 2 }, { option: 'Elemento 3', votes: 5 }, { option: 'Elemento 4', votes: 0 }];
   showModalResultados = false;
-  titleEncuesta: string= '';
+  titleEncuesta: string = '';
 
   constructor(private topicListService: TopicsListService,
     private topicsListServiceMock: TopicsListServiceMock,
@@ -54,33 +54,32 @@ export class TopicsListComponent implements OnInit {
     this.getTopicList();
   }
 
-  getTopicList(){
+  getTopicList() {
     const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token"),
-      "page" : 1,
+      "page": 1,
       "elements": 100
     }
+    let serviceCall;
     if (environment.mockup) {
-      this.topicsListServiceMock.loadTopics_post(loadTopicsBody).subscribe(
-        response => {
-          if (response) {
-            this.dataSource.data = response.entity;
-            this.dataSource.sort = this.sort;
-          }
-        }
-      );
+      serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
     } else {
-      this.topicListService.post(loadTopicsBody, url).subscribe(
-        response => {
-          if (response) {
-            this.dataSource.data = response.entity;
-            this.dataSource.sort = this.sort;
-          }
-        }
-      );
+      serviceCall = this.topicListService.post(loadTopicsBody, url);
     }
+
+    serviceCall.subscribe(
+      response => {
+        if (response) {
+          this.dataSource.data = response.entity;
+          this.dataSource.sort = this.sort;
+        }
+      },
+      error => {
+        alert('Error al obtener los topicos: '+ error);
+      }
+    );
   }
   reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
@@ -89,22 +88,24 @@ export class TopicsListComponent implements OnInit {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
     }
-
+    let serviceCall;
     if (environment.mockup) {
-      this.topicsListServiceMock.reopenTopic(closingData).subscribe(
-        response => {
-          if (response) {
-            this.getTopicList();
-          }
-        });
+      serviceCall = this.topicsListServiceMock.reopenTopic(closingData);
     } else {
-      this.topicListService.put(closingData, url).subscribe(
-        response => {
-          if (response) {
-            this.getTopicList();
-          }
-        });
+      serviceCall = this.topicListService.put(closingData, url);
     }
+
+    serviceCall.subscribe(
+      response => {
+        if (response) {
+          this.getTopicList();
+        }
+      },
+      error => {
+        alert('Error al abrir el topico: '+ error);
+      }
+    );
+
   }
   close(votation: any) {
     const url = `${environment.apiUrl}/topics/closeTopic`;
@@ -113,21 +114,25 @@ export class TopicsListComponent implements OnInit {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
     }
+    let serviceCall;
     if (environment.mockup) {
-      this.topicsListServiceMock.closeTopic(closingData).subscribe(
-        response => {
-          if (response) {
-            this.getTopicList();
-          }
-        });
+      serviceCall = this.topicsListServiceMock.closeTopic(closingData);
     } else {
-      this.topicListService.put(closingData, url).subscribe(
-        response => {
-          if (response) {
-            this.getTopicList();
-          }
-        });
+      serviceCall = this.topicListService.put(closingData, url);
     }
+
+    serviceCall.subscribe(
+      response => {
+        if (response) {
+          this.getTopicList();
+        }
+      },
+      error => {
+        alert('Error al cerrar el topico: '+ error);
+      }
+    );
+
+
   }
   delete(votation: any) {
     const dialogRef = this.dialog.open(ConfirmarEliminacionTopicComponent, {
@@ -146,26 +151,30 @@ export class TopicsListComponent implements OnInit {
           "user": this.cookie.get("user"),
           "token": this.cookie.get("token")
         }
+
+
+        let serviceCall;
         if (environment.mockup) {
-          this.topicsListServiceMock.deleteTopic(deletionData).subscribe(
-            response => {
-              if (response) {
-                this.getTopicList();
-              }
-            });
+          serviceCall = this.topicsListServiceMock.deleteTopic(deletionData);
         } else {
-          this.topicListService.delete(deletionData, url).subscribe(
-            response => {
-              if (response) {
-                this.getTopicList();
-              }
-            });
+          serviceCall = this.topicListService.delete(deletionData, url);
         }
+
+        serviceCall.subscribe(
+          response => {
+            if (response) {
+              this.getTopicList();
+            }
+          },
+          error => {
+            alert('Error al borrar el topico: '+ error);
+          }
+        );
       }
     });
   }
   vote(votation: any) {
-    console.log(votation);
+    //console.log(votation);
     this.idVotation = votation.id;
     //this.optionsVotacion = votation.optionsDataList;
     this.optionsVotacion = votation.options;
@@ -200,17 +209,17 @@ export class TopicsListComponent implements OnInit {
   }
 
   revisarType(): void {
-    if(this.typeVotacion == "TEXT_MULTIPLE"){
+    if (this.typeVotacion == "TEXT_MULTIPLE") {
       this.isEncuestaOpinionMultiple = true;
-    }else if(this.typeVotacion == "RATING"){
+    } else if (this.typeVotacion == "RATING") {
       this.isEnquestaValoracion = true;
-    }else if(this.typeVotacion == "AS"){
+    } else if (this.typeVotacion == "AS") {
       this.isEnquestaVotacion = true;
-    }else if(this.typeVotacion == "IMAGE_SINGLE"){
+    } else if (this.typeVotacion == "IMAGE_SINGLE") {
       this.isEnquestaImagenTextoSimple = true;
-    }else if(this.typeVotacion == "IMAGE_MULTIPLE"){
+    } else if (this.typeVotacion == "IMAGE_MULTIPLE") {
       this.isEnquestaImagenTextoMultiple = true;
-    }else if(this.typeVotacion == "TEXT_SINGLE"){
+    } else if (this.typeVotacion == "TEXT_SINGLE") {
       this.isEncuestaOpinionSimple = true;
     }
   }
@@ -224,7 +233,7 @@ export class TopicsListComponent implements OnInit {
     this.showModalResultados = false;
   }
 
-  results(votacion: any){
+  results(votacion: any) {
     let component;
     if (votacion.type === 'TEXT_MULTIPLE' || votacion.type === 'TEXT_SINGLE') component = TopicResultComponent;
     if (votacion.type === 'AS') component = AsResultsComponent;
@@ -232,10 +241,10 @@ export class TopicsListComponent implements OnInit {
     if (votacion.type === 'IMAGE_SINGLE' || votacion.type === 'IMAGE_MULTIPLE') component = ImageTextResultComponent;
     if (component) this.openResult(votacion, component)
   }
-  openResult(votacion: any, component: any){
+  openResult(votacion: any, component: any) {
     const dialogRef = this.dialog.open(component, {
       width: '350px',
-      data: {votacion},
+      data: { votacion },
     });
   }
 }
