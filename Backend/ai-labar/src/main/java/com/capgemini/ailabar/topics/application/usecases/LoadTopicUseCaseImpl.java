@@ -1,6 +1,5 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
-import com.capgemini.ailabar.options.infraestructure.entities.OptionsEntity;
 import com.capgemini.ailabar.topics.domain.exceptions.LoadTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.LoadTopicUseCase;
@@ -25,38 +24,26 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
 
     @Override
     public List<TopicsModel> loadTopics(UsersModel usersModel) {
+        if(usersModel.getUser().isBlank() || usersModel.getToken().isEmpty()
+                || usersModel.getElements() == null) {
+            throw new LoadTopicException("User, token, and the number of items to display are required");
+        }
+
         if(Boolean.FALSE.equals(topicsRepositoryPort.checkAuthorization(usersModel.getUser(), usersModel.getToken()))) {
             throw new LoadTopicException("Unauthorized user");
         }
 
-        List<TopicsEntity> topicsListByAuthor = topicsRepositoryPort.loadTopicsByAuthor(usersModel.getUser());
-        List<Integer> groupsIdList = topicsRepositoryPort.getGroupsWithMemberId(topicsRepositoryPort.getUserIdByUserName(usersModel.getUser()));
-        List<TopicsEntity> topicsListByMember = new ArrayList<>();
+        int elementsPerPage = usersModel.getElements();
+        int requestedPage = usersModel.getPage() != null && usersModel.getPage() > 0 ? usersModel.getPage() : 1;
+
+        int offset = (requestedPage - 1) * elementsPerPage;
 
         Integer userId = topicsRepositoryPort.getUserIdByUserName(usersModel.getUser());
-
-        groupsIdList.forEach(groupId -> {
-            try {
-                List<TopicsEntity> loadedTopics = topicsRepositoryPort.loadTopicsByGroupId(groupId);
-
-                if (!loadedTopics.isEmpty()) {
-                    topicsListByMember.addAll(loadedTopics);
-                }
-            } catch (LoadTopicException loadTopicException) {
-                throw new LoadTopicException("An error occurred during the loading of topics");
-            }
-        });
-
-        if(topicsListByAuthor.isEmpty() && topicsListByMember.isEmpty() ) {
-            throw new LoadTopicException("There are no topics related to the user");
-        }
-
-        List<TopicsEntity> allTopics = new ArrayList<>();
-        allTopics.addAll(topicsListByMember);
-        allTopics.addAll(topicsListByAuthor);
+        List<Integer> groupIds= topicsRepositoryPort.getGroupsWithMemberId(topicsRepositoryPort.getUserIdByUserName(usersModel.getUser()));
+        List<TopicsEntity> loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
 
         List<TopicsModel> allModels = new ArrayList<>();
-        allTopics.stream()
+        loadTopics.stream()
                 .map(topicEntity -> {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
                     topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));

@@ -5,9 +5,6 @@ import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.CreateGroupUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
-import com.capgemini.ailabar.members.domain.models.MembersModel;
-import com.capgemini.ailabar.members.infraestructure.entities.MembersEntity;
-import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
