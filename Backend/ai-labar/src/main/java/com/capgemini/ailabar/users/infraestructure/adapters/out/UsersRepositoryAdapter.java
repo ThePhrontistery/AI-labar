@@ -1,7 +1,7 @@
 package com.capgemini.ailabar.users.infraestructure.adapters.out;
 
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
+import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.infraestructure.repositories.UsersRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,17 +16,22 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public boolean login(String user, String password) {
-        return usersRepository.checkLogin(user, password);
+    public boolean checkAuthorization(String user, String token) {
+        return usersRepository.checkAuthorization(user, token);
+    }
+
+    @Override
+    public boolean checkEmail(String email) {
+        return usersRepository.checkEmail(email);
+    }
+
+    @Override
+    public boolean checkUser(String user) {
+        return usersRepository.checkUser(user);
     }
 
     @Override
     public void createUser(UsersEntity usersEntity) {
-        usersRepository.save(usersEntity);
-    }
-
-    @Override
-    public void editUser(UsersEntity usersEntity) {
         usersRepository.save(usersEntity);
     }
 
@@ -36,8 +41,8 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public List<String> getUsersByMatch(String matcher) {
-        return usersRepository.getUsersByNameMatch(matcher);
+    public void editUser(UsersEntity usersEntity) {
+        usersRepository.save(usersEntity);
     }
 
     @Override
@@ -46,27 +51,22 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
+    public UsersEntity getUserByName(String user) {
+        return usersRepository.getUserByName(user);
+    }
+
+    @Override
+    public List<String> getUsersByMatch(String matcher) {
+        return usersRepository.getUsersByNameMatch(matcher);
+    }
+
+    @Override
     public List<UsersEntity> getUsersDatabase() {
         return usersRepository.findAll();
     }
 
     @Override
-    public boolean checkUser(String user) {
-        return usersRepository.checkUser(user);
-    }
-
-    @Override
-    public boolean checkEmail(String email) {
-        return usersRepository.checkEmail(email);
-    }
-
-    @Override
-    public boolean checkAuthorization(String user, String token) {
-        return usersRepository.checkAuthorization(user, token);
-    }
-
-    @Override
-    public UsersEntity getUserByName(String user) {
-        return usersRepository.getUserByName(user);
+    public boolean login(String user, String password) {
+        return usersRepository.checkLogin(user, password);
     }
 }

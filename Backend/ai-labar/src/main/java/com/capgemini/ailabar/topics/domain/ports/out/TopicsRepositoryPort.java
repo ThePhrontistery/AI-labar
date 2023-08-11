@@ -18,8 +18,6 @@ public interface TopicsRepositoryPort {
 
     boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId);
 
-    boolean checkIfUserIsMemberOfGroup(Integer groupId, Integer userId);
-
     boolean checkMember(String member);
 
     void closeTopic(TopicsEntity topicsEntity);
@@ -39,6 +37,8 @@ public interface TopicsRepositoryPort {
     void deleteVotedByOnTopic(Integer topicId);
 
     void editTopic(TopicsEntity topicsEntity);
+
+    List<String> getEmailsByGroupId(Integer groupId);
 
     Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin);
 

@@ -3,7 +3,6 @@ package com.capgemini.ailabar.groups.infraestructure.adapters.out;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.groups.infraestructure.repositories.GroupsRepository;
-import com.capgemini.ailabar.members.infraestructure.entities.MembersEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,46 +13,6 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
 
     public GroupsRepositoryAdapter(GroupsRepository groupsRepository) {
         this.groupsRepository = groupsRepository;
-    }
-
-    @Override
-    public void createGroup(GroupsEntity groupsEntity) {
-        groupsRepository.save(groupsEntity);
-    }
-
-    @Override
-    public GroupsEntity getGroup(String groupName, String admin) {
-        return groupsRepository.getGroupByGroupNameAndAdmin(groupName, admin);
-    }
-
-    @Override
-    public void editGroup(GroupsEntity groupsEntity) {
-        groupsRepository.save(groupsEntity);
-    }
-
-    @Override
-    public void deleteGroup(Integer id) {
-        groupsRepository.deleteById(id);
-    }
-
-    @Override
-    public List<GroupsEntity> getGroupsDatabase() {
-        return groupsRepository.findAll();
-    }
-
-    @Override
-    public void insertMember(Integer groupId, Integer userId) {
-        groupsRepository.insertMember(groupId, userId);
-    }
-
-    @Override
-    public void deleteMembersByGroupId(Integer groupId) {
-        groupsRepository.deleteMembersByGroupId(groupId);
-    }
-
-    @Override
-    public List<Integer> getMembersId(Integer groupId) {
-        return groupsRepository.getMembersId(groupId);
     }
 
     @Override
@@ -77,6 +36,36 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
+    public void createGroup(GroupsEntity groupsEntity) {
+        groupsRepository.save(groupsEntity);
+    }
+
+    @Override
+    public void deleteGroup(Integer id) {
+        groupsRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteMembersByGroupId(Integer groupId) {
+        groupsRepository.deleteMembersByGroupId(groupId);
+    }
+
+    @Override
+    public void editGroup(GroupsEntity groupsEntity) {
+        groupsRepository.save(groupsEntity);
+    }
+
+    @Override
+    public List<String> getAllGroupNamesByAdmin(String admin) {
+        return groupsRepository.getAllGroupNamesByAdmin(admin);
+    }
+
+    @Override
+    public GroupsEntity getGroup(String groupName, String admin) {
+        return groupsRepository.getGroupByGroupNameAndAdmin(groupName, admin);
+    }
+
+    @Override
     public GroupsEntity getGroupById(Integer id) {
         return groupsRepository.getGroupById(id);
     }
@@ -84,6 +73,16 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     @Override
     public Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin) {
         return groupsRepository.getGroupIdByGroupNameAndAdmin(groupName, admin);
+    }
+
+    @Override
+    public List<GroupsEntity> getGroupsDatabase() {
+        return groupsRepository.findAll();
+    }
+
+    @Override
+    public List<Integer> getMembersId(Integer groupId) {
+        return groupsRepository.getMembersId(groupId);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
-    public List<String> getAllGroupNamesByAdmin(String admin) {
-        return groupsRepository.getAllGroupNamesByAdmin(admin);
+    public void insertMember(Integer groupId, Integer userId) {
+        groupsRepository.insertMember(groupId, userId);
     }
 }
