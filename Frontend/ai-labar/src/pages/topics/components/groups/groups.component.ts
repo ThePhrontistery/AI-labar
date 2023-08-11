@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IUser } from '../interfaces/emoji.model';
 import { CookieService } from 'ngx-cookie-service';
@@ -32,7 +32,6 @@ export class GroupsComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private cookie: CookieService,
     private topicListService: TopicsListService,
-    private cdRef: ChangeDetectorRef,
     public dialogRef: MatDialogRef<GroupsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
@@ -123,11 +122,11 @@ export class GroupsComponent implements OnInit {
   }
   clearSelection(){
     this.users.forEach(user => user.checked = false);
+    this.groupsForm.reset();
     this.selectedUsers = [];
     this.mostrarUsuarios = false;
     this.mostrarSelected = false;
     this.users = [];
-    this.cdRef.detectChanges();
   }
 
   //solo para los test
