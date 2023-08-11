@@ -68,11 +68,7 @@ public interface TopicsRepositoryPort {
 
     void insertOption(Integer topicId, String image, String option, Integer votes);
 
-    List<TopicsEntity> loadTopicsByAuthor(String user);
-
-    List<TopicsEntity> loadTopicsByGroupId(Integer groupId);
-
-//    List<TopicsEntity> loadTopics(@Param("user") String user, @Param("groupId") Integer groupId);
+    List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset);
 
     void reOpenTopic(TopicsEntity topicsEntity);
 

@@ -3,23 +3,15 @@ package com.capgemini.ailabar.groups.infraestructure.controllers;
 import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import com.capgemini.ailabar.groups.domain.exceptions.*;
-import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.application.services.GroupsService;
-import com.capgemini.ailabar.users.application.services.UsersService;
-import com.capgemini.ailabar.users.domain.exceptions.CreateUserException;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/groups")

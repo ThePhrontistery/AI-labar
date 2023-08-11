@@ -98,14 +98,14 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query(value = "INSERT INTO options (topic_id, image, option, votes) VALUES (:topicId, :image, :option, :votes)", nativeQuery = true)
     void insertOption(@Param("topicId") Integer topicId, @Param("image") String image, @Param("option") String option, @Param("votes") Integer votes);
 
-    @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user")
-    List<TopicsEntity> loadTopicsByAuthor(@Param("user") String user);
-
-    @Query("SELECT t FROM TopicsEntity t WHERE t.groupId = :groupId")
-    List<TopicsEntity> loadTopicsByGroupId(@Param("groupId") Integer groupId);
-
-//    @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user OR t.groupId = :groupId")
-//    List<TopicsEntity> loadTopics(@Param("user") String user, @Param("groupId") Integer groupId);
+    @Query(value = "SELECT * FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
+            "ORDER BY id DESC " +
+            "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<TopicsEntity> loadTopics(@Param("user") String user,
+                                  @Param("groupIds") List<Integer> groupIds,
+                                  @Param("limit") Integer limit,
+                                  @Param("offset") Integer offset);
 
 
     @Modifying

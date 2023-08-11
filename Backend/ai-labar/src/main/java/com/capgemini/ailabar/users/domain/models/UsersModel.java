@@ -15,6 +15,10 @@ public class UsersModel {
     private String photo;
     private String token;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer page;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer elements;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String matcher;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String newUser;

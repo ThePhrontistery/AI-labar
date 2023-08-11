@@ -15,6 +15,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -180,10 +183,22 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
     private void manageCloseDate() {
         if(topicsModel.getCloseDate() != null && !topicsModel.getCloseDate().isBlank()) {
             String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDate());
+
             if(dateString.contains("KO")) {
                 throw new CreateTopicException(dateString);
             } else {
                 topicsEntity.setCloseDate(topicsModel.getCloseDate());
+            }
+
+            try {
+                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                LocalDate currentDate = LocalDate.now();
+
+                if (!inputDate.isAfter(currentDate)) {
+                    throw new CreateTopicException("The closing date cannot be earlier than the current date");
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new CreateTopicException(dateTimeParseException.getMessage());
             }
         }
     }
