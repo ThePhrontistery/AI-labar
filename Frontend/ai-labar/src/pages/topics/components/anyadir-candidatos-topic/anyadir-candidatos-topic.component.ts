@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -25,14 +25,18 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
   users: Array<IUser> = [];
   filteredUsers: IUser[] = [];
   selectedUsers: string[] = [];
-  groupsForm: FormGroup; // Remove the initial assignment here
-  /*groupsForm: FormGroup =  this.fb.group({
-     searcher: [''],
-     selectedOption: ['group'], // Valor inicial para selectedOption
-     currentSelection:['']
-   });*/
+  groupsForm: FormGroup;
 
   limiteCandidatos: number = 8;
+
+  mostrarUsuarios: boolean = false;
+  matcher: string = "";
+  mostrarSelected: boolean = false;
+
+  @ViewChild('checkboxContainer')
+  checkboxContainer!: ElementRef;
+
+  oldSelectedOption: string | undefined;
 
   constructor(private topicsCreateService: TopicsCreateService,
     private cookie: CookieService,
@@ -40,8 +44,8 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     private topicListService: TopicsListService,
     private changeDetectorRef: ChangeDetectorRef,
     public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+
     // Initialize the form group and controls
     this.groupsForm = this.fb.group({
      searcher: [''],
@@ -148,31 +152,36 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
 
   filterUsers(): void {
     this.filtering = true;
+    this.users = [];
     let search = this.groupsForm.value.searcher.toLowerCase();
-    this.filteredUsers = [];
-    this.users.map(user => user.hidden = false);
-    this.filteredUsers = this.users
-      .filter(user => user.name.toLowerCase().includes(search))
-      .map(user => ({ name: user.name, checked: false , hidden: false}));
-      this.users.forEach(user => {
-        if (!this.filteredUsers.find(filteredUser => filteredUser.name === user.name)) {
-          user.hidden = true;
-        }
-      });
-      this.filtering = false;
+    if(search.length >= 3){
+      this.matcher = search;
+      this.getUsersFilter();
+      this.mostrarUsuarios = true;
+    } else {
+      this.mostrarUsuarios = false;
+    }
   }
 
   selectUser(user: IUser): void {
     user.checked = !user.checked;
     if (user.checked) {
-      this.selectedUsers.push(user.name);
+      if(!this.selectedUsers.includes(user.name)){
+        this.selectedUsers.push(user.name);
+      }
     } else {
       const index = this.selectedUsers.indexOf(user.name);
       if (index !== -1) {
         this.selectedUsers.splice(index, 1);
       }
     }
+    if(this.selectedUsers.length > 0){
+      this.mostrarSelected = true;
+    } else {
+      this.mostrarSelected = false;
+    }
   }
+
   saveGroup(){
       const datos = {
         grupoSeleccionado: null,
@@ -182,8 +191,16 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
   }
 
   clearSelection(){
+    this.oldSelectedOption = this.selectedOption;
     this.users.forEach(user => user.checked = false);
+    this.groupsForm.reset();
     this.selectedUsers = [];
+    this.mostrarUsuarios = false;
+    this.mostrarSelected = false;
+    this.users = [];
+this.groupsForm.patchValue({
+  selectedOption: this.oldSelectedOption
+});
   }
 
   onOptionChange() {
@@ -192,5 +209,22 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
       this.selectedOption = selectedOptionControl.value;
     }
   }
-  
+
+  getUsersFilter(){
+    const url = `${environment.apiUrl}/users/getUsersByMatch`;
+    const loadTopicsBody = {
+      "user": this.cookie.get("user"),
+      "token": this.cookie.get("token"),
+      "matcher": this.matcher
+  }
+    this.topicListService.postResponse(loadTopicsBody, url).subscribe(
+        response => {
+          if (response && response.body){
+            this.usersNames = response.body.entity;
+            this.loadForm();
+          }
+        }
+    );
+  }
+
 }

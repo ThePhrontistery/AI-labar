@@ -13,7 +13,7 @@
       <mat-option *ngFor="let group of groups" [value]="group">{{ group }}</mat-option>
     </mat-select>
   </mat-form-field>
-  
+
 
   <h3>Usuarios del Grupo Seleccionado</h3>
   <!-- Listado de usuarios del grupo seleccionado -->
@@ -39,34 +39,31 @@
 </div>
 
 <div class="content" *ngIf="selectedOption == 'user'">
-  <!--<form class="login-form" [formGroup]="groupsForm">-->
     <mat-form-field appearance="fill">
       <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher" name="searcher">
     </mat-form-field>
+    <div *ngIf="mostrarUsuarios">
     <p>{{ filteredUsers.length }} usuarios encontrados</p>
-    <div class="selectionPanel">
-      <!--<mat-checkbox color="primary" *ngFor="let user of users" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
-        <input type="checkbox" [formControl]="groupsForm.get(user.name)">
-        {{ user.name }}
-      -->
+    <div class="selectionPanel" #checkboxContainer>
       <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
         {{ user.name }}
     </mat-checkbox>
-    
+
     </div>
     <p *ngIf="selectedUsers.length > 8" class="error">No se pueden seleccionar mas de 8 candidatos</p>
-
+  </div>
+  <div [class.oculto]="!mostrarSelected">
     <mat-form-field appearance="fill">
       <textarea formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3" name="currentSelection"></textarea>
     </mat-form-field>
- <!-- </form>-->
+  </div>
 
   <div class="wizard-navigation">
     <div class="button left-button">
       <button mat-raised-button color="white" class="login-button" (click)="clearSelection()" name="limpiar"> Limpiar selección
       </button>
     </div>
-    <div class="button right-button"> 
+    <div class="button right-button">
       <button class="button" mat-button color="accent" [mat-dialog-close]="true" name="cancelar">Cancelar</button>
       <button [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid" mat-raised-button color="white"
         class="login-button ml16 rightButton" (click)="saveGroup()" name="guardar">
