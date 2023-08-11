@@ -113,4 +113,10 @@ export class GroupsComponent implements OnInit {
     this.users.forEach(user => user.checked = false);
     this.selectedUsers = [];
   }
+
+  //solo para los test
+  setCookie(){
+    this.cookie.set('user', 'testUser');
+    this.cookie.set('token', 'testToken');
+  }
 }

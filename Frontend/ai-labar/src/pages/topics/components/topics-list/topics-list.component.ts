@@ -165,7 +165,8 @@ export class TopicsListComponent implements OnInit {
   vote(votation: any) {
     console.log(votation);
     this.idVotation = votation.id;
-    this.optionsVotacion = votation.optionsDataList
+    //this.optionsVotacion = votation.optionsDataList;
+    this.optionsVotacion = votation.options;
     this.titleVotacion = votation.title;
     this.typeVotacion = votation.type;
     this.openModal();
