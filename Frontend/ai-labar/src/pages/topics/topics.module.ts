@@ -40,6 +40,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ConfirmarEliminacionTopicComponent } from './components/confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 @NgModule({
   declarations: [
     TopicsComponent,
@@ -79,7 +80,8 @@ import { ConfirmarEliminacionTopicComponent } from './components/confirmar-elimi
     MatSelectModule,
     MatRadioModule,
     MatMenuModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatPaginatorModule
   ],
   providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
 })
