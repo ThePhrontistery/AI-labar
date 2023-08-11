@@ -36,8 +36,12 @@ public class CreateGroupUseCaseImpl implements CreateGroupUseCase {
         }
 
         groupsModel.getMembers().forEach(member -> {
-            if (!groupsRepositoryPort.checkMember(member)) {
+            if(!groupsRepositoryPort.checkMember(member)) {
                 throw new CreateGroupException("The member "+ member +" is not a valid user");
+            }
+
+            if(member.equals(groupsModel.getUser())) {
+                throw new CreateGroupException("The group creator cannot be a member of the group, as they are already a member by default");
             }
         });
 

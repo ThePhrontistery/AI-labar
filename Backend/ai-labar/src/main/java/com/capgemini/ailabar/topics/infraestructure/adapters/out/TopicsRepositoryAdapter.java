@@ -42,6 +42,16 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId) {
+        return topicsRepository.checkIfUserCanVoteOnTopic(groupId, userId);
+    }
+
+    @Override
+    public boolean checkIfUserIsMemberOfGroup(Integer groupId, Integer userId) {
+        return topicsRepository.checkIfUserIsMemberOfGroup(groupId, userId);
+    }
+
+    @Override
     public boolean checkMember(String member) {
         return topicsRepository.checkMember(member);
     }
@@ -49,11 +59,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public void closeTopic(TopicsEntity topicsEntity) {
         topicsRepository.save(topicsEntity);
-    }
-
-    @Override
-    public boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId) {
-        return topicsRepository.checkIfUserCanVoteOnTopic(groupId, userId);
     }
 
     @Override
@@ -165,6 +170,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     public void insertOption(Integer topicId, String image, String option, Integer votes) {
         topicsRepository.insertOption(topicId, image, option, votes);
     }
+
+//    @Override
+//    public List<TopicsEntity> loadTopics(String user, Integer groupId) {
+//        return topicsRepository.loadTopics(user, groupId);
+//    }
 
     @Override
     public List<TopicsEntity> loadTopicsByAuthor(String user) {

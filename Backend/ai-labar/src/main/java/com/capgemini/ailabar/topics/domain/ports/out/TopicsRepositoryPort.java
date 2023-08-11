@@ -18,6 +18,8 @@ public interface TopicsRepositoryPort {
 
     boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId);
 
+    boolean checkIfUserIsMemberOfGroup(Integer groupId, Integer userId);
+
     boolean checkMember(String member);
 
     void closeTopic(TopicsEntity topicsEntity);
@@ -69,6 +71,8 @@ public interface TopicsRepositoryPort {
     List<TopicsEntity> loadTopicsByAuthor(String user);
 
     List<TopicsEntity> loadTopicsByGroupId(Integer groupId);
+
+//    List<TopicsEntity> loadTopics(@Param("user") String user, @Param("groupId") Integer groupId);
 
     void reOpenTopic(TopicsEntity topicsEntity);
 

@@ -27,6 +27,9 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM MembersEntity m WHERE m.group.id = :groupId AND m.user.id = :userId")
     boolean checkIfUserCanVoteOnTopic(@Param("groupId") Integer groupId, @Param("userId") Integer userId);
 
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM MembersEntity m WHERE m.group.id = :groupId AND m.user.id = :userId")
+    boolean checkIfUserIsMemberOfGroup(@Param("groupId") Integer groupId, @Param("userId") Integer userId);
+
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.user = :member")
     boolean checkMember(@Param("member") String member);
 
@@ -100,6 +103,10 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.groupId = :groupId")
     List<TopicsEntity> loadTopicsByGroupId(@Param("groupId") Integer groupId);
+
+//    @Query("SELECT t FROM TopicsEntity t WHERE t.author = :user OR t.groupId = :groupId")
+//    List<TopicsEntity> loadTopics(@Param("user") String user, @Param("groupId") Integer groupId);
+
 
     @Modifying
     @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)

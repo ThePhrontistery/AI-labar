@@ -58,6 +58,10 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
                 if(!groupsEntity.getAdmin().equals(member)) {
                     groupsRepositoryPort.insertMember(groupsModel.getId(), groupsRepositoryPort.getUserIdByUserName(member));
                 }
+
+                if(member.equals(groupsModel.getUser())) {
+                    throw new CreateGroupException("The group creator cannot be a member of the group, as they are already a member by default");
+                }
             } catch (EditGroupException editGroupException) {
                 throw new EditGroupException("An error occurred during the registration of group members");
             }
