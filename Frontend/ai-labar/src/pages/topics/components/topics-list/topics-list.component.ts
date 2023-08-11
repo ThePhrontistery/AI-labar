@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TopicListInterface } from './complements/interfaces';
 import { TopicsListService } from './topics-list.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,6 +11,8 @@ import { ImageTextResultComponent } from '../image-text-result/image-text-result
 import { environment } from 'src/environments/environment';
 import { TopicsListServiceMock } from './topics-list.service.mock';
 import { ConfirmarEliminacionTopicComponent } from '../confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
+import { MatPaginator, MatPaginatorIntl, PageEvent} from '@angular/material/paginator';
+import { LOCALE_ID, Inject } from '@angular/core';
 
 @Component({
   selector: 'app-topics-list',
@@ -25,7 +26,7 @@ export class TopicsListComponent implements OnInit {
   user: string = this.cookie.get('user');
   displayedColumns: string[] = ['title', 'author', 'closeDate', 'status', 'open', 'close', 'delete', 'vote', 'result', 'result2'];
 
-  dataSource = new MatTableDataSource<TopicListInterface>([]);
+  dataSource:any = new MatTableDataSource<any>([]);
 
   modalOpen: boolean = false;
   optionsVotacion: string[] = [];
@@ -45,13 +46,26 @@ export class TopicsListComponent implements OnInit {
   showModalResultados = false;
   titleEncuesta: string = '';
 
+  pageIndex: number = 1;
+  pageSize: number = 10; // Cantidad de elementos por página
+  totalItems: number | undefined;
+
+  @ViewChild(MatPaginator, { static: true })
+  paginator!: MatPaginator;
+
   constructor(private topicListService: TopicsListService,
     private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
-    private cookie: CookieService) { }
+    private matPaginatorIntl: MatPaginatorIntl,
+    @Inject(LOCALE_ID) private locale: string,
+    private cookie: CookieService) {
+     }
 
   ngOnInit(): void {
     this.getTopicList();
+    //this.paginator._intl.itemsPerPageLabel="Topics por página: ";
+    this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
+    this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
   }
 
   getTopicList() {
@@ -59,8 +73,8 @@ export class TopicsListComponent implements OnInit {
     const loadTopicsBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token"),
-      "page": 1,
-      "elements": 100
+      "page": this.pageIndex,
+      "elements": this.pageSize
     }
     let serviceCall;
     if (environment.mockup) {
@@ -74,6 +88,8 @@ export class TopicsListComponent implements OnInit {
         if (response) {
           this.dataSource.data = response.entity;
           this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          console.log(this.paginator);
         }
       },
       error => {
@@ -247,4 +263,22 @@ export class TopicsListComponent implements OnInit {
       data: { votacion },
     });
   }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.getTopicList();
+  }
+
+  private getRangeLabel(page: number, pageSize: number, length: number): string {
+    if (length === 0 || pageSize === 0) {
+      return `0 de ${length}`;
+    }
+
+    const startIndex = page * pageSize + 1;
+    const endIndex = Math.min(startIndex + pageSize - 1, length);
+
+    return `${startIndex} – ${endIndex} de ${length}`;
+  }
+
 }
