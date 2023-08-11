@@ -13,7 +13,7 @@ import { TopicsListComponent } from '../topics-list/topics-list.component';
 
 const routes: Routes = [
   // Otras rutas si las tienes
-  { path: 'topics/topics-list', component: TopicsListComponent }, // Aseg�rate de que el componente sea un componente de prueba
+  { path: 'topics/topics-list', component: TopicsListComponent }, // Asegurate de que el componente sea un componente de prueba
 ];
 
 describe('TopicsCreateComponent', () => {
@@ -68,7 +68,7 @@ describe('TopicsCreateComponent', () => {
     component.componenteHijo.valorEncuesta1 = 'Option 1';
     component.componenteHijo.valorEncuesta2 = 'Option 2';
     component.componenteHijo.fechaCierre = '01/01/2023';
-    component.members.push('testUser');
+    component.groupSelectedParticipantes.push('testUser');
     spyOn(component, 'validacionValores').and.returnValue(true);
 
     const createTopicsBody = {
@@ -80,7 +80,7 @@ describe('TopicsCreateComponent', () => {
         { option: 'Option 2' },
       ],
       user: 'testUser',
-      members: ['testUser'],
+      groupName: ['testUser'],
       closeDate: '01/01/2023',
       token: 'testUser',
     };

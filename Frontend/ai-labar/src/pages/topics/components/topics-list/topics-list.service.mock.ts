@@ -7,7 +7,7 @@ export class TopicsListServiceMock {
             title: '¿Cuándo preferís las tardes libres?',
             type: 'TEXT_SINGLE',
             question: 'Visítame',
-            optionsDataList: [
+            options: [
               {
                 option: 'Sí',
               },
@@ -26,7 +26,7 @@ export class TopicsListServiceMock {
             title: '¿Cuándo preferís ir a la oficina?',
             type: 'TEXT_MULTIPLE',
             question: '¡Ey! ¿Cuándo preferís ir a la oficina?',
-            optionsDataList: [
+            options: [
               {
                 option: 'Sí',
               },

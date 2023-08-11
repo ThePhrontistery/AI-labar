@@ -25,10 +25,12 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
   users: Array<IUser> = [];
   filteredUsers: IUser[] = [];
   selectedUsers: string[] = [];
-  groupsForm: FormGroup =  this.fb.group({
-    searcher: [''],
-    currentSelection:['']
-  });
+  groupsForm: FormGroup; // Remove the initial assignment here
+  /*groupsForm: FormGroup =  this.fb.group({
+     searcher: [''],
+     selectedOption: ['group'], // Valor inicial para selectedOption
+     currentSelection:['']
+   });*/
 
   limiteCandidatos: number = 8;
 
@@ -38,7 +40,16 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     private topicListService: TopicsListService,
     private changeDetectorRef: ChangeDetectorRef,
     public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
+      
+    // Initialize the form group and controls
+    this.groupsForm = this.fb.group({
+     searcher: [''],
+     selectedGroup: '',
+     selectedOption: ['group'], // Valor inicial para selectedOption
+     currentSelection:['']
+    });
+    }
 
   ngOnInit(): void {
     this.getGrupos();
@@ -73,7 +84,11 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     );
   }
 
-  getGroup(){
+  getGroup() {
+    const selectedGroupControl = this.groupsForm.get("selectedGroup");
+    if (selectedGroupControl) {
+      this.selectedGroup = selectedGroupControl.value;
+    }
     const loadGroupBody = {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token"),
@@ -171,4 +186,11 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     this.selectedUsers = [];
   }
 
+  onOptionChange() {
+    const selectedOptionControl = this.groupsForm.get("selectedOption");
+    if (selectedOptionControl) {
+      this.selectedOption = selectedOptionControl.value;
+    }
+  }
+  
 }
