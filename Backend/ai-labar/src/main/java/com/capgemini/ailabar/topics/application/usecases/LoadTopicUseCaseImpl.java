@@ -82,7 +82,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         return optionsModelList.stream()
                 .map(option -> {
                     String userPhoto = topicsRepositoryPort.getUserPhotoByOption(option.getOption());
-                    return new OptionsModel(userPhoto, option.getVotes());
+                    return new OptionsModel(userPhoto, option.getOption(), option.getVotes());
                 })
                 .collect(Collectors.toList());
     }
