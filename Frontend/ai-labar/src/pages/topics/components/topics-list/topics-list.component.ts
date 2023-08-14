@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TopicsListService } from './topics-list.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,7 +11,9 @@ import { ImageTextResultComponent } from '../image-text-result/image-text-result
 import { environment } from 'src/environments/environment';
 import { TopicsListServiceMock } from './topics-list.service.mock';
 import { ConfirmarEliminacionTopicComponent } from '../confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
-import { MatPaginator, MatPaginatorIntl, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { LOCALE_ID, Inject } from '@angular/core';
 
 @Component({
@@ -19,14 +21,16 @@ import { LOCALE_ID, Inject } from '@angular/core';
   templateUrl: './topics-list.component.html',
   styleUrls: ['./topics-list.component.scss']
 })
-export class TopicsListComponent implements OnInit {
+export class TopicsListComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
   @ViewChild(MatSort) sort!: MatSort; // Importante: agregar ViewChild para el MatSort
 
   topicsData: any;
   user: string = this.cookie.get('user');
   displayedColumns: string[] = ['title', 'author', 'closeDate', 'status', 'open', 'close', 'delete', 'vote', 'result', 'result2'];
 
-  dataSource:any = new MatTableDataSource<any>([]);
+  dataSource: any = new MatTableDataSource<any>([]);
 
   modalOpen: boolean = false;
   optionsVotacion: string[] = [];
@@ -59,13 +63,17 @@ export class TopicsListComponent implements OnInit {
     private matPaginatorIntl: MatPaginatorIntl,
     @Inject(LOCALE_ID) private locale: string,
     private cookie: CookieService) {
-     }
+  }
 
   ngOnInit(): void {
     this.getTopicList();
     //this.paginator._intl.itemsPerPageLabel="Topics por página: ";
     this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
     this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
+  }
+  ngOnDestroy() {
+    //this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   getTopicList() {
@@ -86,14 +94,15 @@ export class TopicsListComponent implements OnInit {
     serviceCall.subscribe(
       response => {
         if (response) {
-          this.dataSource.data = response.entity;
+          this.dataSource.data = response.entity.entity;
           this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-          console.log(this.paginator);
+          this.totalItems = response.entity.pagination[0].total;
+          /*this.dataSource.paginator = this.paginator;
+          */
         }
       },
       error => {
-        alert('Error al obtener los topicos: '+ error);
+        alert('Error al obtener los topicos: ' + error.error.message);
       }
     );
   }
@@ -111,14 +120,17 @@ export class TopicsListComponent implements OnInit {
       serviceCall = this.topicListService.put(closingData, url);
     }
 
-    serviceCall.subscribe(
-      response => {
-        if (response) {
-          this.getTopicList();
+    serviceCall
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          if (response) {
+            this.getTopicList();
+          }
+        },
+        error: error => {
+          alert('Error al abrir el topico: ' + error.error.message);
         }
-      },
-      error => {
-        alert('Error al abrir el topico: '+ error);
       }
     );
 
@@ -137,16 +149,18 @@ export class TopicsListComponent implements OnInit {
       serviceCall = this.topicListService.put(closingData, url);
     }
 
-    serviceCall.subscribe(
-      response => {
-        if (response) {
-          this.getTopicList();
+    serviceCall
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          if (response) {
+            this.getTopicList();
+          }
+        },
+        error: error => {
+          alert('Error al cerra el topico: ' + error.error.message);
         }
-      },
-      error => {
-        alert('Error al cerrar el topico: '+ error);
-      }
-    );
+      });
 
 
   }
@@ -176,16 +190,19 @@ export class TopicsListComponent implements OnInit {
           serviceCall = this.topicListService.delete(deletionData, url);
         }
 
-        serviceCall.subscribe(
-          response => {
-            if (response) {
-              this.getTopicList();
+        serviceCall
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: response => {
+              if (response) {
+                this.getTopicList();
+              }
+            },
+            error: error => {
+              alert('Error al borrar el topico: ' + error.error.message);
             }
-          },
-          error => {
-            alert('Error al borrar el topico: '+ error);
           }
-        );
+          );
       }
     });
   }

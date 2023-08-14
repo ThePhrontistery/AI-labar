@@ -159,7 +159,7 @@ export class TopicsCreateComponent implements OnInit {
             }
           },
           error=> {
-            alert("Se produjo un error al crear el topic, compruebe que todo los datos estan rellenos incluido los participantes.")
+            alert("Se produjo un error al crear el topic: " + error.error.message);
           }
       );
     }

@@ -74,10 +74,15 @@ export class LoginComponent implements OnInit {
       if(this.base64String) data['photo'] = this.base64String !== '' ? this.base64String : '';
       delete data.imageFunctional;
       delete data.imageVisible;
-      this.mySubscription.push(this.loginService.createUser(data).subscribe(response => {
-        this.showRegistroFom = false;
-    }));
-  }
+      this.mySubscription.push(this.loginService.createUser(data).subscribe(
+        response => {
+          this.showRegistroFom = false;
+        },
+        error => {
+          alert('Error al crear al usuario: ' + error.error.message);
+        }
+      ));
+    }
   }
   upload(ev: Event){
     this.f_input.nativeElement.click(ev);

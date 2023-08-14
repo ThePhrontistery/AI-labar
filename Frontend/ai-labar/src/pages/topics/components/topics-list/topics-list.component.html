@@ -30,7 +30,7 @@
   <ng-container matColumnDef="open">
     <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Abrir </th>
 
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Abrir votación" [disabled]="element.author !== user"
+    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Abrir votación" [disabled]="element.status === 1 || element.author !== user"
         class="capBlue" (click)="reOpen(element)" mat-button>
         <mat-icon>lock_open</mat-icon>
       </button></td>
@@ -39,7 +39,7 @@
   <ng-container matColumnDef="close">
     <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Cerrar </th>
 
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Cerrar votación" [disabled]="element.author !== user"
+    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Cerrar votación" [disabled]="element.status === 0 || element.author !== user"
         class="capBlue" (click)="close(element)" mat-button>
         <mat-icon>lock</mat-icon>
       </button></td>
@@ -78,11 +78,11 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button matTooltip="Abrir votación" [disabled]="element.author !== user"
+        <button matTooltip="Abrir votación" [disabled]="element.status === 1 || element.author !== user"
         class="capBlue" (click)="reOpen(element)" mat-button>
         <mat-icon>lock_open</mat-icon>
       </button>
-        <button matTooltip="Cerrar votación" [disabled]="element.author !== user"
+        <button matTooltip="Cerrar votación" [disabled]="element.status === 0 || element.author !== user "
         class="capBlue" (click)="close(element)" mat-button>
         <mat-icon>lock</mat-icon>
       </button>
@@ -106,8 +106,13 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
 </table>
-<mat-paginator #paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
-
+ 
+  <mat-paginator #paginator
+   [length]="totalItems" 
+   [pageSize]="pageSize" 
+   [pageSizeOptions]="[5, 10, 20]" 
+   (page)="onPageChange($event)"></mat-paginator>
+ 
 <app-modal-votacion
   [isOpen]="modalOpen"
   [options]="optionsVotacion"
