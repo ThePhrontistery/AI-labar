@@ -37,9 +37,15 @@ class TopicsControllerTest {
         usersModel.setToken("token");
         usersModel.setElements(10);
 
-        List<TopicsModel> topicsList = Collections.singletonList(new TopicsModel());
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("pagination", Collections.singletonList(new HashMap<String, Integer>() {{
+            put("page", 1);
+            put("elements", 1);
+            put("total", 1);
+        }}));
+        responseMap.put("entity", Collections.singletonList(new TopicsModel()));
 
-        when(topicsService.loadTopics((usersModel))).thenReturn(topicsList);
+        when(topicsService.loadTopics(usersModel)).thenReturn(responseMap);
 
         String expectedMessage = "OK";
 
@@ -49,7 +55,7 @@ class TopicsControllerTest {
         SpecialResponse specialResponse = actualResponse.getBody();
         assertNotNull(specialResponse);
         assertEquals(expectedMessage, specialResponse.getMessage());
-        assertEquals(topicsList, specialResponse.getEntity());
+        assertEquals(responseMap, specialResponse.getEntity());
 
         verify(topicsService, times(1)).loadTopics(usersModel);
     }

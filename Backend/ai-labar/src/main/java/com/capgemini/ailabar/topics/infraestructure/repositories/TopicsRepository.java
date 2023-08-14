@@ -77,6 +77,12 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity getTopicsEntityById(@Param("id") Integer id);
 
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
+            nativeQuery = true)
+    Integer getTotalTopicsCount(@Param("user") String user,
+                             @Param("groupIds") List<Integer> groupIds);
+
     @Query("SELECT u.id FROM UsersEntity u WHERE u.user = :user")
     Integer getUserIdByUserName(@Param("user") String user);
 
