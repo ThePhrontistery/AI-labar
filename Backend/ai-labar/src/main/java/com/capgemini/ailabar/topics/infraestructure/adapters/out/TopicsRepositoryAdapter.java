@@ -47,11 +47,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public boolean checkIfUserIsMemberOfGroup(Integer groupId, Integer userId) {
-        return topicsRepository.checkIfUserIsMemberOfGroup(groupId, userId);
-    }
-
-    @Override
     public boolean checkMember(String member) {
         return topicsRepository.checkMember(member);
     }
@@ -102,6 +97,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public List<String> getEmailsByGroupId(Integer groupId) {
+        return topicsRepository.getEmailsByGroupId(groupId);
+    }
+
+    @Override
     public Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin) {
         return topicsRepository.getGroupIdByGroupNameAndAdmin(groupName, admin);
     }
@@ -134,6 +134,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public TopicsEntity getTopicsEntityById(Integer id) {
         return topicsRepository.getTopicsEntityById(id);
+    }
+
+    @Override
+    public Integer getTotalTopicsCount(String user, List<Integer> groupIds) {
+        return topicsRepository.getTotalTopicsCount(user, groupIds);
     }
 
     @Override

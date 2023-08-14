@@ -56,6 +56,9 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT t FROM TopicsEntity t WHERE t.status = :status AND t.closeDate <= :date")
     List<TopicsEntity> getByStatusAndCloseDateLessThanEqual(@Param("status") Integer status, @Param("date") String date);
 
+    @Query("SELECT u.email FROM UsersEntity u WHERE u.id IN (SELECT m.user.id FROM MembersEntity m WHERE m.group.id = :groupId)")
+    List<String> getEmailsByGroupId(@Param("groupId") Integer groupId);
+
     @Query("SELECT g.id FROM GroupsEntity g WHERE g.groupName = :groupName AND g.admin = :admin")
     Integer getGroupIdByGroupNameAndAdmin(@Param("groupName") String groupName, @Param("admin") String admin);
 
@@ -73,6 +76,12 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity getTopicsEntityById(@Param("id") Integer id);
+
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
+            nativeQuery = true)
+    Integer getTotalTopicsCount(@Param("user") String user,
+                             @Param("groupIds") List<Integer> groupIds);
 
     @Query("SELECT u.id FROM UsersEntity u WHERE u.user = :user")
     Integer getUserIdByUserName(@Param("user") String user);
@@ -106,7 +115,6 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
                                   @Param("groupIds") List<Integer> groupIds,
                                   @Param("limit") Integer limit,
                                   @Param("offset") Integer offset);
-
 
     @Modifying
     @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)

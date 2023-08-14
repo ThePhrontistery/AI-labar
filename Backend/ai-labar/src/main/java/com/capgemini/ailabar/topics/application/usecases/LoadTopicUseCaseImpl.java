@@ -1,5 +1,7 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.LoadTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.LoadTopicUseCase;
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,7 +28,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
     }
 
     @Override
-    public List<TopicsModel> loadTopics(UsersModel usersModel) {
+    public Map<String, Object> loadTopics(UsersModel usersModel) {
         if(usersModel.getUser().isBlank() || usersModel.getToken().isEmpty()
                 || usersModel.getElements() == null) {
             throw new LoadTopicException("User, token, and the number of items to display are required");
@@ -48,11 +53,37 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
                     topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
                     topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
+                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
+                    }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
                     return topicsModel;
                 })
                 .forEach(allModels::add);
 
-        return allModels;
+        int totalTopics = topicsRepositoryPort.getTotalTopicsCount(usersModel.getUser(), groupIds);
+
+        List<Map<String, Integer>> pagination = new ArrayList<>();
+        Map<String, Integer> pageInfo = new HashMap<>();
+        pageInfo.put("page", requestedPage);
+        pageInfo.put("elements", allModels.size());
+        pageInfo.put("total", totalTopics);
+        pagination.add(pageInfo);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("pagination", pagination);
+        response.put("entity", allModels);
+
+        return response;
+    }
+
+
+    private List<OptionsModel> addUsersPhotos(List<OptionsModel> optionsModelList) {
+        return optionsModelList.stream()
+                .map(option -> {
+                    String userPhoto = topicsRepositoryPort.getUserPhotoByOption(option.getOption());
+                    return new OptionsModel(userPhoto, option.getVotes());
+                })
+                .collect(Collectors.toList());
     }
 }

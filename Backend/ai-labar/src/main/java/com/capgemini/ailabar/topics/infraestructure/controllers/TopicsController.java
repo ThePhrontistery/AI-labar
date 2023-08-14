@@ -29,7 +29,7 @@ public class TopicsController implements SpecialResponseInterface {
     @PostMapping("loadTopics")
     public ResponseEntity<SpecialResponse> loadTopics(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
-        List<TopicsModel> topicsEntityList = topicsService.loadTopics(usersModel);
+        Map<String, Object> topicsEntityList = topicsService.loadTopics(usersModel);
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(topicsEntityList, responseJson), HttpStatus.OK);
     }

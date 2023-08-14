@@ -1,6 +1,5 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
-import com.capgemini.ailabar.commons.utils.Constants;
 import com.capgemini.ailabar.topics.domain.exceptions.CloseTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.CloseTopicUseCase;

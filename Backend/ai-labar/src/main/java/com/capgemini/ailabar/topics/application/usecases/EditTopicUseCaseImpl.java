@@ -81,7 +81,7 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
 
         manageCloseDate();
 
-        checkMailService();
+        manageMailService();
 
         topicsRepositoryPort.editTopic(topicsEntity);
     }
@@ -288,9 +288,9 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
         }
     }
 
-    private void checkMailService() {
+    private void manageMailService() {
         if(!"false".equals(environment.getProperty("activate.mail"))) {
-            mailService.sendEmail(topicsModel);
+            mailService.sendEmail(topicsModel.getTitle(), topicsRepositoryPort.getEmailsByGroupId(topicsModel.getGroupId()));
         }
     }
 }

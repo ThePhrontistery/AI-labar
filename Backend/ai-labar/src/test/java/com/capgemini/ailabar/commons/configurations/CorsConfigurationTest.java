@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,13 +25,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-class CorsConfigTest {
+@ExtendWith(MockitoExtension.class)
+class CorsConfigurationTest {
+
+    @InjectMocks
+    private CorsConfiguration corsConfiguration;
+
     @Test
     void testCorsFilterBean() throws Exception {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(corsConfig).build();
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(corsConfiguration).build();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/all").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -47,9 +49,8 @@ class CorsConfigTest {
 
     @Test
     void testConfigureMessageConverters() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
-        corsConfig.configureMessageConverters(converters);
+        corsConfiguration.configureMessageConverters(converters);
         assertFalse(converters.isEmpty());
         HttpMessageConverter<?> converter = converters.get(0);
         assertTrue(converter instanceof MappingJackson2HttpMessageConverter);
