@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
     }
 
     @Override
-    public List<TopicsModel> loadTopics(UsersModel usersModel) {
+    public Map<String, Object> loadTopics(UsersModel usersModel) {
         if(usersModel.getUser().isBlank() || usersModel.getToken().isEmpty()
                 || usersModel.getElements() == null) {
             throw new LoadTopicException("User, token, and the number of items to display are required");
@@ -59,8 +61,22 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                 })
                 .forEach(allModels::add);
 
-        return allModels;
+        int totalTopics = topicsRepositoryPort.getTotalTopicsCount(usersModel.getUser(), groupIds);
+
+        List<Map<String, Integer>> pagination = new ArrayList<>();
+        Map<String, Integer> pageInfo = new HashMap<>();
+        pageInfo.put("page", requestedPage);
+        pageInfo.put("elements", allModels.size());
+        pageInfo.put("total", totalTopics);
+        pagination.add(pageInfo);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("pagination", pagination);
+        response.put("entity", allModels);
+
+        return response;
     }
+
 
     private List<OptionsModel> addUsersPhotos(List<OptionsModel> optionsModelList) {
         return optionsModelList.stream()

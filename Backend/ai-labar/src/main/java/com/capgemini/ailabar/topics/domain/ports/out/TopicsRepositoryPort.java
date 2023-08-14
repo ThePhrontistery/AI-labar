@@ -54,6 +54,8 @@ public interface TopicsRepositoryPort {
 
     TopicsEntity getTopicsEntityById(Integer id);
 
+    Integer getTotalTopicsCount(String user, List<Integer> groupIds);
+
     Integer getUserIdByUserName(String user);
 
     String getUserNameByUserId(Integer userId);

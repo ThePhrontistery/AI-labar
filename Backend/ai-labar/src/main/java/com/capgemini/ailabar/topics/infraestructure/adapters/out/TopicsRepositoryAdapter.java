@@ -137,6 +137,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public Integer getTotalTopicsCount(String user, List<Integer> groupIds) {
+        return topicsRepository.getTotalTopicsCount(user, groupIds);
+    }
+
+    @Override
     public Integer getUserIdByUserName(String user) {
         return topicsRepository.getUserIdByUserName(user);
     }
