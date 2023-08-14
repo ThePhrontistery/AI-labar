@@ -2,37 +2,30 @@ package com.capgemini.ailabar.commons.adapters.out;
 
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class SpecialResponseInterfaceTest {
+
     @Mock
-    private Object entity;
-
-    private final SpecialResponseInterface specialResponseInterface = new SpecialResponseInterface() {};
-
-    @BeforeEach
-    void setUp() {
-        Mockito.reset(entity);
-    }
+    private JSONObject messageMock;
 
     @Test
     void testSpecialResponse() {
-        JSONObject responseJson = new JSONObject();
-        responseJson.put("message", "Success");
+        when(messageMock.getString("message")).thenReturn("Test Message");
 
-        SpecialResponse specialResponse = specialResponseInterface.specialResponse(entity, responseJson);
+        SpecialResponseInterface specialResponseInterface = new SpecialResponseInterface() {};
+
+        Object entity = new Object();
+        SpecialResponse specialResponse = specialResponseInterface.specialResponse(entity, messageMock);
 
         assertEquals(entity, specialResponse.getEntity());
-        assertEquals(responseJson.getString("message"), specialResponse.getMessage());
+        assertEquals("Test Message", specialResponse.getMessage());
     }
 }

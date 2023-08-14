@@ -27,4 +27,3 @@ public class UsersModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> usersList;
 }
-

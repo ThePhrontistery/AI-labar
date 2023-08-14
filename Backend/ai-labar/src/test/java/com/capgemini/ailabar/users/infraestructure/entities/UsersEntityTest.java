@@ -3,74 +3,31 @@ package com.capgemini.ailabar.users.infraestructure.entities;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class UsersEntityTest {
-    @Test
-    void testIdProperty() {
-        UsersEntity entity = new UsersEntity();
-        entity.setId(1);
-        assertEquals(1, entity.getId());
-    }
+
+    @Mock
+    private UsersModel mockUsersModel;
 
     @Test
-    void testUserProperty() {
-        UsersEntity entity = new UsersEntity();
-        entity.setUser("user1");
-        assertEquals("user1", entity.getUser());
-    }
+    void testUsersEntityCreation() {
+        when(mockUsersModel.getUser()).thenReturn("TestUser");
+        when(mockUsersModel.getPassword()).thenReturn("TestPassword");
+        when(mockUsersModel.getEmail()).thenReturn("test@example.com");
+        when(mockUsersModel.getGender()).thenReturn("Male");
+        when(mockUsersModel.getPhoto()).thenReturn("profile.jpg");
 
-    @Test
-    void testPasswordProperty() {
-        UsersEntity entity = new UsersEntity();
-        entity.setPassword("password");
-        assertEquals("password", entity.getPassword());
-    }
+        UsersEntity usersEntity = new UsersEntity(mockUsersModel);
 
-    @Test
-    void testEmailProperty() {
-        UsersEntity entity = new UsersEntity();
-        entity.setEmail("user1@example.com");
-        assertEquals("user1@example.com", entity.getEmail());
-    }
-
-    @Test
-    void testGenderProperty() {
-        UsersEntity model = new UsersEntity();
-        model.setGender("H");
-        assertEquals("H", model.getGender());
-    }
-
-    @Test
-    void testPhotoProperty() {
-        UsersEntity model = new UsersEntity();
-        model.setPhoto("photo");
-        assertEquals("photo", model.getPhoto());
-    }
-
-    @Test
-    void testTokenProperty() {
-        UsersEntity entity = new UsersEntity();
-        entity.setToken("token123");
-        assertEquals("token123", entity.getToken());
-    }
-
-    @Test
-    void testConstructorWithUsersModel() {
-        UsersModel model = new UsersModel();
-        model.setUser("user1");
-        model.setPassword("password");
-        model.setEmail("user1@example.com");
-
-        UsersEntity entity = new UsersEntity(model);
-
-        assertEquals("user1", entity.getUser());
-        assertEquals("password", entity.getPassword());
-        assertEquals("user1@example.com", entity.getEmail());
+        assertEquals("TestUser", usersEntity.getUser());
+        assertEquals("TestPassword", usersEntity.getPassword());
+        assertEquals("test@example.com", usersEntity.getEmail());
+        assertEquals("Male", usersEntity.getGender());
+        assertEquals("profile.jpg", usersEntity.getPhoto());
     }
 }

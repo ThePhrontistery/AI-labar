@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class SQLiteDialectTest {
+class SQLiteDialectConfigurationTest {
     @Test
     void testSQLiteDialect() {
         SQLiteDialectConfiguration sqliteDialect = new SQLiteDialectConfiguration();
