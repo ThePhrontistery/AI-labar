@@ -1,6 +1,5 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.exceptions.GetGroupsDatabaseException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsDatabaseUseCase;

@@ -1,9 +1,7 @@
 package com.capgemini.ailabar.options.infraestructure.entities;
 
-import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import lombok.Data;
 
 import javax.persistence.*;

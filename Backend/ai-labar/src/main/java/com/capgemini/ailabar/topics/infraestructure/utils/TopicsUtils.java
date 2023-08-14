@@ -3,8 +3,6 @@ package com.capgemini.ailabar.topics.infraestructure.utils;
 import com.capgemini.ailabar.commons.utils.Constants;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.options.infraestructure.entities.OptionsEntity;
-import com.capgemini.ailabar.votedby.domain.models.VotedByModel;
-import com.capgemini.ailabar.votedby.infraestructure.entities.VotedByEntity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

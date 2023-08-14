@@ -3,10 +3,8 @@ package com.capgemini.ailabar.groups.application.services;
 import com.capgemini.ailabar.groups.domain.exceptions.*;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.*;
-import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditGroupUseCase, GetGroupsByUserUseCase,
@@ -82,37 +80,4 @@ public class GroupsService implements CreateGroupUseCase, GetGroupUseCase, EditG
             throw getGroupsDatabaseException;
         }
     }
-
-
-//    public Boolean existsByGroupNameAndAdmin(String groupName, String admin){
-//        return groupsRepository.existsByGroupNameAndAdmin(groupName, admin);
-//    }
-//
-//    public void saveGroup(GroupsEntity groupEntity) {
-//        groupsRepository.save(groupEntity);
-//    }
-//
-//    public GroupsEntity getGroup(String groupName, String admin) {
-//        return groupsRepository.findByGroupNameAndAdmin(groupName, admin);
-//    }
-//
-//    public List<String> getGroupForEdit(String admin) {
-//        return groupsRepository.findAllGroupNamesByAdmin(admin);
-//    }
-//
-//    public void deleteGroup(String groupName, String admin) {
-//        groupsRepository.deleteByGroupNameAndAdmin(groupName, admin);
-//    }
-//
-//    public GroupsEntity findGroupsEntityById(Integer id) {
-//        return groupsRepository.findGroupsEntityById(id);
-//    }
-
-    /* Inicio métodos sólo para pruebas */
-//    public List<GroupsEntity> getAllGroupsData() {
-//        return groupsRepository.findAll();
-//    }
-    /* Fin métodos sólo para pruebas */
-
-
 }

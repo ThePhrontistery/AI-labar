@@ -2,7 +2,6 @@ package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
 import com.capgemini.ailabar.commons.utils.MailService;
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.CreateTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
@@ -68,9 +67,9 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
 
         manageCloseDate();
 
-        checkMailService();
-
         topicsRepositoryPort.createTopic(topicsEntity);
+
+        manageMailService();
 
         manageOptions(topicsRepositoryPort.getTopicIdByTopicName(topicsEntity.getTitle()));
     }
@@ -203,9 +202,9 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
         }
     }
 
-    private void checkMailService() {
+    private void manageMailService() {
         if(!"false".equals(environment.getProperty("activate.mail"))) {
-            mailService.sendEmail(topicsModel);
+            mailService.sendEmail(topicsModel.getTitle(), topicsRepositoryPort.getEmailsByGroupId(topicsModel.getGroupId()));
         }
     }
 }

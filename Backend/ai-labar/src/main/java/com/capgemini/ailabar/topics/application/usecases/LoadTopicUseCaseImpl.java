@@ -1,5 +1,7 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.LoadTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.LoadTopicUseCase;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,11 +51,23 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
                     topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
                     topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
+                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
+                    }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
                     return topicsModel;
                 })
                 .forEach(allModels::add);
 
         return allModels;
+    }
+
+    private List<OptionsModel> addUsersPhotos(List<OptionsModel> optionsModelList) {
+        return optionsModelList.stream()
+                .map(option -> {
+                    String userPhoto = topicsRepositoryPort.getUserPhotoByOption(option.getOption());
+                    return new OptionsModel(userPhoto, option.getVotes());
+                })
+                .collect(Collectors.toList());
     }
 }

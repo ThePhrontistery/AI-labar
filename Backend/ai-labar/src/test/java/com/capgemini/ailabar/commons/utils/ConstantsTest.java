@@ -1,21 +1,46 @@
 package com.capgemini.ailabar.commons.utils;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
 class ConstantsTest {
+
     @Test
-    void testTopicType() {
-        Assertions.assertEquals(Constants.TopicType.TEXT_SINGLE, Constants.TopicType.valueOf("TEXT_SINGLE"));
-        Assertions.assertEquals(Constants.TopicType.TEXT_MULTIPLE, Constants.TopicType.valueOf("TEXT_MULTIPLE"));
-        Assertions.assertEquals(Constants.TopicType.IMAGE_SINGLE, Constants.TopicType.valueOf("IMAGE_SINGLE"));
-        Assertions.assertEquals(Constants.TopicType.IMAGE_MULTIPLE, Constants.TopicType.valueOf("IMAGE_MULTIPLE"));
-        Assertions.assertEquals(Constants.TopicType.AS, Constants.TopicType.valueOf("AS"));
-        Assertions.assertEquals(Constants.TopicType.RATING, Constants.TopicType.valueOf("RATING"));
+    void testTopicTypeConstants() {
+        assertEquals(6, Constants.TopicType.values().length);
+
+        assertEquals("TEXT_SINGLE", Constants.TopicType.TEXT_SINGLE.name());
+        assertEquals("TEXT_MULTIPLE", Constants.TopicType.TEXT_MULTIPLE.name());
+        assertEquals("IMAGE_SINGLE", Constants.TopicType.IMAGE_SINGLE.name());
+        assertEquals("IMAGE_MULTIPLE", Constants.TopicType.IMAGE_MULTIPLE.name());
+        assertEquals("AS", Constants.TopicType.AS.name());
+        assertEquals("RATING", Constants.TopicType.RATING.name());
+    }
+
+    @Test
+    void testTopicTypeValues() {
+        Constants.TopicType[] values = Constants.TopicType.values();
+
+        assertNotNull(values);
+        assertEquals(6, values.length);
+        assertTrue(containsTopicType(values, Constants.TopicType.TEXT_SINGLE));
+        assertTrue(containsTopicType(values, Constants.TopicType.TEXT_MULTIPLE));
+        assertTrue(containsTopicType(values, Constants.TopicType.IMAGE_SINGLE));
+        assertTrue(containsTopicType(values, Constants.TopicType.IMAGE_MULTIPLE));
+        assertTrue(containsTopicType(values, Constants.TopicType.AS));
+        assertTrue(containsTopicType(values, Constants.TopicType.RATING));
+    }
+
+    private boolean containsTopicType(Constants.TopicType[] values, Constants.TopicType topicType) {
+        for (Constants.TopicType value : values) {
+            if (value == topicType) {
+                return true;
+            }
+        }
+        return false;
     }
 }

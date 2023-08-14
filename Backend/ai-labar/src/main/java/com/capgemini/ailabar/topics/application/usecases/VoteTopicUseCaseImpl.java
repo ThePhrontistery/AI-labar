@@ -15,11 +15,12 @@ import java.util.List;
 @Service
 @Transactional
 public class VoteTopicUseCaseImpl implements VoteTopicUseCase {
+    private final TopicsRepositoryPort topicsRepositoryPort;
+
     public VoteTopicUseCaseImpl(TopicsRepositoryPort topicsRepositoryPort) {
         this.topicsRepositoryPort = topicsRepositoryPort;
     }
 
-    private final TopicsRepositoryPort topicsRepositoryPort;
     @Override
     public void vote(TopicsModel topicsModel) {
         if(Boolean.FALSE.equals(topicsRepositoryPort.checkAuthorization(topicsModel.getUser(), topicsModel.getToken()))) {

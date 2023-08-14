@@ -1,123 +1,57 @@
 package com.capgemini.ailabar.topics.domain.models;
 
+import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class TopicsModelTest {
-
-    private TopicsModel topicsModel;
+    @Mock
+    private TopicsEntity mockTopicsEntity;
 
     @BeforeEach
     void setUp() {
-        topicsModel = new TopicsModel();
+        MockitoAnnotations.openMocks(this);
     }
-//    @Test
-//    void testIdProperty() {
-//        topicsModel.setId(1);
-//        assertEquals(1, topicsModel.getId());
-//    }
-//
-//    @Test
-//    void testTitleProperty() {
-//        topicsModel.setTitle("Topic Title");
-//        assertEquals("Topic Title", topicsModel.getTitle());
-//    }
-//
-//    @Test
-//    void testTypeProperty() {
-//        topicsModel.setType("Type");
-//        assertEquals("Type", topicsModel.getType());
-//    }
-//
-//    @Test
-//    void testQuestionProperty() {
-//        topicsModel.setQuestion("Question");
-//        assertEquals("Question", topicsModel.getQuestion());
-//    }
-//
-//    @Test
-//    void testOptionsProperty() {
-//        OptionsData option1 = new OptionsData("Option 1", 0);
-//        OptionsData option2 = new OptionsData("Option 2", 0);
-//        List<OptionsData> options = Arrays.asList(option1, option2);
-//        topicsModel.setOptions(options);
-//        assertEquals(options, topicsModel.getOptions());
-//    }
-//
-//    @Test
-//    void testOptionsDataListProperty() {
-//        OptionsData option1 = new OptionsData("Option 1", 0);
-//        OptionsData option2 = new OptionsData("Option 2", 0);
-//        List<OptionsData> options = Arrays.asList(option1, option2);
-//        topicsModel.setOptionsDataList(options);
-//        assertEquals(options, topicsModel.getOptionsDataList());
-//    }
-//
-//    @Test
-//    void testVotedByProperty() {
-//        topicsModel.setVotedBy("User1");
-//        assertEquals("User1", topicsModel.getVotedBy());
-//    }
-//
-//    @Test
-//    void testAuthorProperty() {
-//        topicsModel.setAuthor("Author");
-//        assertEquals("Author", topicsModel.getAuthor());
-//    }
-//
-//    @Test
-//    void testMembersProperty() {
-//        List<String> members = Arrays.asList("User1", "User2");
-//        topicsModel.setMembers(members);
-//        assertEquals(members, topicsModel.getMembers());
-//    }
-//
-//    @Test
-//    void testCloseDateProperty() {
-//        topicsModel.setCloseDate("2023-07-01");
-//        assertEquals("2023-07-01", topicsModel.getCloseDate());
-//    }
-//
-//    @Test
-//    void testVisitsProperty() {
-//        topicsModel.setVisits(10);
-//        assertEquals(10, topicsModel.getVisits());
-//    }
-//
-//    @Test
-//    void testStatusProperty() {
-//        topicsModel.setStatus("Open");
-//        assertEquals("Open", topicsModel.getStatus());
-//    }
-//
-//    @Test
-//    void testUserProperty() {
-//        topicsModel.setUser("User");
-//        assertEquals("User", topicsModel.getUser());
-//    }
-//
-//    @Test
-//    void testTokenProperty() {
-//        topicsModel.setToken("Token");
-//        assertEquals("Token", topicsModel.getToken());
-//    }
-//
-//    @Test
-//    void testCanVoteProperty() {
-//        topicsModel.setCanVote(true);
-//        assertEquals(true, topicsModel.getCanVote());
-//    }
-//
-//    @Test
-//    void testVotationProperty() {
-//        List<String> votation = Arrays.asList("Option 1", "Option 2");
-//        topicsModel.setVotation(votation);
-//        assertEquals(votation, topicsModel.getVotation());
-//    }
+
+    @Test
+    void testConstructorFromEntity() {
+        when(mockTopicsEntity.getId()).thenReturn(1);
+        when(mockTopicsEntity.getTitle()).thenReturn("TestTitle");
+        when(mockTopicsEntity.getType()).thenReturn("TestType");
+        when(mockTopicsEntity.getQuestion()).thenReturn("TestQuestion");
+        when(mockTopicsEntity.getAuthor()).thenReturn("TestAuthor");
+        when(mockTopicsEntity.getGroupId()).thenReturn(2);
+        when(mockTopicsEntity.getCloseDate()).thenReturn("2023-12-31");
+        when(mockTopicsEntity.getVisits()).thenReturn(100);
+        when(mockTopicsEntity.getStatus()).thenReturn(1);
+
+        TopicsModel topicsModel = new TopicsModel(mockTopicsEntity);
+
+        assertEquals(1, topicsModel.getId());
+        assertEquals("TestTitle", topicsModel.getTitle());
+        assertEquals("TestType", topicsModel.getType());
+        assertEquals("TestQuestion", topicsModel.getQuestion());
+        assertEquals("TestAuthor", topicsModel.getAuthor());
+        assertEquals(2, topicsModel.getGroupId());
+        assertEquals("2023-12-31", topicsModel.getCloseDate());
+        assertEquals(100, topicsModel.getVisits());
+        assertEquals(1, topicsModel.getStatus());
+
+        verify(mockTopicsEntity, times(1)).getId();
+        verify(mockTopicsEntity, times(1)).getTitle();
+        verify(mockTopicsEntity, times(1)).getType();
+        verify(mockTopicsEntity, times(1)).getQuestion();
+        verify(mockTopicsEntity, times(1)).getAuthor();
+        verify(mockTopicsEntity, times(1)).getGroupId();
+        verify(mockTopicsEntity, times(1)).getCloseDate();
+        verify(mockTopicsEntity, times(1)).getVisits();
+        verify(mockTopicsEntity, times(1)).getStatus();
+    }
 }

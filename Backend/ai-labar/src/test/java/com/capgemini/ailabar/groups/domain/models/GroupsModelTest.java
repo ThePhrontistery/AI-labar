@@ -1,68 +1,39 @@
 package com.capgemini.ailabar.groups.domain.models;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class GroupsModelTest {
-
-    private GroupsModel groupsModel;
+    @Mock
+    private GroupsEntity mockGroupsEntity;
 
     @BeforeEach
     void setUp() {
-        groupsModel = new GroupsModel();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testIdProperty() {
-        groupsModel.setId(1);
+    void testConstructorFromEntity() {
+        when(mockGroupsEntity.getId()).thenReturn(1);
+        when(mockGroupsEntity.getGroupName()).thenReturn("TestGroup");
+        when(mockGroupsEntity.getAdmin()).thenReturn("AdminUser");
+
+        GroupsModel groupsModel = new GroupsModel(mockGroupsEntity);
+
         assertEquals(1, groupsModel.getId());
-    }
+        assertEquals("TestGroup", groupsModel.getGroupName());
+        assertEquals("AdminUser", groupsModel.getAdmin());
 
-    @Test
-    void testGroupNameProperty() {
-        groupsModel.setGroupName("Group Name");
-        assertEquals("Group Name", groupsModel.getGroupName());
-    }
-
-    @Test
-    void testMembersProperty() {
-        List<String> members = Arrays.asList("Member1", "Member2");
-        groupsModel.setMembers(members);
-        assertEquals(members, groupsModel.getMembers());
-    }
-
-    @Test
-    void testAdminProperty() {
-        groupsModel.setAdmin("Admin");
-        assertEquals("Admin", groupsModel.getAdmin());
-    }
-
-    @Test
-    void testNewGroupNameProperty() {
-        groupsModel.setNewGroupName("New Group Name");
-        assertEquals("New Group Name", groupsModel.getNewGroupName());
-    }
-
-    @Test
-    void testUserProperty() {
-        groupsModel.setUser("User");
-        assertEquals("User", groupsModel.getUser());
-    }
-
-    @Test
-    void testTokenProperty() {
-        groupsModel.setToken("Token");
-        assertEquals("Token", groupsModel.getToken());
+        verify(mockGroupsEntity, times(1)).getId();
+        verify(mockGroupsEntity, times(1)).getGroupName();
+        verify(mockGroupsEntity, times(1)).getAdmin();
     }
 }
-

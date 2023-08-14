@@ -47,11 +47,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public boolean checkIfUserIsMemberOfGroup(Integer groupId, Integer userId) {
-        return topicsRepository.checkIfUserIsMemberOfGroup(groupId, userId);
-    }
-
-    @Override
     public boolean checkMember(String member) {
         return topicsRepository.checkMember(member);
     }
@@ -99,6 +94,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public void editTopic(TopicsEntity topicsEntity) {
         topicsRepository.save(topicsEntity);
+    }
+
+    @Override
+    public List<String> getEmailsByGroupId(Integer groupId) {
+        return topicsRepository.getEmailsByGroupId(groupId);
     }
 
     @Override
