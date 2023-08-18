@@ -91,20 +91,26 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       serviceCall = this.topicListService.post(loadTopicsBody, url);
     }
 
-    serviceCall.subscribe(
-      response => {
-        if (response) {
-          this.dataSource.data = response.entity.entity;
-          this.dataSource.sort = this.sort;
-          this.totalItems = response.entity.pagination[0].total;
-          /*this.dataSource.paginator = this.paginator;
-          */
+    serviceCall
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          if (response) {
+            this.dataSource.data = response.entity.entity;
+            this.dataSource.sort = this.sort; 
+            if(response.entity.pagination!==undefined){
+              this.totalItems = response.entity.pagination[0].total;}
+            else{this.totalItems = 0;}
+            /*this.dataSource.paginator = this.paginator;
+            */
+          }
+        },
+
+        error: error => {
+          alert('Error al obtener los topicos: ' + error.error.message);
         }
-      },
-      error => {
-        alert('Error al obtener los topicos: ' + error.error.message);
       }
-    );
+      );
   }
   reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
@@ -132,7 +138,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
           alert('Error al abrir el topico: ' + error.error.message);
         }
       }
-    );
+      );
 
   }
   close(votation: any) {

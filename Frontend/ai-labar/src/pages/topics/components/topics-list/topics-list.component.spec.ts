@@ -8,12 +8,13 @@ import { TopicsListServiceMock } from './topics-list.service.mock';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 // Importa el componente app-modal-votacion
 import { ModalVotacionComponent } from '../modal-votacion/modal-votacion.component'; 
-import { HttpClientModule } from '@angular/common/http'; // Agrega esta línea
+import { HttpClientModule } from '@angular/common/http'; // Agrega esta l?nea
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from 'src/environments/environment'; // Asegúrate de importar el environment
+import { environment } from 'src/environments/environment'; // Aseg?rate de importar el environment
 
 import { of } from 'rxjs';
 import { Console } from 'console';
@@ -42,7 +43,7 @@ describe('TopicsListComponent', () => {
         { provide: CookieService, useValue: mockCookieServiceSpy }
       ],
       imports: [MatSortModule, MatTableModule,
-        BrowserAnimationsModule,HttpClientModule,
+        BrowserAnimationsModule,HttpClientModule,MatPaginatorModule,
         MatDialogModule]
     }).compileComponents();
 
@@ -57,7 +58,7 @@ describe('TopicsListComponent', () => {
     mockCookieService.get.and.returnValue('testUser');
   });
   afterEach(() => {
-    environment.mockup = false; // Restablece el environment.mockup después de las pruebas
+    environment.mockup = false; // Restablece el environment.mockup despues de las pruebas
   });
 
   it('should create', () => {
