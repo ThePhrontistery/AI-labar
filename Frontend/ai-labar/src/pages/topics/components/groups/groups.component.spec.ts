@@ -35,7 +35,7 @@ describe('GroupsComponent', () => {
         { provide: TopicsListService, useValue: mockTopicsListService },
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {} },        
-        { provide: ElementRef, useValue: {} } // Agregar esta l?nea
+        { provide: ElementRef, useValue: {} } // Agregar esta linea
       ]
     }).compileComponents();
 

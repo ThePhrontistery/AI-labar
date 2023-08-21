@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef    } from '@angular/core';
 import { TopicsListService } from './topics-list.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,10 +21,15 @@ import { LOCALE_ID, Inject } from '@angular/core';
   templateUrl: './topics-list.component.html',
   styleUrls: ['./topics-list.component.scss']
 })
-export class TopicsListComponent implements OnInit, OnDestroy {
+export class TopicsListComponent implements OnInit, OnDestroy  {
 
   private ngUnsubscribe = new Subject();
   @ViewChild(MatSort) sort!: MatSort; // Importante: agregar ViewChild para el MatSort
+  @ViewChild('table', { static: true }) table!: ElementRef; // Agrega esta línea
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @ViewChild('tablaTopicos', { read: ElementRef }) tablaTopicos!: ElementRef;
+  
+  @ViewChild('relleno') relleno!: ElementRef;
 
   topicsData: any;
   user: string = this.cookie.get('user');
@@ -48,6 +53,9 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   listItems: any[] = [{ option: 'Elemento 1', votes: 1 }, { option: 'Elemento 2', votes: 2 }, { option: 'Elemento 3', votes: 5 }, { option: 'Elemento 4', votes: 0 }];
   showModalResultados = false;
+  showTablaPaginada = true;
+  showTablaScroll = false;
+  showCards = false;
   titleEncuesta: string = '';
 
   pageIndex: number = 1;
@@ -56,7 +64,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator, { static: true })
   paginator!: MatPaginator;
-
+  loading = false;
   constructor(private topicListService: TopicsListService,
     private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
@@ -76,42 +84,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  getTopicList() {
-    const url = `${environment.apiUrl}/topics/loadTopics`;
-    const loadTopicsBody = {
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token"),
-      "page": this.pageIndex,
-      "elements": this.pageSize
-    }
-    let serviceCall;
-    if (environment.mockup) {
-      serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
-    } else {
-      serviceCall = this.topicListService.post(loadTopicsBody, url);
-    }
-
-    serviceCall
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: response => {
-          if (response) {
-            this.dataSource.data = response.entity.entity;
-            this.dataSource.sort = this.sort; 
-            if(response.entity.pagination!==undefined){
-              this.totalItems = response.entity.pagination[0].total;}
-            else{this.totalItems = 0;}
-            /*this.dataSource.paginator = this.paginator;
-            */
-          }
-        },
-
-        error: error => {
-          alert('Error al obtener los topicos: ' + error.error.message);
-        }
-      }
-      );
-  }
+ 
   reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
@@ -303,5 +276,127 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     return `${startIndex} – ${endIndex} de ${length}`;
   }
+
+
+  ////////
+  puedoPaginar(): boolean {
+   return  (this.totalItems === undefined || (this.totalItems !== undefined && ((this.pageIndex - 1) * this.pageSize) + 1 <= this.totalItems));
+   //return true;
+  }
+  getTopicList() {
+    if (this.showTablaScroll && !this.puedoPaginar()) return;
+
+    if (this.loading) {
+      return;
+    }
+
+    this.loading = true;
+
+    const url = `${environment.apiUrl}/topics/loadTopics`;
+    const loadTopicsBody = {
+      "user": this.cookie.get("user"),
+      "token": this.cookie.get("token"),
+      "page": this.pageIndex,
+      "elements": this.pageSize
+    }
+    let serviceCall;
+    if (environment.mockup) {
+      serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
+    } else {
+      serviceCall = this.topicListService.post(loadTopicsBody, url);
+    }
+
+    serviceCall
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          if (response) {
+            const data = response.entity.entity;
+
+            if (this.dataSource) {
+
+              if (this.showTablaScroll) {
+                this.dataSource.data = this.dataSource.data.concat(data);
+              } else {
+                this.dataSource.data = response.entity.entity;
+
+              }
+              this.dataSource.sort = this.sort;
+            } else {
+              this.dataSource = new MatTableDataSource(data);
+            }
+            if (response.entity.pagination !== undefined) {
+              this.totalItems = response.entity.pagination[0].total;
+            }
+            else { this.totalItems = 0; }
+
+            if (this.showTablaScroll) {this.pageIndex++;}
+            this.loading = false; 
+            this.adjustRellenoHeight();
+          }
+        },
+
+        error: error => {
+          alert('Error al obtener los topicos: ' + error.error.message);
+        }
+      }
+      );
+  }
+
+
+  onScroll(event: any): void {
+    if (!this.showTablaScroll) return;
+    const element = this.scrollContainer.nativeElement;
+    if (element.scrollTop + element.clientHeight >= element.scrollHeight) {
+      this.getTopicList();
+    }
+  }
+
+  cambiar(visualizacion: string) {
+    switch(visualizacion) { 
+      case 'Paginacion': { 
+        this.showTablaScroll = false;
+        this.showTablaPaginada = true;
+        this.showCards = false;         
+        break; 
+      } 
+      case 'Scroll': { 
+        this.showTablaScroll = true;
+        this.showTablaPaginada = false;
+        this.showCards = false;     
+        break; 
+      } 
+      case 'Cards': { 
+        this.showTablaScroll = false;
+        this.showTablaPaginada = false;
+        this.showCards = true;       
+        break; 
+      }
+      default: { 
+        this.showTablaScroll = false;
+        this.showTablaPaginada = true;
+        this.showCards = false;    
+        break; 
+      }
+    }
+
+    this.dataSource = new MatTableDataSource<any>([]);
+    this.pageIndex = 1;
+
+    this.getTopicList();
+  }
+
+  adjustRellenoHeight() {
+    
+    if (!this.scrollContainer || !this.tablaTopicos || !this.relleno) {
+      return; // Evita errores si los elementos no están disponibles aún
+    }
+    const div1Height = this.scrollContainer.nativeElement.clientHeight;
+    const tabla1Height = this.tablaTopicos.nativeElement.clientHeight;
+    const rellenoHeight = div1Height - tabla1Height + 1;
+    this.relleno.nativeElement.style.height = rellenoHeight + 'px';
+  }
+ 
+
 
 }

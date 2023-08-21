@@ -16,3 +16,84 @@ table {
   th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type {
     padding-right: 0px;
   }
+
+  
+
+
+
+
+  #div1 {
+    overflow-y: scroll;
+    height:500px; 
+    
+}
+  
+
+.mat-card {
+  width: 100%;
+  margin: 20px;
+}
+
+.mat-card>:last-child:not(.mat-card-footer), .mat-card-content>:last-child:not(.mat-card-footer) {
+  margin-bottom: 10px;
+}
+
+.mat-card-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Cambio de space-between a flex-start */
+}
+
+.card-item {
+  width: calc(33.33% - 20px);
+  min-width: 200px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  color: #3b4147;
+  font-weight: 500;
+}
+
+.card-item:hover {
+  background-color: #31b6ff08;
+}
+
+.card-item h3 {
+  font-size: x-large;
+  font-weight: bold;
+  color: #0070ad;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-buttons button {
+  margin-right: 10px;
+}
+
+.title-and-status {
+  flex-grow: 1;
+}
+
+.close-date {
+  margin-top: 8px;
+}
+
+.buttons {
+  margin: 0 auto;
+}
+
+.author {
+  align-self: flex-end;
+  margin-top: 8px;
+}
