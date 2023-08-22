@@ -51,6 +51,8 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   isEnquestaImagenTextoSimple: Boolean = false;
   isEnquestaImagenTextoMultiple: Boolean = false;
 
+  isButtonDisabled: boolean = false;
+
   listItems: any[] = [{ option: 'Elemento 1', votes: 1 }, { option: 'Elemento 2', votes: 2 }, { option: 'Elemento 3', votes: 5 }, { option: 'Elemento 4', votes: 0 }];
   showModalResultados = false;
   showTablaPaginada = true;
@@ -299,6 +301,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       "page": this.pageIndex,
       "elements": this.pageSize
     }
+    this.defaultVisualization(this.cookie.get("visualization"));
     let serviceCall;
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
@@ -352,30 +355,71 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     }
   }
 
-  cambiar(visualizacion: string) {
+  defaultVisualization(visualizacion: string) {
     switch(visualizacion) { 
       case 'Paginacion': { 
+        this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
-        this.showCards = false;         
+        this.showCards = false;
         break; 
       } 
       case 'Scroll': { 
+        this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = true;
         this.showTablaPaginada = false;
-        this.showCards = false;     
+        this.showCards = false;
         break; 
       } 
       case 'Cards': { 
+        this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = false;
-        this.showCards = true;       
+        this.showCards = true;
         break; 
       }
-      default: { 
+    }
+
+    this.dataSource = new MatTableDataSource<any>([]);
+    this.pageIndex = 1;
+  }
+
+  changeVisualization(visualizacion: string) {
+    if (this.isButtonDisabled) {
+      return;
+    }
+  
+    this.isButtonDisabled = true;
+
+    const visualizationBody = {
+      "user": this.cookie.get("user"),
+      "token": this.cookie.get("token"),
+      "visualization": visualizacion
+    };
+
+    switch(visualizacion) { 
+      case 'Paginacion': {
+        this.editVisualizationFetch(visualizationBody);
+        this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
-        this.showCards = false;    
+        this.showCards = false;
+        break; 
+      } 
+      case 'Scroll': {
+        this.editVisualizationFetch(visualizationBody);
+        this.cookie.set('visualization', visualizacion);
+        this.showTablaScroll = true;
+        this.showTablaPaginada = false;
+        this.showCards = false;
+        break; 
+      } 
+      case 'Cards': {
+        this.editVisualizationFetch(visualizationBody);
+        this.cookie.set('visualization', visualizacion);
+        this.showTablaScroll = false;
+        this.showTablaPaginada = false;
+        this.showCards = true;
         break; 
       }
     }
@@ -383,7 +427,24 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
 
-    this.getTopicList();
+    setTimeout(() => {
+      this.getTopicList();
+      this.isButtonDisabled = false;
+    }, 250);
+  }
+
+  editVisualizationFetch(visualizationBody: any) {
+    fetch(`${environment.apiUrl}/users/editVisualization`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(visualizationBody)
+    })
+    .then(response => {
+    })
+    .catch(error => {
+    });
   }
 
   adjustRellenoHeight() {

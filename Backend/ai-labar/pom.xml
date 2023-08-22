@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.capgemini</groupId>
 	<artifactId>ai-labar</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 	<name>ai-labar</name>
 	<description>AI-Labar Project</description>
 	<properties>

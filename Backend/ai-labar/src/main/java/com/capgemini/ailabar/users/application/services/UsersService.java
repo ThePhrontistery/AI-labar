@@ -9,30 +9,31 @@ import java.util.List;
 
 @Service
 public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUseCase, DeleteUserUseCase,
-        GetUsersByMatchUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase {
+        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase {
     private final LoginUseCase loginUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final EditUserUseCase editUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final GetUsersByMatchUseCase getUsersByMatch;
+    private final EditVisualizationUseCase editVisualizationUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUsersDatabaseUseCase getUsersDatabaseUseCase;
 
     public UsersService(LoginUseCase loginUseCase, CreateUserUseCase createUserUseCase,
                         EditUserUseCase editUserUseCase, DeleteUserUseCase deleteUserUseCase,
-                        GetUsersByMatchUseCase getUsersByMatch, GetAllUsersUseCase getAllUsersUseCase,
-                        GetUsersDatabaseUseCase getUsersDatabaseUseCase) {
+                        GetUsersByMatchUseCase getUsersByMatch, EditVisualizationUseCase editVisualizationUseCase,
+                        GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase) {
         this.loginUseCase = loginUseCase;
         this.createUserUseCase = createUserUseCase;
         this.editUserUseCase = editUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
         this.getUsersByMatch = getUsersByMatch;
+        this.editVisualizationUseCase = editVisualizationUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.getUsersDatabaseUseCase = getUsersDatabaseUseCase;
     }
-
     @Override
-    public String login(UsersModel usersModel) {
+    public List<String> login(UsersModel usersModel) {
         try {
             return loginUseCase.login(usersModel);
         } catch (LoginException loginException) {
@@ -55,6 +56,15 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
             editUserUseCase.editUser(usersModel);
         } catch (EditUserException editUserException) {
             throw editUserException;
+        }
+    }
+
+    @Override
+    public void editVisualization(UsersModel usersModel) {
+        try {
+            editVisualizationUseCase.editVisualization(usersModel);
+        } catch (EditVisualizationException editVisualizationException) {
+            throw editVisualizationException;
         }
     }
 

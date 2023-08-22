@@ -1,13 +1,25 @@
-Tipo de visualización:
-<button (click)="cambiar('Paginacion')" mat-button  [color]="showTablaPaginada ? 'primary' : 'default'">
+<!-- Tipo de visualización:
+<button (click)="changeVisualization('Paginacion')" mat-button  [color]="showTablaPaginada ? 'primary' : 'default'">
   Paginacion
 </button>
-<button (click)="cambiar('Scroll')" mat-button  [color]="showTablaScroll ? 'primary' : 'default'">
+<button (click)="changeVisualization('Scroll')" mat-button  [color]="showTablaScroll ? 'primary' : 'default'">
   Scroll
 </button>
-<button (click)="cambiar('Cards')" mat-button  [color]="showCards ? 'primary' : 'default'">
+<button (click)="changeVisualization('Cards')" mat-button  [color]="showCards ? 'primary' : 'default'">
   Cards
-</button>
+</button> -->
+
+<div class="button-container">
+  <button (click)="changeVisualization('Paginacion')" matTooltip="Paginación" mat-button [color]="showTablaPaginada ? 'primary' : 'default'" class="image-button paginacion-button">
+    <div class="button-image" [ngStyle]="{'background-image': showTablaPaginada ? 'url(assets/images/paginacion-image-active.png)' : 'url(assets/images/paginacion-image-inactive.png)'}"></div>
+  </button>
+  <button (click)="changeVisualization('Scroll')" matTooltip="Scroll" mat-button [color]="showTablaScroll ? 'primary' : 'default'" class="image-button scroll-button">
+    <div class="button-image" [ngStyle]="{'background-image': showTablaScroll ? 'url(assets/images/scroll-image-active.png)' : 'url(assets/images/scroll-image-inactive.png)'}"></div>
+  </button>
+  <button (click)="changeVisualization('Cards')" matTooltip="Cards" mat-button [color]="showCards ? 'primary' : 'default'" class="image-button cards-button">
+    <div class="button-image" [ngStyle]="{'background-image': showCards ? 'url(assets/images/cards-image-active.png)' : 'url(assets/images/cards-image-inactive.png)'}"></div>
+  </button>
+</div>
 
 <div id="div1" (scroll)="onScroll($event)" #scrollContainer *ngIf="showTablaScroll || showTablaPaginada">
 <table id="tablaTopicos" #tablaTopicos mat-table [dataSource]="dataSource" #tableSort="matSort" matSort  >

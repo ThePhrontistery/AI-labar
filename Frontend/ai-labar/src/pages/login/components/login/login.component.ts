@@ -57,7 +57,8 @@ export class LoginComponent implements OnInit {
         if (response && response.body.entity)
           { 
             this.cookie.set('user', this.username);
-            this.cookie.set('token', response.body.entity);
+            this.cookie.set('token', response.body.entity[0]);
+            this.cookie.set('visualization', response.body.entity[1]);
             this.router.navigate(['/topics/topics-list']);
             }}))
   }

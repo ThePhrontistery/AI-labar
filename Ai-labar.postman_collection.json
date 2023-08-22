@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Zoro\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"zoro@test.com\"\r\n}",
+							"raw": "{\r\n  \"user\": \"a\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"a@test.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,6 +94,34 @@
 							"path": [
 								"users",
 								"editUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editVisualization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\",\r\n  \"visualization\": \"Cards\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/editVisualization",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"editVisualization"
 							]
 						}
 					},
@@ -226,7 +254,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Yamato\",\r\n      \"Zoro\",\r\n      \"Lester\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"groupName\": \"Grupo Dos\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Yamato\",\r\n      \"Zoro\",\r\n      \"Lester\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -338,7 +366,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\":2,\r\n  \"groupName\": \"Grupo Dos\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"groupName\": \"Grupo Dos\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
