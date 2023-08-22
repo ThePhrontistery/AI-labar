@@ -57,6 +57,21 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public Integer countTopicsByAuthor(String user) {
+        return topicsRepository.countTopicsByAuthor(user);
+    }
+
+    @Override
+    public Integer countTopicsByAuthorWithStatus(String user, Integer status) {
+        return topicsRepository.countTopicsByAuthorWithStatus(user, status);
+    }
+
+    @Override
+    public Integer countTopicsWithStatus(String user, List<Integer> groupIds, Integer status) {
+        return topicsRepository.countTopicsWithStatus(user, groupIds, status);
+    }
+
+    @Override
     public void createTemporalGroup(String groupName, String admin) {
         topicsRepository.createTemporalGroup(groupName, admin);
     }
@@ -137,8 +152,8 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public Integer getTotalTopicsCount(String user, List<Integer> groupIds) {
-        return topicsRepository.getTotalTopicsCount(user, groupIds);
+    public Integer countTotalTopics(String user, List<Integer> groupIds) {
+        return topicsRepository.countTotalTopics(user, groupIds);
     }
 
     @Override

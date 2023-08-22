@@ -33,6 +33,32 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.user = :member")
     boolean checkMember(@Param("member") String member);
 
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE author = :user",
+            nativeQuery = true)
+    Integer countTopicsByAuthor(@Param("user") String user);
+
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE author = :user " +
+            "AND status = :status",
+            nativeQuery = true)
+    Integer countTopicsByAuthorWithStatus(@Param("user") String user,
+                                          @Param("status") Integer status);
+
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
+            "AND status = :status",
+            nativeQuery = true)
+    Integer countTopicsWithStatus(@Param("user") String user,
+                                  @Param("groupIds") List<Integer> groupIds,
+                                  @Param("status") Integer status);
+
+    @Query(value = "SELECT COUNT(*) FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
+            nativeQuery = true)
+    Integer countTotalTopics(@Param("user") String user,
+                             @Param("groupIds") List<Integer> groupIds);
+
     @Modifying
     @Query(value = "INSERT INTO groups (group_name, admin) VALUES (:groupName, :admin)", nativeQuery = true)
     void createTemporalGroup(@Param("groupName") String groupName, @Param("admin") String admin);
@@ -76,12 +102,6 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity getTopicsEntityById(@Param("id") Integer id);
-
-    @Query(value = "SELECT COUNT(*) FROM topics " +
-            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
-            nativeQuery = true)
-    Integer getTotalTopicsCount(@Param("user") String user,
-                                @Param("groupIds") List<Integer> groupIds);
 
     @Query("SELECT u.id FROM UsersEntity u WHERE u.user = :user")
     Integer getUserIdByUserName(@Param("user") String user);

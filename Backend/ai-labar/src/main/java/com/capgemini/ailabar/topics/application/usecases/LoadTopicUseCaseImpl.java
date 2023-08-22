@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,7 +67,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                 })
                 .forEach(allModels::add);
 
-        int totalTopics = topicsRepositoryPort.getTotalTopicsCount(usersModel.getUser(), groupIds);
+        int totalTopics = topicsRepositoryPort.countTotalTopics(usersModel.getUser(), groupIds);
 
         List<Map<String, Integer>> pagination = new ArrayList<>();
         Map<String, Integer> pageInfo = new HashMap<>();
@@ -117,22 +118,28 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         }
 
         List<TopicsEntity> loadTopics;
+        int totalTopics = 0;
         if(mines) {
             if(status) {
+                totalTopics = topicsRepositoryPort.countTopicsByAuthorWithStatus(usersModel.getUser(),statusValue);
                 loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
             } else {
+                totalTopics = topicsRepositoryPort.countTopicsByAuthor(usersModel.getUser());
                 loadTopics = topicsRepositoryPort.loadTopicsByAuthor(usersModel.getUser(), elementsPerPage, offset);
             }
         } else {
             if(status) {
+                totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
                 loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
             } else {
+                totalTopics = topicsRepositoryPort.countTotalTopics(usersModel.getUser(), groupIds);
                 loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
             }
         }
 
         List<TopicsModel> allModels = new ArrayList<>();
         boolean finalVotePending = votePending;
+        AtomicInteger votePendingCount = new AtomicInteger();
 
         loadTopics.forEach(topicEntity -> {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
@@ -142,19 +149,21 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                         topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
                     }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
-                    if(!(finalVotePending && Boolean.TRUE.equals(topicsModel.getCanVote()))) {
+                    if(!(finalVotePending && Boolean.FALSE.equals(topicsModel.getCanVote()))) {
+                        votePendingCount.getAndIncrement();
                         allModels.add(topicsModel);
                     }
                 });
-
-
-        int totalTopics = topicsRepositoryPort.getTotalTopicsCount(usersModel.getUser(), groupIds);
 
         List<Map<String, Integer>> pagination = new ArrayList<>();
         Map<String, Integer> pageInfo = new HashMap<>();
         pageInfo.put("page", requestedPage);
         pageInfo.put("elements", allModels.size());
-        pageInfo.put("total", totalTopics);
+        if(finalVotePending) {
+            pageInfo.put("total", votePendingCount.get());
+        } else {
+            pageInfo.put("total", totalTopics);
+        }
         pagination.add(pageInfo);
 
         Map<String, Object> response = new HashMap<>();
