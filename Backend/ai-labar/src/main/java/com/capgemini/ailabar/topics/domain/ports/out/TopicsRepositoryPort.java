@@ -22,6 +22,14 @@ public interface TopicsRepositoryPort {
 
     void closeTopic(TopicsEntity topicsEntity);
 
+    Integer countTopicsByAuthor(String user);
+
+    Integer countTopicsByAuthorWithStatus(String user, Integer status);
+
+    Integer countTopicsWithStatus(String user, List<Integer> groupIds, Integer status);
+
+    Integer countTotalTopics(String user, List<Integer> groupIds);
+
     void createTemporalGroup(String groupName, String admin);
 
     void createTopic(TopicsEntity topicsEntity);
@@ -53,8 +61,6 @@ public interface TopicsRepositoryPort {
     List<TopicsEntity> getTopicsDatabase();
 
     TopicsEntity getTopicsEntityById(Integer id);
-
-    Integer getTotalTopicsCount(String user, List<Integer> groupIds);
 
     Integer getUserIdByUserName(String user);
 
