@@ -60,9 +60,13 @@ table {
     height:500px; 
     
 }
-
+#div2 {
+  overflow-y: scroll;
+  height:500px; 
+  
+}
 .mat-card {
-  width: 100%;
+  //width: 100%;
   margin: 20px;
 }
 

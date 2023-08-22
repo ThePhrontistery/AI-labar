@@ -9,17 +9,7 @@
   Cards
 </button> -->
 
-<div class="button-container">
-  <button (click)="changeVisualization('Paginacion')" matTooltip="Paginación" mat-button [color]="showTablaPaginada ? 'primary' : 'default'" class="image-button paginacion-button">
-    <div class="button-image" [ngStyle]="{'background-image': showTablaPaginada ? 'url(assets/images/paginacion-image-active.png)' : 'url(assets/images/paginacion-image-inactive.png)'}"></div>
-  </button>
-  <button (click)="changeVisualization('Scroll')" matTooltip="Scroll" mat-button [color]="showTablaScroll ? 'primary' : 'default'" class="image-button scroll-button">
-    <div class="button-image" [ngStyle]="{'background-image': showTablaScroll ? 'url(assets/images/scroll-image-active.png)' : 'url(assets/images/scroll-image-inactive.png)'}"></div>
-  </button>
-  <button (click)="changeVisualization('Cards')" matTooltip="Cards" mat-button [color]="showCards ? 'primary' : 'default'" class="image-button cards-button">
-    <div class="button-image" [ngStyle]="{'background-image': showCards ? 'url(assets/images/cards-image-active.png)' : 'url(assets/images/cards-image-inactive.png)'}"></div>
-  </button>
-</div>
+
 
 <div id="div1" (scroll)="onScroll($event)" #scrollContainer *ngIf="showTablaScroll || showTablaPaginada">
 <table id="tablaTopicos" #tablaTopicos mat-table [dataSource]="dataSource" #tableSort="matSort" matSort  >
@@ -133,7 +123,7 @@
 
 </div>
 
-<div *ngIf="showCards">
+<div id="div2"  *ngIf="showCards">
   <mat-card>
     <mat-card-content>
       <div *ngFor="let element of dataSource.data" class="card-item">
@@ -173,6 +163,18 @@
  [pageSize]="pageSize" 
  [pageSizeOptions]="[5, 10, 20]" 
  (page)="onPageChange($event)"  *ngIf="showTablaPaginada || showCards"></mat-paginator> 
+
+ <div class="button-container">
+  <button (click)="changeVisualization('Paginacion')" matTooltip="Paginación" mat-button [color]="showTablaPaginada ? 'primary' : 'default'" class="image-button paginacion-button">
+    <div class="button-image" [ngStyle]="{'background-image': showTablaPaginada ? 'url(assets/images/paginacion-image-active.png)' : 'url(assets/images/paginacion-image-inactive.png)'}"></div>
+  </button>
+  <button (click)="changeVisualization('Scroll')" matTooltip="Scroll" mat-button [color]="showTablaScroll ? 'primary' : 'default'" class="image-button scroll-button">
+    <div class="button-image" [ngStyle]="{'background-image': showTablaScroll ? 'url(assets/images/scroll-image-active.png)' : 'url(assets/images/scroll-image-inactive.png)'}"></div>
+  </button>
+  <button (click)="changeVisualization('Cards')" matTooltip="Cards" mat-button [color]="showCards ? 'primary' : 'default'" class="image-button cards-button">
+    <div class="button-image" [ngStyle]="{'background-image': showCards ? 'url(assets/images/cards-image-active.png)' : 'url(assets/images/cards-image-inactive.png)'}"></div>
+  </button>
+</div>
 
 <app-modal-votacion
   [isOpen]="modalOpen"

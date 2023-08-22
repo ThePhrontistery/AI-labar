@@ -27,11 +27,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-color: #1976d2;
     color: white;
     font-weight: 600;
+    z-index: 105;
   }
   .content {
     display: flex;
     //padding: 8px 16px;
     align-items: center;
+    flex-direction: column;
   }
 
   /* Estilos específicos para navegadores Firefox */
@@ -113,6 +115,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 300;
   .button-container {
     position: absolute;
     bottom: 20px;
