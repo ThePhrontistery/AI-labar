@@ -182,6 +182,21 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public List<TopicsEntity> loadTopicsByAuthor(String user, Integer limit, Integer offset) {
+        return topicsRepository.loadTopicsByAuthor(user, limit, offset);
+    }
+
+    @Override
+    public List<TopicsEntity> loadTopicsByAuthorWithStatus(String user, Integer status, Integer limit, Integer offset) {
+        return topicsRepository.loadTopicsByAuthorWithStatus(user, status, limit, offset);
+    }
+
+    @Override
+    public List<TopicsEntity> loadTopicsWithStatus(String user, List<Integer> groupIds, Integer status, Integer limit, Integer offset) {
+        return topicsRepository.loadTopicsWithStatus(user, groupIds, status, limit, offset);
+    }
+
+    @Override
     public void reOpenTopic(TopicsEntity topicsEntity) {
         topicsRepository.save(topicsEntity);
     }

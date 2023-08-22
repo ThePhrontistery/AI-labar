@@ -1,15 +1,19 @@
-<!-- Tipo de visualización:
-<button (click)="changeVisualization('Paginacion')" mat-button  [color]="showTablaPaginada ? 'primary' : 'default'">
-  Paginacion
-</button>
-<button (click)="changeVisualization('Scroll')" mat-button  [color]="showTablaScroll ? 'primary' : 'default'">
-  Scroll
-</button>
-<button (click)="changeVisualization('Cards')" mat-button  [color]="showCards ? 'primary' : 'default'">
-  Cards
-</button> -->
 
-
+<div class="filters-container">
+  Filtros:
+  <mat-slide-toggle id="minesToggle" [(ngModel)]="minesFilter" (change)="onToggleChange($event)">
+    Propios
+  </mat-slide-toggle>
+  <mat-slide-toggle id="openedToggle" [(ngModel)]="openedFilter" (change)="onToggleChange($event)">
+    Abiertos
+  </mat-slide-toggle>
+  <mat-slide-toggle id="closedToggle" [(ngModel)]="closedFilter" (change)="onToggleChange($event)">
+    Cerrados
+  </mat-slide-toggle>
+  <mat-slide-toggle id="votePendingToggle" [(ngModel)]="votePendingFilter" (change)="onToggleChange($event)">
+    Pendientes de votar
+  </mat-slide-toggle>
+</div>
 
 <div id="div1" (scroll)="onScroll($event)" #scrollContainer *ngIf="showTablaScroll || showTablaPaginada">
 <table id="tablaTopicos" #tablaTopicos mat-table [dataSource]="dataSource" #tableSort="matSort" matSort  >
@@ -118,12 +122,12 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
 </table>
- 
+
 <div id="relleno" #relleno *ngIf="showTablaScroll && puedoPaginar()" style="height:1px"></div> <!-- Espacio para simular el scroll  -->
 
 </div>
 
-<div id="div2"  *ngIf="showCards">
+<div id="div2" *ngIf="showCards">
   <mat-card>
     <mat-card-content>
       <div *ngFor="let element of dataSource.data" class="card-item">
@@ -132,37 +136,37 @@
           <p><b>Estado:</b> {{ element.status === 1 ? 'Abierto' : 'Cerrado' }}</p>
           <p class="close-date" *ngIf="element.closeDate"><b>Fecha de cierre:</b> {{ element.closeDate }}</p>
         </div>
-  
+
         <div class="buttons">
           <button mat-icon-button [disabled]="element.status === 1 || element.author !== user" class="capBlue" (click)="reOpen(element)">
             <mat-icon [matTooltip]="element.status === 1 ? 'Abierto' : 'Cerrado'">lock_open</mat-icon>
           </button>
-  
+
           <button mat-icon-button [disabled]="element.author !== user" class="capBlue" (click)="delete(element)">
             <mat-icon matTooltip="Eliminar">delete</mat-icon>
           </button>
-  
+
           <button mat-icon-button [disabled]="element.status === 0 || !element.canVote" class="capBlue" (click)="vote(element)">
             <mat-icon matTooltip="Votar">how_to_vote</mat-icon>
           </button>
-  
+
           <button mat-icon-button [disabled]="element.status === 1" class="capBlue" (click)="results(element)">
             <mat-icon matTooltip="Ver resultados">visibility</mat-icon>
           </button>
         </div>
-  
+
         <p class="author"><b>Autor:</b> {{ element.author }}</p>
       </div>
     </mat-card-content>
-  </mat-card> 
+  </mat-card>
 
 </div>
- 
+
 <mat-paginator #paginator
- [length]="totalItems" 
- [pageSize]="pageSize" 
- [pageSizeOptions]="[5, 10, 20]" 
- (page)="onPageChange($event)"  *ngIf="showTablaPaginada || showCards"></mat-paginator> 
+ [length]="totalItems"
+ [pageSize]="pageSize"
+ [pageSizeOptions]="[5, 10, 20]"
+ (page)="onPageChange($event)"  *ngIf="showTablaPaginada || showCards"></mat-paginator>
 
  <div class="button-container">
   <button (click)="changeVisualization('Paginacion')" matTooltip="Paginación" mat-button [color]="showTablaPaginada ? 'primary' : 'default'" class="image-button paginacion-button">
