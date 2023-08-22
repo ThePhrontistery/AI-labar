@@ -108,54 +108,13 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       this.votePendingFilter = event.checked;
     }
 
-    this.filterTopics();
+    this.dataSource = new MatTableDataSource<any>([]);
+    this.pageIndex = 1;
+    this.getTopicList();
   }
 
-private loadAndRenderData(loadTopicsBody: any, url: any) {
-  let serviceCall;
-  if (environment.mockup) {
-    serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
-  } else {
-    serviceCall = this.topicListService.post(loadTopicsBody, url);
-  }
 
-  serviceCall
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe({
-      next: response => {
-        if (response) {
-          const data = response.entity.entity;
-
-          if (this.dataSource) {
-            if (this.showTablaScroll) {
-              this.dataSource.data = this.dataSource.data.concat(data);
-            } else {
-              this.dataSource.data = response.entity.entity;
-            }
-            this.dataSource.sort = this.sort;
-          } else {
-            this.dataSource = new MatTableDataSource(data);
-          }
-          if (response.entity.pagination !== undefined) {
-            this.totalItems = response.entity.pagination[0].total;
-          } else {
-            this.totalItems = 0;
-          }
-
-          if (this.showTablaScroll) {
-            this.pageIndex++;
-          }
-          this.loading = false;
-          this.adjustRellenoHeight();
-        }
-      },
-      error: error => {
-        alert('Error al obtener los topicos: ' + error.error.message);
-      }
-    });
-}
-
-  filterTopics() {
+  filterTopics():String [] {
     const activeFilters = [];
 
     if (this.minesFilter) {
@@ -170,27 +129,8 @@ private loadAndRenderData(loadTopicsBody: any, url: any) {
     if (this.votePendingFilter) {
       activeFilters.push('votePending');
     }
+    return activeFilters;
 
-    if (activeFilters.length === 0) {
-      this.getTopicList();
-      return;
-    }
-
-    const filtersRequestBody = {
-      filters: activeFilters
-    };
-
-    const loadTopicsBody = {
-      user: this.cookie.get('user'),
-      token: this.cookie.get('token'),
-      page: this.pageIndex,
-      elements: this.pageSize,
-      filters: filtersRequestBody.filters
-    };
-
-    const url = `${environment.apiUrl}/topics/loadTopics`;
-
-    this.loadAndRenderData(loadTopicsBody, url);
   }
 
   reOpen(votation: any) {
@@ -406,7 +346,8 @@ private loadAndRenderData(loadTopicsBody: any, url: any) {
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token"),
       "page": this.pageIndex,
-      "elements": this.pageSize
+      "elements": this.pageSize,
+      "filters":this.filterTopics()
     }
     let serviceCall;
     if (environment.mockup) {
