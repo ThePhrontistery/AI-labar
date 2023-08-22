@@ -25,6 +25,8 @@ public class UsersEntity {
     private String photo;
     @Column(name = "token")
     private String token;
+    @Column(name = "visualization")
+    private String visualization;
 
     public UsersEntity() {}
 
@@ -34,5 +36,6 @@ public class UsersEntity {
         this.email = usersModel.getEmail();
         this.gender = usersModel.getGender();
         this.photo = usersModel.getPhoto();
+        this.visualization = "Paginacion";
     }
 }

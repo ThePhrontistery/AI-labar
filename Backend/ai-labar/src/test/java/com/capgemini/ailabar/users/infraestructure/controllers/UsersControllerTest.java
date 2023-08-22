@@ -37,8 +37,10 @@ class UsersControllerTest {
         usersModel.setUser("testUser");
         usersModel.setPassword("testPassword");
 
-        String validToken = "validToken";
-        when(usersService.login(usersModel)).thenReturn(validToken);
+        List<String> loginData = new ArrayList<>();
+        loginData.add("validToken");
+        loginData.add("visualization");
+        when(usersService.login(usersModel)).thenReturn(loginData);
 
         String expectedMessage = "Login successful";
 
@@ -48,7 +50,7 @@ class UsersControllerTest {
         SpecialResponse specialResponse = actualResponse.getBody();
         assertNotNull(specialResponse);
         assertEquals(expectedMessage, specialResponse.getMessage());
-        assertEquals(validToken, specialResponse.getEntity());
+        assertEquals(loginData, specialResponse.getEntity());
 
         verify(usersService, times(1)).login(usersModel);
     }
@@ -98,6 +100,27 @@ class UsersControllerTest {
         assertEquals(expectedMessage, specialResponse.getMessage());
 
         verify(usersService, times(1)).editUser(usersModel);
+    }
+
+    @Test
+    void testEditVisualizationSuccess() {
+        UsersModel usersModel = new UsersModel();
+        usersModel.setUser("existingUser");
+        usersModel.setToken("validToken");
+        usersModel.setVisualization("newVisualization");
+
+        doNothing().when(usersService).editVisualization(usersModel);
+
+        String expectedMessage = "Visualization edited successfully";
+
+        ResponseEntity<SpecialResponse> actualResponse = usersController.editVisualization(usersModel);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        JSONObject expectedJson = new JSONObject();
+        expectedJson.put("message", expectedMessage);
+        assertEquals(expectedJson.getString("message"), Objects.requireNonNull(actualResponse.getBody()).getMessage());
+
+        verify(usersService, times(1)).editVisualization(usersModel);
     }
 
     @Test
@@ -229,6 +252,18 @@ class UsersControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         JSONObject expectedJson = new JSONObject();
         expectedJson.put("message", "Edit user error message");
+        assertEquals(expectedJson.getString("message"), Objects.requireNonNull(response.getBody()).getMessage());
+    }
+
+    @Test
+    void testHandlerEditVisualizationException() {
+        EditVisualizationException exception = new EditVisualizationException("Edit visualization error message");
+
+        ResponseEntity<SpecialResponse> response = usersController.handlerEditVisualizationException(exception);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        JSONObject expectedJson = new JSONObject();
+        expectedJson.put("message", "Edit visualization error message");
         assertEquals(expectedJson.getString("message"), Objects.requireNonNull(response.getBody()).getMessage());
     }
 
