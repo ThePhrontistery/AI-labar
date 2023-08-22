@@ -45,6 +45,11 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
 
         Integer userId = topicsRepositoryPort.getUserIdByUserName(usersModel.getUser());
         List<Integer> groupIds= topicsRepositoryPort.getGroupsWithMemberId(topicsRepositoryPort.getUserIdByUserName(usersModel.getUser()));
+
+        if(usersModel.getFilters() != null && !usersModel.getFilters().isEmpty()) {
+            return loadTopicsWithFilters(usersModel, userId, groupIds, requestedPage, elementsPerPage, offset);
+        }
+
         List<TopicsEntity> loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
 
         List<TopicsModel> allModels = new ArrayList<>();
@@ -77,7 +82,6 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         return response;
     }
 
-
     private List<OptionsModel> addUsersPhotos(List<OptionsModel> optionsModelList) {
         return optionsModelList.stream()
                 .map(option -> {
@@ -85,5 +89,78 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                     return new OptionsModel(userPhoto, option.getOption(), option.getVotes());
                 })
                 .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> loadTopicsWithFilters(UsersModel usersModel, int userId, List<Integer> groupIds, int requestedPage, int elementsPerPage, int offset) {
+        boolean mines = false;
+        boolean status = false;
+        boolean votePending = false;
+        int statusValue = 1;
+
+        for (String filter : usersModel.getFilters()) {
+            switch (filter) {
+                case "mines":
+                    mines = true;
+                    break;
+                case "opened":
+                    status = true;
+                    statusValue = 1;
+                    break;
+                case "closed":
+                    status = true;
+                    statusValue = 0;
+                    break;
+                case "votePending":
+                    votePending = true;
+                    break;
+            }
+        }
+
+        List<TopicsEntity> loadTopics;
+        if(mines) {
+            if(status) {
+                loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
+            } else {
+                loadTopics = topicsRepositoryPort.loadTopicsByAuthor(usersModel.getUser(), elementsPerPage, offset);
+            }
+        } else {
+            if(status) {
+                loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
+            } else {
+                loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
+            }
+        }
+
+        List<TopicsModel> allModels = new ArrayList<>();
+        boolean finalVotePending = votePending;
+
+        loadTopics.forEach(topicEntity -> {
+                    TopicsModel topicsModel = new TopicsModel(topicEntity);
+                    topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
+                    topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
+                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
+                    }
+                    topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
+                    if(!(finalVotePending && Boolean.TRUE.equals(topicsModel.getCanVote()))) {
+                        allModels.add(topicsModel);
+                    }
+                });
+
+
+        int totalTopics = topicsRepositoryPort.getTotalTopicsCount(usersModel.getUser(), groupIds);
+
+        List<Map<String, Integer>> pagination = new ArrayList<>();
+        Map<String, Integer> pageInfo = new HashMap<>();
+        pageInfo.put("page", requestedPage);
+        pageInfo.put("elements", allModels.size());
+        pageInfo.put("total", totalTopics);
+        pagination.add(pageInfo);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("pagination", pagination);
+        response.put("entity", allModels);
+
+        return response;
     }
 }

@@ -81,7 +81,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
             "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
             nativeQuery = true)
     Integer getTotalTopicsCount(@Param("user") String user,
-                             @Param("groupIds") List<Integer> groupIds);
+                                @Param("groupIds") List<Integer> groupIds);
 
     @Query("SELECT u.id FROM UsersEntity u WHERE u.user = :user")
     Integer getUserIdByUserName(@Param("user") String user);
@@ -115,6 +115,35 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
                                   @Param("groupIds") List<Integer> groupIds,
                                   @Param("limit") Integer limit,
                                   @Param("offset") Integer offset);
+
+    @Query(value = "SELECT * FROM topics " +
+            "WHERE author = :user " +
+            "ORDER BY id DESC " +
+            "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<TopicsEntity> loadTopicsByAuthor(@Param("user") String user,
+                                          @Param("limit") Integer limit,
+                                          @Param("offset") Integer offset);
+
+    @Query(value = "SELECT * FROM topics " +
+            "WHERE author = :user " +
+            "AND status = :status " +
+            "ORDER BY id DESC " +
+            "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<TopicsEntity> loadTopicsByAuthorWithStatus(@Param("user") String user,
+                                                    @Param("status") Integer status,
+                                                    @Param("limit") Integer limit,
+                                                    @Param("offset") Integer offset);
+
+    @Query(value = "SELECT * FROM topics " +
+            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
+            "AND status = :status " +
+            "ORDER BY id DESC " +
+            "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<TopicsEntity> loadTopicsWithStatus(@Param("user") String user,
+                                            @Param("groupIds") List<Integer> groupIds,
+                                            @Param("status") Integer status,
+                                            @Param("limit") Integer limit,
+                                            @Param("offset") Integer offset);
 
     @Modifying
     @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)

@@ -44,6 +44,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -87,7 +88,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     FlexLayoutModule,
     MatPaginatorModule,ScrollingModule
-    ,MatCardModule,MatTooltipModule
+    ,MatCardModule,MatTooltipModule,MatSlideToggleModule
   ],
   providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
 })

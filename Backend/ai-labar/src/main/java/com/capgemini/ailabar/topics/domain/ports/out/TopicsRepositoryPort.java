@@ -72,6 +72,12 @@ public interface TopicsRepositoryPort {
 
     List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset);
 
+    List<TopicsEntity> loadTopicsByAuthor(String user, Integer limit, Integer offset);
+
+    List<TopicsEntity> loadTopicsByAuthorWithStatus(String user, Integer status, Integer limit, Integer offset);
+
+    List<TopicsEntity> loadTopicsWithStatus(String user, List<Integer> groupIds, Integer status, Integer limit, Integer offset);
+
     void reOpenTopic(TopicsEntity topicsEntity);
 
     void registerUserVoted(Integer topicId, Integer userId);

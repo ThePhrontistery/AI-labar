@@ -28,7 +28,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   @ViewChild('table', { static: true }) table!: ElementRef; // Agrega esta línea
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChild('tablaTopicos', { read: ElementRef }) tablaTopicos!: ElementRef;
-  
+
   @ViewChild('relleno') relleno!: ElementRef;
 
   topicsData: any;
@@ -50,6 +50,11 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   isEncuestaOpinionMultiple: Boolean = false;
   isEnquestaImagenTextoSimple: Boolean = false;
   isEnquestaImagenTextoMultiple: Boolean = false;
+
+  minesFilter = false;
+  openedFilter = false;
+  closedFilter = false;
+  votePendingFilter = false;
 
   isButtonDisabled: boolean = false;
 
@@ -82,12 +87,112 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
     this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
   }
+
   ngOnDestroy() {
     //this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
- 
+  onToggleChange(event: any) {
+    if(event.source.id === 'minesToggle' && event.checked) {
+      this.minesFilter = event.checked;
+    }
+
+    if (event.source.id === 'openedToggle' && event.checked) {
+      this.closedFilter = false;
+    } else if (event.source.id === 'closedToggle' && event.checked) {
+      this.openedFilter = false;
+    }
+
+    if(event.source.id === 'votePendingFilter' && event.checked) {
+      this.votePendingFilter = event.checked;
+    }
+
+    this.filterTopics();
+  }
+
+private loadAndRenderData(loadTopicsBody: any, url: any) {
+  let serviceCall;
+  if (environment.mockup) {
+    serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
+  } else {
+    serviceCall = this.topicListService.post(loadTopicsBody, url);
+  }
+
+  serviceCall
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe({
+      next: response => {
+        if (response) {
+          const data = response.entity.entity;
+
+          if (this.dataSource) {
+            if (this.showTablaScroll) {
+              this.dataSource.data = this.dataSource.data.concat(data);
+            } else {
+              this.dataSource.data = response.entity.entity;
+            }
+            this.dataSource.sort = this.sort;
+          } else {
+            this.dataSource = new MatTableDataSource(data);
+          }
+          if (response.entity.pagination !== undefined) {
+            this.totalItems = response.entity.pagination[0].total;
+          } else {
+            this.totalItems = 0;
+          }
+
+          if (this.showTablaScroll) {
+            this.pageIndex++;
+          }
+          this.loading = false;
+          this.adjustRellenoHeight();
+        }
+      },
+      error: error => {
+        alert('Error al obtener los topicos: ' + error.error.message);
+      }
+    });
+}
+
+  filterTopics() {
+    const activeFilters = [];
+
+    if (this.minesFilter) {
+      activeFilters.push('mines');
+    }
+    if (this.openedFilter) {
+      activeFilters.push('opened');
+    }
+    if (this.closedFilter) {
+      activeFilters.push('closed');
+    }
+    if (this.votePendingFilter) {
+      activeFilters.push('votePending');
+    }
+
+    if (activeFilters.length === 0) {
+      this.getTopicList();
+      return;
+    }
+
+    const filtersRequestBody = {
+      filters: activeFilters
+    };
+
+    const loadTopicsBody = {
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+      page: this.pageIndex,
+      elements: this.pageSize,
+      filters: filtersRequestBody.filters
+    };
+
+    const url = `${environment.apiUrl}/topics/loadTopics`;
+
+    this.loadAndRenderData(loadTopicsBody, url);
+  }
+
   reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
@@ -286,6 +391,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
    return  (this.totalItems === undefined || (this.totalItems !== undefined && ((this.pageIndex - 1) * this.pageSize) + 1 <= this.totalItems));
    //return true;
   }
+
   getTopicList() {
     if (this.showTablaScroll && !this.puedoPaginar()) return;
 
@@ -334,7 +440,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
             else { this.totalItems = 0; }
 
             if (this.showTablaScroll) {this.pageIndex++;}
-            this.loading = false; 
+            this.loading = false;
             this.adjustRellenoHeight();
           }
         },
@@ -346,6 +452,22 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       );
   }
 
+  getTopicListWithFilters(data: any) {
+    if (this.showTablaScroll && !this.puedoPaginar()) return;
+
+    if (this.loading) {
+      return;
+    }
+
+    this.dataSource = new MatTableDataSource(data);
+
+    if (this.showTablaScroll) {
+      this.pageIndex++;
+    }
+
+    this.loading = false;
+    this.adjustRellenoHeight();
+  }
 
   onScroll(event: any): void {
     if (!this.showTablaScroll) return;
@@ -356,27 +478,27 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   defaultVisualization(visualizacion: string) {
-    switch(visualizacion) { 
-      case 'Paginacion': { 
+    switch(visualizacion) {
+      case 'Paginacion': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
         this.showCards = false;
-        break; 
-      } 
-      case 'Scroll': { 
+        break;
+      }
+      case 'Scroll': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = true;
         this.showTablaPaginada = false;
         this.showCards = false;
-        break; 
-      } 
-      case 'Cards': { 
+        break;
+      }
+      case 'Cards': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = false;
         this.showCards = true;
-        break; 
+        break;
       }
     }
 
@@ -388,7 +510,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     if (this.isButtonDisabled) {
       return;
     }
-  
+
     this.isButtonDisabled = true;
 
     const visualizationBody = {
@@ -397,30 +519,30 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       "visualization": visualizacion
     };
 
-    switch(visualizacion) { 
+    switch(visualizacion) {
       case 'Paginacion': {
         this.editVisualizationFetch(visualizationBody);
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
         this.showCards = false;
-        break; 
-      } 
+        break;
+      }
       case 'Scroll': {
         this.editVisualizationFetch(visualizationBody);
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = true;
         this.showTablaPaginada = false;
         this.showCards = false;
-        break; 
-      } 
+        break;
+      }
       case 'Cards': {
         this.editVisualizationFetch(visualizationBody);
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = false;
         this.showCards = true;
-        break; 
+        break;
       }
     }
 
@@ -448,7 +570,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   adjustRellenoHeight() {
-    
+
     if (!this.scrollContainer || !this.tablaTopicos || !this.relleno) {
       return; // Evita errores si los elementos no están disponibles aún
     }
@@ -457,7 +579,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     const rellenoHeight = div1Height - tabla1Height + 1;
     this.relleno.nativeElement.style.height = rellenoHeight + 'px';
   }
- 
+
 
 
 }
