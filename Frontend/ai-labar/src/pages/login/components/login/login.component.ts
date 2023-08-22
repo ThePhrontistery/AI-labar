@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
      this.username = this.loginForm.value.user;
      this.mySubscription.push(this.loginService.login(body).subscribe(
       response => {
-        if (response && response.body.entity)
+        if (response && response.body.entity && response.body.entity.length>1)
           { 
             this.cookie.set('user', this.username);
             this.cookie.set('token', response.body.entity[0]);

@@ -76,6 +76,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   ngOnInit(): void {
+    this.defaultVisualization(this.cookie.get("visualization"));
     this.getTopicList();
     //this.paginator._intl.itemsPerPageLabel="Topics por página: ";
     this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
@@ -301,7 +302,6 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       "page": this.pageIndex,
       "elements": this.pageSize
     }
-    this.defaultVisualization(this.cookie.get("visualization"));
     let serviceCall;
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
