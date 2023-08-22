@@ -24,15 +24,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
+
 .cap-container-logo{
     background-image: url('../../../../assets/images/capLogo.jpg');
     background-repeat: no-repeat;
+    min-width: 200px;
     width: 40%;
     height: 29%;
     object-fit: cover;
     background-size: contain;
+    position: absolute;
+    top: 42%;
 }
+
 .login-container {
     display: flex;
     justify-content: center;
@@ -43,6 +51,9 @@
     background-position: center;
     animation: gradient-animation 10s ease-in-out infinite;
     width: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   .login-card {
