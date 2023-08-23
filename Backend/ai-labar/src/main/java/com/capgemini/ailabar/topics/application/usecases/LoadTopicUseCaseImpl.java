@@ -81,6 +81,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
     private Map<String, Object> loadTopicsWithFilters(UsersModel usersModel, int userId, List<Integer> groupIds, int requestedPage, int elementsPerPage, int offset) {
         boolean mines = false;
         boolean status = false;
+        boolean votePending = false;
         int statusValue = 1;
 
         for (String filter : usersModel.getFilters()) {
@@ -96,6 +97,9 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                     status = true;
                     statusValue = 0;
                     break;
+                case "votePending":
+                    votePending = true;
+                    break;
             }
         }
 
@@ -103,16 +107,26 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         int totalTopics = 0;
         if(mines) {
             if(status) {
-                totalTopics = topicsRepositoryPort.countTopicsByAuthorWithStatus(usersModel.getUser(),statusValue);
-                loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
+                if(votePending) {
+                    totalTopics = topicsRepositoryPort.countVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId);
+                    loadTopics = topicsRepositoryPort.loadVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, elementsPerPage, offset);
+                } else {
+                    totalTopics = topicsRepositoryPort.countTopicsByAuthorWithStatus(usersModel.getUser(),statusValue);
+                    loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
+                }
             } else {
                 totalTopics = topicsRepositoryPort.countTopicsByAuthor(usersModel.getUser());
                 loadTopics = topicsRepositoryPort.loadTopicsByAuthor(usersModel.getUser(), elementsPerPage, offset);
             }
         } else {
             if(status) {
-                totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
-                loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
+                if(votePending) {
+                    totalTopics = topicsRepositoryPort.countVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId);
+                    loadTopics = topicsRepositoryPort.loadVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, elementsPerPage, offset);
+                } else {
+                    totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
+                    loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
+                }
             } else {
                 totalTopics = topicsRepositoryPort.countVotableTopics(usersModel.getUser(), groupIds, userId);
                 loadTopics = topicsRepositoryPort.loadVotableTopics(usersModel.getUser(), groupIds, userId, elementsPerPage, offset);
