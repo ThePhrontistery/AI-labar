@@ -130,12 +130,15 @@
 <div id="div2" *ngIf="showCards">
   <mat-card>
     <mat-card-content>
-      <div *ngFor="let element of dataSource.data" class="card-item">
+      <div [class.closed]="element.status === 0" *ngFor="let element of dataSource.data" class="card-item">
         <div class="title-and-status">
           <h3>{{ element.title }}</h3>
           <p><b>Estado:</b> {{ element.status === 1 ? 'Abierto' : 'Cerrado' }}</p>
-          <p class="close-date" *ngIf="element.closeDate"><b>Fecha de cierre:</b> {{ element.closeDate }}</p>
-        </div>
+          <p class="close-date" *ngIf="element.closeDate !== undefined && element.closeDate !== null">
+            <b>Fecha de cierre:</b> {{ element.closeDate }}
+          </p>
+          <p class="close-date" *ngIf="!element.closeDate"><b>Sin fecha de cierre</b></p>
+        </div>        
 
         <div class="buttons">
           <button mat-icon-button *ngIf="element.author === user" [disabled]="element.status === 1 || element.author !== user" class="capBlue" (click)="reOpen(element)">
