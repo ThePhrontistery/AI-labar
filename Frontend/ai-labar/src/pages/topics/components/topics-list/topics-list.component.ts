@@ -70,7 +70,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   totalItems: number | undefined;
 
   @ViewChild(MatPaginator, { static: true })
-  paginator!: MatPaginator;
+  @ViewChild(MatPaginator )  paginator!: MatPaginator;
   loading = false;
   constructor(private topicListService: TopicsListService,
     private topicsListServiceMock: TopicsListServiceMock,
@@ -85,7 +85,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     this.getTopicList();
     //this.paginator._intl.itemsPerPageLabel="Topics por página: ";
     this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
-    this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
+    //this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
   }
 
   ngOnDestroy() {
@@ -110,6 +110,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
+    if(this.paginator) this.paginator.firstPage();
     this.getTopicList();
   }
 
@@ -156,7 +157,9 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
           }
         },
         error: error => {
-          alert('Error al abrir el topico: ' + error.error.message);
+          let textError=error.error.message;
+          if(error.error.message===undefined) textError=error.error.error;
+          alert('Error al abrir el topico: ' + textError);
         }
       }
       );
@@ -185,7 +188,9 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
           }
         },
         error: error => {
-          alert('Error al cerra el topico: ' + error.error.message);
+          let textError=error.error.message;
+          if(error.error.message===undefined) textError=error.error.error;
+          alert('Error al cerra el topico: ' + textError);
         }
       });
 
@@ -226,7 +231,9 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
               }
             },
             error: error => {
-              alert('Error al borrar el topico: ' + error.error.message);
+              let textError=error.error.message;
+              if(error.error.message===undefined) textError=error.error.error;
+              alert('Error al borrar el topico: ' + textError);
             }
           }
           );
@@ -314,18 +321,6 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     this.getTopicList();
   }
 
-  private getRangeLabel(page: number, pageSize: number, length: number): string {
-    if (length === 0 || pageSize === 0) {
-      return `0 de ${length}`;
-    }
-
-    const startIndex = page * pageSize + 1;
-    const endIndex = Math.min(startIndex + pageSize - 1, length);
-
-    return `${startIndex} – ${endIndex} de ${length}`;
-  }
-
-
   ////////
   puedoPaginar(): boolean {
    return  (this.totalItems === undefined || (this.totalItems !== undefined && ((this.pageIndex - 1) * this.pageSize) + 1 <= this.totalItems));
@@ -381,34 +376,21 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
             else { this.totalItems = 0; }
 
             if (this.showTablaScroll) {this.pageIndex++;}
-            this.loading = false;
+            this.loading = false; 
             this.adjustRellenoHeight();
           }
         },
 
         error: error => {
-          alert('Error al obtener los topicos: ' + error.error.message);
+          let textError=error.error.message;
+          if(error.error.message===undefined) textError=error.error.error;
+          alert('Error al obtener los topicos: ' + textError);
         }
       }
       );
   }
 
-  getTopicListWithFilters(data: any) {
-    if (this.showTablaScroll && !this.puedoPaginar()) return;
-
-    if (this.loading) {
-      return;
-    }
-
-    this.dataSource = new MatTableDataSource(data);
-
-    if (this.showTablaScroll) {
-      this.pageIndex++;
-    }
-
-    this.loading = false;
-    this.adjustRellenoHeight();
-  }
+ 
 
   onScroll(event: any): void {
     if (!this.showTablaScroll) return;
@@ -419,39 +401,40 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   defaultVisualization(visualizacion: string) {
-    switch(visualizacion) {
-      case 'Paginacion': {
+    switch(visualizacion) { 
+      case 'Paginacion': { 
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
         this.showCards = false;
-        break;
-      }
-      case 'Scroll': {
+        break; 
+      } 
+      case 'Scroll': { 
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = true;
         this.showTablaPaginada = false;
         this.showCards = false;
-        break;
-      }
-      case 'Cards': {
+        break; 
+      } 
+      case 'Cards': { 
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = false;
         this.showCards = true;
-        break;
+        break; 
       }
     }
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
+    if(this.paginator) this.paginator.firstPage();
   }
 
   changeVisualization(visualizacion: string) {
     if (this.isButtonDisabled) {
       return;
     }
-
+  
     this.isButtonDisabled = true;
 
     const visualizationBody = {
@@ -460,36 +443,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       "visualization": visualizacion
     };
 
-    switch(visualizacion) {
-      case 'Paginacion': {
-        this.editVisualizationFetch(visualizationBody);
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = false;
-        this.showTablaPaginada = true;
-        this.showCards = false;
-        break;
-      }
-      case 'Scroll': {
-        this.editVisualizationFetch(visualizationBody);
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = true;
-        this.showTablaPaginada = false;
-        this.showCards = false;
-        break;
-      }
-      case 'Cards': {
-        this.editVisualizationFetch(visualizationBody);
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = false;
-        this.showTablaPaginada = false;
-        this.showCards = true;
-        break;
-      }
-    }
-
-    this.dataSource = new MatTableDataSource<any>([]);
-    this.pageIndex = 1;
-
+    this.defaultVisualization(visualizacion);
     setTimeout(() => {
       this.getTopicList();
       this.isButtonDisabled = false;
@@ -511,7 +465,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   adjustRellenoHeight() {
-
+    
     if (!this.scrollContainer || !this.tablaTopicos || !this.relleno) {
       return; // Evita errores si los elementos no están disponibles aún
     }
@@ -520,7 +474,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     const rellenoHeight = div1Height - tabla1Height + 1;
     this.relleno.nativeElement.style.height = rellenoHeight + 'px';
   }
-
+ 
 
 
 }
