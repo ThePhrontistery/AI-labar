@@ -12,10 +12,7 @@ import com.capgemini.ailabar.users.domain.models.UsersModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -141,19 +138,23 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         boolean finalVotePending = votePending;
         AtomicInteger votePendingCount = new AtomicInteger();
 
-        loadTopics.forEach(topicEntity -> {
+        loadTopics.stream()
+                .map(topicEntity -> {
                     TopicsModel topicsModel = new TopicsModel(topicEntity);
                     topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
                     topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
-                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                    if (topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
                         topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
                     }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
-                    if(!(finalVotePending && Boolean.FALSE.equals(topicsModel.getCanVote()))) {
-                        votePendingCount.getAndIncrement();
-                        allModels.add(topicsModel);
+                    if (finalVotePending && Boolean.FALSE.equals(topicsModel.getCanVote())) {
+                        return null;
                     }
-                });
+                    votePendingCount.getAndIncrement();
+                    return topicsModel;
+                })
+                .filter(Objects::nonNull)
+                .forEach(allModels::add);
 
         List<Map<String, Integer>> pagination = new ArrayList<>();
         Map<String, Integer> pageInfo = new HashMap<>();
