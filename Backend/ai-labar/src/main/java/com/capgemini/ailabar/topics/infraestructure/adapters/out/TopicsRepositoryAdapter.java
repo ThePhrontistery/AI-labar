@@ -157,6 +157,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public Integer countVotableTopics(String user, List<Integer> groupIds, Integer userId) {
+        return topicsRepository.countVotableTopics(user, groupIds, userId);
+    }
+
+    @Override
     public Integer getUserIdByUserName(String user) {
         return topicsRepository.getUserIdByUserName(user);
     }
@@ -209,6 +214,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public List<TopicsEntity> loadTopicsWithStatus(String user, List<Integer> groupIds, Integer status, Integer limit, Integer offset) {
         return topicsRepository.loadTopicsWithStatus(user, groupIds, status, limit, offset);
+    }
+
+    @Override
+    public List<TopicsEntity> loadVotableTopics(String user, List<Integer> groupIds, Integer userId, Integer limit, Integer offset) {
+        return topicsRepository.loadVotableTopics(user, groupIds, userId, limit, offset);
     }
 
     @Override
