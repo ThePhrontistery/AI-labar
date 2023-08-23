@@ -162,13 +162,13 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public Integer countVotableTopicsByAuthorWithStatus(String user, Integer userId) {
-        return topicsRepository.countVotableTopicsByAuthorWithStatus(user, userId);
+    public Integer countVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status) {
+        return topicsRepository.countVotableTopicsByAuthorWithStatus(user, userId, status);
     }
 
     @Override
-    public Integer countVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId) {
-        return topicsRepository.countVotableTopicsWithStatus(user, groupIds, userId);
+    public Integer countVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status) {
+        return topicsRepository.countVotableTopicsWithStatus(user, groupIds, userId, status);
     }
 
     @Override
@@ -232,13 +232,13 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public List<TopicsEntity> loadVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer limit, Integer offset) {
-        return topicsRepository.loadVotableTopicsByAuthorWithStatus(user, userId, limit, offset);
+    public List<TopicsEntity> loadVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status, Integer limit, Integer offset) {
+        return topicsRepository.loadVotableTopicsByAuthorWithStatus(user, userId, status, limit, offset);
     }
 
     @Override
-    public List<TopicsEntity> loadVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer limit, Integer offset) {
-        return topicsRepository.loadVotableTopicsWithStatus(user, groupIds, userId, limit, offset);
+    public List<TopicsEntity> loadVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status, Integer limit, Integer offset) {
+        return topicsRepository.loadVotableTopicsWithStatus(user, groupIds, userId, status, limit, offset);
     }
 
     @Override

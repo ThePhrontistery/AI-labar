@@ -7,6 +7,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  padding: 10px;
   gap: 10px;
 }
 
@@ -41,47 +42,54 @@
 }
 
 table {
-    width: 100%;
-  }
-
-  .mat-row:hover {
-    background-color: #eee;
-  }
-  .flex {
-    display: flex;
-  }
-
-  .flex-1 {
-    flex: 1;
-  }
-
-  th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type {
-    padding-right: 0px;
-  }
-
-  #div1 {
-    overflow-y: scroll;
-    height:500px; 
-    
+  width: 100%;
 }
+
+.mat-row:hover {
+  background-color: #eee;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type {
+  padding-right: 0px;
+}
+
+#div1 {
+  overflow-y: scroll;
+  height: 70vh;
+
+}
+
 #div2 {
   overflow-y: scroll;
-  height:500px; 
-  
+  height: 70vh;
+
 }
+
 .mat-card {
   //width: 100%;
   margin: 20px;
 }
 
-.mat-card>:last-child:not(.mat-card-footer), .mat-card-content>:last-child:not(.mat-card-footer) {
+.mat-card>:last-child:not(.mat-card-footer),
+.mat-card-content>:last-child:not(.mat-card-footer) {
   margin-bottom: 10px;
 }
 
 .mat-card-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; /* Cambio de space-between a flex-start */
+  justify-content: flex-start;
+  /* Cambio de space-between a flex-start */
 }
 
 .card-item {
@@ -104,6 +112,10 @@ table {
 
 .card-item:hover {
   background-color: #31b6ff08;
+}
+
+.closed {
+  background-color: #25aef917;
 }
 
 .card-item h3 {
@@ -137,6 +149,7 @@ table {
   align-self: flex-end;
   margin-top: 8px;
 }
+
 .mat-slide-toggle {
   padding: 5px;
 }

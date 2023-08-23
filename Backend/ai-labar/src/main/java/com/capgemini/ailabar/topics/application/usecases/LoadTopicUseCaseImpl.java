@@ -108,8 +108,8 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         if(mines) {
             if(status) {
                 if(votePending) {
-                    totalTopics = topicsRepositoryPort.countVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId);
-                    loadTopics = topicsRepositoryPort.loadVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, elementsPerPage, offset);
+                    totalTopics = topicsRepositoryPort.countVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, statusValue);
+                    loadTopics = topicsRepositoryPort.loadVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, statusValue, elementsPerPage, offset);
                 } else {
                     totalTopics = topicsRepositoryPort.countTopicsByAuthorWithStatus(usersModel.getUser(),statusValue);
                     loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
@@ -121,8 +121,8 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         } else {
             if(status) {
                 if(votePending) {
-                    totalTopics = topicsRepositoryPort.countVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId);
-                    loadTopics = topicsRepositoryPort.loadVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, elementsPerPage, offset);
+                    totalTopics = topicsRepositoryPort.countVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, statusValue);
+                    loadTopics = topicsRepositoryPort.loadVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, statusValue, elementsPerPage, offset);
                 } else {
                     totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
                     loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
