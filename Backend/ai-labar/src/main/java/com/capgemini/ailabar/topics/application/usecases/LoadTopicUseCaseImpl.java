@@ -50,19 +50,8 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
 
         List<TopicsEntity> loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
 
-        List<TopicsModel> allModels = new ArrayList<>();
-        loadTopics.stream()
-                .map(topicEntity -> {
-                    TopicsModel topicsModel = new TopicsModel(topicEntity);
-                    topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
-                    topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
-                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
-                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
-                    }
-                    topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
-                    return topicsModel;
-                })
-                .forEach(allModels::add);
+        List<TopicsModel> allModels = this.transformToTopicsModel(loadTopics, userId);
+
 
         int totalTopics = topicsRepositoryPort.countTotalTopics(usersModel.getUser(), groupIds);
 
@@ -92,7 +81,6 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
     private Map<String, Object> loadTopicsWithFilters(UsersModel usersModel, int userId, List<Integer> groupIds, int requestedPage, int elementsPerPage, int offset) {
         boolean mines = false;
         boolean status = false;
-        boolean votePending = false;
         int statusValue = 1;
 
         for (String filter : usersModel.getFilters()) {
@@ -107,9 +95,6 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                 case "closed":
                     status = true;
                     statusValue = 0;
-                    break;
-                case "votePending":
-                    votePending = true;
                     break;
             }
         }
@@ -129,42 +114,18 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                 totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
                 loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
             } else {
-                totalTopics = topicsRepositoryPort.countTotalTopics(usersModel.getUser(), groupIds);
-                loadTopics = topicsRepositoryPort.loadTopics(usersModel.getUser(), groupIds, elementsPerPage, offset);
+                totalTopics = topicsRepositoryPort.countVotableTopics(usersModel.getUser(), groupIds, userId);
+                loadTopics = topicsRepositoryPort.loadVotableTopics(usersModel.getUser(), groupIds, userId, elementsPerPage, offset);
             }
         }
 
-        List<TopicsModel> allModels = new ArrayList<>();
-        boolean finalVotePending = votePending;
-        AtomicInteger votePendingCount = new AtomicInteger();
-
-        loadTopics.stream()
-                .map(topicEntity -> {
-                    TopicsModel topicsModel = new TopicsModel(topicEntity);
-                    topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
-                    topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
-                    if (topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
-                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
-                    }
-                    topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
-                    if (finalVotePending && Boolean.FALSE.equals(topicsModel.getCanVote())) {
-                        return null;
-                    }
-                    votePendingCount.getAndIncrement();
-                    return topicsModel;
-                })
-                .filter(Objects::nonNull)
-                .forEach(allModels::add);
+        List<TopicsModel> allModels = this.transformToTopicsModel(loadTopics, userId);
 
         List<Map<String, Integer>> pagination = new ArrayList<>();
         Map<String, Integer> pageInfo = new HashMap<>();
         pageInfo.put("page", requestedPage);
         pageInfo.put("elements", allModels.size());
-        if(finalVotePending) {
-            pageInfo.put("total", votePendingCount.get());
-        } else {
-            pageInfo.put("total", totalTopics);
-        }
+        pageInfo.put("total", totalTopics);
         pagination.add(pageInfo);
 
         Map<String, Object> response = new HashMap<>();
@@ -172,5 +133,24 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         response.put("entity", allModels);
 
         return response;
+    }
+
+    private List<TopicsModel> transformToTopicsModel(List<TopicsEntity> loadTopics, Integer userId) {
+        List<TopicsModel> allModels = new ArrayList<>();
+
+        loadTopics.stream()
+                .map(topicEntity -> {
+                    TopicsModel topicsModel = new TopicsModel(topicEntity);
+                    topicsModel.setGroupName(topicsRepositoryPort.getGroupNameByGroupId(topicsModel.getGroupId()));
+                    topicsModel.setOptions(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsModel.getId())));
+                    if(topicsModel.getType().equals(String.valueOf(Constants.TopicType.AS))) {
+                        topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
+                    }
+                    topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
+                    return topicsModel;
+                })
+                .forEach(allModels::add);
+
+        return allModels;
     }
 }

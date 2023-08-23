@@ -59,6 +59,15 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     Integer countTotalTopics(@Param("user") String user,
                              @Param("groupIds") List<Integer> groupIds);
 
+    @Query(value = "SELECT COUNT(*) FROM topics t " +
+            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
+            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId)",
+            nativeQuery = true)
+    Integer countVotableTopics(@Param("user") String user,
+                                @Param("groupIds") List<Integer> groupIds,
+                                @Param("userId") Integer userId);
+
+
     @Modifying
     @Query(value = "INSERT INTO groups (group_name, admin) VALUES (:groupName, :admin)", nativeQuery = true)
     void createTemporalGroup(@Param("groupName") String groupName, @Param("admin") String admin);
@@ -164,6 +173,17 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
                                             @Param("status") Integer status,
                                             @Param("limit") Integer limit,
                                             @Param("offset") Integer offset);
+
+    @Query(value = "SELECT t.* FROM topics t " +
+            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
+            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) " +
+            "ORDER BY t.id DESC " +
+            "LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<TopicsEntity> loadVotableTopics(@Param("user") String user,
+                                         @Param("groupIds") List<Integer> groupIds,
+                                         @Param("userId") Integer userId,
+                                         @Param("limit") Integer limit,
+                                         @Param("offset") Integer offset);
 
     @Modifying
     @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)
