@@ -69,7 +69,6 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   pageSize: number = 10; // Cantidad de elementos por página
   totalItems: number | undefined;
 
-  @ViewChild(MatPaginator, { static: true })
   @ViewChild(MatPaginator )  paginator!: MatPaginator;
   loading = false;
   constructor(private topicListService: TopicsListService,
