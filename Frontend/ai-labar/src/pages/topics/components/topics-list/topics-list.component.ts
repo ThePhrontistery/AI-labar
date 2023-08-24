@@ -99,8 +99,10 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
     if (event.source.id === 'openedToggle' && event.checked) {
       this.closedFilter = false;
+      this.openedFilter = event.checked;
     } else if (event.source.id === 'closedToggle' && event.checked) {
       this.openedFilter = false;
+      this.closedFilter = event.checked;
     }
 
     if(event.source.id === 'votePendingFilter' && event.checked) {
@@ -470,7 +472,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     }
     const div1Height = this.scrollContainer.nativeElement.clientHeight;
     const tabla1Height = this.tablaTopicos.nativeElement.clientHeight;
-    const rellenoHeight = div1Height - tabla1Height + 1;
+    const rellenoHeight = div1Height - tabla1Height + 6;
     this.relleno.nativeElement.style.height = rellenoHeight + 'px';
   }
  
