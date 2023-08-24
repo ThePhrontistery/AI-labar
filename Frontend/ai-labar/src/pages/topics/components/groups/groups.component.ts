@@ -103,23 +103,29 @@ export class GroupsComponent implements OnInit {
       this.mostrarSelected = false;
     }
   }
-  saveGroup(){
+  saveGroup() {
     const url = `${environment.apiUrl}/groups/createGroup`;
-    const groupBody =  {
+    const groupBody = {
       "groupName": this.groupsForm.value.groupName,
       "members": this.selectedUsers,
       "user": this.cookie.get("user"),
       "token": this.cookie.get("token")
-    }
+    };
+  
     this.topicListService.post(groupBody, url).subscribe(
-        response => {
-          if (response){
-            console.log(response);
-          }
+      response => {
+        if (response) {
+          console.log(response);
         }
+        this.dialogRef.close();
+      },
+      error => {
+        console.error('Error creating group:', error);
+        alert('Error creating group: ' + error.error.message);
+      }
     );
-      this.dialogRef.close();
   }
+  
   clearSelection(){
     this.users.forEach(user => user.checked = false);
     this.groupsForm.reset();

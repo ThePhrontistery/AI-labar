@@ -132,11 +132,11 @@ export class TopicsCreateComponent implements OnInit {
   validacionValores(): boolean {
     const isValid = true;
     if(!this.componenteHijo.fechaCierre){
-      alert("La fecha de cierre es vacia.");
+      alert("La fecha de cierre está vacia.");
       return false;
     }
     if(!this.tituloEncuesta){
-      alert("El titulo es vacio.");
+      alert("El titulo está vacio.");
       return false;
     }
     return isValid;
