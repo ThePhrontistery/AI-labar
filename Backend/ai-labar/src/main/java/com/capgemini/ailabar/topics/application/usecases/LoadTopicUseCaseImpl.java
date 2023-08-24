@@ -12,17 +12,20 @@ import com.capgemini.ailabar.users.domain.models.UsersModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
     private final TopicsRepositoryPort topicsRepositoryPort;
+    private final EntityManager entityManager;
 
-    public LoadTopicUseCaseImpl(TopicsRepositoryPort topicsRepositoryPort) {
+    public LoadTopicUseCaseImpl(TopicsRepositoryPort topicsRepositoryPort, EntityManager entityManager) {
         this.topicsRepositoryPort = topicsRepositoryPort;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -78,6 +81,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> loadTopicsWithFilters(UsersModel usersModel, int userId, List<Integer> groupIds, int requestedPage, int elementsPerPage, int offset) {
         boolean mines = false;
         boolean status = false;
@@ -105,33 +109,56 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
 
         List<TopicsEntity> loadTopics;
         int totalTopics = 0;
-        if(mines) {
-            if(status) {
-                if(votePending) {
-                    totalTopics = topicsRepositoryPort.countVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, statusValue);
-                    loadTopics = topicsRepositoryPort.loadVotableTopicsByAuthorWithStatus(usersModel.getUser(), userId, statusValue, elementsPerPage, offset);
-                } else {
-                    totalTopics = topicsRepositoryPort.countTopicsByAuthorWithStatus(usersModel.getUser(),statusValue);
-                    loadTopics = topicsRepositoryPort.loadTopicsByAuthorWithStatus(usersModel.getUser(), statusValue, elementsPerPage, offset);
-                }
-            } else {
-                totalTopics = topicsRepositoryPort.countTopicsByAuthor(usersModel.getUser());
-                loadTopics = topicsRepositoryPort.loadTopicsByAuthor(usersModel.getUser(), elementsPerPage, offset);
-            }
+
+        String countQuery = "SELECT COUNT(t.id) FROM topics t ";
+        String loadQuery = "SELECT t.* FROM topics t ";
+
+        if (mines) {
+            countQuery += "WHERE t.author = :user ";
+            loadQuery += "WHERE t.author = :user ";
         } else {
-            if(status) {
-                if(votePending) {
-                    totalTopics = topicsRepositoryPort.countVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, statusValue);
-                    loadTopics = topicsRepositoryPort.loadVotableTopicsWithStatus(usersModel.getUser(), groupIds, userId, statusValue, elementsPerPage, offset);
-                } else {
-                    totalTopics = topicsRepositoryPort.countTopicsWithStatus(usersModel.getUser(), groupIds, statusValue);
-                    loadTopics = topicsRepositoryPort.loadTopicsWithStatus(usersModel.getUser(), groupIds, statusValue, elementsPerPage, offset);
-                }
-            } else {
-                totalTopics = topicsRepositoryPort.countVotableTopics(usersModel.getUser(), groupIds, userId);
-                loadTopics = topicsRepositoryPort.loadVotableTopics(usersModel.getUser(), groupIds, userId, elementsPerPage, offset);
-            }
+            countQuery += "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) ";
+            loadQuery += "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) ";
         }
+
+        if (status) {
+            countQuery += "AND t.status = :status ";
+            loadQuery += "AND t.status = :status ";
+        }
+
+        if (votePending) {
+            countQuery += "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) ";
+            loadQuery += "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) ";
+        }
+
+        loadQuery += "ORDER BY t.id DESC " +
+                "LIMIT :limit OFFSET :offset";
+
+        Query nativeCountQuery = entityManager.createNativeQuery(countQuery)
+                .setParameter("user", usersModel.getUser());
+
+        Query nativeLoadQuery = entityManager.createNativeQuery(loadQuery, TopicsEntity.class)
+                .setParameter("user", usersModel.getUser())
+                .setParameter("limit", elementsPerPage)
+                .setParameter("offset", offset);
+
+        if(!mines) {
+            nativeCountQuery.setParameter("groupIds", groupIds);
+            nativeLoadQuery.setParameter("groupIds", groupIds);
+        }
+
+        if(status) {
+            nativeCountQuery.setParameter("status", statusValue);
+            nativeLoadQuery.setParameter("status", statusValue);
+        }
+
+        if(votePending) {
+            nativeCountQuery.setParameter("userId", userId);
+            nativeLoadQuery.setParameter("userId", userId);
+        }
+
+        totalTopics = ((Number) nativeCountQuery.getSingleResult()).intValue();
+        loadTopics = nativeLoadQuery.getResultList();
 
         List<TopicsModel> allModels = this.transformToTopicsModel(loadTopics, userId);
 

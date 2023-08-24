@@ -57,21 +57,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public Integer countTopicsByAuthor(String user) {
-        return topicsRepository.countTopicsByAuthor(user);
-    }
-
-    @Override
-    public Integer countTopicsByAuthorWithStatus(String user, Integer status) {
-        return topicsRepository.countTopicsByAuthorWithStatus(user, status);
-    }
-
-    @Override
-    public Integer countTopicsWithStatus(String user, List<Integer> groupIds, Integer status) {
-        return topicsRepository.countTopicsWithStatus(user, groupIds, status);
-    }
-
-    @Override
     public void createTemporalGroup(String groupName, String admin) {
         topicsRepository.createTemporalGroup(groupName, admin);
     }
@@ -157,21 +142,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public Integer countVotableTopics(String user, List<Integer> groupIds, Integer userId) {
-        return topicsRepository.countVotableTopics(user, groupIds, userId);
-    }
-
-    @Override
-    public Integer countVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status) {
-        return topicsRepository.countVotableTopicsByAuthorWithStatus(user, userId, status);
-    }
-
-    @Override
-    public Integer countVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status) {
-        return topicsRepository.countVotableTopicsWithStatus(user, groupIds, userId, status);
-    }
-
-    @Override
     public Integer getUserIdByUserName(String user) {
         return topicsRepository.getUserIdByUserName(user);
     }
@@ -209,36 +179,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset) {
         return topicsRepository.loadTopics(user, groupIds, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadTopicsByAuthor(String user, Integer limit, Integer offset) {
-        return topicsRepository.loadTopicsByAuthor(user, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadTopicsByAuthorWithStatus(String user, Integer status, Integer limit, Integer offset) {
-        return topicsRepository.loadTopicsByAuthorWithStatus(user, status, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadTopicsWithStatus(String user, List<Integer> groupIds, Integer status, Integer limit, Integer offset) {
-        return topicsRepository.loadTopicsWithStatus(user, groupIds, status, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadVotableTopics(String user, List<Integer> groupIds, Integer userId, Integer limit, Integer offset) {
-        return topicsRepository.loadVotableTopics(user, groupIds, userId, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status, Integer limit, Integer offset) {
-        return topicsRepository.loadVotableTopicsByAuthorWithStatus(user, userId, status, limit, offset);
-    }
-
-    @Override
-    public List<TopicsEntity> loadVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status, Integer limit, Integer offset) {
-        return topicsRepository.loadVotableTopicsWithStatus(user, groupIds, userId, status, limit, offset);
     }
 
     @Override

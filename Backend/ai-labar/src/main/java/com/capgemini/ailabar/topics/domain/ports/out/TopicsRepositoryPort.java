@@ -22,19 +22,7 @@ public interface TopicsRepositoryPort {
 
     void closeTopic(TopicsEntity topicsEntity);
 
-    Integer countTopicsByAuthor(String user);
-
-    Integer countTopicsByAuthorWithStatus(String user, Integer status);
-
-    Integer countTopicsWithStatus(String user, List<Integer> groupIds, Integer status);
-
     Integer countTotalTopics(String user, List<Integer> groupIds);
-
-    Integer countVotableTopics(String user, List<Integer> groupIds, Integer userId);
-
-    Integer countVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status);
-
-    Integer countVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status);
 
     void createTemporalGroup(String groupName, String admin);
 
@@ -83,18 +71,6 @@ public interface TopicsRepositoryPort {
     void insertOption(Integer topicId, String image, String option, Integer votes);
 
     List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadTopicsByAuthor(String user, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadTopicsByAuthorWithStatus(String user, Integer status, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadTopicsWithStatus(String user, List<Integer> groupIds, Integer status, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadVotableTopics(String user, List<Integer> groupIds, Integer userId, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadVotableTopicsByAuthorWithStatus(String user, Integer userId, Integer status, Integer limit, Integer offset);
-
-    List<TopicsEntity> loadVotableTopicsWithStatus(String user, List<Integer> groupIds, Integer userId, Integer status, Integer limit, Integer offset);
 
     void reOpenTopic(TopicsEntity topicsEntity);
 

@@ -34,57 +34,10 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     boolean checkMember(@Param("member") String member);
 
     @Query(value = "SELECT COUNT(*) FROM topics " +
-            "WHERE author = :user",
-            nativeQuery = true)
-    Integer countTopicsByAuthor(@Param("user") String user);
-
-    @Query(value = "SELECT COUNT(*) FROM topics " +
-            "WHERE author = :user " +
-            "AND status = :status",
-            nativeQuery = true)
-    Integer countTopicsByAuthorWithStatus(@Param("user") String user,
-                                          @Param("status") Integer status);
-
-    @Query(value = "SELECT COUNT(*) FROM topics " +
-            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
-            "AND status = :status",
-            nativeQuery = true)
-    Integer countTopicsWithStatus(@Param("user") String user,
-                                  @Param("groupIds") List<Integer> groupIds,
-                                  @Param("status") Integer status);
-
-    @Query(value = "SELECT COUNT(*) FROM topics " +
             "WHERE (author = :user OR (group_id IN :groupIds AND author != :user))",
             nativeQuery = true)
     Integer countTotalTopics(@Param("user") String user,
                              @Param("groupIds") List<Integer> groupIds);
-
-    @Query(value = "SELECT COUNT(*) FROM topics t " +
-            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId)",
-            nativeQuery = true)
-    Integer countVotableTopics(@Param("user") String user,
-                               @Param("groupIds") List<Integer> groupIds,
-                               @Param("userId") Integer userId);
-
-    @Query(value = "SELECT COUNT(*) FROM topics t " +
-            "WHERE t.author = :user " +
-            "AND t.status = :status " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId)",
-            nativeQuery = true)
-    Integer countVotableTopicsByAuthorWithStatus(@Param("user") String user,
-                                                 @Param("userId") Integer userId,
-                                                 @Param("status") Integer status);
-
-    @Query(value = "SELECT COUNT(*) FROM topics t " +
-            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
-            "AND t.status = :status " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId)",
-            nativeQuery = true)
-    Integer countVotableTopicsWithStatus(@Param("user") String user,
-                                         @Param("groupIds") List<Integer> groupIds,
-                                         @Param("userId") Integer userId,
-                                         @Param("status") Integer status);
 
     @Modifying
     @Query(value = "INSERT INTO groups (group_name, admin) VALUES (:groupName, :admin)", nativeQuery = true)
@@ -162,71 +115,6 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
                                   @Param("groupIds") List<Integer> groupIds,
                                   @Param("limit") Integer limit,
                                   @Param("offset") Integer offset);
-
-    @Query(value = "SELECT * FROM topics " +
-            "WHERE author = :user " +
-            "ORDER BY id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadTopicsByAuthor(@Param("user") String user,
-                                          @Param("limit") Integer limit,
-                                          @Param("offset") Integer offset);
-
-    @Query(value = "SELECT * FROM topics " +
-            "WHERE author = :user " +
-            "AND status = :status " +
-            "ORDER BY id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadTopicsByAuthorWithStatus(@Param("user") String user,
-                                                    @Param("status") Integer status,
-                                                    @Param("limit") Integer limit,
-                                                    @Param("offset") Integer offset);
-
-    @Query(value = "SELECT * FROM topics " +
-            "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
-            "AND status = :status " +
-            "ORDER BY id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadTopicsWithStatus(@Param("user") String user,
-                                            @Param("groupIds") List<Integer> groupIds,
-                                            @Param("status") Integer status,
-                                            @Param("limit") Integer limit,
-                                            @Param("offset") Integer offset);
-
-    @Query(value = "SELECT t.* FROM topics t " +
-            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) " +
-            "ORDER BY t.id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadVotableTopics(@Param("user") String user,
-                                         @Param("groupIds") List<Integer> groupIds,
-                                         @Param("userId") Integer userId,
-                                         @Param("limit") Integer limit,
-                                         @Param("offset") Integer offset);
-
-    @Query(value = "SELECT t.* FROM topics t " +
-            "WHERE t.author = :user " +
-            "AND t.status = :status " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) " +
-            "ORDER BY t.id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadVotableTopicsByAuthorWithStatus(@Param("user") String user,
-                                                           @Param("userId") Integer userId,
-                                                           @Param("status") Integer status,
-                                                           @Param("limit") Integer limit,
-                                                           @Param("offset") Integer offset);
-
-    @Query(value = "SELECT t.* FROM topics t " +
-            "WHERE (t.author = :user OR (t.group_id IN :groupIds AND t.author != :user)) " +
-            "AND t.status = :status " +
-            "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) " +
-            "ORDER BY t.id DESC " +
-            "LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<TopicsEntity> loadVotableTopicsWithStatus(@Param("user") String user,
-                                                   @Param("groupIds") List<Integer> groupIds,
-                                                   @Param("userId") Integer userId,
-                                                   @Param("status") Integer status,
-                                                   @Param("limit") Integer limit,
-                                                   @Param("offset") Integer offset);
 
     @Modifying
     @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)
