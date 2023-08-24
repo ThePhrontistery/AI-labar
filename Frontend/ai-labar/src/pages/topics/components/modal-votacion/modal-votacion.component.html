@@ -6,7 +6,7 @@
         <ng-container *ngIf="isEncuestaOpinionMultiple || isEncuestaOpinionSimple">
           <label *ngFor="let option of valoresVotacion">
             <input
-              type="checkbox" 
+              [type]="isEncuestaOpinionSimple ? 'radio' : 'checkbox'"
               [checked]="isEncuestaOpinionMultiple ? selectedOptions.includes(option) : selectedOption === option"
               (change)="isEncuestaOpinionMultiple ? selectOption(option, $event) : selectOpinion(option)"
             />
