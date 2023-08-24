@@ -61,6 +61,43 @@ class TopicsControllerTest {
     }
 
     @Test
+    void testLoadTopicsWithFiltersSuccess() {
+        UsersModel usersModel = new UsersModel();
+        usersModel.setUser("username");
+        usersModel.setToken("token");
+        usersModel.setElements(10);
+
+        List<String> filters = new ArrayList<>();
+        filters.add("mines");
+        filters.add("status");
+        filters.add("votePending");
+
+        usersModel.setFilters(filters);
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("pagination", Collections.singletonList(new HashMap<String, Integer>() {{
+            put("page", 1);
+            put("elements", 1);
+            put("total", 1);
+        }}));
+        responseMap.put("entity", Collections.singletonList(new TopicsModel()));
+
+        when(topicsService.loadTopics(usersModel)).thenReturn(responseMap);
+
+        String expectedMessage = "OK";
+
+        ResponseEntity<SpecialResponse> actualResponse = topicsController.loadTopics(usersModel);
+
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        SpecialResponse specialResponse = actualResponse.getBody();
+        assertNotNull(specialResponse);
+        assertEquals(expectedMessage, specialResponse.getMessage());
+        assertEquals(responseMap, specialResponse.getEntity());
+
+        verify(topicsService, times(1)).loadTopics(usersModel);
+    }
+
+    @Test
     void testCreateTopicSuccess() {
         TopicsModel topicsModel = new TopicsModel();
         topicsModel.setUser("User");
