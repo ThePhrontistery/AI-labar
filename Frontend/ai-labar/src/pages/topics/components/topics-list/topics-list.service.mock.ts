@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 export class TopicsListServiceMock {
     private topics: any[] = [
@@ -42,7 +42,12 @@ export class TopicsListServiceMock {
           },
     ];
   loadTopics_post(json: any): Observable<any> {
-    return of({ entity: this.topics, message: 'OK' });
+    const pagination=[      {
+        "total": 6,
+        "elements": 2,
+        "page": 1  }
+    ];
+    return of({ entity: this.topics,pagination:pagination, message: 'OK' });
   }
   reopenTopic(json: any): Observable<any> {
     const topicId = json.id;
@@ -72,7 +77,7 @@ export class TopicsListServiceMock {
     if (topicIndex !== -1) {
       this.topics.splice(topicIndex, 1);
     }
-
-    return of({ message: 'The topic has been deleted' });
+    return throwError('Error loading topics');
+    //return of({ message: 'The topic has been deleted' });
   }
 }

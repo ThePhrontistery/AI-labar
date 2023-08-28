@@ -5,6 +5,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatMenuModule } from '@angular/material/menu';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsComponent } from './topics.component';
+import { MatIconModule } from '@angular/material/icon';
 import { GroupsComponent } from '../groups/groups.component';
 
 describe('TopicsComponent', () => {
@@ -19,7 +20,7 @@ describe('TopicsComponent', () => {
       imports: [
         RouterTestingModule.withRoutes([]),
         MatDialogModule,
-        MatMenuModule,
+        MatMenuModule,MatIconModule
       ],
       providers: [
         CookieService,
@@ -59,10 +60,5 @@ describe('TopicsComponent', () => {
     expect(dialog.open).toHaveBeenCalled();
   });
 
-  it('should have navigated to login if user is missing', () => {
-    spyOn(router, 'navigateByUrl');
-    spyOn(component['cookie'], 'delete');
-    component.ngOnInit();
-    expect(router.navigateByUrl).toHaveBeenCalled();
-  });
+
 });

@@ -31,7 +31,7 @@ describe('AnyadirGruposTopicComponent', () => {
       providers: [FormBuilder, // Add FormBuilder to providers
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
-        { provide: MatDialogRef, useValue: dialogRefSpy }, // Usar el dialogRefSpy aquí
+        { provide: MatDialogRef, useValue: dialogRefSpy }, // Usar el dialogRefSpy aqui
         { provide: MAT_DIALOG_DATA, useValue: {} }
       ],
       imports: [MatDialogModule,FormsModule
@@ -73,14 +73,17 @@ describe('AnyadirGruposTopicComponent', () => {
   });
 
 
-   it('should return data on saveSelection call', () => {
-     const expectedData = {
-       grupoSeleccionado: groups[0],
-       usuariosSeleccionados: users
-     };
-     component.selectedGroup = groups[0];
-     component.users = users;
-     const actualData = component.saveSelection();
-    // expect(actualData).toEqual(expectedData);
-   });
+  it('should call dialogRef.close with the correct data', () => {
+    component.selectedGroup = groups[0];
+    component.users = users;
+    
+    component.saveSelection();
+    
+    const expectedData = {
+      grupoSeleccionado: groups[0],
+      usuariosSeleccionados: users
+    };
+    
+    expect(component.dialogRef.close).toHaveBeenCalledWith(expectedData);
+  });
 });

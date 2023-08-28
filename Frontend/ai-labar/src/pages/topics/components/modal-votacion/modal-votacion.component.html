@@ -1,149 +1,66 @@
 <mat-dialog-actions>
-  <div *ngIf="isOpen && isEncuestaOpinionMultiple" class="modal">
+  <div *ngIf="isOpen && (isEncuestaOpinionMultiple || isEncuestaOpinionSimple || isEnquestaValoracion || isEnquestaVotacion || isEnquestaImagenTextoSimple || isEnquestaImagenTextoMultiple)" class="modal">
     <div class="modal-content">
       <h2>{{title}}</h2>
       <div class="padding-content">
-      <label *ngFor="let option of valoresVotacion">
-        <input
-          type="checkbox"
-          [checked]="selectedOptions.includes(option)"
-          (change)="selectOption(option, $event)"
-        />
-        {{ option }}
-      </label>
-    </div>
-    <div class="wizard-navigation">
-      <div class="button right-button">
-        <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-        <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
+        <ng-container *ngIf="isEncuestaOpinionMultiple || isEncuestaOpinionSimple">
+          <label *ngFor="let option of valoresVotacion">
+            <input
+              [type]="isEncuestaOpinionSimple ? 'radio' : 'checkbox'"
+              [checked]="isEncuestaOpinionMultiple ? selectedOptions.includes(option) : selectedOption === option"
+              (change)="isEncuestaOpinionMultiple ? selectOption(option, $event) : selectOpinion(option)"
+            />
+            {{ option }}
+          </label>
+        </ng-container>
+        <ng-container *ngIf="isEnquestaValoracion">
+          <div *ngFor="let emoji of emojisVotacion" class="emoji-option">
+            <input
+              type="radio"
+              [id]="emoji.id"
+              [value]="emoji"
+              [checked]="selectedEmoji === emoji"
+              (change)="selectEmoji(emoji)"
+            />
+            <label [for]="emoji.id">{{ emoji.icon }}</label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isEnquestaVotacion">
+          <div *ngFor="let item of itemsVotacion" class="item-option">
+            <input
+              type="radio"
+              [id]="item.id"
+              [value]="item"
+              [checked]="selectedItem === item"
+              (change)="selectItem(item)"
+            />
+            <label [for]="item.id">
+              <img [src]="item.imageSrc" alt="Imagen" />
+              <span class="item-text">{{ item.text }}</span>
+            </label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isEnquestaImagenTextoSimple || isEnquestaImagenTextoMultiple">
+          <div *ngFor="let item of valoresVotacionImagenTexto" class="item-option">
+            <input
+              [type]="isEnquestaImagenTextoSimple ? 'radio' : 'checkbox'"
+              [id]="item.id"
+              [value]="item"
+              [checked]="isEnquestaImagenTextoSimple ? selectedImagenTexto === item : selectedOptions.includes(item)"
+              (change)="isEnquestaImagenTextoSimple ? selectImagenTexto(item) : selectImagenesTexto(item, $event)"
+            />
+            <label [for]="item.id">
+              <img [src]="item.imageSrc" alt="Imagen" />
+              <span class="item-text">{{ item.text }}</span>
+            </label>
+          </div>
+        </ng-container>
       </div>
-    </div>
-    </div>
-  </div>
-
-  <div *ngIf="isOpen && isEncuestaOpinionSimple" class="modal">
-    <div class="modal-content">
-      <h2>{{title}}</h2>
-      <div class="padding-content">
-      <label *ngFor="let option of valoresVotacion">
-        <input
-          type="checkbox"
-          [checked]="selectedOption === option"
-          (change)="selectOpinion(option)"
-        />
-        {{ option }}
-      </label>
-    </div>
-    <div class="wizard-navigation">
-      <div class="button right-button">
-        <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-        <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <div *ngIf="isOpen && isEnquestaValoracion" class="modal">
-    <div class="modal-content">
-      <h2>{{title}}</h2>
-      <div class="padding-content">
-      <div *ngFor="let emoji of emojisVotacion" class="emoji-option">
-        <input
-          type="radio"
-          [id]="emoji.id"
-          [value]="emoji"
-          [checked]="selectedEmoji === emoji"
-          (change)="selectEmoji(emoji)"
-        />
-        <label [for]="emoji.id">{{ emoji.icon }}</label>
-      </div>
-    </div>
-    <div class="wizard-navigation">
-      <div class="button right-button">
-        <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-        <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <div *ngIf="isOpen && isEnquestaVotacion" class="modal">
-    <div class="modal-content">
-      <h2>{{title}}</h2>
-      <div class="padding-content">
-      <div *ngFor="let item of itemsVotacion" class="item-option">
-        <input
-          type="radio"
-          [id]="item.id"
-          [value]="item"
-          [checked]="selectedItem === item"
-          (change)="selectItem(item)"
-        />
-        <label [for]="item.id">
-          <img [src]="item.imageSrc" alt="Imagen" />
-          <span class="item-text">{{ item.text }}</span>
-        </label>
-      </div>
-    </div>
-    <div class="wizard-navigation">
-      <div class="button right-button">
-        <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-        <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
+      <div class="wizard-navigation">
+        <div class="button right-button">
+          <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
+          <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-  <div *ngIf="isOpen && isEnquestaImagenTextoSimple" class="modal">
-    <div class="modal-content">
-      <h2>{{title}}</h2>
-      <div class="padding-content">
-      <div *ngFor="let item of valoresVotacionImagenTexto" class="item-option">
-        <input
-          type="radio"
-          [id]="item.id"
-          [value]="item"
-          [checked]="selectedImagenTexto === item"
-          (change)="selectImagenTexto(item)"
-        />
-        <label [for]="item.id">
-          <img [src]="item.imageSrc" alt="Imagen" />
-          <span class="item-text">{{ item.text }}</span>
-        </label>
-      </div>
-    </div>
-    <div class="wizard-navigation">
-      <div class="button right-button">
-        <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-        <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="isOpen && isEnquestaImagenTextoMultiple" class="modal">
-  <div class="modal-content">
-    <h2>{{title}}</h2>
-    <div class="padding-content">
-    <div *ngFor="let item of valoresVotacionImagenTexto" class="item-option">
-      <input
-        type="checkbox"
-        [id]="item.id"
-        [value]="item"
-        [checked]="selectedOptions.includes(item)"
-        (change)="selectImagenesTexto(item, $event)"
-      />
-      <label [for]="item.id">
-        <img [src]="item.imageSrc" alt="Imagen" />
-        <span class="item-text">{{ item.text }}</span>
-      </label>
-    </div>
-  </div>
-  <div class="wizard-navigation">
-    <div class="button right-button">
-      <button mat-button color="accent" (click)="closeModal()">Cancelar</button>
-      <button class="login-button ml16" mat-raised-button color="white" (click)="sendSelection()">Guardar</button>
-    </div>
-  </div>
-</div>
-</div>

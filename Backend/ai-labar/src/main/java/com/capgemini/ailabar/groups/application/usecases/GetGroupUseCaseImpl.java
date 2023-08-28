@@ -1,6 +1,5 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.exceptions.GetGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.GetGroupUseCase;
@@ -10,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)

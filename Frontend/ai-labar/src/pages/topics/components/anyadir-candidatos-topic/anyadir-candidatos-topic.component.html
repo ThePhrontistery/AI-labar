@@ -43,7 +43,7 @@
       <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher" name="searcher">
     </mat-form-field>
     <div *ngIf="mostrarUsuarios">
-    <p>{{ filteredUsers.length }} usuarios encontrados</p>
+    <p>{{ users.length }} usuarios encontrados</p>
     <div class="selectionPanel" #checkboxContainer>
       <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
         {{ user.name }}
@@ -53,6 +53,7 @@
     <p *ngIf="selectedUsers.length > 8" class="error">No se pueden seleccionar mas de 8 candidatos</p>
   </div>
   <div [class.oculto]="!mostrarSelected">
+    <p>Usuarios seleccionados: {{selectedUsers.length}}</p>
     <mat-form-field appearance="fill">
       <textarea formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3" name="currentSelection"></textarea>
     </mat-form-field>

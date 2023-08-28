@@ -41,6 +41,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ConfirmarEliminacionTopicComponent } from './components/confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
+
 @NgModule({
   declarations: [
     TopicsComponent,
@@ -81,7 +87,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatRadioModule,
     MatMenuModule,
     FlexLayoutModule,
-    MatPaginatorModule
+    MatPaginatorModule,ScrollingModule
+    ,MatCardModule,MatTooltipModule,MatSlideToggleModule
   ],
   providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
 })

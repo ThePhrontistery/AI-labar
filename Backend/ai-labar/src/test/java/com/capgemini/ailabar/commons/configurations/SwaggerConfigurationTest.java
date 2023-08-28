@@ -10,7 +10,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class SwaggerConfigTest {
+class SwaggerConfigurationTest {
     @Test
     void testSwaggerConfig() {
         SwaggerConfiguration swaggerConfig = new SwaggerConfiguration();

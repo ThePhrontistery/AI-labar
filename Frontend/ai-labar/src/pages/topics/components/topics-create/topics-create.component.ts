@@ -130,10 +130,13 @@ export class TopicsCreateComponent implements OnInit {
   }
 
   validacionValores(): boolean {
-    const isValid = false;
-    if(this.componenteHijo.fechaCierre){
-      return true;
-    }else {
+    const isValid = true;
+    if(!this.componenteHijo.fechaCierre){
+      alert("La fecha de cierre está vacia.");
+      return false;
+    }
+    if(!this.tituloEncuesta){
+      alert("El titulo está vacio.");
       return false;
     }
     return isValid;
@@ -159,7 +162,9 @@ export class TopicsCreateComponent implements OnInit {
             }
           },
           error=> {
-            alert("Se produjo un error al crear el topic, compruebe que todo los datos estan rellenos incluido los participantes.")
+            let textError=error.error.message;
+            if(error.error.message===undefined) textError=error.error.error;
+            alert("Se produjo un error al crear el topic: " + textError);
           }
       );
     }

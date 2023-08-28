@@ -11,12 +11,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementRef } from '@angular/core'; // Importar ElementRef
 import { environment } from 'src/environments/environment';
 import { of } from 'rxjs';
+import { IUser } from '../interfaces/emoji.model';
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
   let fixture: ComponentFixture<GroupsComponent>;
   let mockDialogRef: MatDialogRef<GroupsComponent>;
   let mockTopicsListService: jasmine.SpyObj<TopicsListService>;
+  const mockUser: IUser = { name: 'TestUser', checked: false, hidden: false };
 
   beforeEach(() => {
     mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
@@ -33,14 +35,14 @@ describe('GroupsComponent', () => {
         { provide: TopicsListService, useValue: mockTopicsListService },
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {} },        
-        { provide: ElementRef, useValue: {} } // Agregar esta línea
+        { provide: ElementRef, useValue: {} } // Agregar esta linea
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GroupsComponent);
     component = fixture.componentInstance;
 
-    // Espía para acceder a la propiedad privada 'cookie'
+    // Espia para acceder a la propiedad privada 'cookie'
     const cookieService = TestBed.inject(CookieService);
     // Configurar datos de usuario y cookie para las pruebas
     component.setCookie();
@@ -51,33 +53,30 @@ describe('GroupsComponent', () => {
   });
 
   it('should load users and initialize form', () => {
-    const mockResponse = { body: { entity: ['user1', 'user2'] } };
+    const mockResponse = { body: { entity: [mockUser.name] } };
     mockTopicsListService.postResponse.and.returnValue(of(mockResponse));
 
-    fixture.detectChanges();
+    component.getUsers();
 
-    expect(component.usersNames).toEqual(['user1', 'user2']);
-    expect(component.users.length).toBe(2);
-    expect(component.groupsForm.controls['user1']).toBeTruthy();
-    expect(component.groupsForm.controls['user2']).toBeTruthy();
+    expect(mockTopicsListService.postResponse).toHaveBeenCalled();
+    expect(component.usersNames).toEqual([mockUser.name]);
+    expect(component.users.length).toBe(1);
+    expect(component.groupsForm.controls[mockUser.name]).toBeDefined();
   });
 
-  it('should filter users', () => {
-    component.users = [
-      { name: 'user1', checked: false, hidden: false },
-      { name: 'user2', checked: false, hidden: false },
-      { name: 'user3', checked: false, hidden: false }
-    ];
+  it('should filter and display users', () => {
+    const mockResponse = { body: { entity: [mockUser.name] } };
+    mockTopicsListService.postResponse.and.returnValue(of(mockResponse));
 
-    //component.groupsForm.setValue({ searcher: 'user1' });
-    component.groupsForm.controls['searcher'].setValue('user1'); // Establecer un valor para el control 'searcher'
-  
+    component.groupsForm.get('searcher')!.setValue('test'); // Utilizar get() para acceder a un control
+
     component.filterUsers();
 
-    expect(component.filteredUsers.length).toBe(1);
-    expect(component.filteredUsers[0].name).toBe('user1');
-    expect(component.users[1].hidden).toBe(true);
-    expect(component.users[2].hidden).toBe(true);
+    expect(component.filtering).toBe(true);
+    expect(component.matcher).toBe('test');
+    expect(mockTopicsListService.postResponse).toHaveBeenCalled();
+    expect(component.mostrarUsuarios).toBe(true);
+    expect(component.usersNames).toEqual([mockUser.name]);
   });
 
   it('should select and deselect users', () => {
@@ -115,6 +114,6 @@ describe('GroupsComponent', () => {
   });
   
 
-  // Agrega más pruebas según sea necesario
+  // Agrega mas pruebas segun sea necesario
 
 });

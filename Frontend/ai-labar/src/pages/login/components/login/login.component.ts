@@ -54,10 +54,11 @@ export class LoginComponent implements OnInit {
      this.username = this.loginForm.value.user;
      this.mySubscription.push(this.loginService.login(body).subscribe(
       response => {
-        if (response && response.body.entity)
+        if (response && response.body.entity && response.body.entity.length>1)
           { 
             this.cookie.set('user', this.username);
-            this.cookie.set('token', response.body.entity);
+            this.cookie.set('token', response.body.entity[0]);
+            this.cookie.set('visualization', response.body.entity[1]);
             this.router.navigate(['/topics/topics-list']);
             }}))
   }
@@ -74,10 +75,15 @@ export class LoginComponent implements OnInit {
       if(this.base64String) data['photo'] = this.base64String !== '' ? this.base64String : '';
       delete data.imageFunctional;
       delete data.imageVisible;
-      this.mySubscription.push(this.loginService.createUser(data).subscribe(response => {
-        this.showRegistroFom = false;
-    }));
-  }
+      this.mySubscription.push(this.loginService.createUser(data).subscribe(
+        response => {
+          this.showRegistroFom = false;
+        },
+        error => {
+          alert('Error al crear al usuario: ' + error.error.message);
+        }
+      ));
+    }
   }
   upload(ev: Event){
     this.f_input.nativeElement.click(ev);

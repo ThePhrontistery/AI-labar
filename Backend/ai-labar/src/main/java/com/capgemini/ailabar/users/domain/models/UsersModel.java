@@ -14,10 +14,13 @@ public class UsersModel {
     private String gender;
     private String photo;
     private String token;
+    private String visualization;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer page;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer elements;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<String> filters;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String matcher;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -27,4 +30,3 @@ public class UsersModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> usersList;
 }
-

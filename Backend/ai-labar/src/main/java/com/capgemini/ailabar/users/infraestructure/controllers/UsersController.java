@@ -28,9 +28,9 @@ public class UsersController implements SpecialResponseInterface {
     @PostMapping("/login")
     public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
-        String token = usersService.login(usersModel);
+        List<String> loginData = usersService.login(usersModel);
         responseJson.put("message", "Login successful");
-        return new ResponseEntity<>(specialResponse(token, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
 
     @PostMapping("/createUser")
@@ -49,6 +49,14 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
+    @PutMapping("/editVisualization")
+    public ResponseEntity<SpecialResponse> editVisualization(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.editVisualization(usersModel);
+        responseJson.put("message", "Visualization edited successfully");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
     @DeleteMapping("/deleteUser")
     public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -64,7 +72,6 @@ public class UsersController implements SpecialResponseInterface {
         responseJson.put("message", userMatchesList.size() + " matches");
         return new ResponseEntity<>(specialResponse(userMatchesList, responseJson), HttpStatus.OK);
     }
-
     @PostMapping("/getAllUsers")
     public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -101,6 +108,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerEditUserException (EditUserException editUserException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", editUserException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EditVisualizationException.class)
+    ResponseEntity<SpecialResponse> handlerEditVisualizationException (EditVisualizationException editVisualizationException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", editVisualizationException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
