@@ -445,6 +445,8 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     };
 
     this.defaultVisualization(visualizacion);
+    this.editVisualizationFetch(visualizationBody);
+
     setTimeout(() => {
       this.getTopicList();
       this.isButtonDisabled = false;
