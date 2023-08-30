@@ -1,34 +1,72 @@
 <h1>CREAR GRUPO</h1>
 <form class="login-form" [formGroup]="groupsForm">
-    <mat-form-field appearance="fill">
-        <input matInput placeholder="Nombre del grupo" type="text"  formControlName="groupName">
-      </mat-form-field>
-<mat-form-field appearance="fill">
-    <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher">
-  </mat-form-field>
-  <div *ngIf="mostrarUsuarios">
-  <p>{{ users.length }} usuarios encontrados</p>
-  <div class="selectionPanel" #checkboxContainer>
-    <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
-      {{ user.name }}
-    </mat-checkbox>
-  </div>
-</div>
-<div [class.oculto]="!mostrarSelected">
-  <p>Usuarios seleccionados: {{selectedUsers.length}}</p>
   <mat-form-field appearance="fill">
-    <textarea  formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3"></textarea>
+    <input
+      matInput
+      placeholder="Nombre del grupo"
+      type="text"
+      formControlName="groupName"
+    />
   </mat-form-field>
-</div>
+  <mat-form-field appearance="fill">
+    <input
+      matInput
+      placeholder="Buscar usuarios"
+      type="text"
+      (input)="filterUsers()"
+      formControlName="searcher"
+    />
+  </mat-form-field>
+  <div *ngIf="showUsers">
+    <p>{{ users.length }} usuarios encontrados</p>
+    <div class="selectionPanel" #checkboxContainer>
+      <mat-checkbox
+        color="primary"
+        *ngFor="let user of users"
+        [formControlName]="user.name"
+        [class]="user.hidden ? 'hidden' : ''"
+        [checked]="user.checked"
+      >
+        {{ user.name }}
+      </mat-checkbox>
+    </div>
+  </div>
+  <div [class.hidden]="!showSelected">
+    <p>Usuarios seleccionados: {{ selectedUsers.length }}</p>
+    <mat-form-field appearance="fill">
+      <textarea
+        formControlName="currentSelection"
+        matInput
+        [value]="selectedUsers.join(', ')"
+        rows="3"
+      ></textarea>
+    </mat-form-field>
+  </div>
 </form>
-
 
 <div class="wizard-navigation">
   <div class="button left-button">
-    <button mat-raised-button color="white" class="login-button" (click)="clearSelection()"> Limpiar selección </button>
+    <button
+      mat-raised-button
+      color="white"
+      class="login-button"
+      (click)="clearSelection()"
+    >
+      Limpiar selección
+    </button>
   </div>
   <div class="button right-button">
-    <button class="button" [mat-dialog-close]= "true" mat-button color="accent">Cancelar</button>
-    <button [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid" class="button login-button ml16" mat-raised-button color="white" (click)="saveGroup()">Guardar grupo</button>
+    <button class="button" [mat-dialog-close]="true" mat-button color="accent">
+      Cancelar
+    </button>
+    <button
+      [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
+      class="button login-button ml16"
+      mat-raised-button
+      color="white"
+      (click)="saveGroup()"
+    >
+      Guardar grupo
+    </button>
   </div>
 </div>

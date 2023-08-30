@@ -15,7 +15,6 @@ h2 {
 
 .emoji-option {
   display: flex;
-  //justify-content: space-between;
   margin-bottom: 10px;
   font-size: 2rem;
   margin: 0.5rem;
@@ -39,13 +38,13 @@ h2 {
 }
 
 .left-button {
-  order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+  order: -1;
 }
 
 .right-button {
   float: right;
 }
 
-.wizard-content{
-  width:fit-content;
+.wizard-content {
+  width: fit-content;
 }

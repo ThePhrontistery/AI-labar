@@ -4,11 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ModalVotacionService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public voteTopics(body: any): Observable<any> {
     const url = `${environment.apiUrl}/topics/vote`;
