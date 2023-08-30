@@ -42,14 +42,14 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   selectedOptions: string[] = [];
   titleVotacion: string = '';
   idVotation: any;
-  typeVotacion: string = '';
+  typeVoting: string = '';
 
-  isEnquestaVotacion: Boolean = false;
-  isEnquestaValoracion: Boolean = false;
-  isEncuestaOpinionSimple: Boolean = false;
-  isEncuestaOpinionMultiple: Boolean = false;
-  isEnquestaImagenTextoSimple: Boolean = false;
-  isEnquestaImagenTextoMultiple: Boolean = false;
+  isSurveyVoting: Boolean = false;
+  isSurveyRating: Boolean = false;
+  isSurveyOpinionSimple: Boolean = false;
+  isSurveyOpinionMultiple: Boolean = false;
+  isSurveyImageTextSimple: Boolean = false;
+  isSurveyImageTextMultiple: Boolean = false;
 
   minesFilter = false;
   openedFilter = false;
@@ -247,7 +247,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     //this.optionsVotacion = votation.optionsDataList;
     this.optionsVotacion = votation.options;
     this.titleVotacion = votation.title;
-    this.typeVotacion = votation.type;
+    this.typeVoting = votation.type;
     this.openModal();
   }
 
@@ -258,12 +258,12 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
   closeModalVotacion(): void {
     this.modalOpen = false;
-    this.isEncuestaOpinionSimple = false;
-    this.isEnquestaValoracion = false;
-    this.isEnquestaVotacion = false;
-    this.isEnquestaImagenTextoSimple = false;
-    this.isEnquestaImagenTextoMultiple = false;
-    this.isEncuestaOpinionMultiple = false;
+    this.isSurveyOpinionSimple = false;
+    this.isSurveyRating = false;
+    this.isSurveyVoting = false;
+    this.isSurveyImageTextSimple = false;
+    this.isSurveyImageTextMultiple = false;
+    this.isSurveyOpinionMultiple = false;
     this.getTopicList();
   }
 
@@ -277,18 +277,18 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   revisarType(): void {
-    if (this.typeVotacion == "TEXT_MULTIPLE") {
-      this.isEncuestaOpinionMultiple = true;
-    } else if (this.typeVotacion == "RATING") {
-      this.isEnquestaValoracion = true;
-    } else if (this.typeVotacion == "AS") {
-      this.isEnquestaVotacion = true;
-    } else if (this.typeVotacion == "IMAGE_SINGLE") {
-      this.isEnquestaImagenTextoSimple = true;
-    } else if (this.typeVotacion == "IMAGE_MULTIPLE") {
-      this.isEnquestaImagenTextoMultiple = true;
-    } else if (this.typeVotacion == "TEXT_SINGLE") {
-      this.isEncuestaOpinionSimple = true;
+    if (this.typeVoting == "TEXT_MULTIPLE") {
+      this.isSurveyOpinionMultiple = true;
+    } else if (this.typeVoting == "RATING") {
+      this.isSurveyRating = true;
+    } else if (this.typeVoting == "AS") {
+      this.isSurveyVoting = true;
+    } else if (this.typeVoting == "IMAGE_SINGLE") {
+      this.isSurveyImageTextSimple = true;
+    } else if (this.typeVoting == "IMAGE_MULTIPLE") {
+      this.isSurveyImageTextMultiple = true;
+    } else if (this.typeVoting == "TEXT_SINGLE") {
+      this.isSurveyOpinionSimple = true;
     }
   }
 
@@ -377,7 +377,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
             else { this.totalItems = 0; }
 
             if (this.showTablaScroll) {this.pageIndex++;}
-            this.loading = false; 
+            this.loading = false;
             this.adjustRellenoHeight();
           }
         },
@@ -391,7 +391,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       );
   }
 
- 
+
 
   onScroll(event: any): void {
     if (!this.showTablaScroll) return;
@@ -402,27 +402,27 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   defaultVisualization(visualizacion: string) {
-    switch(visualizacion) { 
-      case 'Paginacion': { 
+    switch(visualizacion) {
+      case 'Paginacion': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = true;
         this.showCards = false;
-        break; 
-      } 
-      case 'Scroll': { 
+        break;
+      }
+      case 'Scroll': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = true;
         this.showTablaPaginada = false;
         this.showCards = false;
-        break; 
-      } 
-      case 'Cards': { 
+        break;
+      }
+      case 'Cards': {
         this.cookie.set('visualization', visualizacion);
         this.showTablaScroll = false;
         this.showTablaPaginada = false;
         this.showCards = true;
-        break; 
+        break;
       }
     }
 
@@ -435,7 +435,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     if (this.isButtonDisabled) {
       return;
     }
-  
+
     this.isButtonDisabled = true;
 
     const visualizationBody = {
@@ -468,7 +468,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
   }
 
   adjustRellenoHeight() {
-    
+
     if (!this.scrollContainer || !this.tablaTopicos || !this.relleno) {
       return; // Evita errores si los elementos no están disponibles aún
     }
@@ -477,7 +477,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     const rellenoHeight = div1Height - tabla1Height + 6;
     this.relleno.nativeElement.style.height = rellenoHeight + 'px';
   }
- 
+
 
 
 }

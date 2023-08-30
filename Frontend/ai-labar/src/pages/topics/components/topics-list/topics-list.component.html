@@ -138,28 +138,28 @@
             <b>Fecha de cierre:</b> {{ element.closeDate }}
           </p>
           <p class="close-date" *ngIf="!element.closeDate"><b>Sin fecha de cierre</b></p>
-        </div>        
+        </div>
 
         <div class="buttons">
           <button mat-icon-button *ngIf="element.author === user" [disabled]="element.status === 1 || element.author !== user" class="capBlue" (click)="reOpen(element)">
             <mat-icon *ngIf="element.author === user" [matTooltip]="element.status === 1 ? 'Cerrar' : 'Abrir'" [matTooltipDisabled]="element.status === 1 || element.author !== user">lock_open</mat-icon>
           </button>
-          
+
           <button mat-icon-button *ngIf="element.author === user" [disabled]="element.status === 0 || element.author !== user" class="capBlue" (click)="close(element)">
             <mat-icon *ngIf="element.author === user" [matTooltip]="element.status === 0 ? 'Abrir' : 'Cerrar'" [matTooltipDisabled]="element.status === 0 || element.author !== user">lock</mat-icon>
-          </button>        
-  
+          </button>
+
           <button mat-icon-button *ngIf="element.author === user" class="capBlue" (click)="delete(element)">
             <mat-icon *ngIf="element.author === user" matTooltip="Eliminar">delete</mat-icon>
           </button>
-  
+
           <button mat-icon-button [disabled]="element.status === 0 || !element.canVote" class="capBlue" (click)="vote(element)">
             <mat-icon matTooltip="Votar" [matTooltipDisabled]="element.status === 0 || !element.canVote">how_to_vote</mat-icon>
-          </button>          
+          </button>
 
           <button mat-icon-button [disabled]="element.status === 1" class="capBlue" (click)="results(element)">
             <mat-icon matTooltip="Ver resultados" [matTooltipDisabled]="element.status === 1">visibility</mat-icon>
-          </button>          
+          </button>
         </div>
 
         <p class="author"><b>Autor:</b> {{ element.author }}</p>
@@ -193,13 +193,13 @@
   [selectedOptions]="selectedOptions"
   [title]="titleVotacion"
   [idVotation]="idVotation"
-  [typeVotacion]="typeVotacion"
-  [isEncuestaOpinionSimple]="isEncuestaOpinionSimple"
-  [isEnquestaValoracion]="isEnquestaValoracion"
-  [isEnquestaVotacion]="isEnquestaVotacion"
-  [isEnquestaImagenTextoSimple]="isEnquestaImagenTextoSimple"
-  [isEncuestaOpinionMultiple]="isEncuestaOpinionMultiple"
-  [isEnquestaImagenTextoMultiple]="isEnquestaImagenTextoMultiple"
+  [typeVoting]="typeVoting"
+  [isSurveyOpinionSimple]="isSurveyOpinionSimple"
+  [isSurveyRating]="isSurveyRating"
+  [isSurveyVoting]="isSurveyVoting"
+  [isSurveyImageTextSimple]="isSurveyImageTextSimple"
+  [isSurveyOpinionMultiple]="isSurveyOpinionMultiple"
+  [isSurveyImageTextMultiple]="isSurveyImageTextMultiple"
   (onClose)="closeModalVotacion()"
   (onOptionChange)="onOptionChange($event)"
 ></app-modal-votacion>

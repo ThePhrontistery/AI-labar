@@ -30,17 +30,14 @@ describe('ModalVotacionComponent', () => {
   });
 
   it('should close modal on cancel button click', () => {
-    // Crear el componente y detectar cambios
-    const fixture = TestBed.createComponent(ModalVotacionComponent); // Reemplaza "TuComponente" con el nombre real de tu componente
+    const fixture = TestBed.createComponent(ModalVotacionComponent);
     const component = fixture.componentInstance;
     component.isOpen = true;
-    component.isEncuestaOpinionSimple = true;
+    component.isSurveyOpinionSimple = true;
     fixture.detectChanges();
 
-    // Espiar el método closeModal
     spyOn(component, 'closeModal');
 
-    // Intentar encontrar el botón y hacer clic en él
     const cancelButton = fixture.nativeElement.querySelector('.wizard-navigation button[mat-button][color="accent"]');
 
     cancelButton.click();
@@ -48,12 +45,12 @@ describe('ModalVotacionComponent', () => {
 
   });
 
-  it('should render title', () => {    
+  it('should render title', () => {
     component.isOpen = true;
-    component.isEncuestaOpinionSimple = true;
+    component.isSurveyOpinionSimple = true;
     component.title = 'Test Title';
     fixture.detectChanges();
-    
+
     const titleElement: HTMLElement = fixture.nativeElement.querySelector('mat-dialog-actions');
     expect(titleElement.textContent).toContain('Test Title');
   });
@@ -61,19 +58,18 @@ describe('ModalVotacionComponent', () => {
   it('should select an option', () => {
     // Simulate user interaction
     component.isOpen = true;
-    component.isEncuestaOpinionMultiple = true;
-    component.valoresVotacion = ['Option 1', 'Option 2'];
+    component.isSurveyOpinionMultiple = true;
+    component.valuesVoting = ['Option 1', 'Option 2'];
     fixture.detectChanges();
 
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector('input[type="checkbox"]'); 
-    expect(component.votoEncuesta.length).toBe(0);
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector('input[type="checkbox"]');
+    expect(component.voteSurvey.length).toBe(0);
 
-    checkbox.click(); 
-    fixture.detectChanges(); 
+    checkbox.click();
+    fixture.detectChanges();
 
-    expect(component.votoEncuesta.length).toBe(1);
-    expect(component.votoEncuesta[0]).toBe('Option 1');
+    expect(component.voteSurvey.length).toBe(1);
+    expect(component.voteSurvey[0]).toBe('Option 1');
   });
 
-  // Add more test cases for other functionality
 });
