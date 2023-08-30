@@ -14,8 +14,8 @@ describe('ImageTextResultComponent', () => {
   const mockDialogData = {
     votacion: {
       id: 1,
-      title: 'Test Voting'
-    }
+      title: 'Test Voting',
+    },
   };
 
   beforeEach(async () => {
@@ -26,8 +26,8 @@ describe('ImageTextResultComponent', () => {
         CookieService,
         TopicsListService,
         ResultadosVotacionService,
-        { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
-      ]
+        { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
+      ],
     }).compileComponents();
   });
 
@@ -48,14 +48,14 @@ describe('ImageTextResultComponent', () => {
         {
           votes: 5,
           image: 'mock-image-url',
-          option: 'Option 1'
+          option: 'Option 1',
         },
         {
           votes: 3,
           image: 'mock-image-url',
-          option: 'Option 2'
-        }
-      ]
+          option: 'Option 2',
+        },
+      ],
     };
 
     // Spy on the service method
@@ -66,7 +66,9 @@ describe('ImageTextResultComponent', () => {
         subscribe: (callback: any) => callback(mockResponse),
         source: undefined,
         operator: undefined,
-        lift: function <R>(operator?: Operator<any, R> | undefined): Observable<R> {
+        lift: function <R>(
+          operator?: Operator<any, R> | undefined
+        ): Observable<R> {
           throw new Error('Function not implemented.');
         },
         forEach: function (next: (value: any) => void): Promise<void> {
@@ -77,7 +79,7 @@ describe('ImageTextResultComponent', () => {
         },
         toPromise: function (): Promise<any> {
           throw new Error('Function not implemented.');
-        }
+        },
       }
     );
 

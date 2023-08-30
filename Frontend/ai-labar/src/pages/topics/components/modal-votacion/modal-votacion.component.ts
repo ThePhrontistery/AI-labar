@@ -1,4 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+/**
+ * This component represents a voting modal that allows users to participate in different types of surveys.
+ * It handles survey options, user selections, and sends voting data to the server.
+ */
+
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { ModalVotacionService } from './modal-votacion.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
@@ -6,133 +17,150 @@ import { Emoji } from '../interfaces/emoji.model';
 @Component({
   selector: 'app-modal-votacion',
   templateUrl: './modal-votacion.component.html',
-  styleUrls: ['./modal-votacion.component.scss']
+  styleUrls: ['./modal-votacion.component.scss'],
 })
-export class ModalVotacionComponent implements OnChanges{
-
+export class ModalVotacionComponent implements OnChanges {
+  // Input properties for configuring the modal
   @Input() isOpen: boolean = false;
   @Input() options: string[] = [];
   @Input() selectedOptions: string[] = [];
   @Input() title: string = '';
   @Input() idVotation: any;
-  @Input() typeVotacion: string = '';
-  @Input() isEnquestaVotacion: Boolean = false;
-  @Input() isEnquestaValoracion: Boolean = false;
-  @Input() isEncuestaOpinionSimple: Boolean = false;
-  @Input() isEncuestaOpinionMultiple: Boolean = false;
-  @Input() isEnquestaImagenTextoSimple: Boolean = false;
-  @Input() isEnquestaImagenTextoMultiple: Boolean = false;
+  @Input() typeVoting: string = '';
+  @Input() isSurveyVoting: Boolean = false;
+  @Input() isSurveyRating: Boolean = false;
+  @Input() isSurveyOpinionSimple: Boolean = false;
+  @Input() isSurveyOpinionMultiple: Boolean = false;
+  @Input() isSurveyImageTextSimple: Boolean = false;
+  @Input() isSurveyImageTextMultiple: Boolean = false;
+
+  // Output events
   @Output() onClose = new EventEmitter<void>();
   @Output() onOptionChange = new EventEmitter<string>();
   @Output() onItemChange = new EventEmitter<any>();
 
-  votoEncuesta: string[] = [];
+  // Arrays and variables for managing user selections
+  voteSurvey: string[] = [];
   selectedEmoji: Emoji | null = null;
+  selectedOption: any | null = null;
+  selectedItem: any | null = null;
+  selectedImagesText: any | null = null;
 
+  // Array of emoji objects for rating surveys
   emojis: Emoji[] = [
+    // Define emojis with id, icon, name, and selection status
     { id: 1, icon: '😄', name: 'Emoji 1', selected: false },
     { id: 2, icon: '🙂', name: 'Emoji 2', selected: false },
     { id: 3, icon: '😐', name: 'Emoji 3', selected: false },
     { id: 4, icon: '😔', name: 'Emoji 4', selected: false },
-    { id: 5, icon: '😭', name: 'Emoji 5', selected: false }
+    { id: 5, icon: '😭', name: 'Emoji 5', selected: false },
   ];
 
-  objeto: any | undefined;
+  // Other variables
+  object: any | undefined;
+  emojisVoting: Emoji[] = [];
+  itemsVoting: any[] = [];
+  selectedImageText: any | null = null;
+  valuesVoting: any = [];
+  valuesVotingImageText: any = [];
 
-  emojisVotacion: Emoji[] = [];
+  constructor(
+    private modalVotacionService: ModalVotacionService,
+    private cookie: CookieService
+  ) {}
 
-  itemsVotacion: any[] = [];
-
-  selectedItem: any | null = null;
-
-  selectedImagenTexto: any | null = null;
-
-  valoresVotacion: any = []
-
-  valoresVotacionImagenTexto: any = [];
-
-  selectedOption: any | null = null;
-
-  selectedImagenesTexto: any | null = null;
-
-  constructor(private modalVotacionService: ModalVotacionService, private cookie: CookieService) { }
-
+  /**
+   * Reacts to changes in input properties and populates the corresponding arrays based on survey type.
+   */
   ngOnChanges(): void {
-    if(this.isEnquestaValoracion){
-      //this.emojisVotacion = this.emojis.filter((objeto) => this.options.includes(objeto.id.toString()));
+    if (this.isSurveyRating) {
       for (let i = 0; i < this.options.length; i++) {
-        this.objeto = this.options[i];
-        const id = this.objeto.option;
-        const emojisEncontrados = this.emojis.filter(obj => obj.id.toString() === id.toString());
-       this.emojisVotacion.push(emojisEncontrados[0]);
+        this.object = this.options[i];
+        const id = this.object.option;
+        const emojisFound = this.emojis.filter(
+          (obj) => obj.id.toString() === id.toString()
+        );
+        this.emojisVoting.push(emojisFound[0]);
       }
-    }else if(this.isEnquestaVotacion){
-      for(let i = 0; i < this.options.length; i++){
-        this.objeto = this.options[i];
-        const item = this.objeto.option;
-        if(this.objeto.image == "" || this.objeto.image == null){
-          this.objeto.image = "assets/images/questionMark.png";
+    } else if (this.isSurveyVoting) {
+      for (let i = 0; i < this.options.length; i++) {
+        this.object = this.options[i];
+        const item = this.object.option;
+        if (this.object.image == '' || this.object.image == null) {
+          this.object.image = 'assets/images/questionMark.png';
         }
-        const resultadoFinal = {text:item, imageSrc:this.objeto.image, id:i}
-        this.itemsVotacion.push(resultadoFinal);
+        const result = { text: item, imageSrc: this.object.image, id: i };
+        this.itemsVoting.push(result);
       }
-    } else if(this.isEncuestaOpinionMultiple || this.isEncuestaOpinionSimple){
+    } else if (this.isSurveyOpinionMultiple || this.isSurveyOpinionSimple) {
       for (let i = 0; i < this.options.length; i++) {
-        this.objeto = this.options[i];
-        const valor = this.objeto.option;
-       this.valoresVotacion.push(valor);
+        this.object = this.options[i];
+        const value = this.object.option;
+        this.valuesVoting.push(value);
       }
-    } else if(this.isEnquestaImagenTextoSimple || this.isEnquestaImagenTextoMultiple){
+    } else if (this.isSurveyImageTextSimple || this.isSurveyImageTextMultiple) {
       for (let i = 0; i < this.options.length; i++) {
-        this.objeto = this.options[i];
-        const valor = this.objeto.option;
-        const resultadoFinal = {text:this.objeto.option, imageSrc:this.objeto.image, id:i}
-        this.valoresVotacionImagenTexto.push(resultadoFinal);
+        this.object = this.options[i];
+        const result = {
+          text: this.object.option,
+          imageSrc: this.object.image,
+          id: i,
+        };
+        this.valuesVotingImageText.push(result);
       }
     }
   }
 
+  /**
+   * Closes the modal and resets arrays and selections.
+   */
   closeModal(): void {
-    this.itemsVotacion = [];
-    this.votoEncuesta = [];
+    this.itemsVoting = [];
+    this.voteSurvey = [];
     this.selectedOptions = [];
-    this.valoresVotacion = [];
-    this.emojisVotacion = [];
-    this.valoresVotacionImagenTexto = [];
+    this.valuesVoting = [];
+    this.emojisVoting = [];
+    this.valuesVotingImageText = [];
     this.onClose.emit();
   }
 
+  /**
+   * Handles the selection of an option in different types of surveys.
+   */
   selectOption(option: string, event: any): void {
     if (event.target.checked) {
-      this.votoEncuesta.push(option)
-    this.onOptionChange.emit(option);
+      this.voteSurvey.push(option);
+      this.onOptionChange.emit(option);
     } else {
-      const index = this.votoEncuesta.indexOf(option);
+      const index = this.voteSurvey.indexOf(option);
       if (index !== -1) {
-        this.votoEncuesta.splice(index, 1);
+        this.voteSurvey.splice(index, 1);
       }
     }
   }
 
-  selectImagenesTexto(item: any, event: any): void {
+  selectImagesText(item: any, event: any): void {
     if (event.target.checked) {
-      this.votoEncuesta.push(item.text)
-    this.onItemChange.emit(item.text);
+      this.voteSurvey.push(item.text);
+      this.onItemChange.emit(item.text);
     } else {
-      const index = this.votoEncuesta.indexOf(item.text);
+      const index = this.voteSurvey.indexOf(item.text);
       if (index !== -1) {
-        this.votoEncuesta.splice(index, 1);
+        this.voteSurvey.splice(index, 1);
       }
     }
   }
 
+  /**
+   * Sends the user's selections to the server.
+   */
   sendSelection(): void {
     const voteTopicBody = {
-      "id": this.idVotation,
-      "votation": this.votoEncuesta,
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token")
-  }
+      id: this.idVotation,
+      votation: this.voteSurvey,
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+    };
     this.modalVotacionService.voteTopics(voteTopicBody).subscribe(
       (response) => {
         console.log('Selección enviada con éxito:', response);
@@ -144,29 +172,39 @@ export class ModalVotacionComponent implements OnChanges{
     );
   }
 
+  /**
+   * Handles the selection of an emoji for rating surveys.
+   */
   selectEmoji(emoji: Emoji): void {
-    this.votoEncuesta = [];
+    this.voteSurvey = [];
     this.selectedEmoji = emoji;
-    this.votoEncuesta.push(emoji.id.toString());
+    this.voteSurvey.push(emoji.id.toString());
   }
 
+  /**
+   * Handles the selection of an option for opinion surveys.
+   */
   selectOpinion(option: any): void {
-    this.votoEncuesta = [];
+    this.voteSurvey = [];
     this.selectedOption = option;
-    this.votoEncuesta.push(option);
+    this.voteSurvey.push(option);
   }
 
-
+  /**
+   * Handles the selection of an item for image-text surveys.
+   */
   selectItem(item: any): void {
-    this.votoEncuesta = [];
+    this.voteSurvey = [];
     this.selectedItem = item;
-    this.votoEncuesta.push(this.selectedItem.text);
+    this.voteSurvey.push(this.selectedItem.text);
   }
 
-  selectImagenTexto(item: any): void {
-    this.votoEncuesta = [];
-    this.selectedImagenTexto = item;
-    this.votoEncuesta.push(this.selectedImagenTexto.text);
+  /**
+   * Handles the selection of an image-text combination for image-text surveys.
+   */
+  selectImageText(item: any): void {
+    this.voteSurvey = [];
+    this.selectedImageText = item;
+    this.voteSurvey.push(this.selectedImageText.text);
   }
-
 }

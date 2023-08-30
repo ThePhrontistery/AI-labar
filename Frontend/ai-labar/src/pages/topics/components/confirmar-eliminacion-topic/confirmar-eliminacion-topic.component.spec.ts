@@ -5,7 +5,9 @@ import { ConfirmarEliminacionTopicComponent } from './confirmar-eliminacion-topi
 describe('ConfirmarEliminacionTopicComponent', () => {
   let component: ConfirmarEliminacionTopicComponent;
   let fixture: ComponentFixture<ConfirmarEliminacionTopicComponent>;
-  let mockMatDialogRef: jasmine.SpyObj<MatDialogRef<ConfirmarEliminacionTopicComponent>>;
+  let mockMatDialogRef: jasmine.SpyObj<
+    MatDialogRef<ConfirmarEliminacionTopicComponent>
+  >;
 
   beforeEach(() => {
     mockMatDialogRef = jasmine.createSpyObj(['close']);
@@ -14,8 +16,8 @@ describe('ConfirmarEliminacionTopicComponent', () => {
       declarations: [ConfirmarEliminacionTopicComponent],
       providers: [
         { provide: MatDialogRef, useValue: mockMatDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
-      ]
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmarEliminacionTopicComponent);
