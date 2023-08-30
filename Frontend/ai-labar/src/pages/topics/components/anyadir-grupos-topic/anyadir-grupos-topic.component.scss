@@ -1,40 +1,33 @@
-/* Estilo para el botón "Añadir grupo" */
 .login-button {
   margin-bottom: 16px;
 }
 
-/* Estilo para el título "Seleccionar Grupo de Usuarios" */
 h2 {
   font-size: 24px;
   margin-bottom: 16px;
 }
 
-/* Estilo para el contenedor del select */
 mat-form-field {
   width: 100%;
   margin-bottom: 16px;
 }
 
-/* Estilo para el título "Usuarios del Grupo Seleccionado" */
 h3 {
   font-size: 20px;
   margin-bottom: 8px;
 }
 
-/* Estilo para la lista de usuarios */
 ul {
   list-style-type: none;
   padding: 10px;
   margin: 0;
 }
 
-/* Estilo para los ítems de la lista de usuarios */
 li {
   font-size: 16px;
   margin-bottom: 8px;
 }
 
-/* Estilo para el ítem de la lista que muestra los puntos suspensivos */
 li.ellipsis {
   font-style: italic;
 }
@@ -46,5 +39,5 @@ li.ellipsis {
 }
 
 .left-button {
-  order: -1; /* Cambiar el orden, colocando el botón izquierdo antes en el DOM */
+  order: -1;
 }

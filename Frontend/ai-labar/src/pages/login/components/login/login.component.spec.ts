@@ -16,16 +16,18 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
+      declarations: [LoginComponent],
       providers: [
         LoginService,
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        {
+          provide: Router,
+          useValue: { navigate: jasmine.createSpy('navigate') },
+        },
         CookieService,
-        FormBuilder
+        FormBuilder,
       ],
-      imports: [HttpClientModule]
-    })
-    .compileComponents();
+      imports: [HttpClientModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

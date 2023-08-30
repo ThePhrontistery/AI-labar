@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import {MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { IResult } from '../interfaces/emoji.model';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 
@@ -16,8 +15,7 @@ export class TopicResultComponent implements OnInit {
   result: IResult[] = [];
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
-    private topicListService: TopicsListService,
-    private resultsService: ResultadosVotacionService
+    private topicListService: TopicsListService
   ) { }
 
   ngOnInit(): void {

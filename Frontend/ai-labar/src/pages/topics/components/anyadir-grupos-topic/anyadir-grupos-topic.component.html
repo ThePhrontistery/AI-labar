@@ -1,20 +1,29 @@
-<button class="login-button" mat-raised-button color="white" (click)="anadirGrupo()">Añadir grupo</button>
+<button
+  class="login-button"
+  mat-raised-button
+  color="white"
+  (click)="addGroup()"
+>
+  Añadir grupo
+</button>
 
 <div>
-<!-- Combo box para seleccionar grupos -->
-<mat-form-field>
-  <mat-label>Seleccionar Grupo de Usuarios</mat-label>
-  <mat-select [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
-    <mat-option *ngFor="let group of groups" [value]="group">{{ group }}</mat-option>
-  </mat-select>
-</mat-form-field>
+  <!-- Combo box to select groups -->
+  <mat-form-field>
+    <mat-label>Seleccionar Grupo de Usuarios</mat-label>
+    <mat-select [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
+      <mat-option *ngFor="let group of groups" [value]="group">{{
+        group
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <h3>Usuarios del Grupo Seleccionado</h3>
-<!-- Listado de usuarios del grupo seleccionado -->
+<!-- List of users of the selected group -->
 <ul>
   <ng-container *ngFor="let user of users; let i = index">
-    <p *ngIf="i === 0">Total de usuarios: {{users.length}}</p>
+    <p *ngIf="i === 0">Total de usuarios: {{ users.length }}</p>
     <li *ngIf="i < 6">
       {{ user }}
     </li>
@@ -25,9 +34,18 @@
 <!-- Botón para cerrar el modal -->
 <div class="wizard-navigation">
   <div class="button left-button">
-    <button class="button" (click)="closeDialog()" mat-button color="accent">Cerrar</button>
+    <button class="button" (click)="closeDialog()" mat-button color="accent">
+      Cerrar
+    </button>
   </div>
   <div class="button right-button">
-    <button class="button login-button ml16" mat-raised-button color="white" (click)="saveSelection()">Guardar selección</button>
+    <button
+      class="button login-button ml16"
+      mat-raised-button
+      color="white"
+      (click)="saveSelection()"
+    >
+      Guardar selección
+    </button>
   </div>
 </div>

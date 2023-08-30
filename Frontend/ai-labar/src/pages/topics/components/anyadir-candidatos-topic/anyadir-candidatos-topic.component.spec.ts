@@ -1,15 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { AnyadirCandidatosTopicComponent } from './anyadir-candidatos-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { FormBuilder,FormsModule  ,ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { IUser } from '../interfaces/emoji.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { of } from 'rxjs';
@@ -25,33 +29,57 @@ describe('AnyadirCandidatosTopicComponent', () => {
   const users = ['user1', 'user2'];
 
   beforeEach(async () => {
-    const topicsCreateService = jasmine.createSpyObj('TopicsCreateService', ['getGroupsByUser', 'getGroup']);
+    const topicsCreateService = jasmine.createSpyObj('TopicsCreateService', [
+      'getGroupsByUser',
+      'getGroup',
+    ]);
     const cookieService = jasmine.createSpyObj('CookieService', ['get']);
-    const topicsListService = jasmine.createSpyObj('TopicsListService', ['postResponse']);
+    const topicsListService = jasmine.createSpyObj('TopicsListService', [
+      'postResponse',
+    ]);
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
-      declarations: [ AnyadirCandidatosTopicComponent ],
+      declarations: [AnyadirCandidatosTopicComponent],
       providers: [
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
         { provide: TopicsListService, useValue: topicsListService },
-        FormBuilder, // Add FormBuilder to providers
-        { provide: MatDialogRef, useValue: dialogRefSpy }, // Usar el dialogRefSpy aquí
-        { provide: MAT_DIALOG_DATA, useValue: {} }
+        FormBuilder,
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
-      imports: [MatDialogModule,ReactiveFormsModule,
-        MatFormFieldModule,MatInputModule,MatRadioModule,BrowserAnimationsModule,MatSelectModule,MatCheckboxModule]
-    })
-    .compileComponents();
+      imports: [
+        MatDialogModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRadioModule,
+        BrowserAnimationsModule,
+        MatSelectModule,
+        MatCheckboxModule,
+      ],
+    }).compileComponents();
 
-    topicsCreateServiceSpy = TestBed.inject(TopicsCreateService) as jasmine.SpyObj<TopicsCreateService>;
-    cookieServiceSpy = TestBed.inject(CookieService) as jasmine.SpyObj<CookieService>;
-    topicsListServiceSpy = TestBed.inject(TopicsListService) as jasmine.SpyObj<TopicsListService>;
+    topicsCreateServiceSpy = TestBed.inject(
+      TopicsCreateService
+    ) as jasmine.SpyObj<TopicsCreateService>;
+    cookieServiceSpy = TestBed.inject(
+      CookieService
+    ) as jasmine.SpyObj<CookieService>;
+    topicsListServiceSpy = TestBed.inject(
+      TopicsListService
+    ) as jasmine.SpyObj<TopicsListService>;
 
-    topicsCreateServiceSpy.getGroupsByUser.and.returnValue(of({ entity: groups }));
-    topicsCreateServiceSpy.getGroup.and.returnValue(of({ entity: { members: users } }));
-    topicsListServiceSpy.postResponse.and.returnValue(of({ body: { entity: users } }));
+    topicsCreateServiceSpy.getGroupsByUser.and.returnValue(
+      of({ entity: groups })
+    );
+    topicsCreateServiceSpy.getGroup.and.returnValue(
+      of({ entity: { members: users } })
+    );
+    topicsListServiceSpy.postResponse.and.returnValue(
+      of({ body: { entity: users } })
+    );
   });
 
   beforeEach(() => {
@@ -81,39 +109,32 @@ describe('AnyadirCandidatosTopicComponent', () => {
   it('should select and clear users', () => {
     const user1: IUser = { name: 'user1', checked: false, hidden: false };
     const user2: IUser = { name: 'user2', checked: false, hidden: false };
-  
+
     component.selectUser(user1);
     expect(user1.checked).toBe(true);
     expect(component.selectedUsers).toContain(user1.name);
-  
+
     component.selectUser(user2);
     expect(user2.checked).toBe(true);
     expect(component.selectedUsers).toContain(user2.name);
-  
+
     component.selectUser(user1);
     expect(user1.checked).toBe(false);
     expect(component.selectedUsers).not.toContain(user1.name);
-  
+
     component.clearSelection();
     expect(component.selectedUsers.length).toEqual(0);
-    
   });
 
-  
   it('should save group and close dialog', () => {
-    
-  
     const expectedData = {
       grupoSeleccionado: null,
-      usuariosSeleccionados: ['user1', 'user2']
+      usuariosSeleccionados: ['user1', 'user2'],
     };
-  
+
     component.selectedUsers = ['user1', 'user2'];
     component.saveGroup();
-  
-    expect(component.dialogRef.close).toHaveBeenCalledWith(expectedData); // Usar el espía
-  });
-  
-  // Add more tests as needed for other functions and scenarios
 
+    expect(component.dialogRef.close).toHaveBeenCalledWith(expectedData);
+  });
 });
