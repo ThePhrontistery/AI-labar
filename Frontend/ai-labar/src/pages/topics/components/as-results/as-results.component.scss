@@ -1,20 +1,16 @@
-.dato {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
+.fact {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
 
-  .opcion {
-    margin-right: 1rem;
-    width: 13%;
-  }
+.option {
+  margin-right: 1rem;
+  width: 13%;
+}
 
-  .votos {
-    font-weight: bold;
-  }
-
-  .dato img {
-    max-width: 100px;
-    max-height: 100px;
-    margin-right: 10px;
-  }
+.fact img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 10px;
+}

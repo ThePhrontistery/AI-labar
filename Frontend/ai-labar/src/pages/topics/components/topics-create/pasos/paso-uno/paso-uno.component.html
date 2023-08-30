@@ -3,6 +3,8 @@
 
 <div class="imagenes-container">
   <div *ngFor="let imagen of imagenes" (click)="seleccionarImagen(imagen)" class="img-border image">
+    <h2 fxHide fxShow.sm="true"  fxShow.gt-md="true">{{ imagen.nombre }}</h2>
+    <h5 fxHide fxShow.xs>{{ imagen.nombre }}</h5>
     <img [src]="imagen.ruta" alt="{{ imagen.nombre }}">
   </div>
 </div>

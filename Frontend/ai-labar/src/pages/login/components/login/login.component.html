@@ -1,34 +1,54 @@
 <div class="inline-container">
-    <div class="cap-container">
-        <div class="cap-container-logo"></div>
+  <div fxHide fxShow.sm="true" fxShow.gt-md="true" class="cap-container">
+    <div class="cap-container-logo"></div>
+  </div>
+  <div class="login-container">
+    <div fxHide fxShow.xs class="cap-container-small">
+      <div class="cap-container-logo-small"></div>
     </div>
-    <div class="login-container">
 
-
-    <mat-card *ngIf="!showRegistroFom"  class="login-card">
+    <mat-card *ngIf="!showRegistroFom" class="login-card">
       <mat-card-header>
         <mat-card-title>Iniciar sesión</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="loginForm">
           <mat-form-field class="login-form-field">
-            <input matInput placeholder="Usuario"  required formControlName="user">
+            <input
+              matInput
+              placeholder="Usuario"
+              required
+              formControlName="user"
+            />
           </mat-form-field>
           <mat-form-field class="login-form-field">
-            <input matInput placeholder="Contraseña" type="password"  required formControlName="password">
+            <input
+              matInput
+              placeholder="Contraseña"
+              type="password"
+              required
+              formControlName="password"
+            />
           </mat-form-field>
-          <button mat-raised-button color="white" class="login-button"
-                  (click)="loginClick()">
+          <button
+            mat-raised-button
+            color="white"
+            class="login-button"
+            (click)="loginClick()"
+          >
             Iniciar sesión
           </button>
-          <button mat-raised-button color="white" class="login-button"
-          (click)="registro()">
-   Registro
-  </button>
+          <button
+            mat-raised-button
+            color="white"
+            class="login-button"
+            (click)="registration()"
+          >
+            Registro
+          </button>
         </form>
       </mat-card-content>
     </mat-card>
-
 
     <mat-card *ngIf="showRegistroFom" class="login-card">
       <mat-card-header>
@@ -36,51 +56,58 @@
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="form">
-            <mat-form-field>
-              <mat-label>User</mat-label>
-              <input matInput formControlName="user">
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Password</mat-label>
-              <input matInput type="password" formControlName="password">
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Email</mat-label>
-              <input matInput type="email" formControlName="email">
-            </mat-form-field>
-            <mat-form-field style="width: 100%;">
-              <mat-label>Añadir Imagen</mat-label>
-              <button mat-icon-button matPrefix (click)="upload($event)">
-                <mat-icon>attach_file</mat-icon>
-              </button>
-              <input type="text" readonly matInput [value] = "fileName ? fileName : ''" formControlName="imageVisible" />
-              <input
-                type="file"
-                (change)="onFileSelected($event)" 
-                formControlName="imageFunctional"
-                accept=".jpg, .gif, .png"
-                multiple
-                hidden
-                #f_input
-              />
-              <mat-error>this field is required</mat-error>
-            </mat-form-field>
-            <!-- <mat-form-field>
-              <mat-label>Selecciona una imagen</mat-label>
-              <mat-file-input #fileInput accept="image/*" (change)="onFileSelected($event)">
-                <mat-icon matFileInputIcon>attach_file</mat-icon>
-                <span matFileInputPlaceholder>Arrastra y suelta una imagen o haz clic para seleccionarla</span>
-              </mat-file-input>
-            </mat-form-field> -->
-          </form>
-          <button mat-raised-button color="white" class="login-button"
-                  (click)="sendRegistro()">
-            Registrarse
-          </button>
-          <button mat-raised-button color="white" class="login-button"
-          (click)="showRegistroFom = false">
+          <mat-form-field>
+            <mat-label>User</mat-label>
+            <input matInput formControlName="user" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+          </mat-form-field>
+          <mat-form-field style="width: 100%">
+            <mat-label>Añadir Imagen</mat-label>
+            <button mat-icon-button matPrefix (click)="upload($event)">
+              <mat-icon>attach_file</mat-icon>
+            </button>
+            <input
+              type="text"
+              readonly
+              matInput
+              [value]="fileName ? fileName : ''"
+              formControlName="imageVisible"
+            />
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              formControlName="imageFunctional"
+              accept=".jpg, .gif, .png"
+              multiple
+              hidden
+              #f_input
+            />
+            <mat-error>this field is required</mat-error>
+          </mat-form-field>
+        </form>
+        <button
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="sendRegistration()"
+        >
+          Registrarse
+        </button>
+        <button
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="showRegistroFom = false"
+        >
           Cancelar
-          </button>
+        </button>
       </mat-card-content>
     </mat-card>
   </div>

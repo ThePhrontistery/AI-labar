@@ -10,10 +10,10 @@ export class PasoUnoComponent implements OnInit {
   @Input() sharedData: any;
 
   imagenes = [
-    { nombre: 'Checkbox', ruta: 'assets/images/imageUno.png' },
-    { nombre: 'Emoji', ruta: 'assets/images/imageDos.jpg' },
-    { nombre: 'Empleado', ruta: 'assets/images/imageTres.png' },
-    { nombre: 'ImagenTexto', ruta: 'assets/images/imageCuatro.png' }
+    { nombre: 'Valores\n(Selección simple/multiple)', ruta: 'assets/images/imageUno.png' },
+    { nombre: 'Valores con imagen\n(Selección simple/multiple)', ruta: 'assets/images/imageCuatro.png' },
+    { nombre: 'Emojis\n(Selección simple)', ruta: 'assets/images/imageDos.jpg' },
+    { nombre: 'Empleado\n(Selección simple)', ruta: 'assets/images/imageTres.png' }
   ];
 
   imagenSeleccionada = {ruta : null, nombre: null};

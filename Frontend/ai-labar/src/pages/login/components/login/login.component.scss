@@ -1,141 +1,157 @@
-/* login.component.css */
-.inline-container{
-    display: inline-flex;
+.inline-container {
+  display: inline-flex;
 }
 
-/* Estilos específicos para navegadores Firefox */
 @supports (-moz-appearance: none) {
   .inline-container {
     width: -moz-available;
   }
 }
 
-/* Estilos específicos para navegadores WebKit */
 @supports (-webkit-appearance: none) {
   .inline-container {
     width: -webkit-fill-available;
   }
 }
 
-.cap-container{
-    width: 50%;
-    height: 100vh;
-    background-color: #29ABE2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
+.cap-container-logo {
+  background-image: url("../../../../assets/images/capLogo.jpg");
+  background-repeat: no-repeat;
+  min-width: 200px;
+  width: 20%;
+  height: 29%;
+  object-fit: cover;
+  background-size: contain;
+  position: absolute;
+  top: 42%;
 }
 
-.cap-container-logo{
-    background-image: url('../../../../assets/images/capLogo.jpg');
-    background-repeat: no-repeat;
-    min-width: 200px;
-    width: 40%;
-    height: 29%;
-    object-fit: cover;
-    background-size: contain;
-    position: absolute;
-    top: 42%;
+.cap-container {
+  flex: 1;
+  width: 50%;
+  height: 100vh;
+  background-color: #29abe2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: white;
-    background-size: cover;
-    background-position: center;
-    animation: gradient-animation 10s ease-in-out infinite;
-    width: 50%;
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
+  flex: 1;
+  width: 50%;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .login-card {
-    max-width: 400px;
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
+.login-card {
+  max-width: 400px;
+  width: 90%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 20px;
+  margin-right: 20px;
+}
 
-  .login-card-header {
+.login-card-header {
+  background-color: #fff;
+  color: #29abe2;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.login-form-field {
+  margin-bottom: 16px;
+}
+
+.login-form-field mat-form-field {
+  width: 100%;
+}
+
+.login-form-field mat-label {
+  color: #29abe2;
+}
+
+.login-form-field mat-input {
+  border-radius: 5px;
+  border: solid 2px #29abe2;
+}
+
+.login-form-field mat-input:focus {
+  border-color: #4caf50;
+}
+
+.login-button {
+  margin-top: 16px;
+  background-color: #fff;
+  color: #29abe2;
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cap-container-logo-small {
+  background-image: url("../../../../assets/images/capLogo.jpg");
+  background-repeat: no-repeat;
+  min-width: 200px;
+  width: 30%;
+  height: 100%;
+  object-fit: cover;
+  background-size: contain;
+  position: absolute;
+  top: 25%;
+}
+
+.cap-container-small {
+  flex: 1;
+  width: 100%;
+  background-color: #29abe2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  height: 20%;
+  position: absolute;
+}
+
+.login-button:hover {
+  animation: pulse-animation 1s ease-in-out infinite;
+}
+
+@keyframes gradient-animation {
+  from {
+    background-position: center center;
+  }
+  to {
+    background-position: center calc(100% + 100vh);
+  }
+}
+
+@keyframes pulse-animation {
+  from {
+    transform: scale(1);
+    box-shadow: none;
     background-color: #fff;
-    color:  #29ABE2;
+    color: #29abe2;
+    border-color: #29abe2;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out;
+    transition-delay: 0.1s;
   }
-
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .login-form-field {
-    margin-bottom: 16px;
-  }
-
-  .login-form-field mat-form-field {
-    width: 100%;
-  }
-
-  .login-form-field mat-label {
-    color:  #29ABE2;
-  }
-
-  .login-form-field mat-input {
-    border-radius: 5px;
-    border: solid 2px  #29ABE2;
-  }
-
-  .login-form-field mat-input:focus {
+  to {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    background-color: #29abe2;
+    color: #fff;
     border-color: #4caf50;
   }
-
-  .login-button {
-    margin-top: 16px;
-    background-color: #fff;
-    color:  #29ABE2;
-    border: none;
-    border-radius: 25px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .login-button:hover {
-    animation: pulse-animation 1s ease-in-out infinite;
-  }
-
-  @keyframes gradient-animation {
-      from {
-          background-position: center center;
-      }
-      to {
-          background-position: center calc(100% + 100vh);
-      }
-  }
-
-  @keyframes pulse-animation {
-      from {
-          transform: scale(1);
-          box-shadow: none;
-          background-color: #fff;
-          color:  #29ABE2;
-          border-color:  #29ABE2;
-          transition-duration: .5s;
-          transition-timing-function: ease-out;
-          transition-delay: .1s;
-      }
-      to {
-          transform: scale(1.05);
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-          background-color:  #29ABE2;
-          color: #fff;
-          border-color: #4caf50;
-      }
-  }
+}
