@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
      this.mySubscription.push(this.loginService.login(body).subscribe(
       response => {
         if (response && response.body.entity && response.body.entity.length>1)
-          { 
+          {
             this.cookie.set('user', this.username);
             this.cookie.set('token', response.body.entity[0]);
             this.cookie.set('visualization', response.body.entity[1]);
@@ -78,6 +78,7 @@ export class LoginComponent implements OnInit {
       this.mySubscription.push(this.loginService.createUser(data).subscribe(
         response => {
           this.showRegistroFom = false;
+          this.limpiarForm();
         },
         error => {
           alert('Error al crear al usuario: ' + error.error.message);
@@ -94,7 +95,7 @@ export class LoginComponent implements OnInit {
     this.fileName = file.name ? file.name : '';
     return fileType === 'image/jpeg' || fileType === 'image/gif' || fileType === 'image/png';
   }
- 
+
   onFileSelected(ev: any){
     const file: File =  ev.target.files[0];
    if (file && this.isImageFile(file)) {
@@ -108,7 +109,11 @@ export class LoginComponent implements OnInit {
      console.log('Por favor, selecciona un archivo de imagen jpg, png o gif.');
    }
   }
- 
+
+  limpiarForm(){
+    this.form.reset();
+  }
+
   private convertToBase64(): void {
 
     if (this.selectedFile) {
@@ -119,7 +124,7 @@ export class LoginComponent implements OnInit {
       reader.readAsDataURL(this.selectedFile);
     }
   }
- 
+
  }
 
 

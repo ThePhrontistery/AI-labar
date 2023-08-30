@@ -11,6 +11,7 @@ import { LoginService } from './login.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { FlexLayoutModule } from '@angular/flex-layout';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -25,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     ReactiveFormsModule,
     MatIconModule,
+    FlexLayoutModule
   ],
   providers: [LoginService, CookieService], // Agrega LoginService como proveedor
 })
