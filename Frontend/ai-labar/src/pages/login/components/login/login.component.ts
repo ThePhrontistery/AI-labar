@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -61,13 +62,16 @@ export class LoginComponent implements OnInit {
     private loginService: LoginService,
     private router: Router,
     private cookie: CookieService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translate: TranslateService
   ) {}
 
   /**
    * Method that is executed when the component is initialized.
    */
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.translate.setDefaultLang('en');
+  }
 
   /**
    * Method that is executed when the component is destroyed.
