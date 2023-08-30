@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { CookieService } from 'ngx-cookie-service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TopicsCreateService } from './components/topics-create/topics-create.service';
 import { MatButtonModule } from '@angular/material/button';
 import { GroupsComponent } from './components/groups/groups.component';
@@ -45,7 +45,13 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+// Function TranslateModule
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -88,7 +94,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatMenuModule,
     FlexLayoutModule,
     MatPaginatorModule,ScrollingModule
-    ,MatCardModule,MatTooltipModule,MatSlideToggleModule
+    ,MatCardModule,MatTooltipModule,MatSlideToggleModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
 })

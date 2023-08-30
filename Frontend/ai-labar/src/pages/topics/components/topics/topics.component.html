@@ -10,14 +10,14 @@
 
     <div fxHide fxShow.sm="true"  fxShow.gt-md="true">
       <button mat-raised-button class="login-button ml16" color="white" (click)="anadirGrupo()">
-        Añadir grupo
+        {{ 'TOPIC.ADD_GROUP' | translate }}
       </button>
 
       <button mat-raised-button class="login-button ml16" color="white" (click)="anyadirTopic()">
-        Añadir topic
+        {{ 'TOPIC.ADD_TOPIC' | translate }}
       </button>
       <button mat-raised-button color="white" class="login-button ml16" (click)="logOut()">
-        Logout
+        {{ 'TOPIC.LOGOUT' | translate }}
       </button>
     </div>
 
@@ -27,13 +27,13 @@
       </button>
       <mat-menu  #menu="matMenu">
         <button mat-menu-item (click)="anadirGrupo()">
-          Añadir grupo
+          {{ 'TOPIC.ADD_GROUP' | translate }}
         </button>
         <button mat-menu-item (click)="anyadirTopic()">
-          Añadir topic
+          {{ 'TOPIC.ADD_TOPIC' | translate }}
         </button>
         <button mat-menu-item (click)="logOut()">
-          Logout
+          {{ 'TOPIC.LOGOUT' | translate }}
         </button>
       </mat-menu>
     </div>
