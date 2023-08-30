@@ -9,14 +9,14 @@
 
     <mat-card *ngIf="!showRegistroFom" class="login-card">
       <mat-card-header>
-        <mat-card-title>Iniciar sesión</mat-card-title>
+        <mat-card-title>{{ 'LOGIN.INIT' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="loginForm">
           <mat-form-field class="login-form-field">
             <input
               matInput
-              placeholder="Usuario"
+              placeholder="{{ 'LOGIN.USER' | translate }}"
               required
               formControlName="user"
             />
@@ -24,7 +24,7 @@
           <mat-form-field class="login-form-field">
             <input
               matInput
-              placeholder="Contraseña"
+              placeholder="{{ 'LOGIN.PASSWORD' | translate }}"
               type="password"
               required
               formControlName="password"
@@ -36,7 +36,7 @@
             class="login-button"
             (click)="loginClick()"
           >
-            Iniciar sesión
+          {{ 'LOGIN.INIT' | translate }}
           </button>
           <button
             mat-raised-button
@@ -44,7 +44,7 @@
             class="login-button"
             (click)="registration()"
           >
-            Registro
+          {{ 'LOGIN.RECORD' | translate }}
           </button>
         </form>
       </mat-card-content>
@@ -52,24 +52,24 @@
 
     <mat-card *ngIf="showRegistroFom" class="login-card">
       <mat-card-header>
-        <mat-card-title>Registro</mat-card-title>
+        <mat-card-title>{{ 'LOGIN.RECORD' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="form">
           <mat-form-field>
-            <mat-label>User</mat-label>
+            <mat-label>{{ 'LOGIN.USER' | translate }}</mat-label>
             <input matInput formControlName="user" />
           </mat-form-field>
           <mat-form-field>
-            <mat-label>Password</mat-label>
+            <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
             <input matInput type="password" formControlName="password" />
           </mat-form-field>
           <mat-form-field>
-            <mat-label>Email</mat-label>
+            <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
             <input matInput type="email" formControlName="email" />
           </mat-form-field>
           <mat-form-field style="width: 100%">
-            <mat-label>Añadir Imagen</mat-label>
+            <mat-label>{{ 'LOGIN.ADD_IMG' | translate }}</mat-label>
             <button mat-icon-button matPrefix (click)="upload($event)">
               <mat-icon>attach_file</mat-icon>
             </button>
@@ -98,7 +98,7 @@
           class="login-button"
           (click)="sendRegistration()"
         >
-          Registrarse
+        {{ 'LOGIN.RECORD' | translate }}
         </button>
         <button
           mat-raised-button
@@ -106,7 +106,7 @@
           class="login-button"
           (click)="showRegistroFom = false"
         >
-          Cancelar
+        {{ 'LOGIN.CANCELAR' | translate }}
         </button>
       </mat-card-content>
     </mat-card>

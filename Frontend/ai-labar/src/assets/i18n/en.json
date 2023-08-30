@@ -1,0 +1,11 @@
+{ 
+    "LOGIN": {
+      "INIT": "Log in",
+      "USER": "User",
+      "PASSWORD": "Password",
+      "RECORD": "Record",
+      "EMAIL": "E-mail",
+      "ADD_IMG": "Add image",
+      "CANCELAR": "Cancel"
+    }
+  }
