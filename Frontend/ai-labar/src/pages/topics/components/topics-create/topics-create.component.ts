@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PasoDosComponent } from './pasos/paso-dos/paso-dos.component';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsCreateService } from './topics-create.service';

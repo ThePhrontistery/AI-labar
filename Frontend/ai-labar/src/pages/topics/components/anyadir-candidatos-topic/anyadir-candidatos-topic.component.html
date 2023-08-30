@@ -2,76 +2,142 @@
 <p>Elegir por grupo o por usuario:</p>
 
 <form [formGroup]="groupsForm">
-<mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
-  <mat-radio-button color="primary" value="group">Grupo</mat-radio-button>
-  <mat-radio-button color="primary" value="user">Usuario</mat-radio-button>
-</mat-radio-group>
-<div class="content" *ngIf="selectedOption == 'group'">
-  <mat-form-field>
-    <mat-label>Seleccionar Grupo de Usuarios</mat-label>
-    <mat-select formControlName="selectedGroup" (selectionChange)="loadUsers()">
-      <mat-option *ngFor="let group of groups" [value]="group">{{ group }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-
-  <h3>Usuarios del Grupo Seleccionado</h3>
-  <!-- Listado de usuarios del grupo seleccionado -->
-  <ul>
-    <ng-container *ngFor="let user of usersGroups; let i = index">
-      <p *ngIf="i === 0">Total de miembros del grupo seleccionado: {{usersGroups.length}}</p>
-      <li *ngIf="i < 6">
-        {{ user }}
-      </li>
-      <li *ngIf="i === 5 && usersGroups.length > 6">...</li>
-      <p *ngIf="i === 7 && usersGroups.length > limiteCandidatos" class="error">El número de candidatos para esta
-        encuesta no puede ser mayor que {{limiteCandidatos}}</p>
-    </ng-container>
-  </ul>
-
-  <div class="wizard-navigation">
-    <div class="button right-button">
-      <button class="button" (click)="closeDialog()" mat-button color="accent" name="cerrar">Cerrar</button>
-      <button class="button login-button ml16" mat-raised-button color="white" (click)="saveSelection()" name="guardarSelec">Guardar
-        selección</button>
-    </div>
-  </div>
-</div>
-
-<div class="content" *ngIf="selectedOption == 'user'">
-    <mat-form-field appearance="fill">
-      <input matInput placeholder="Buscar usuarios" type="text" (input)="filterUsers()" formControlName="searcher" name="searcher">
+  <mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
+    <mat-radio-button color="primary" value="group">Grupo</mat-radio-button>
+    <mat-radio-button color="primary" value="user">Usuario</mat-radio-button>
+  </mat-radio-group>
+  <div class="content" *ngIf="selectedOption == 'group'">
+    <mat-form-field>
+      <mat-label>Seleccionar Grupo de Usuarios</mat-label>
+      <mat-select
+        formControlName="selectedGroup"
+        (selectionChange)="loadUsers()"
+      >
+        <mat-option *ngFor="let group of groups" [value]="group">{{
+          group
+        }}</mat-option>
+      </mat-select>
     </mat-form-field>
-    <div *ngIf="mostrarUsuarios">
-    <p>{{ users.length }} usuarios encontrados</p>
-    <div class="selectionPanel" #checkboxContainer>
-      <mat-checkbox color="primary" *ngFor="let user of users" [formControlName]="user.name" [class]="user.hidden ? 'hidden':''" [checked]="user.checked">
-        {{ user.name }}
-    </mat-checkbox>
 
+    <h3>Usuarios del Grupo Seleccionado</h3>
+    <!-- List of users of the selected group -->
+    <ul>
+      <ng-container *ngFor="let user of usersGroups; let i = index">
+        <p *ngIf="i === 0">
+          Total de miembros del grupo seleccionado: {{ usersGroups.length }}
+        </p>
+        <li *ngIf="i < 6">
+          {{ user }}
+        </li>
+        <li *ngIf="i === 5 && usersGroups.length > 6">...</li>
+        <p
+          *ngIf="i === 7 && usersGroups.length > limitCandidates"
+          class="error"
+        >
+          El número de candidatos para esta encuesta no puede ser mayor que
+          {{ limitCandidates }}
+        </p>
+      </ng-container>
+    </ul>
+
+    <div class="wizard-navigation">
+      <div class="button right-button">
+        <button
+          class="button"
+          (click)="closeDialog()"
+          mat-button
+          color="accent"
+          name="close"
+        >
+          Cerrar
+        </button>
+        <button
+          class="button login-button ml16"
+          mat-raised-button
+          color="white"
+          (click)="saveSelection()"
+          name="saveSelec"
+        >
+          Guardar selección
+        </button>
+      </div>
     </div>
-    <p *ngIf="selectedUsers.length > 8" class="error">No se pueden seleccionar mas de 8 candidatos</p>
   </div>
-  <div [class.oculto]="!mostrarSelected">
-    <p>Usuarios seleccionados: {{selectedUsers.length}}</p>
+
+  <div class="content" *ngIf="selectedOption == 'user'">
     <mat-form-field appearance="fill">
-      <textarea formControlName="currentSelection" matInput [value]="selectedUsers.join(', ')" rows="3" name="currentSelection"></textarea>
+      <input
+        matInput
+        placeholder="Buscar usuarios"
+        type="text"
+        (input)="filterUsers()"
+        formControlName="searcher"
+        name="searcher"
+      />
     </mat-form-field>
-  </div>
-
-  <div class="wizard-navigation">
-    <div class="button left-button">
-      <button mat-raised-button color="white" class="login-button" (click)="clearSelection()" name="limpiar"> Limpiar selección
-      </button>
+    <div *ngIf="showUsers">
+      <p>{{ users.length }} usuarios encontrados</p>
+      <div class="selectionPanel" #checkboxContainer>
+        <mat-checkbox
+          color="primary"
+          *ngFor="let user of users"
+          [formControlName]="user.name"
+          [class]="user.hidden ? 'hidden' : ''"
+          [checked]="user.checked"
+        >
+          {{ user.name }}
+        </mat-checkbox>
+      </div>
+      <p *ngIf="selectedUsers.length > 8" class="error">
+        No se pueden seleccionar mas de 8 candidatos
+      </p>
     </div>
-    <div class="button right-button">
-      <button class="button" mat-button color="accent" [mat-dialog-close]="true" name="cancelar">Cancelar</button>
-      <button [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid" mat-raised-button color="white"
-        class="login-button ml16 rightButton" (click)="saveGroup()" name="guardar">
-        Guardar selección
-      </button>
+    <div [class.oculto]="!showSelected">
+      <p>Usuarios seleccionados: {{ selectedUsers.length }}</p>
+      <mat-form-field appearance="fill">
+        <textarea
+          formControlName="currentSelection"
+          matInput
+          [value]="selectedUsers.join(', ')"
+          rows="3"
+          name="currentSelection"
+        ></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="wizard-navigation">
+      <div class="button left-button">
+        <button
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="clearSelection()"
+          name="clear"
+        >
+          Limpiar selección
+        </button>
+      </div>
+      <div class="button right-button">
+        <button
+          class="button"
+          mat-button
+          color="accent"
+          [mat-dialog-close]="true"
+          name="cancel"
+        >
+          Cancelar
+        </button>
+        <button
+          [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
+          mat-raised-button
+          color="white"
+          class="login-button ml16 rightButton"
+          (click)="saveGroup()"
+          name="save"
+        >
+          Guardar selección
+        </button>
+      </div>
     </div>
   </div>
-</div>
-
 </form>

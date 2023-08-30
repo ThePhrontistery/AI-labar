@@ -71,7 +71,7 @@ export class ModalVotacionComponent implements OnChanges{
         this.objeto = this.options[i];
         const item = this.objeto.option;
         if(this.objeto.image == "" || this.objeto.image == null){
-          this.objeto.image = "assets/images/interrogante.png";
+          this.objeto.image = "assets/images/questionMark.png";
         }
         const resultadoFinal = {text:item, imageSrc:this.objeto.image, id:i}
         this.itemsVotacion.push(resultadoFinal);

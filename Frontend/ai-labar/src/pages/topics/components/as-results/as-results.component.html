@@ -1,8 +1,9 @@
 <h1>{{ data.votacion.title }}</h1>
-<div class="dato">
+<div class="fact"></div>
+<div *ngFor="let dato of result" class="fact">
+  <img [src]="dato.image" alt="Image" />
+  <span class="option">{{ dato.option }}</span>
 </div>
-<div *ngFor="let dato of result" class="dato">
-    <img [src]="dato.image" alt="Imagen" />
-    <span class="opcion">{{ dato.option }}</span>
-  </div>
-<button class="rightButton" mat-button color="accent" [mat-dialog-close]= "true">Cerrar</button>
+<button class="rightButton" mat-button color="accent" [mat-dialog-close]="true">
+  Cerrar
+</button>
