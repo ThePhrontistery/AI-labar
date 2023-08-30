@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.commons.configurations;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,10 +17,16 @@ import java.util.List;
 @EnableWebMvc
 @EnableSwagger2
 public class CorsConfiguration implements WebMvcConfigurer {
+    @Value("${allowed.origins}")
+    private String allowedOrigins;
+
+    @Value("${allowed.port}")
+    private String allowedPort;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String allowedOrigin = allowedOrigins + ":" + allowedPort;
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins(allowedOrigin)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 
