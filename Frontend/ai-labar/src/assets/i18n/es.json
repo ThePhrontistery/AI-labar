@@ -7,6 +7,11 @@
       "EMAIL": "E-mail",
       "ADD_IMG": "Añadir imagen",
       "CANCELAR": "Cancelar"
+    },
+    "TOPIC":{
+      "ADD_GROUP":"Añadir grupo",
+      "ADD_TOPIC":"Añadir topic",
+      "LOGOUT":"Salir"
     }
   }
   

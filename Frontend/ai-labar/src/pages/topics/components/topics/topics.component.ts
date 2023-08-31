@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { GroupsComponent } from '../groups/groups.component';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-topics',
   templateUrl: './topics.component.html',
@@ -13,10 +14,12 @@ export class TopicsComponent implements OnInit {
 
   constructor(private cookie: CookieService,
               private router: Router,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private translate: TranslateService) { }
 
   ngOnInit(): void {
     if (this.cookie.get('user') === '' || this.cookie.get('token') === '') this.router.navigate(['login'])
+    this.translate.setDefaultLang('en');
   }
   logOut(){
     this.cookie.delete('user');
