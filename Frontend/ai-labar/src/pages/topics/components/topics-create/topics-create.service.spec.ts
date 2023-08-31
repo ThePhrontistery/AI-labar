@@ -8,7 +8,7 @@ describe('TopicsCreateService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule ]
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(TopicsCreateService);
   });

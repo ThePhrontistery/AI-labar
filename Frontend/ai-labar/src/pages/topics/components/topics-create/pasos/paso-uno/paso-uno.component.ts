@@ -1,40 +1,77 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
+/**
+ * Component for selecting a survey image in the first stage.
+ */
 @Component({
   selector: 'app-paso-uno',
   templateUrl: './paso-uno.component.html',
-  styleUrls: ['./paso-uno.component.scss']
+  styleUrls: ['./paso-uno.component.scss'],
 })
 export class PasoUnoComponent implements OnInit {
-
+  /**
+   * Data shared from the parent component.
+   */
   @Input() sharedData: any;
 
-  imagenes = [
-    { name: 'Valores\n(Selección simple/multiple)', route: 'assets/images/imageUno.png', code:'VAL' },
-    { name: 'Valores con imagen\n(Selección simple/multiple)', route: 'assets/images/imageCuatro.png', code:'VCI' },
-    { name: 'Emojis\n(Selección simple)', route: 'assets/images/imageDos.jpg', code:'EMO' },
-    { name: 'Empleado\n(Selección simple)', route: 'assets/images/imageTres.png', code:'EMP' }
+  /**
+   * List of available survey images.
+   */
+  images = [
+    {
+      name: 'Valores (Selección simple/multiple)',
+      route: 'assets/images/imageUno.png',
+      code: 'VAL',
+    },
+    {
+      name: 'Valores con imagen (Selección simple/multiple)',
+      route: 'assets/images/imageCuatro.png',
+      code: 'VCI',
+    },
+    {
+      name: 'Emojis (Selección simple)',
+      route: 'assets/images/imageDos.jpg',
+      code: 'EMO',
+    },
+    {
+      name: 'Empleado (Selección simple)',
+      route: 'assets/images/imageTres.png',
+      code: 'EMP',
+    },
   ];
 
-  imagenSeleccionada = {route : null, name: null, code: null};
+  /**
+   * Selected image for the survey.
+   */
+  selectedImage = { route: null, name: null, code: null };
 
-  @Output() metodoPadreInvocado = new EventEmitter<any>();
+  /**
+   * Event emitted when an image is selected.
+   */
+  @Output() parentMethodInvoked = new EventEmitter<any>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
+  /**
+   * Method invoked upon initializing the component.
+   */
+  ngOnInit(): void {}
+
+  /**
+   * Select an image from the list and emit the event to the parent component.
+   * @param imagen Selected image.
+   */
+  selectImage(imagen: any) {
+    this.selectedImage.route = imagen.route;
+    this.selectedImage.name = imagen.name;
+    this.selectedImage.code = imagen.code;
+    this.callParentMethod();
   }
 
-  seleccionarImagen(imagen: any){
-    this.imagenSeleccionada.route = imagen.route;
-    this.imagenSeleccionada.name = imagen.name;
-    this.imagenSeleccionada.code = imagen.code;
-    this.llamarMetodoPadre();
+  /**
+   * Emit the event to the parent component with the selected image.
+   */
+  callParentMethod() {
+    this.parentMethodInvoked.emit(this.selectedImage);
   }
-
-  llamarMetodoPadre() {
-    this.metodoPadreInvocado.emit(this.imagenSeleccionada);
-  }
-
-
 }

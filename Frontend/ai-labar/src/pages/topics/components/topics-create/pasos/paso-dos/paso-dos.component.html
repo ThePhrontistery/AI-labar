@@ -1,24 +1,34 @@
-<div *ngIf="imagenSeleccionada.route">
+<div *ngIf="selectedImage.route">
   <h2>Has seleccionado:</h2>
-  <img [src]="imagenSeleccionada.route" alt="{{ imagenSeleccionada.name }}">
+  <img [src]="selectedImage.route" alt="{{ selectedImage.name }}" />
 </div>
 
-<div class="formulario">
+<div class="form">
   <div>
     <h2>Elige un título:</h2>
-    <input type="text" [(ngModel)]="valorTextbox" placeholder="Ingrese un valor">
+    <input
+      type="text"
+      [(ngModel)]="textBoxValue"
+      placeholder="Ingrese un valor"
+    />
   </div>
 
   <div>
     <h2>Elige una fecha de cierre:</h2>
     <mat-form-field>
-      <input matInput [matDatepicker]="picker" (dateChange)="onDateSelected($event)" matDatepickerParse [min]="minDate">
+      <input
+        matInput
+        [matDatepicker]="picker"
+        (dateChange)="onDateSelected($event)"
+        matDatepickerParse
+        [min]="minDate"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker ></mat-datepicker>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </div>
 
-  <div *ngIf="isEncuestaImagenTexto || isEncuestaOpinion">
+  <div *ngIf="isSurveyImageText || isOpinionSurvey">
     <h2>Elige el tipo de selección:</h2>
     <mat-form-field>
       <mat-select [(ngModel)]="selectedType">
@@ -28,62 +38,113 @@
     </mat-form-field>
   </div>
 
-  <div *ngIf="isEncuestaOpinion">
+  <div *ngIf="isOpinionSurvey">
     <h2>Elige las opciones:</h2>
-    <input type="text" [(ngModel)]="valorEncuesta1" placeholder="Ingrese un valor">
+    <input
+      type="text"
+      [(ngModel)]="surveyValue1"
+      placeholder="Ingrese un valor"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorEncuesta2" placeholder="Ingrese un valor">
+    <input
+      type="text"
+      [(ngModel)]="surveyValue2"
+      placeholder="Ingrese un valor"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorEncuesta3" placeholder="Ingrese un valor">
+    <input
+      type="text"
+      [(ngModel)]="surveyValue3"
+      placeholder="Ingrese un valor"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorEncuesta4" placeholder="Ingrese un valor">
+    <input
+      type="text"
+      [(ngModel)]="surveyValue4"
+      placeholder="Ingrese un valor"
+    />
   </div>
 
-  <div *ngIf="isEncuestaVotacion">
-    <button mat-button (click)="openAnyadirCandidatos()">Añadir candidatos</button>
+  <div *ngIf="isVotingSurvey">
+    <button mat-button (click)="openAddCandidates()">Añadir candidatos</button>
     <h2>Lista de candidatos:</h2>
     <!-- Listado de usuarios seleccionados -->
-  <ul>
-    <ng-container *ngFor="let user of usersCandidatos; let i = index">
-      <p *ngIf="i === 0">Total de candidatos: {{usersCandidatos.length}}</p>
-      <li *ngIf="i < 6">
-        {{ user }}
-      </li>
-      <li *ngIf="i === 5 && usersCandidatos.length > 6">...</li>
-    </ng-container>
-  </ul>
+    <ul>
+      <ng-container *ngFor="let user of usersCandidates; let i = index">
+        <p *ngIf="i === 0">Total de candidatos: {{ usersCandidates.length }}</p>
+        <li *ngIf="i < 6">
+          {{ user }}
+        </li>
+        <li *ngIf="i === 5 && usersCandidates.length > 6">...</li>
+      </ng-container>
+    </ul>
   </div>
 
-  <div *ngIf="isEncuestaImagenTexto">
+  <div *ngIf="isSurveyImageText">
     <h2>Elige las opciones:</h2>
-    <input type="text" [(ngModel)]="valorImagenTexto1" placeholder="Ingrese un valor">
-    <input type="file" name="image1" (change)="onFileSelected($event, 1)" accept="image/*">
+    <input
+      type="text"
+      [(ngModel)]="imageTextValue1"
+      placeholder="Ingrese un valor"
+    />
+    <input
+      type="file"
+      name="image1"
+      (change)="onFileSelected($event, 1)"
+      accept="image/*"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorImagenTexto2" placeholder="Ingrese un valor">
-    <input type="file" name="image2" (change)="onFileSelected($event, 2)" accept="image/*">
+    <input
+      type="text"
+      [(ngModel)]="imageTextValue2"
+      placeholder="Ingrese un valor"
+    />
+    <input
+      type="file"
+      name="image2"
+      (change)="onFileSelected($event, 2)"
+      accept="image/*"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorImagenTexto3" placeholder="Ingrese un valor">
-    <input type="file" name="imag3" (change)="onFileSelected($event, 3)" accept="image/*">
+    <input
+      type="text"
+      [(ngModel)]="imageTextValue3"
+      placeholder="Ingrese un valor"
+    />
+    <input
+      type="file"
+      name="imag3"
+      (change)="onFileSelected($event, 3)"
+      accept="image/*"
+    />
     <p></p>
-    <input type="text" [(ngModel)]="valorImagenTexto4" placeholder="Ingrese un valor">
-    <input type="file" name="imag4" (change)="onFileSelected($event, 4)" accept="image/*">
+    <input
+      type="text"
+      [(ngModel)]="imageTextValue4"
+      placeholder="Ingrese un valor"
+    />
+    <input
+      type="file"
+      name="imag4"
+      (change)="onFileSelected($event, 4)"
+      accept="image/*"
+    />
   </div>
 
-<div>
-  <button mat-button (click)="openAnyadirParticipantes()">Añadir participantes</button>
-  <h2>Lista de participantes:</h2>
-  <!-- Listado de usuarios del grupo seleccionado -->
-<ul>
-  <ng-container *ngFor="let user of users; let i = index">
-    <p *ngIf="i === 0">Total de participantes: {{users.length}}</p>
-    <li *ngIf="i < 6">
-      {{ user }}
-    </li>
-    <li *ngIf="i === 5 && users.length > 6">...</li>
-  </ng-container>
-</ul>
+  <div>
+    <button mat-button (click)="openAddParticipants()">
+      Añadir participantes
+    </button>
+    <h2>Lista de participantes:</h2>
+    <!-- List of users in the selected group. -->
+    <ul>
+      <ng-container *ngFor="let user of users; let i = index">
+        <p *ngIf="i === 0">Total de participantes: {{ users.length }}</p>
+        <li *ngIf="i < 6">
+          {{ user }}
+        </li>
+        <li *ngIf="i === 5 && users.length > 6">...</li>
+      </ng-container>
+    </ul>
+  </div>
 </div>
-</div>
-
-
-

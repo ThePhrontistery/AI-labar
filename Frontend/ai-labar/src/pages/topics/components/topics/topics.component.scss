@@ -1,75 +1,61 @@
-.content{
-    margin-top: 60px;
+.content {
+  margin-top: 60px;
 }
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    margin-right: 16px;
-  }
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
 
-  .user-icon {
-    color: white;
-    font-size: 32px;
-  }
+.user-icon {
+  color: white;
+  font-size: 32px;
+}
 
-  .username {
-    margin-left: 8px;
-    color: white;
-  }
+.username {
+  margin-left: 8px;
+  color: white;
+}
 
-  .add-user-button {
-    background-color: white;
-    color: #0070ad;
-    border-radius: 4px;
-    padding: 8px 16px;
-  }
+.add-user-button {
+  background-color: white;
+  color: #0070ad;
+  border-radius: 4px;
+  padding: 8px 16px;
+}
 
-  .add-user-button:hover {
-    background-color: #0070ad;
-    color: white;
-  }
+.add-user-button:hover {
+  background-color: #0070ad;
+  color: white;
+}
 
-  .add-user-icon {
-    color: #0070ad;
-    font-size: 24px;
-  }
+.add-user-icon {
+  color: #0070ad;
+  font-size: 24px;
+}
 
-  .anyadir {
-    padding: 10px 20px;
-    background-color: #fff;
-    color: #0056b3;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
+.wd16 {
+  width: 16px;
+}
+.hoover {
+  order: -1;
+}
 
-  .anyadir:hover {
-    background-color: #fff;
-  }
-  .wd16{
-    width: 16px;
-  }
-  .hoover{
-    order: -1;
-  }
-
-  .right {
-    display: flex;
+.right {
+  display: flex;
   flex-direction: row;
   justify-content: flex-end;
-    float: right;
-    width: 100%;
-    margin-right: 16px;
-  }
+  float: right;
+  width: 100%;
+  margin-right: 16px;
+}
 
-  .ml16{
-    margin-left: 16px;
-  }
+.ml16 {
+  margin-left: 16px;
+}
 
-  .vertical-menu {
-    flex-direction: column;
-    display: flex;
-  }
-
+.vertical-menu {
+  flex-direction: column;
+  display: flex;
+}

@@ -1,23 +1,44 @@
 <div class="wizard">
   <div class="wizard-content">
     <ng-container *ngIf="currentStep === 1">
-      <app-paso-uno (sharedData)="sharedData" (metodoPadreInvocado)="metodoPadre($event)"></app-paso-uno>
+      <app-paso-uno
+        (sharedData)="(sharedData)"
+        (parentMethodInvoked)="parentMethod($event)"
+      ></app-paso-uno>
     </ng-container>
 
     <ng-container *ngIf="currentStep === 2">
-      <app-paso-dos (sharedData)="sharedData" [imagenSeleccionada]="imagenSeleccionadaPasoUno"></app-paso-dos>
+      <app-paso-dos
+        (sharedData)="(sharedData)"
+        [selectedImage]="selectedImageStepOne"
+      ></app-paso-dos>
     </ng-container>
     <div class="wizard-navigation">
       <div class="button left-button">
-        <button class="button login-button"  mat-raised-button color="white" *ngIf="currentStep > 1" (click)="goToPreviousStep()">Atrás</button>
+        <button
+          class="button login-button"
+          mat-raised-button
+          color="white"
+          *ngIf="currentStep > 1"
+          (click)="goToPreviousStep()"
+        >
+          Atrás
+        </button>
       </div>
       <div class="button right-button">
-        <button mat-button color="accent" (click)="cancelarGuardar()">Cancelar</button>
-        <button *ngIf="currentStep > 1" class="login-button ml16" mat-raised-button color="white" (click)="guardarEncuesta()">Guardar</button>
+        <button mat-button color="accent" (click)="cancelSave()">
+          Cancelar
+        </button>
+        <button
+          *ngIf="currentStep > 1"
+          class="login-button ml16"
+          mat-raised-button
+          color="white"
+          (click)="saveSurvey()"
+        >
+          Guardar
+        </button>
       </div>
     </div>
   </div>
 </div>
-
-
-

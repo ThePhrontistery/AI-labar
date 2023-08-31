@@ -5,19 +5,34 @@
   <div class="right">
     <div class="user-info">
       <i class="material-icons user-icon">account_circle</i>
-      <span class="username">{{user}}</span>
+      <span class="username">{{ user }}</span>
     </div>
 
-    <div fxHide fxShow.sm="true"  fxShow.gt-md="true">
-      <button mat-raised-button class="login-button ml16" color="white" (click)="anadirGrupo()">
-        {{ 'TOPIC.ADD_GROUP' | translate }}
+    <div fxHide fxShow.sm="true" fxShow.gt-md="true">
+      <button
+        mat-raised-button
+        class="login-button ml16"
+        color="white"
+        (click)="addGroup()"
+      >
+        {{ "TOPIC.ADD_GROUP" | translate }}
       </button>
 
-      <button mat-raised-button class="login-button ml16" color="white" (click)="anyadirTopic()">
-        {{ 'TOPIC.ADD_TOPIC' | translate }}
+      <button
+        mat-raised-button
+        class="login-button ml16"
+        color="white"
+        (click)="addTopic()"
+      >
+        {{ "TOPIC.ADD_TOPIC" | translate }}
       </button>
-      <button mat-raised-button color="white" class="login-button ml16" (click)="logOut()">
-        {{ 'TOPIC.LOGOUT' | translate }}
+      <button
+        mat-raised-button
+        color="white"
+        class="login-button ml16"
+        (click)="logOut()"
+      >
+        {{ "TOPIC.LOGOUT" | translate }}
       </button>
     </div>
 
@@ -25,15 +40,15 @@
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
-      <mat-menu  #menu="matMenu">
-        <button mat-menu-item (click)="anadirGrupo()">
-          {{ 'TOPIC.ADD_GROUP' | translate }}
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="addGroup()">
+          {{ "TOPIC.ADD_GROUP" | translate }}
         </button>
-        <button mat-menu-item (click)="anyadirTopic()">
-          {{ 'TOPIC.ADD_TOPIC' | translate }}
+        <button mat-menu-item (click)="addTopic()">
+          {{ "TOPIC.ADD_TOPIC" | translate }}
         </button>
         <button mat-menu-item (click)="logOut()">
-          {{ 'TOPIC.LOGOUT' | translate }}
+          {{ "TOPIC.LOGOUT" | translate }}
         </button>
       </mat-menu>
     </div>

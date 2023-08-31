@@ -4,11 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TopicsCreateService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public createTopics(body: any): Observable<any> {
     const url = `${environment.apiUrl}/topics/createTopic`;
