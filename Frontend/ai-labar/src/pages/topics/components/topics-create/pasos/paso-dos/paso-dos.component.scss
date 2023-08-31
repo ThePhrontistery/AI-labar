@@ -1,9 +1,3 @@
-/* Estilo para el título */
-.titulo h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
 .emojis-container {
   display: flex;
   flex-direction: column;
@@ -36,7 +30,6 @@
   font-size: 1rem;
 }
 
-/* Estilo del checkbox circular cuando está seleccionado */
 .checkbox-wrapper input[type="checkbox"]:checked {
   background-color: #007bff;
   border-color: #007bff;
@@ -44,13 +37,6 @@
 
 .checkbox-wrapper input[type="checkbox"]:checked + label {
   color: white;
-}
-
-.empleados-container {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  margin: 0.5rem;
 }
 
 .blue-button {
@@ -64,14 +50,13 @@
 }
 
 .blue-button:hover {
-  background-color: darkblue; /* Color cuando el mouse está sobre el botón */
+  background-color: darkblue;
 }
 
 .blue-button:active {
-  background-color: royalblue; /* Color cuando el botón está presionado */
+  background-color: royalblue;
 }
 
-/* Estilo para el input de texto */
 input[type="text"] {
   width: 100%;
   padding: 8px;
@@ -80,7 +65,6 @@ input[type="text"] {
   margin-bottom: 10px;
 }
 
-/* Estilo para el botón */
 button {
   background-color: #007bff;
   color: #fff;
@@ -90,7 +74,6 @@ button {
   margin-bottom: 20px;
 }
 
-/* Estilo para la lista de candidatos y participantes */
 ul {
   list-style: none;
   padding: 0;
@@ -101,21 +84,19 @@ li {
   margin-bottom: 5px;
 }
 
-/* Estilo para la imagen seleccionada */
 img {
   max-width: 100%;
   max-height: 200px;
   margin-bottom: 10px;
 }
 
-/* Estilo para el mat-form-field (Angular Material) */
 mat-form-field {
   margin-bottom: 10px;
   width: 100%;
 }
 
 @media (max-width: 768px) {
-  .formulario {
+  .form {
     width: 40%;
     align-items: center;
     display: inline-grid;
@@ -125,12 +106,12 @@ mat-form-field {
 
 /* Estilos para resoluciones mayores a 768px */
 @media (min-width: 769px) {
-  .formulario {
+  .form {
     display: flex;
     flex-direction: row;
   }
 
-  .formulario div {
+  .form div {
     padding-right: 50px;
   }
 }

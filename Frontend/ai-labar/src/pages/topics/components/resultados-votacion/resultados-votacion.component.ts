@@ -10,23 +10,23 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ResultadosVotacionComponent {
   /**
-   * List of elements that represent the voting results.
+   * List of items representing the voting results.
    */
   @Input() items: any[] | undefined;
 
   /**
-   * Title of the poll or voting whose results are displayed.
+   * Title of the survey or voting whose results are being displayed.
    */
   @Input() titleSurvey: string = '';
 
   /**
-   * Event emitted when the results modal is requested to close.
+   * Event emitted when the closure of the results modal is requested.
    */
   @Output() closeModal = new EventEmitter<void>();
 
   /**
    * Method invoked when closing the results modal.
-   * Emit the `closeModal` event to notify the parent component.
+   * Emits the closeModal event to notify the parent component.
    */
   onCloseModal() {
     this.closeModal.emit();

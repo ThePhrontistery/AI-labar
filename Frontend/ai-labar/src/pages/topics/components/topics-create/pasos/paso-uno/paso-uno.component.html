@@ -1,10 +1,14 @@
 <h1>Elige un tipo de encuesta:</h1>
 <h3>(Selecciona la imagen de el tipo de encuesta que desees)</h3>
 
-<div class="imagenes-container">
-  <div *ngFor="let imagen of imagenes" (click)="seleccionarImagen(imagen)" class="img-border image">
-    <h2 fxHide fxShow.sm="true"  fxShow.gt-md="true">{{ imagen.name }}</h2>
-    <h5 fxHide fxShow.xs>{{ imagen.name }}</h5>
-    <img [src]="imagen.route" alt="{{ imagen.name }}">
+<div class="images-container">
+  <div
+    *ngFor="let image of images"
+    (click)="selectImage(image)"
+    class="img-border image"
+  >
+    <h2 fxHide fxShow.sm="true" fxShow.gt-md="true">{{ image.name }}</h2>
+    <h5 fxHide fxShow.xs>{{ image.name }}</h5>
+    <img [src]="image.route" alt="{{ image.name }}" />
   </div>
 </div>

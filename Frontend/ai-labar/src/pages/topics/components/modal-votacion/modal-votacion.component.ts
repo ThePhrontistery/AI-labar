@@ -1,6 +1,6 @@
 /**
- * This component represents a voting modal that allows users to participate in different types of surveys.
- * It handles survey options, user selections, and sends voting data to the server.
+ * This component represents a voting modal that allows users to participate in various types of surveys.
+ * Handles survey options, user selections, and sends voting data to the server.
  */
 
 import {
@@ -20,7 +20,7 @@ import { Emoji } from '../interfaces/emoji.model';
   styleUrls: ['./modal-votacion.component.scss'],
 })
 export class ModalVotacionComponent implements OnChanges {
-  // Input properties for configuring the modal
+  // Input properties for configuring the modal.
   @Input() isOpen: boolean = false;
   @Input() options: string[] = [];
   @Input() selectedOptions: string[] = [];
