@@ -66,22 +66,19 @@ td.mat-footer-cell:last-of-type {
 #div1 {
   overflow-y: scroll;
   height: 70vh;
-
 }
 
 #div2 {
   overflow-y: scroll;
   height: 70vh;
-
 }
 
 .mat-card {
-  //width: 100%;
   margin: 20px;
 }
 
-.mat-card>:last-child:not(.mat-card-footer),
-.mat-card-content>:last-child:not(.mat-card-footer) {
+.mat-card > :last-child:not(.mat-card-footer),
+.mat-card-content > :last-child:not(.mat-card-footer) {
   margin-bottom: 10px;
 }
 
@@ -89,7 +86,6 @@ td.mat-footer-cell:last-of-type {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  /* Cambio de space-between a flex-start */
 }
 
 .card-item {

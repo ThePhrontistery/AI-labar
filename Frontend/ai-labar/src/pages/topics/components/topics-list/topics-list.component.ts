@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef    } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { TopicsListService } from './topics-list.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,36 +17,54 @@ import { ImageTextResultComponent } from '../image-text-result/image-text-result
 import { environment } from 'src/environments/environment';
 import { TopicsListServiceMock } from './topics-list.service.mock';
 import { ConfirmarEliminacionTopicComponent } from '../confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
-import { MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
+import {
+  MatPaginator,
+  MatPaginatorIntl,
+  PageEvent,
+} from '@angular/material/paginator';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LOCALE_ID, Inject } from '@angular/core';
 
+/**
+ * Component displaying a list of topics and surveys.
+ */
 @Component({
   selector: 'app-topics-list',
   templateUrl: './topics-list.component.html',
-  styleUrls: ['./topics-list.component.scss']
+  styleUrls: ['./topics-list.component.scss'],
 })
-export class TopicsListComponent implements OnInit, OnDestroy  {
-
+export class TopicsListComponent implements OnInit, OnDestroy {
+  // Variable and property declarations.
   private ngUnsubscribe = new Subject();
-  @ViewChild(MatSort) sort!: MatSort; // Importante: agregar ViewChild para el MatSort
-  @ViewChild('table', { static: true }) table!: ElementRef; // Agrega esta línea
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('table', { static: true }) table!: ElementRef;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  @ViewChild('tablaTopicos', { read: ElementRef }) tablaTopicos!: ElementRef;
+  @ViewChild('topicsTable', { read: ElementRef }) topicsTable!: ElementRef;
 
-  @ViewChild('relleno') relleno!: ElementRef;
+  @ViewChild('fill') fill!: ElementRef;
 
   topicsData: any;
   user: string = this.cookie.get('user');
-  displayedColumns: string[] = ['title', 'author', 'closeDate', 'status', 'open', 'close', 'delete', 'vote', 'result', 'result2'];
+  displayedColumns: string[] = [
+    'title',
+    'author',
+    'closeDate',
+    'status',
+    'open',
+    'close',
+    'delete',
+    'vote',
+    'result',
+    'result2',
+  ];
 
   dataSource: any = new MatTableDataSource<any>([]);
 
   modalOpen: boolean = false;
-  optionsVotacion: string[] = [];
+  optionsVotation: string[] = [];
   selectedOptions: string[] = [];
-  titleVotacion: string = '';
+  titleVotation: string = '';
   idVotation: any;
   typeVoting: string = '';
 
@@ -58,42 +82,47 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
   isButtonDisabled: boolean = false;
 
-  listItems: any[] = [{ option: 'Elemento 1', votes: 1 }, { option: 'Elemento 2', votes: 2 }, { option: 'Elemento 3', votes: 5 }, { option: 'Elemento 4', votes: 0 }];
-  showModalResultados = false;
-  showTablaPaginada = true;
-  showTablaScroll = false;
+  listItems: any[] = [
+    { option: 'Element 1', votes: 1 },
+    { option: 'Element 2', votes: 2 },
+    { option: 'Element 3', votes: 5 },
+    { option: 'Element 4', votes: 0 },
+  ];
+  showResultsModal = false;
+  showPaginatedTable = true;
+  showScrollTable = false;
   showCards = false;
-  titleEncuesta: string = '';
+  titleSurvey: string = '';
 
   pageIndex: number = 1;
-  pageSize: number = 10; // Cantidad de elementos por página
+  pageSize: number = 10;
   totalItems: number | undefined;
 
-  @ViewChild(MatPaginator )  paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   loading = false;
-  constructor(private topicListService: TopicsListService,
+  constructor(
+    private topicListService: TopicsListService,
     private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
     private matPaginatorIntl: MatPaginatorIntl,
-    @Inject(LOCALE_ID) private locale: string,    
-    private cookie: CookieService) {
-  }
+    @Inject(LOCALE_ID) private locale: string,
+    private cookie: CookieService
+  ) {}
 
+  // Component and value initialization.
   ngOnInit(): void {
-    this.defaultVisualization(this.cookie.get("visualization"));
+    this.defaultVisualization(this.cookie.get('visualization'));
     this.getTopicList();
-    //this.paginator._intl.itemsPerPageLabel="Topics por página: ";
-    this.matPaginatorIntl.itemsPerPageLabel = "Topics por página: ";
-    //this.matPaginatorIntl.getRangeLabel = this.getRangeLabel.bind(this);
+    this.matPaginatorIntl.itemsPerPageLabel = 'Topics por página: ';
   }
 
   ngOnDestroy() {
-    //this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
+  // Methods for manipulating and filtering the list of topics
   onToggleChange(event: any) {
-    if(event.source.id === 'minesToggle' && event.checked) {
+    if (event.source.id === 'minesToggle' && event.checked) {
       this.minesFilter = event.checked;
     }
 
@@ -105,18 +134,17 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       this.closedFilter = event.checked;
     }
 
-    if(event.source.id === 'votePendingFilter' && event.checked) {
+    if (event.source.id === 'votePendingFilter' && event.checked) {
       this.votePendingFilter = event.checked;
     }
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
-    if(this.paginator) this.paginator.firstPage();
+    if (this.paginator) this.paginator.firstPage();
     this.getTopicList();
   }
 
-
-  filterTopics():String [] {
+  filterTopics(): String[] {
     const activeFilters = [];
 
     if (this.minesFilter) {
@@ -132,16 +160,16 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       activeFilters.push('votePending');
     }
     return activeFilters;
-
   }
 
+  // Method to reopen a closed topic.
   reOpen(votation: any) {
     const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
-      "id": votation.id,
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token")
-    }
+      id: votation.id,
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+    };
     let serviceCall;
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.reopenTopic(closingData);
@@ -149,30 +177,28 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       serviceCall = this.topicListService.put(closingData, url);
     }
 
-    serviceCall
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: response => {
-          if (response) {
-            this.getTopicList();
-          }
-        },
-        error: error => {
-          let textError=error.error.message;
-          if(error.error.message===undefined) textError=error.error.error;
-          alert('Error al abrir el topico: ' + textError);
+    serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.getTopicList();
         }
-      }
-      );
-
+      },
+      error: (error) => {
+        let textError = error.error.message;
+        if (error.error.message === undefined) textError = error.error.error;
+        alert('Error al abrir el topico: ' + textError);
+      },
+    });
   }
+
+  // Method to close an open topic.
   close(votation: any) {
     const url = `${environment.apiUrl}/topics/closeTopic`;
     const closingData = {
-      "id": votation.id,
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token")
-    }
+      id: votation.id,
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+    };
     let serviceCall;
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.closeTopic(closingData);
@@ -180,41 +206,38 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       serviceCall = this.topicListService.put(closingData, url);
     }
 
-    serviceCall
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: response => {
-          if (response) {
-            this.getTopicList();
-          }
-        },
-        error: error => {
-          let textError=error.error.message;
-          if(error.error.message===undefined) textError=error.error.error;
-          alert('Error al cerra el topico: ' + textError);
+    serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.getTopicList();
         }
-      });
-
-
+      },
+      error: (error) => {
+        let textError = error.error.message;
+        if (error.error.message === undefined) textError = error.error.error;
+        alert('Error al cerra el topico: ' + textError);
+      },
+    });
   }
+
+  // Method to delete a topic.
   delete(votation: any) {
     const dialogRef = this.dialog.open(ConfirmarEliminacionTopicComponent, {
       width: '250px',
       data: {
         title: 'Confirmar Eliminación',
-        message: '¿Estás seguro de que deseas eliminar esta encuesta?'
-      }
+        message: '¿Estás seguro de que deseas eliminar esta encuesta?',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const url = `${environment.apiUrl}/topics/deleteTopic`;
         const deletionData = {
-          "id": votation.id,
-          "user": this.cookie.get("user"),
-          "token": this.cookie.get("token")
-        }
-
+          id: votation.id,
+          user: this.cookie.get('user'),
+          token: this.cookie.get('token'),
+        };
 
         let serviceCall;
         if (environment.mockup) {
@@ -223,51 +246,52 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
           serviceCall = this.topicListService.delete(deletionData, url);
         }
 
-        serviceCall
-          .pipe(takeUntil(this.ngUnsubscribe))
-          .subscribe({
-            next: response => {
-              if (response) {
-                if(this.showTablaScroll){
-                 const pageSizeBefore=this.pageSize;
-                 const pageIndexBefore=this.pageIndex-1;
-                 this.pageIndex=this.dataSource.data.length;
-                 this.pageSize=1;
-                 this.dataSource.data = this.dataSource.data.filter((item: { id: any; }) => item.id !== votation.id);                 
-                 this.getTopicList();
-                 this.pageIndex=pageIndexBefore;
-                 this.pageSize=pageSizeBefore;
-                }else{
-                 this.getTopicList();
-                }
+        serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
+          next: (response) => {
+            if (response) {
+              if (this.showScrollTable) {
+                const pageSizeBefore = this.pageSize;
+                const pageIndexBefore = this.pageIndex - 1;
+                this.pageIndex = this.dataSource.data.length;
+                this.pageSize = 1;
+                this.dataSource.data = this.dataSource.data.filter(
+                  (item: { id: any }) => item.id !== votation.id
+                );
+                this.getTopicList();
+                this.pageIndex = pageIndexBefore;
+                this.pageSize = pageSizeBefore;
+              } else {
+                this.getTopicList();
               }
-            },
-            error: error => {
-              let textError=error.error.message;
-              if(error.error.message===undefined) textError=error.error.error;
-              alert('Error al borrar el topico: ' + textError);
             }
-          }
-          );
+          },
+          error: (error) => {
+            let textError = error.error.message;
+            if (error.error.message === undefined)
+              textError = error.error.error;
+            alert('Error al borrar el topico: ' + textError);
+          },
+        });
       }
     });
   }
+
+  // Method to vote in a survey.
   vote(votation: any) {
-    //console.log(votation);
     this.idVotation = votation.id;
-    //this.optionsVotacion = votation.optionsDataList;
-    this.optionsVotacion = votation.options;
-    this.titleVotacion = votation.title;
+    this.optionsVotation = votation.options;
+    this.titleVotation = votation.title;
     this.typeVoting = votation.type;
     this.openModal();
   }
 
+  // Other methods for interacting with surveys and results.
   openModal(): void {
     this.modalOpen = true;
-    this.revisarType();
+    this.reviewType();
   }
 
-  closeModalVotacion(): void {
+  closeModalVotation(): void {
     this.modalOpen = false;
     this.isSurveyOpinionSimple = false;
     this.isSurveyRating = false;
@@ -287,60 +311,62 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     }
   }
 
-  revisarType(): void {
-    if (this.typeVoting == "TEXT_MULTIPLE") {
+  reviewType(): void {
+    if (this.typeVoting == 'TEXT_MULTIPLE') {
       this.isSurveyOpinionMultiple = true;
-    } else if (this.typeVoting == "RATING") {
+    } else if (this.typeVoting == 'RATING') {
       this.isSurveyRating = true;
-    } else if (this.typeVoting == "AS") {
+    } else if (this.typeVoting == 'AS') {
       this.isSurveyVoting = true;
-    } else if (this.typeVoting == "IMAGE_SINGLE") {
+    } else if (this.typeVoting == 'IMAGE_SINGLE') {
       this.isSurveyImageTextSimple = true;
-    } else if (this.typeVoting == "IMAGE_MULTIPLE") {
+    } else if (this.typeVoting == 'IMAGE_MULTIPLE') {
       this.isSurveyImageTextMultiple = true;
-    } else if (this.typeVoting == "TEXT_SINGLE") {
+    } else if (this.typeVoting == 'TEXT_SINGLE') {
       this.isSurveyOpinionSimple = true;
     }
   }
 
-  openModalResultados(votation: any) {
-    this.titleEncuesta = votation.title;
-    this.showModalResultados = true;
+  closeResultsModal() {
+    this.showResultsModal = false;
   }
 
-  closeModalResultados() {
-    this.showModalResultados = false;
-  }
-
-  results(votacion: any) {
+  results(votation: any) {
     let component;
-    if (votacion.type === 'TEXT_MULTIPLE' || votacion.type === 'TEXT_SINGLE') component = TopicResultComponent;
-    if (votacion.type === 'AS') component = AsResultsComponent;
-    if (votacion.type === 'RATING') component = ValoracionResultComponent;
-    if (votacion.type === 'IMAGE_SINGLE' || votacion.type === 'IMAGE_MULTIPLE') component = ImageTextResultComponent;
-    if (component) this.openResult(votacion, component)
+    if (votation.type === 'TEXT_MULTIPLE' || votation.type === 'TEXT_SINGLE')
+      component = TopicResultComponent;
+    if (votation.type === 'AS') component = AsResultsComponent;
+    if (votation.type === 'RATING') component = ValoracionResultComponent;
+    if (votation.type === 'IMAGE_SINGLE' || votation.type === 'IMAGE_MULTIPLE')
+      component = ImageTextResultComponent;
+    if (component) this.openResult(votation, component);
   }
-  openResult(votacion: any, component: any) {
+  openResult(votation: any, component: any) {
     const dialogRef = this.dialog.open(component, {
       width: '350px',
-      data: { votacion },
+      data: { votation },
     });
   }
 
+  // Method to handle page changes.
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this.getTopicList();
   }
 
-  ////////
-  puedoPaginar(): boolean {
-   return  (this.totalItems === undefined || (this.totalItems !== undefined && ((this.pageIndex - 1) * this.pageSize) + 1 <= this.totalItems));
-   //return true;
+  // Method to check if pagination is possible.
+  canPaginate(): boolean {
+    return (
+      this.totalItems === undefined ||
+      (this.totalItems !== undefined &&
+        (this.pageIndex - 1) * this.pageSize + 1 <= this.totalItems)
+    );
   }
 
+  // Method to get the list of topics.
   getTopicList() {
-    if (this.showTablaScroll && !this.puedoPaginar()) return;
+    if (this.showScrollTable && !this.canPaginate()) return;
 
     if (this.loading) {
       return;
@@ -350,12 +376,12 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
     const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token"),
-      "page": this.pageIndex,
-      "elements": this.pageSize,
-      "filters":this.filterTopics()
-    }
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+      page: this.pageIndex,
+      elements: this.pageSize,
+      filters: this.filterTopics(),
+    };
     let serviceCall;
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
@@ -363,75 +389,73 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
       serviceCall = this.topicListService.post(loadTopicsBody, url);
     }
 
-    serviceCall
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: response => {
-          if (response) {
-            const data = response.entity.entity;
+    serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
+      next: (response) => {
+        if (response) {
+          const data = response.entity.entity;
 
-            if (this.dataSource) {
-
-              if (this.showTablaScroll) {
-                this.dataSource.data = this.dataSource.data.concat(data);
-              } else {
-                this.dataSource.data = response.entity.entity;
-
-              }
-              this.dataSource.sort = this.sort;
+          if (this.dataSource) {
+            if (this.showScrollTable) {
+              this.dataSource.data = this.dataSource.data.concat(data);
             } else {
-              this.dataSource = new MatTableDataSource(data);
+              this.dataSource.data = response.entity.entity;
             }
-            if (response.entity.pagination !== undefined) {
-              this.totalItems = response.entity.pagination[0].total;
-            }
-            else { this.totalItems = 0; }
-
-            if (this.showTablaScroll) {this.pageIndex++;}
-            this.loading = false;
-            this.adjustRellenoHeight();
+            this.dataSource.sort = this.sort;
+          } else {
+            this.dataSource = new MatTableDataSource(data);
           }
-        },
+          if (response.entity.pagination !== undefined) {
+            this.totalItems = response.entity.pagination[0].total;
+          } else {
+            this.totalItems = 0;
+          }
 
-        error: error => {
-          let textError=error.error.message;
-          if(error.error.message===undefined) textError=error.error.error;
-          alert('Error al obtener los topicos: ' + textError);
+          if (this.showScrollTable) {
+            this.pageIndex++;
+          }
+          this.loading = false;
+          this.adjustFillHeight();
         }
-      }
-      );
+      },
+
+      error: (error) => {
+        let textError = error.error.message;
+        if (error.error.message === undefined) textError = error.error.error;
+        alert('Error al obtener los topicos: ' + textError);
+      },
+    });
   }
 
-
-
+  // Method to handle scrolling and loading more topics.
   onScroll(event: any): void {
-    if (!this.showTablaScroll) return;
+    if (!this.showScrollTable) return;
     const element = this.scrollContainer.nativeElement;
     if (element.scrollTop + element.clientHeight >= element.scrollHeight) {
       this.getTopicList();
     }
   }
 
-  defaultVisualization(visualizacion: string) {
-    switch(visualizacion) {
-      case 'Paginacion': {
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = false;
-        this.showTablaPaginada = true;
+  // Method to change the default view.
+  defaultVisualization(visualization: string) {
+    switch (visualization) {
+      case 'Pagination': {
+        this.cookie.set('visualization', visualization);
+        this.showScrollTable = false;
+        this.showPaginatedTable = true;
         this.showCards = false;
         break;
       }
       case 'Scroll': {
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = true;
-        this.showTablaPaginada = false;
+        this.cookie.set('visualization', visualization);
+        this.showScrollTable = true;
+        this.showPaginatedTable = false;
         this.showCards = false;
         break;
       }
       case 'Cards': {
-        this.cookie.set('visualization', visualizacion);
-        this.showTablaScroll = false;
-        this.showTablaPaginada = false;
+        this.cookie.set('visualization', visualization);
+        this.showScrollTable = false;
+        this.showPaginatedTable = false;
         this.showCards = true;
         break;
       }
@@ -439,10 +463,11 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
-    if(this.paginator) this.paginator.firstPage();
+    if (this.paginator) this.paginator.firstPage();
   }
 
-  changeVisualization(visualizacion: string) {
+  // Method to change the way topics are displayed.
+  changeDisplay(visualization: string) {
     if (this.isButtonDisabled) {
       return;
     }
@@ -450,12 +475,12 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     this.isButtonDisabled = true;
 
     const visualizationBody = {
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token"),
-      "visualization": visualizacion
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+      visualization: visualization,
     };
 
-    this.defaultVisualization(visualizacion);
+    this.defaultVisualization(visualization);
     this.editVisualizationFetch(visualizationBody);
 
     setTimeout(() => {
@@ -464,31 +489,27 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     }, 250);
   }
 
+  // ethod to edit the display through an HTTP request.
   editVisualizationFetch(visualizationBody: any) {
     fetch(`${environment.apiUrl}/users/editVisualization`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(visualizationBody)
+      body: JSON.stringify(visualizationBody),
     })
-    .then(response => {
-    })
-    .catch(error => {
-    });
+      .then((response) => {})
+      .catch((error) => {});
   }
 
-  adjustRellenoHeight() {
-
-    if (!this.scrollContainer || !this.tablaTopicos || !this.relleno) {
-      return; // Evita errores si los elementos no están disponibles aún
+  // Method to adjust the padding height between the table and the container.
+  adjustFillHeight() {
+    if (!this.scrollContainer || !this.topicsTable || !this.fill) {
+      return;
     }
     const div1Height = this.scrollContainer.nativeElement.clientHeight;
-    const tabla1Height = this.tablaTopicos.nativeElement.clientHeight;
-    const rellenoHeight = div1Height - tabla1Height + 6;
-    this.relleno.nativeElement.style.height = rellenoHeight + 'px';
+    const table1Height = this.topicsTable.nativeElement.clientHeight;
+    const fillHeight = div1Height - table1Height + 6;
+    this.fill.nativeElement.style.height = fillHeight + 'px';
   }
-
-
-
 }

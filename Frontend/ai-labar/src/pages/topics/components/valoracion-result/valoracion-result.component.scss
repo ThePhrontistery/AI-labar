@@ -1,17 +1,12 @@
-.dato {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
+.fact {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
 
-  .opcion {
-    margin-right: 1rem;
-    width: 13%;
-  }
-
-  .votos {
-    font-weight: bold;
-  }
+.votes {
+  font-weight: bold;
+}
 
 .emoji-option {
   display: -webkit-box;
@@ -22,19 +17,19 @@
   width: 60px;
   height: 60px;
 }
-.inline{
+.inline {
   display: flex;
 }
-.divided-container{
+.divided-container {
   width: 50%;
   display: flex;
   align-items: center;
 }
-.resultEmoji{
+.resultEmoji {
   font-size: 8em;
   margin-top: 46px;
 }
-.optionEmoji{
+.optionEmoji {
   margin-top: 16px;
   font-size: 2em;
 }
