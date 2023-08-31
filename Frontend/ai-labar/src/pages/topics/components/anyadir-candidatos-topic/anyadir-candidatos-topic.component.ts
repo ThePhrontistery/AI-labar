@@ -150,7 +150,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
   saveSelection() {
     const data = {
       selectedGroup: this.selectedGroup,
-      selectedusers: this.usersGroups,
+      selectedUsers: this.usersGroups,
     };
     this.dialogRef.close(data);
   }
