@@ -104,7 +104,6 @@ export class PasoDosComponent implements OnInit, OnDestroy {
   }
 
   opcionesAMostrar(){
-    debugger;
     if(this.imagenSeleccionada.code == this.topicOpinion) {
       this.isEncuestaOpinion = true;
     } else if (this.imagenSeleccionada.code == this.topicValoracion){
@@ -129,7 +128,6 @@ export class PasoDosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      debugger;
       this.selectedGroup = result.selectedGroup;
       this.users = result.selectedUsers;
     });
@@ -197,7 +195,6 @@ export class PasoDosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      debugger;
       this.selectedGroupCandidatos = result.selectedGroup;
       this.usersCandidatos = result.selectedUsers;
       this.objectsToBack = this.usersCandidatos;
