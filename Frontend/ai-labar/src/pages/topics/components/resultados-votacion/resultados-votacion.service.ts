@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ResultadosVotacionService {
-
-  constructor() { }
+  constructor() {}
   getWinnerOption(voteOptions: any[]): any[] {
-    // Obtener el número máximo de votos
-    const maxVotes = Math.max(...voteOptions.map(option => option.votes));
-  
-    // Filtrar las opciones que tengan el número máximo de votos
-    const winnerOptions = voteOptions.filter(option => option.votes === maxVotes);
-  
+    const maxVotes = Math.max(...voteOptions.map((option) => option.votes));
+
+    const winnerOptions = voteOptions.filter(
+      (option) => option.votes === maxVotes
+    );
+
     return winnerOptions;
   }
 }

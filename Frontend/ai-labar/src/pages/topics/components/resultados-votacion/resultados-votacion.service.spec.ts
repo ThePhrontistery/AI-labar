@@ -7,7 +7,7 @@ describe('ResultadosVotacionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ResultadosVotacionComponent]
+      declarations: [ResultadosVotacionComponent],
     }).compileComponents();
   });
 
@@ -23,7 +23,7 @@ describe('ResultadosVotacionComponent', () => {
 
   it('should display correct title', () => {
     const titleElement: HTMLElement = fixture.nativeElement.querySelector('h2');
-    component.titleEncuesta = 'Sample Title';
+    component.titleSurvey = 'Sample Title';
     fixture.detectChanges();
     expect(titleElement.textContent).toContain('Sample Title');
   });
@@ -37,7 +37,8 @@ describe('ResultadosVotacionComponent', () => {
     component.items = items;
     fixture.detectChanges();
 
-    const liElements: NodeListOf<Element> = fixture.nativeElement.querySelectorAll('li');
+    const liElements: NodeListOf<Element> =
+      fixture.nativeElement.querySelectorAll('li');
 
     expect(liElements.length).toBe(items.length);
 
@@ -50,7 +51,8 @@ describe('ResultadosVotacionComponent', () => {
 
   it('should emit event when close button is clicked', () => {
     spyOn(component.closeModal, 'emit');
-    const closeButton: HTMLButtonElement = fixture.nativeElement.querySelector('.rightButton');
+    const closeButton: HTMLButtonElement =
+      fixture.nativeElement.querySelector('.rightButton');
 
     closeButton.click();
 
