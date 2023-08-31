@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsComponent } from './topics.component';
 import { MatIconModule } from '@angular/material/icon';
-import { GroupsComponent } from '../groups/groups.component';
 
 describe('TopicsComponent', () => {
   let component: TopicsComponent;
@@ -20,12 +19,10 @@ describe('TopicsComponent', () => {
       imports: [
         RouterTestingModule.withRoutes([]),
         MatDialogModule,
-        MatMenuModule,MatIconModule
+        MatMenuModule,
+        MatIconModule,
       ],
-      providers: [
-        CookieService,
-        MatDialog,
-      ],
+      providers: [CookieService, MatDialog],
     }).compileComponents();
   });
 
@@ -54,11 +51,9 @@ describe('TopicsComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
 
-  it('should open dialog on anadirGrupo', () => {
+  it('should open dialog on addGroup', () => {
     spyOn(dialog, 'open');
-    component.anadirGrupo();
+    component.addGroup();
     expect(dialog.open).toHaveBeenCalled();
   });
-
-
 });

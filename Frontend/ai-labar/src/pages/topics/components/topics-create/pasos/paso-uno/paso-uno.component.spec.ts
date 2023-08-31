@@ -8,9 +8,8 @@ xdescribe('PasoUnoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PasoUnoComponent ]
-    })
-    .compileComponents();
+      declarations: [PasoUnoComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

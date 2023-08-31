@@ -5,167 +5,198 @@ import { TopicsCreateService } from './topics-create.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
+/**
+ * Component for creating surveys of different types.
+ */
 @Component({
   selector: 'app-topics-create',
   templateUrl: './topics-create.component.html',
-  styleUrls: ['./topics-create.component.scss']
+  styleUrls: ['./topics-create.component.scss'],
 })
 export class TopicsCreateComponent implements OnInit {
-
   @ViewChild(PasoDosComponent)
-  componenteHijo: PasoDosComponent = new PasoDosComponent(this.dialog);
+  childComponent: PasoDosComponent = new PasoDosComponent(this.dialog);
 
   currentStep = 1;
   sharedData: any = {};
-  imagenSeleccionadaPasoUno: any = {};
-  tituloEncuesta: string = "";
-  opcionesEncuesta: any[] = [];
-  typeTM = "TEXT_MULTIPLE";
-  typeTS = "TEXT_SINGLE";
-  typeIM = "IMAGE_MULTIPLE";
-  typeIS = "IMAGE_SINGLE";
-  typeRating = "RATING";
-  typeAs= "AS";
-  resultadoOpciones: string = '';
-  tipoSeleccionado: string = '';
+  selectedImageStepOne: any = {};
+  surveyTitle: string = '';
+  surveyOptions: any[] = [];
+  typeTM = 'TEXT_MULTIPLE';
+  typeTS = 'TEXT_SINGLE';
+  typeIM = 'IMAGE_MULTIPLE';
+  typeIS = 'IMAGE_SINGLE';
+  typeRating = 'RATING';
+  typeAs = 'AS';
+  selectedType: string = '';
 
   members: string[] = [];
-  groupSelectedParticipantes: string[] = [];
+  groupSelectedParticipants: string[] = [];
 
-  constructor(private cookie: CookieService, private topicsCreateService: TopicsCreateService, private router: Router, private dialog: MatDialog) { }
+  constructor(
+    private cookie: CookieService,
+    private topicsCreateService: TopicsCreateService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
+  /**
+   * Move to the next step in survey creation.
+   */
   goToNextStep() {
     this.currentStep++;
   }
 
+  /**
+   * Go back to the previous step in survey creation.
+   */
   goToPreviousStep() {
     this.currentStep--;
   }
 
-  metodoPadre(objeto: any) {
-    this.imagenSeleccionadaPasoUno = objeto;
+  /**
+   * Method invoked by the child component when an image is selected in step one.
+   * @param object Object with details of the selected image.
+   */
+  parentMethod(object: any) {
+    this.selectedImageStepOne = object;
     this.goToNextStep();
   }
 
-  cancelarGuardar(){
+  /**
+   * Cancel survey creation and redirect to the list of topics.
+   */
+  cancelSave() {
     this.router.navigate(['/topics/topics-list']);
   }
 
-  guardarEncuesta() {
-    this.tituloEncuesta = this.componenteHijo.valorTextbox;
-    if(this.componenteHijo.isEncuestaOpinion){
-      this.opcionesEncuesta = [];
-      if(this.componenteHijo.selectedType == "simple"){
-        this.tipoSeleccionado = this.typeTS;
-      }else {
-        this.tipoSeleccionado = this.typeTM;
+  /**
+   * Save the created survey with the provided values.
+   */
+  saveSurvey() {
+    this.surveyTitle = this.childComponent.textBoxValue;
+    if (this.childComponent.isOpinionSurvey) {
+      this.surveyOptions = [];
+      if (this.childComponent.selectedType == 'simple') {
+        this.selectedType = this.typeTS;
+      } else {
+        this.selectedType = this.typeTM;
       }
-      this.opcionesEncuesta.push({option: this.componenteHijo.valorEncuesta1});
-      this.opcionesEncuesta.push({option: this.componenteHijo.valorEncuesta2});
-      if(this.componenteHijo.valorEncuesta3 != null && this.componenteHijo.valorEncuesta3 != ""){
-        this.opcionesEncuesta.push({option: this.componenteHijo.valorEncuesta3});
+      this.surveyOptions.push({ option: this.childComponent.surveyValue1 });
+      this.surveyOptions.push({ option: this.childComponent.surveyValue2 });
+      if (
+        this.childComponent.surveyValue3 != null &&
+        this.childComponent.surveyValue3 != ''
+      ) {
+        this.surveyOptions.push({ option: this.childComponent.surveyValue3 });
       }
-      if(this.componenteHijo.valorEncuesta4 != null && this.componenteHijo.valorEncuesta4 != ""){
-        this.opcionesEncuesta.push({option: this.componenteHijo.valorEncuesta4});
+      if (
+        this.childComponent.surveyValue4 != null &&
+        this.childComponent.surveyValue4 != ''
+      ) {
+        this.surveyOptions.push({ option: this.childComponent.surveyValue4 });
       }
-    }else if(this.componenteHijo.isEncuestaValoracion){
-      this.tipoSeleccionado = this.typeRating;
-      this.opcionesEncuesta = [];
-      for (const emoji of this.componenteHijo.emojis) {
-          const option = {option: emoji.id.toString()}
-          this.opcionesEncuesta.push(option);
+    } else if (this.childComponent.isRatingSurvey) {
+      this.selectedType = this.typeRating;
+      this.surveyOptions = [];
+      for (const emoji of this.childComponent.emojis) {
+        const option = { option: emoji.id.toString() };
+        this.surveyOptions.push(option);
       }
-    }
-    else if(this.componenteHijo.isEncuestaVotacion){
-      this.tipoSeleccionado = this.typeAs;
-      this.opcionesEncuesta = [];
-      for (const object of this.componenteHijo.objectsToBack) {
-          const option = {option: object}
-          this.opcionesEncuesta.push(option);
+    } else if (this.childComponent.isVotingSurvey) {
+      this.selectedType = this.typeAs;
+      this.surveyOptions = [];
+      for (const object of this.childComponent.objectsToBack) {
+        const option = { option: object };
+        this.surveyOptions.push(option);
       }
-    } else if(this.componenteHijo.isEncuestaImagenTexto){
-      if(this.componenteHijo.selectedType == "simple"){
-        this.tipoSeleccionado = this.typeIS;
-      }else {
-        this.tipoSeleccionado = this.typeIM;
+    } else if (this.childComponent.isSurveyImageText) {
+      if (this.childComponent.selectedType == 'simple') {
+        this.selectedType = this.typeIS;
+      } else {
+        this.selectedType = this.typeIM;
       }
-      this.opcionesEncuesta = [];
-      this.opcionesEncuesta.push({image: this.componenteHijo.selectedFilesBase64[1], option: this.componenteHijo.valorImagenTexto1});
-      this.opcionesEncuesta.push({image: this.componenteHijo.selectedFilesBase64[2], option: this.componenteHijo.valorImagenTexto2});
-      if(this.componenteHijo.valorImagenTexto3 != null && this.componenteHijo.valorImagenTexto3 != ""){
-        this.opcionesEncuesta.push({image: this.componenteHijo.selectedFilesBase64[3], option: this.componenteHijo.valorImagenTexto3});
+      this.surveyOptions = [];
+      this.surveyOptions.push({
+        image: this.childComponent.selectedFilesBase64[1],
+        option: this.childComponent.surveyValue1,
+      });
+      this.surveyOptions.push({
+        image: this.childComponent.selectedFilesBase64[2],
+        option: this.childComponent.surveyValue2,
+      });
+      if (
+        this.childComponent.surveyValue3 != null &&
+        this.childComponent.surveyValue3 != ''
+      ) {
+        this.surveyOptions.push({
+          image: this.childComponent.selectedFilesBase64[3],
+          option: this.childComponent.surveyValue3,
+        });
       }
-      if(this.componenteHijo.valorImagenTexto4 != null && this.componenteHijo.valorImagenTexto4 != ""){
-        this.opcionesEncuesta.push({image: this.componenteHijo.selectedFilesBase64[4], option: this.componenteHijo.valorImagenTexto4});
+      if (
+        this.childComponent.surveyValue4 != null &&
+        this.childComponent.surveyValue4 != ''
+      ) {
+        this.surveyOptions.push({
+          image: this.childComponent.selectedFilesBase64[4],
+          option: this.childComponent.surveyValue4,
+        });
       }
     }
 
-    if(this.componenteHijo.users.length > 0){
-      this.members = this.componenteHijo.users;
-      this.groupSelectedParticipantes = this.componenteHijo.selectedGroup;
+    if (this.childComponent.users.length > 0) {
+      this.members = this.childComponent.users;
+      this.groupSelectedParticipants = this.childComponent.selectedGroup;
     }
     this.createTopics();
   }
 
-  concatenarConComas(strings: string[]): string {
-    return strings.join(', ');
-  }
-
-  esFechaMayorQueActual(fechaString: string): boolean {
-    // Obtener la fecha actual del sistema
-    const fechaActual = new Date();
-
-    // Convertir la fecha ingresada a un objeto Date
-    const partesFecha = fechaString.split('/');
-    const dia = parseInt(partesFecha[0]);
-    const mes = parseInt(partesFecha[1]) - 1; // Restamos 1 porque los meses en JavaScript van de 0 a 11
-    const anio = parseInt(partesFecha[2]);
-    const fechaIngresada = new Date(anio, mes, dia);
-
-    // Comparar ambas fechas
-    return fechaIngresada > fechaActual;
-  }
-
-  validacionValores(): boolean {
+  /**
+   * Validate that the required values are present before creating the survey.
+   * @returns 'true' if the values are valid, otherwise 'false'.
+   */
+  valuesValidation(): boolean {
     const isValid = true;
-    if(!this.componenteHijo.fechaCierre){
-      alert("La fecha de cierre está vacia.");
+    if (!this.childComponent.closingDate) {
+      alert('La fecha de cierre está vacia.');
       return false;
     }
-    if(!this.tituloEncuesta){
-      alert("El titulo está vacio.");
+    if (!this.surveyTitle) {
+      alert('El titulo está vacio.');
       return false;
     }
     return isValid;
   }
 
-
-  createTopics(){
-    if(this.validacionValores()){
+  /**
+   * Create the topic using the corresponding service.
+   */
+  createTopics() {
+    if (this.valuesValidation()) {
       const createTopicsBody = {
-        "title": this.tituloEncuesta,
-        "type": this.tipoSeleccionado,
-        "question": "prueba",
-        "options": this.opcionesEncuesta,
-        "user": this.cookie.get("user"),
-        "groupName": this.groupSelectedParticipantes,
-        "closeDate": this.componenteHijo.fechaCierre,
-        "token": this.cookie.get("token")
-    }
+        title: this.surveyTitle,
+        type: this.selectedType,
+        question: 'test',
+        options: this.surveyOptions,
+        user: this.cookie.get('user'),
+        groupName: this.groupSelectedParticipants,
+        closeDate: this.childComponent.closingDate,
+        token: this.cookie.get('token'),
+      };
       this.topicsCreateService.createTopics(createTopicsBody).subscribe(
-          response => {
-            if (response){
-              this.router.navigate(['/topics/topics-list']);
-            }
-          },
-          error=> {
-            let textError=error.error.message;
-            if(error.error.message===undefined) textError=error.error.error;
-            alert("Se produjo un error al crear el topic: " + textError);
+        (response) => {
+          if (response) {
+            this.router.navigate(['/topics/topics-list']);
           }
+        },
+        (error) => {
+          let textError = error.error.message;
+          if (error.error.message === undefined) textError = error.error.error;
+          alert('Se produjo un error al crear el topic: ' + textError);
+        }
       );
     }
   }
