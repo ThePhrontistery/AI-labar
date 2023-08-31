@@ -75,7 +75,7 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
     private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
     private matPaginatorIntl: MatPaginatorIntl,
-    @Inject(LOCALE_ID) private locale: string,
+    @Inject(LOCALE_ID) private locale: string,    
     private cookie: CookieService) {
   }
 
@@ -228,7 +228,18 @@ export class TopicsListComponent implements OnInit, OnDestroy  {
           .subscribe({
             next: response => {
               if (response) {
-                this.getTopicList();
+                if(this.showTablaScroll){
+                 const pageSizeBefore=this.pageSize;
+                 const pageIndexBefore=this.pageIndex-1;
+                 this.pageIndex=this.dataSource.data.length;
+                 this.pageSize=1;
+                 this.dataSource.data = this.dataSource.data.filter((item: { id: any; }) => item.id !== votation.id);                 
+                 this.getTopicList();
+                 this.pageIndex=pageIndexBefore;
+                 this.pageSize=pageSizeBefore;
+                }else{
+                 this.getTopicList();
+                }
               }
             },
             error: error => {
