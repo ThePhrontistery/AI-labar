@@ -32,10 +32,10 @@ export class PasoDosComponent implements OnInit, OnDestroy {
 
   @Input() imagenSeleccionada: any;
 
-  topicOpinion = "Checkbox";
-  topicValoracion = "Emoji";
-  topicVotacion = "Empleado";
-  topicImagenTexto = "ImagenTexto";
+  topicOpinion = "VAL";
+  topicValoracion = "EMO";
+  topicVotacion = "EMP";
+  topicImagenTexto = "VCI";
 
   isEncuestaOpinion = false;
   isEncuestaVotacion = false;
@@ -91,12 +91,12 @@ export class PasoDosComponent implements OnInit, OnDestroy {
     if (date === null) {
       return false; // Otra opción sería permitir todas las fechas si date es null
     }
-    
+
     const currentDate = new Date();
     return date >= currentDate;
   }
 
-  constructor(private dialog: MatDialog) { 
+  constructor(private dialog: MatDialog) {
     this.minDate = new Date();}
 
   ngOnInit(): void {
@@ -104,13 +104,14 @@ export class PasoDosComponent implements OnInit, OnDestroy {
   }
 
   opcionesAMostrar(){
-    if(this.imagenSeleccionada.nombre == this.topicOpinion) {
+    debugger;
+    if(this.imagenSeleccionada.code == this.topicOpinion) {
       this.isEncuestaOpinion = true;
-    } else if (this.imagenSeleccionada.nombre == this.topicValoracion){
+    } else if (this.imagenSeleccionada.code == this.topicValoracion){
       this.isEncuestaValoracion = true;
-    } else if(this.imagenSeleccionada.nombre == this.topicVotacion) {
+    } else if(this.imagenSeleccionada.code == this.topicVotacion) {
       this.isEncuestaVotacion = true;
-    } else if(this.imagenSeleccionada.nombre == this.topicImagenTexto){
+    } else if(this.imagenSeleccionada.code == this.topicImagenTexto){
       this.isEncuestaImagenTexto = true;
     }
   }
@@ -125,40 +126,27 @@ export class PasoDosComponent implements OnInit, OnDestroy {
   openAnyadirParticipantes() {
     const dialogRef = this.dialog.open(AnyadirGruposTopicComponent, {
       width: '400px',
-      data: {} // Puedes pasar datos al diálogo si es necesario
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Aquí puedes realizar acciones después de cerrar el diálogo si es necesario
-      console.log('Diálogo cerrado');
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.selectedGroup = result.grupoSeleccionado;
-      this.users = result.usuariosSeleccionados;
+      debugger;
+      this.selectedGroup = result.selectedGroup;
+      this.users = result.selectedUsers;
     });
   }
 
   onDateSelected(event: any) {
-    // Aquí puedes obtener la fecha seleccionada del evento y enviarla mediante tu web service (ws)
     this.fechaCierre = this.formatearFecha(event.value);
     const isFechaValida = this.esFechaMayorQueActual(this.fechaCierre);
     if(!isFechaValida){
       this.fechaCierre='';
       event.target.value = '';
     }
-   // console.log('Fecha seleccionada:',  this.fechaCierre);
-   // console.log('Fecha valida:', isFechaValida);
-
-    // Llama a tu web service (ws) para enviar la fecha seleccionada
-    // Escribe aquí el código para enviar la fecha al ws
   }
 
   formatearFecha(fechaString: string): string {
-    // Crear un objeto Date con la fecha proporcionada
     const fecha = new Date(fechaString);
 
-    // Obtener los componentes de la fecha
     const dia = fecha.getDate().toString().padStart(2, '0');
     const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
     const anio = fecha.getFullYear();
@@ -209,13 +197,9 @@ export class PasoDosComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Aquí puedes realizar acciones después de cerrar el diálogo si es necesario
-      console.log('Diálogo cerrado');
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.selectedGroupCandidatos = result.grupoSeleccionado;
-      this.usersCandidatos = result.usuariosSeleccionados;
+      debugger;
+      this.selectedGroupCandidatos = result.selectedGroup;
+      this.usersCandidatos = result.selectedUsers;
       this.objectsToBack = this.usersCandidatos;
     });
 

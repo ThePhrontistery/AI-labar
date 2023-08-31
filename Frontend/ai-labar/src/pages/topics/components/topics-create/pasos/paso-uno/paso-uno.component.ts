@@ -10,13 +10,13 @@ export class PasoUnoComponent implements OnInit {
   @Input() sharedData: any;
 
   imagenes = [
-    { nombre: 'Valores\n(Selección simple/multiple)', ruta: 'assets/images/imageUno.png' },
-    { nombre: 'Valores con imagen\n(Selección simple/multiple)', ruta: 'assets/images/imageCuatro.png' },
-    { nombre: 'Emojis\n(Selección simple)', ruta: 'assets/images/imageDos.jpg' },
-    { nombre: 'Empleado\n(Selección simple)', ruta: 'assets/images/imageTres.png' }
+    { name: 'Valores\n(Selección simple/multiple)', route: 'assets/images/imageUno.png', code:'VAL' },
+    { name: 'Valores con imagen\n(Selección simple/multiple)', route: 'assets/images/imageCuatro.png', code:'VCI' },
+    { name: 'Emojis\n(Selección simple)', route: 'assets/images/imageDos.jpg', code:'EMO' },
+    { name: 'Empleado\n(Selección simple)', route: 'assets/images/imageTres.png', code:'EMP' }
   ];
 
-  imagenSeleccionada = {ruta : null, nombre: null};
+  imagenSeleccionada = {route : null, name: null, code: null};
 
   @Output() metodoPadreInvocado = new EventEmitter<any>();
 
@@ -26,8 +26,9 @@ export class PasoUnoComponent implements OnInit {
   }
 
   seleccionarImagen(imagen: any){
-    this.imagenSeleccionada.ruta = imagen.ruta;
-    this.imagenSeleccionada.nombre = imagen.nombre;
+    this.imagenSeleccionada.route = imagen.route;
+    this.imagenSeleccionada.name = imagen.name;
+    this.imagenSeleccionada.code = imagen.code;
     this.llamarMetodoPadre();
   }
 
