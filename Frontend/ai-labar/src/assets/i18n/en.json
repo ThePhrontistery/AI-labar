@@ -12,5 +12,8 @@
       "ADD_GROUP":"Add group",
       "ADD_TOPIC":"Add topic",
       "LOGOUT":"logout"
+    },
+    "ERROR_MESSAGES":{
+      "CREATE_USER_ERROR":"Error creating user"
     }
   }

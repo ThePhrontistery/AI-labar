@@ -151,8 +151,8 @@ export class LoginComponent implements OnInit {
             this.showRegistroFom = false;
             this.limpiarForm();
           },
-          (error) => {
-            alert('Error al crear al usuario: ' + error.error.message);
+          (error) => {            
+            alert(this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +'\n'+ error.error.message);
           }
         )
       );
