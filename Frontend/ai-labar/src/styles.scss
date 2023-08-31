@@ -1,43 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 @include mat-core();
 
 $my-theme: mat-light-theme(
   $primary: mat-palette($mat-indigo),
-  $accent:  mat-palette($mat-pink),
-  $warn:    mat-palette($mat-red)
+  $accent: mat-palette($mat-pink),
+  $warn: mat-palette($mat-red),
 );
 
 @include angular-material-theme($my-theme);
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
-.capBlue{
-    color: #0070ad;
-  }
-  .toolbar {
-    padding-left: 16px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background-color: #1976d2;
-    color: white;
-    font-weight: 600;
-    z-index: 105;
-  }
-  
-  .content {
-    display: flex;
-    //padding: 8px 16px;
-    align-items: center;
-    flex-direction: column;
-  }
+.capBlue {
+  color: #0070ad;
+}
+.toolbar {
+  padding-left: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: #1976d2;
+  color: white;
+  font-weight: 600;
+  z-index: 105;
+}
 
-  /* Estilos específicos para navegadores Firefox */
+.content {
+  display: flex;
+  //padding: 8px 16px;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Estilos específicos para navegadores Firefox */
 @supports (-moz-appearance: none) {
   .inline-container {
     width: -moz-available;
@@ -51,32 +57,32 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-  .login-button {
-    margin-top: 16px;
-    background-color: #fff;
-    color:  #29ABE2;
-    border: none;
-    border-radius: 25px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+.login-button {
+  margin-top: 16px;
+  background-color: #fff;
+  color: #29abe2;
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
+.login-button:hover {
+  animation: pulse-animation 1s ease-in-out infinite;
+}
+.mr16 {
+  margin-right: 16px;
+}
 
-  .login-button:hover {
-    animation: pulse-animation 1s ease-in-out infinite;
-  }
-  .mr16{
-    margin-right: 16px;
-  }
+.hover {
+}
+.hover:hover {
+  cursor: pointer;
+}
 
-  .hover{}
-  .hover:hover{
-    cursor: pointer;
-  }
-
-    /* Estilos para resoluciones pequeñas o iguales a 768px */
+/* Estilos para resoluciones pequeñas o iguales a 768px */
 @media (max-width: 768px) {
   .modal .modal-content {
     background-color: white;
@@ -84,9 +90,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-radius: 3px;
     width: 40%;
     position: relative;
-    .padding-content{
+    .padding-content {
       padding-bottom: 40px;
-        padding-top: 10px;
+      padding-top: 10px;
     }
   }
 }
@@ -99,9 +105,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-radius: 3px;
     width: 20%;
     position: relative;
-    .padding-content{
+    .padding-content {
       padding-bottom: 40px;
-        padding-top: 10px;
+      padding-top: 10px;
     }
   }
 }
@@ -134,13 +140,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-
- .rightButton{
+.rightButton {
   float: right;
- }
+}
 
-.wizard{
- display: flex;
- align-items: center;
- flex-direction: column;
+.wizard {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }

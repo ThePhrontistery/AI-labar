@@ -22,7 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ModalVotacionComponent } from './components/modal-votacion/modal-votacion.component';
 import { ModalVotacionService } from './components/modal-votacion/modal-votacion.service';
@@ -69,7 +69,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AsResultsComponent,
     ImageTextResultComponent,
     AnyadirCandidatosTopicComponent,
-    ConfirmarEliminacionTopicComponent
+    ConfirmarEliminacionTopicComponent,
   ],
   imports: [
     TopicsRoutingModule,
@@ -93,16 +93,26 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatRadioModule,
     MatMenuModule,
     FlexLayoutModule,
-    MatPaginatorModule,ScrollingModule
-    ,MatCardModule,MatTooltipModule,MatSlideToggleModule,
+    MatPaginatorModule,
+    ScrollingModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatSlideToggleModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
   ],
-  providers: [TopicsListService,TopicsListServiceMock, CookieService, TopicsCreateService, ModalVotacionService, HttpClientModule]
+  providers: [
+    TopicsListService,
+    TopicsListServiceMock,
+    CookieService,
+    TopicsCreateService,
+    ModalVotacionService,
+    HttpClientModule,
+  ],
 })
-export class TopicsModule { }
+export class TopicsModule {}

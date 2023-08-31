@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { TopicsModule } from '../../topics.module';
 
 import { TopicsListService } from './topics-list.service';
 
@@ -9,7 +8,7 @@ describe('TopicsListService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule ]
+      imports: [HttpClientModule],
     });
     service = TestBed.inject(TopicsListService);
   });

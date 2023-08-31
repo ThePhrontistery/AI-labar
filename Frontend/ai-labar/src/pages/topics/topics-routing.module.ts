@@ -7,10 +7,12 @@ import { TopicsComponent } from './components/topics/topics.component';
 const routes: Routes = [
   {
     path: '',
-    component: TopicsComponent, children: [
+    component: TopicsComponent,
+    children: [
       { path: 'create', component: TopicsCreateComponent },
-      { path: 'topics-list', component: TopicsListComponent},
-      { path: 'topics-create', component: TopicsCreateComponent}]
+      { path: 'topics-list', component: TopicsListComponent },
+      { path: 'topics-create', component: TopicsCreateComponent },
+    ],
   },
   {
     path: '**',
@@ -19,6 +21,6 @@ const routes: Routes = [
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class TopicsRoutingModule { }
+export class TopicsRoutingModule {}

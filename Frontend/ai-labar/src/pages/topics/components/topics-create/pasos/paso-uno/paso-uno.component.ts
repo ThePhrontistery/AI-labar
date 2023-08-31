@@ -20,22 +20,22 @@ export class PasoUnoComponent implements OnInit {
   images = [
     {
       name: 'Valores (Selección simple/multiple)',
-      route: 'assets/images/imageUno.png',
+      route: 'assets/images/imageOne.png',
       code: 'VAL',
     },
     {
       name: 'Valores con imagen (Selección simple/multiple)',
-      route: 'assets/images/imageCuatro.png',
+      route: 'assets/images/imageFour.png',
       code: 'VCI',
     },
     {
       name: 'Emojis (Selección simple)',
-      route: 'assets/images/imageDos.jpg',
+      route: 'assets/images/imageTwo.jpg',
       code: 'EMO',
     },
     {
       name: 'Empleado (Selección simple)',
-      route: 'assets/images/imageTres.png',
+      route: 'assets/images/imageThree.png',
       code: 'EMP',
     },
   ];
