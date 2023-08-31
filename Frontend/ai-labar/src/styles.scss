@@ -138,3 +138,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
  .rightButton{
   float: right;
  }
+
+.wizard{
+ display: flex;
+ align-items: center;
+ flex-direction: column;
+}
