@@ -45,8 +45,19 @@
       "YES": "Yes",
       "NO": "No"
     },
+    "CREATE_GROUPS":{
+      "CREATE_GROUP": "CREATE GROUP",
+      "GROUP_NAME": "Group name",
+      "SEARCH_USERS": "Search users",
+      "USERS_FOUND": "users found",
+      "SELECTED_USERS": "Selected users:",
+      "CLEAR_SELECTION": "Clear selection",
+      "CANCEL": "Cancel",
+      "SAVE_GROUP": "Save group"
+    },
     "ERROR_MESSAGES":{
       "CREATE_USER_ERROR":"Error creating user",
-      "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:"
+      "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
+      "CREATE_GROUP_ERROR": "Error al crear el grupo"
     }
   }
