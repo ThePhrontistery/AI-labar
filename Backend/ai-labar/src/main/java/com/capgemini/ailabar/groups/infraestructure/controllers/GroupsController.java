@@ -24,10 +24,10 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     /*
-     * CREA UN GRUPO EN LA BBDD:
-     * 1. Los members deben ser enviados como un array de string.
-     * 2. El user creador del grupo será el admin del grupo.
-     * 3. El user creador del grupo no podrá asignarse como miembro del mismo, ya lo es por defecto.
+     * CREATES A GROUP IN THE DATABASE:
+     * 1. Members must be sent as an array of strings.
+     * 2. The user creating the group will be the group's admin.
+     * 3. The user creating the group cannot assign themselves as a member of the group; they are already a member by default.
      */
     @PostMapping("/createGroup")
     public ResponseEntity<SpecialResponse> createGroup(@RequestBody GroupsModel groupModel) {
@@ -38,8 +38,8 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     /*
-     * DEVUELVE LOS DATOS DE UN GRUPO SI TIENE UNA COINCIDENCIA EXACTA EN EL NOMBRE:
-     * 1. Se recuperan los datos del grupo siempre y cuando el user tenga un grupo que coincida exactamente con el groupName recibido.
+     * RETURNS GROUP DATA IF THERE IS AN EXACT MATCH IN THE NAME:
+     * 1. Retrieves group data if the user has a group that exactly matches the received 'groupName.'
      */
     @PostMapping("/getGroup")
     public ResponseEntity<SpecialResponse> getGroup(@RequestBody GroupsModel groupModel) {
@@ -50,10 +50,10 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     /*
-     * EDITA UN GRUPO DE LA BBDD:
-     * 1. Todos los datos necesarios para la edición del grupo se pueden obtener con getGroup() y tan sólo sería necesario enviar el atributo newGroupName si el nombre del grupo cambia.
-     * 2. Los miembros del grupo pueden ser modificados, pero no requieren una variable adicional para ello.
-     * 3. El uso de newGroupName sólo es obligatorio si el nombre del grupo ha sido modificado, no para la modificación de los members del grupo.
+     * EDITS A GROUP IN THE DATABASE:
+     * 1. All necessary data for editing the group can be obtained using 'getGroup(),' and it's only necessary to send the 'newGroupName' attribute if the group's name changes.
+     * 2. Group members can be modified, but they do not require an additional variable for that purpose.
+     * 3. The use of 'newGroupName' is mandatory only if the group's name has been modified, not for modifying the group's members.
      */
     @PutMapping("/editGroup")
     public ResponseEntity<SpecialResponse> editGroup(@RequestBody GroupsModel groupModel) {
@@ -64,7 +64,7 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     /*
-     * DEVUELVE UN LISTADO CON TODOS LOS NOMBRES DE LOS GRUPOS QUE PERTENECEN AL USUARIO RECIBIDO
+     * RETURNS A LIST WITH ALL THE NAMES OF GROUPS BELONGING TO THE RECEIVED USER
      */
     @PostMapping("/getGroupsByUser")
     public ResponseEntity<SpecialResponse> getGroupsByUser(@RequestBody GroupsModel groupModel) {
@@ -75,9 +75,9 @@ public class GroupsController implements SpecialResponseInterface {
     }
 
     /*
-     * ELIMINA UN GRUPO DE LA BBDD:
-     * 1. Se elimina el grupo si existe una coincidencia con el nombre del grupo y el usuario como autor del mismo.
-     * 2. También se borrarán las referencias en las tablas intermedias como members.
+     * DELETES A GROUP FROM THE DATABASE:
+     * 1. Deletes the group if there is a match with the group's name and the user as the author of the group.
+     * 2. References in intermediary tables like 'members' will also be deleted.
      */
     @DeleteMapping("/deleteGroup")
     public ResponseEntity<SpecialResponse> deleteGroup(@RequestBody GroupsModel groupModel) {
@@ -87,9 +87,9 @@ public class GroupsController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
-    /* Inicio métodos sólo para pruebas */
+    /* Start of methods for testing purposes */
     /*
-     * DEVUELVE TODOS LOS DATOS DE TODOS LOS GRUPOS DE LA BBDD (EXCLUSIVO PARA PRUEBAS DE DESARROLLO, NO DEBE IR EN LA VERSIÓN FINAL)
+     * RETURNS ALL DATA FOR ALL GROUPS FROM THE DATABASE (EXCLUSIVE FOR DEVELOPMENT TESTING, SHOULD NOT BE INCLUDED IN THE FINAL VERSION)
      */
     @GetMapping("/getGroupsDatabase")
     public ResponseEntity<SpecialResponse> getGroupsDatabase() {
@@ -98,9 +98,9 @@ public class GroupsController implements SpecialResponseInterface {
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(groupsList, responseJson), HttpStatus.OK);
     }
-    /* Fin métodos sólo para pruebas */
+    /* End of methods for testing purposes */
 
-    // Manejo de las excepciones de cada caso de uso
+    // Exception handling for each use case
     @ExceptionHandler(CreateGroupException.class)
     ResponseEntity<SpecialResponse> handlerCreateGroupException (CreateGroupException createGroupException){
         JSONObject responseJson = new JSONObject();
