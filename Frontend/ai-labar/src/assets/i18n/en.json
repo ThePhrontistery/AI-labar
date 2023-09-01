@@ -38,6 +38,13 @@
       "CLOSE": "Close",
       "SAVE_SELECTION": "Save selection"
     },
+    "AS_RESULT": {
+      "CLOSE": "Close"
+    },
+    "ELIMINATION_CONFIRM": {
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ERROR_MESSAGES":{
       "CREATE_USER_ERROR":"Error creating user",
       "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:"

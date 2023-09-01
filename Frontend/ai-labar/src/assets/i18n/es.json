@@ -38,8 +38,26 @@
     "CLOSE": "Cerrar",
     "SAVE_SELECTION": "Guardar selección"
   },
+  "AS_RESULT": {
+    "CLOSE": "Cerrar"
+  },
+  "ELIMINATION_CONFIRM": {
+    "YES": "Sí",
+    "NO": "No"
+  },
+  "CREATE_GROUPS":{
+    "CREATE_GROUP": "CREAR GRUPO",
+    "GROUP_NAME": "Nombre del grupo",
+    "SEARCH_USERS": "Buscar usuarios",
+    "USERS_FOUND": "usuarios encontrados",
+    "SELECTED_USERS": "Usuarios seleccionados:",
+    "CLEAR_SELECTION": "Limpiar selección",
+    "CANCEL": "Cancelar",
+    "SAVE_GROUP": "Guardar grupo"
+  },
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error al crear al usuario",
-    "ERROR_RETRIEVING_DATA_CB": "Error al obtener los datos del combo box:"
+    "ERROR_RETRIEVING_DATA_CB": "Error al obtener los datos del combo box:",
+    "CREATE_GROUP_ERROR": "Error al crear el grupo"
   }
 }

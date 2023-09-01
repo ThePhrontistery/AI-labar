@@ -20,6 +20,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-groups',
@@ -67,6 +68,7 @@ export class GroupsComponent implements OnInit {
     private cookie: CookieService,
     private topicListService: TopicsListService,
     public dialogRef: MatDialogRef<GroupsComponent>,
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -170,8 +172,7 @@ export class GroupsComponent implements OnInit {
         this.dialogRef.close();
       },
       (error) => {
-        console.error('Error creating group:', error);
-        alert('Error creating group: ' + error.error.message);
+        alert(this.translate.instant('ERROR_MESSAGES.CREATE_GROUP_ERROR') +'\n'+ error.error.message);
       }
     );
   }
