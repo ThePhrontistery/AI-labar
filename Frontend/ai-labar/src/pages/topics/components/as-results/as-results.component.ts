@@ -50,7 +50,7 @@ export class AsResultsComponent implements OnInit {
 
     // Data necessary to request results.
     const resultData = {
-      id: this.data.votacion.id,
+      id: this.data.votation.id,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
