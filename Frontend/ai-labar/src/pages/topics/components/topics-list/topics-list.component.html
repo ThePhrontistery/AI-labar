@@ -1,164 +1,394 @@
-
 <div class="filters-container">
   <b>Filtros:</b>
-  <mat-slide-toggle id="minesToggle" [(ngModel)]="minesFilter" (change)="onToggleChange($event)">
+  <mat-slide-toggle
+    id="minesToggle"
+    [(ngModel)]="minesFilter"
+    (change)="onToggleChange($event)"
+  >
     Propios
   </mat-slide-toggle>
-  <mat-slide-toggle id="openedToggle" [(ngModel)]="openedFilter" (change)="onToggleChange($event)">
+  <mat-slide-toggle
+    id="openedToggle"
+    [(ngModel)]="openedFilter"
+    (change)="onToggleChange($event)"
+  >
     Abiertos
   </mat-slide-toggle>
-  <mat-slide-toggle id="closedToggle" [(ngModel)]="closedFilter" (change)="onToggleChange($event)">
+  <mat-slide-toggle
+    id="closedToggle"
+    [(ngModel)]="closedFilter"
+    (change)="onToggleChange($event)"
+  >
     Cerrados
   </mat-slide-toggle>
-  <mat-slide-toggle id="votePendingToggle" [(ngModel)]="votePendingFilter" (change)="onToggleChange($event)">
+  <mat-slide-toggle
+    id="votePendingToggle"
+    [(ngModel)]="votePendingFilter"
+    (change)="onToggleChange($event)"
+  >
     Pendientes de votar
   </mat-slide-toggle>
 </div>
 
-<div id="div1" (scroll)="onScroll($event)" #scrollContainer *ngIf="showTablaScroll || showTablaPaginada">
-<table id="tablaTopicos" #tablaTopicos mat-table [dataSource]="dataSource" #tableSort="matSort" matSort  >
+<div
+  id="div1"
+  (scroll)="onScroll($event)"
+  #scrollContainer
+  *ngIf="showScrollTable || showPaginatedTable"
+>
+  <table
+    id="topicsTable"
+    #topicsTable
+    mat-table
+    [dataSource]="dataSource"
+    #tableSort="matSort"
+    matSort
+  >
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
+      <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+    </ng-container>
 
-  <!-- Title Column -->
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
-    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
-  </ng-container>
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.status === 1 ? "Abierto" : "Cerrado" }}
+      </td>
+    </ng-container>
 
-  <!-- Status Column -->
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
-    <td mat-cell *matCellDef="let element"> {{ element.status === 1 ? 'Abierto' : 'Cerrado' }} </td>
-  </ng-container>
+    <!-- Author Column -->
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Autor</th>
+      <td mat-cell *matCellDef="let element">{{ element.author }}</td>
+    </ng-container>
 
-  <!-- Author Column -->
-  <ng-container matColumnDef="author">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Autor </th>
-    <td mat-cell *matCellDef="let element"> {{element.author}} </td>
-  </ng-container>
+    <!-- Close Date Column -->
+    <ng-container matColumnDef="closeDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de cierre</th>
+      <td mat-cell *matCellDef="let element">{{ element.closeDate }}</td>
+    </ng-container>
 
-  <!-- Close Date Column -->
-  <ng-container matColumnDef="closeDate">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de cierre </th>
-    <td mat-cell *matCellDef="let element"> {{element.closeDate}} </td>
-  </ng-container>
+    <!-- Actions Column -->
+    <ng-container matColumnDef="open">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        Abrir
+      </th>
 
-  <!-- Actions Column -->
-  <ng-container matColumnDef="open">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Abrir </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        <button
+          matTooltip="Abrir votación"
+          [disabled]="element.status === 1 || element.author !== user"
+          class="capBlue"
+          (click)="reOpen(element)"
+          mat-button
+        >
+          <mat-icon>lock_open</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Abrir votación" [disabled]="element.status === 1 || element.author !== user"
-        class="capBlue" (click)="reOpen(element)" mat-button>
-        <mat-icon>lock_open</mat-icon>
-      </button></td>
-  </ng-container>
+    <ng-container matColumnDef="close">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        Cerrar
+      </th>
 
-  <ng-container matColumnDef="close">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Cerrar </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        <button
+          matTooltip="Cerrar votación"
+          [disabled]="element.status === 0 || element.author !== user"
+          class="capBlue"
+          (click)="close(element)"
+          mat-button
+        >
+          <mat-icon>lock</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Cerrar votación" [disabled]="element.status === 0 || element.author !== user"
-        class="capBlue" (click)="close(element)" mat-button>
-        <mat-icon>lock</mat-icon>
-      </button></td>
-  </ng-container>
+    <ng-container matColumnDef="delete">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        Eliminar
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        <button
+          matTooltip="Eliminar votación"
+          [disabled]="element.author !== user"
+          class="capBlue"
+          (click)="delete(element)"
+          mat-button
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="delete">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Eliminar </th>
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button matTooltip="Eliminar votación" [disabled]="element.author !== user"
-        class="capBlue" (click)="delete(element)" mat-button>
-        <mat-icon>delete</mat-icon>
-      </button></td>
-  </ng-container>
-
-  <ng-container matColumnDef="vote">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Votar </th>
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true">  <button [disabled]="element.status === 0 || !element.canVote"
-        matTooltip="Votar" class="capBlue" (click)="vote(element)" mat-button>
-        <mat-icon>how_to_vote</mat-icon>
-      </button></td>
-  </ng-container>
-
-
-
-  <ng-container matColumnDef="result">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.sm="true"  fxShow.gt-md="true"> Ver resultados </th>
-    <td mat-cell *matCellDef="let element" fxHide fxShow.sm="true"  fxShow.gt-md="true"> <button [disabled]="element.status === 1" matTooltip="Ver resultados"
-        class="capBlue" (click)="results(element)" mat-button>
-        <mat-icon>visibility</mat-icon>
-      </button></td>
-  </ng-container>
-
-  <ng-container matColumnDef="result2">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.xs> Acciones </th>
-    <td mat-cell *matCellDef="let element" fxHide fxShow.xs>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button matTooltip="Abrir votación" [disabled]="element.status === 1 || element.author !== user"
-        class="capBlue" (click)="reOpen(element)" mat-button>
-        <mat-icon>lock_open</mat-icon>
-      </button>
-        <button matTooltip="Cerrar votación" [disabled]="element.status === 0 || element.author !== user "
-        class="capBlue" (click)="close(element)" mat-button>
-        <mat-icon>lock</mat-icon>
-      </button>
-        <button matTooltip="Eliminar votación" [disabled]="element.author !== user"
-        class="capBlue" (click)="delete(element)" mat-button>
-        <mat-icon>delete</mat-icon>
-      </button>
-        <button [disabled]="element.status === 0 || !element.canVote" matTooltip="Votar" class="capBlue"
-          (click)="vote(element)" mat-button>
+    <ng-container matColumnDef="vote">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        Votar
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        <button
+          [disabled]="element.status === 0 || !element.canVote"
+          matTooltip="Votar"
+          class="capBlue"
+          (click)="vote(element)"
+          mat-button
+        >
           <mat-icon>how_to_vote</mat-icon>
         </button>
-        <button [disabled]="element.status === 1" matTooltip="Ver resultados" class="capBlue" (click)="results(element)"
-          mat-button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="result">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        Ver resultados
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        fxHide
+        fxShow.sm="true"
+        fxShow.gt-md="true"
+      >
+        <button
+          [disabled]="element.status === 1"
+          matTooltip="Ver resultados"
+          class="capBlue"
+          (click)="results(element)"
+          mat-button
+        >
           <mat-icon>visibility</mat-icon>
         </button>
-      </mat-menu>
-    </td>
-  </ng-container>
+      </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <ng-container matColumnDef="result2">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.xs>
+        Acciones
+      </th>
+      <td mat-cell *matCellDef="let element" fxHide fxShow.xs>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button
+            matTooltip="Abrir votación"
+            [disabled]="element.status === 1 || element.author !== user"
+            class="capBlue"
+            (click)="reOpen(element)"
+            mat-button
+          >
+            <mat-icon>lock_open</mat-icon>
+          </button>
+          <button
+            matTooltip="Cerrar votación"
+            [disabled]="element.status === 0 || element.author !== user"
+            class="capBlue"
+            (click)="close(element)"
+            mat-button
+          >
+            <mat-icon>lock</mat-icon>
+          </button>
+          <button
+            matTooltip="Eliminar votación"
+            [disabled]="element.author !== user"
+            class="capBlue"
+            (click)="delete(element)"
+            mat-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            [disabled]="element.status === 0 || !element.canVote"
+            matTooltip="Votar"
+            class="capBlue"
+            (click)="vote(element)"
+            mat-button
+          >
+            <mat-icon>how_to_vote</mat-icon>
+          </button>
+          <button
+            [disabled]="element.status === 1"
+            matTooltip="Ver resultados"
+            class="capBlue"
+            (click)="results(element)"
+            mat-button
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
 
-</table>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
 
-<div id="relleno" #relleno *ngIf="showTablaScroll && puedoPaginar()" style="height:1px"></div> <!-- Espacio para simular el scroll  -->
-
+  <div
+    id="fill"
+    #fill
+    *ngIf="showScrollTable && canPaginate()"
+    style="height: 1px"
+  ></div>
 </div>
 
 <div id="div2" *ngIf="showCards">
   <mat-card>
     <mat-card-content>
-      <div [class.closed]="element.status === 0" *ngFor="let element of dataSource.data" class="card-item">
+      <div
+        [class.closed]="element.status === 0"
+        *ngFor="let element of dataSource.data"
+        class="card-item"
+      >
         <div class="title-and-status">
           <h3>{{ element.title }}</h3>
-          <p><b>Estado:</b> {{ element.status === 1 ? 'Abierto' : 'Cerrado' }}</p>
-          <p class="close-date" *ngIf="element.closeDate !== undefined && element.closeDate !== null">
+          <p>
+            <b>Estado:</b> {{ element.status === 1 ? "Abierto" : "Cerrado" }}
+          </p>
+          <p
+            class="close-date"
+            *ngIf="
+              element.closeDate !== undefined && element.closeDate !== null
+            "
+          >
             <b>Fecha de cierre:</b> {{ element.closeDate }}
           </p>
-          <p class="close-date" *ngIf="!element.closeDate"><b>Sin fecha de cierre</b></p>
+          <p class="close-date" *ngIf="!element.closeDate">
+            <b>Sin fecha de cierre</b>
+          </p>
         </div>
 
         <div class="buttons">
-          <button mat-icon-button *ngIf="element.author === user" [disabled]="element.status === 1 || element.author !== user" class="capBlue" (click)="reOpen(element)">
-            <mat-icon *ngIf="element.author === user" [matTooltip]="element.status === 1 ? 'Cerrar' : 'Abrir'" [matTooltipDisabled]="element.status === 1 || element.author !== user">lock_open</mat-icon>
+          <button
+            mat-icon-button
+            *ngIf="element.author === user"
+            [disabled]="element.status === 1 || element.author !== user"
+            class="capBlue"
+            (click)="reOpen(element)"
+          >
+            <mat-icon
+              *ngIf="element.author === user"
+              [matTooltip]="element.status === 1 ? 'Cerrar' : 'Abrir'"
+              [matTooltipDisabled]="
+                element.status === 1 || element.author !== user
+              "
+              >lock_open</mat-icon
+            >
           </button>
 
-          <button mat-icon-button *ngIf="element.author === user" [disabled]="element.status === 0 || element.author !== user" class="capBlue" (click)="close(element)">
-            <mat-icon *ngIf="element.author === user" [matTooltip]="element.status === 0 ? 'Abrir' : 'Cerrar'" [matTooltipDisabled]="element.status === 0 || element.author !== user">lock</mat-icon>
+          <button
+            mat-icon-button
+            *ngIf="element.author === user"
+            [disabled]="element.status === 0 || element.author !== user"
+            class="capBlue"
+            (click)="close(element)"
+          >
+            <mat-icon
+              *ngIf="element.author === user"
+              [matTooltip]="element.status === 0 ? 'Abrir' : 'Cerrar'"
+              [matTooltipDisabled]="
+                element.status === 0 || element.author !== user
+              "
+              >lock</mat-icon
+            >
           </button>
 
-          <button mat-icon-button *ngIf="element.author === user" class="capBlue" (click)="delete(element)">
-            <mat-icon *ngIf="element.author === user" matTooltip="Eliminar">delete</mat-icon>
+          <button
+            mat-icon-button
+            *ngIf="element.author === user"
+            class="capBlue"
+            (click)="delete(element)"
+          >
+            <mat-icon *ngIf="element.author === user" matTooltip="Eliminar"
+              >delete</mat-icon
+            >
           </button>
 
-          <button mat-icon-button [disabled]="element.status === 0 || !element.canVote" class="capBlue" (click)="vote(element)">
-            <mat-icon matTooltip="Votar" [matTooltipDisabled]="element.status === 0 || !element.canVote">how_to_vote</mat-icon>
+          <button
+            mat-icon-button
+            [disabled]="element.status === 0 || !element.canVote"
+            class="capBlue"
+            (click)="vote(element)"
+          >
+            <mat-icon
+              matTooltip="Votar"
+              [matTooltipDisabled]="element.status === 0 || !element.canVote"
+              >how_to_vote</mat-icon
+            >
           </button>
 
-          <button mat-icon-button [disabled]="element.status === 1" class="capBlue" (click)="results(element)">
-            <mat-icon matTooltip="Ver resultados" [matTooltipDisabled]="element.status === 1">visibility</mat-icon>
+          <button
+            mat-icon-button
+            [disabled]="element.status === 1"
+            class="capBlue"
+            (click)="results(element)"
+          >
+            <mat-icon
+              matTooltip="Ver resultados"
+              [matTooltipDisabled]="element.status === 1"
+              >visibility</mat-icon
+            >
           </button>
         </div>
 
@@ -166,32 +396,73 @@
       </div>
     </mat-card-content>
   </mat-card>
-
 </div>
 
-<mat-paginator #paginator
- [length]="totalItems"
- [pageSize]="pageSize"
- [pageSizeOptions]="[5, 10, 20]"
- (page)="onPageChange($event)"  *ngIf="showTablaPaginada || showCards"></mat-paginator>
+<mat-paginator
+  #paginator
+  [length]="totalItems"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+  *ngIf="showPaginatedTable || showCards"
+></mat-paginator>
 
- <div class="button-container">
-  <button (click)="changeVisualization('Paginacion')" matTooltip="Paginación" mat-button [color]="showTablaPaginada ? 'primary' : 'default'" class="image-button paginacion-button">
-    <div class="button-image" [ngStyle]="{'background-image': showTablaPaginada ? 'url(assets/images/paginacion-image-active.png)' : 'url(assets/images/paginacion-image-inactive.png)'}"></div>
+<div class="button-container">
+  <button
+    (click)="changeDisplay('Pagination')"
+    matTooltip="Paginación"
+    mat-button
+    [color]="showPaginatedTable ? 'primary' : 'default'"
+    class="image-button pagination-button"
+  >
+    <div
+      class="button-image"
+      [ngStyle]="{
+        'background-image': showPaginatedTable
+          ? 'url(assets/images/pagination-image-active.png)'
+          : 'url(assets/images/pagination-image-inactive.png)'
+      }"
+    ></div>
   </button>
-  <button (click)="changeVisualization('Scroll')" matTooltip="Scroll" mat-button [color]="showTablaScroll ? 'primary' : 'default'" class="image-button scroll-button">
-    <div class="button-image" [ngStyle]="{'background-image': showTablaScroll ? 'url(assets/images/scroll-image-active.png)' : 'url(assets/images/scroll-image-inactive.png)'}"></div>
+  <button
+    (click)="changeDisplay('Scroll')"
+    matTooltip="Scroll"
+    mat-button
+    [color]="showScrollTable ? 'primary' : 'default'"
+    class="image-button scroll-button"
+  >
+    <div
+      class="button-image"
+      [ngStyle]="{
+        'background-image': showScrollTable
+          ? 'url(assets/images/scroll-image-active.png)'
+          : 'url(assets/images/scroll-image-inactive.png)'
+      }"
+    ></div>
   </button>
-  <button (click)="changeVisualization('Cards')" matTooltip="Cards" mat-button [color]="showCards ? 'primary' : 'default'" class="image-button cards-button">
-    <div class="button-image" [ngStyle]="{'background-image': showCards ? 'url(assets/images/cards-image-active.png)' : 'url(assets/images/cards-image-inactive.png)'}"></div>
+  <button
+    (click)="changeDisplay('Cards')"
+    matTooltip="Cards"
+    mat-button
+    [color]="showCards ? 'primary' : 'default'"
+    class="image-button cards-button"
+  >
+    <div
+      class="button-image"
+      [ngStyle]="{
+        'background-image': showCards
+          ? 'url(assets/images/cards-image-active.png)'
+          : 'url(assets/images/cards-image-inactive.png)'
+      }"
+    ></div>
   </button>
 </div>
 
 <app-modal-votacion
   [isOpen]="modalOpen"
-  [options]="optionsVotacion"
+  [options]="optionsVotation"
   [selectedOptions]="selectedOptions"
-  [title]="titleVotacion"
+  [title]="titleVotation"
   [idVotation]="idVotation"
   [typeVoting]="typeVoting"
   [isSurveyOpinionSimple]="isSurveyOpinionSimple"
@@ -200,9 +471,13 @@
   [isSurveyImageTextSimple]="isSurveyImageTextSimple"
   [isSurveyOpinionMultiple]="isSurveyOpinionMultiple"
   [isSurveyImageTextMultiple]="isSurveyImageTextMultiple"
-  (onClose)="closeModalVotacion()"
+  (onClose)="closeModalVotation()"
   (onOptionChange)="onOptionChange($event)"
 ></app-modal-votacion>
 
-
-<app-restultados-votacion *ngIf="showModalResultados" [items]="listItems" [titleSurvey]="titleEncuesta" (closeModal)="closeModalResultados()"></app-restultados-votacion>
+<app-restultados-votacion
+  *ngIf="showResultsModal"
+  [items]="listItems"
+  [titleSurvey]="titleSurvey"
+  (closeModal)="closeResultsModal()"
+></app-restultados-votacion>

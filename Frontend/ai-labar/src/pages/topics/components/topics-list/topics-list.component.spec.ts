@@ -1,5 +1,10 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { FormsModule } from '@angular/forms';
 import { TopicsListComponent } from './topics-list.component';
@@ -9,190 +14,157 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-// Importa el componente app-modal-votacion
-import { ModalVotacionComponent } from '../modal-votacion/modal-votacion.component'; 
-import { HttpClientModule } from '@angular/common/http'; // Agrega esta l?nea
+import { ModalVotacionComponent } from '../modal-votacion/modal-votacion.component';
+import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from 'src/environments/environment'; // Asegurate de importar el environment
+import { environment } from 'src/environments/environment';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { of } from 'rxjs'; 
+import { of } from 'rxjs';
 
 describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
   let fixture: ComponentFixture<TopicsListComponent>;
   let mockTopicListService: jasmine.SpyObj<TopicsListServiceMock>;
   let mockDialog: jasmine.SpyObj<MatDialog>;
-  let mockCookieService: jasmine.SpyObj<CookieService>;  
+  let mockCookieService: jasmine.SpyObj<CookieService>;
   let cookieServiceMock: Partial<CookieService>;
 
   beforeEach(() => {
-    environment.mockup = true; // Configura el environment.mockup a true para las pruebas
+    environment.mockup = true;
 
-    const mockServiceSpy = jasmine.createSpyObj('TopicsListServiceMock', ['loadTopics_post', 'reopenTopic', 'deleteTopic', 'closeTopic']);
-    //const mockServiceSpy = jasmine.createSpyObj('TopicsListService', ['post', 'put', 'delete']);
+    const mockServiceSpy = jasmine.createSpyObj('TopicsListServiceMock', [
+      'loadTopics_post',
+      'reopenTopic',
+      'deleteTopic',
+      'closeTopic',
+    ]);
     const mockDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-    const mockCookieServiceSpy = jasmine.createSpyObj('CookieService', ['get','set']);
+    const mockCookieServiceSpy = jasmine.createSpyObj('CookieService', [
+      'get',
+      'set',
+    ]);
     cookieServiceMock = {
-      // Mocking methods from CookieService
       get: (key: string) => 'mocked-value',
     };
     TestBed.configureTestingModule({
-      declarations: [TopicsListComponent,ModalVotacionComponent],
+      declarations: [TopicsListComponent, ModalVotacionComponent],
       providers: [
         { provide: TopicsListService, useValue: mockServiceSpy },
         { provide: TopicsListServiceMock, useValue: mockServiceSpy },
         { provide: MatDialog, useValue: mockDialogSpy },
-        { provide: CookieService, useValue: mockCookieServiceSpy }
-        //{ provide: CookieService, useValue: cookieServiceMock }
+        { provide: CookieService, useValue: mockCookieServiceSpy },
       ],
-      imports: [MatSortModule, MatTableModule,
-        BrowserAnimationsModule,HttpClientModule,MatPaginatorModule,
-        MatSlideToggleModule,MatButtonModule,FormsModule,
-        MatDialogModule]
+      imports: [
+        MatSortModule,
+        MatTableModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        MatPaginatorModule,
+        MatSlideToggleModule,
+        MatButtonModule,
+        FormsModule,
+        MatDialogModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopicsListComponent);
     component = fixture.componentInstance;
-    mockTopicListService = TestBed.inject(TopicsListServiceMock) as jasmine.SpyObj<TopicsListServiceMock>;
+    mockTopicListService = TestBed.inject(
+      TopicsListServiceMock
+    ) as jasmine.SpyObj<TopicsListServiceMock>;
     mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
-    mockCookieService = TestBed.inject(CookieService) as jasmine.SpyObj<CookieService>;
+    mockCookieService = TestBed.inject(
+      CookieService
+    ) as jasmine.SpyObj<CookieService>;
     const mockResponse = { entity: [] };
     mockTopicListService.loadTopics_post.and.returnValue(of(mockResponse));
 
     mockCookieService.get.and.returnValue('testUser');
   });
   afterEach(() => {
-    environment.mockup = false; // Restablece el environment.mockup despues de las pruebas
+    environment.mockup = false;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-
-  // Add more tests for other methods and scenarios as needed
   it('should call getTopicList on init', () => {
-    // Arrange
-   // mockTopicListService.post.and.returnValue(of({ entity: [] }));
     const mockResponse = { entity: [] };
-    // Act
+
     fixture.detectChanges();
 
-    // Assert
-    //expect(mockTopicListService.post).toHaveBeenCalled();
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
     expect(component.dataSource.data).toEqual(mockResponse.entity);
   });
 
-
-
   it('should add option to selectedOptions when onOptionChange is called', () => {
-    // Arrange
     const option = 'Option 1';
 
-    // Act
     component.onOptionChange(option);
 
-    // Assert
     expect(component.selectedOptions).toContain(option);
   });
 
   it('should remove option from selectedOptions when onOptionChange is called with existing option', () => {
-    // Arrange
     const option = 'Option 1';
     component.selectedOptions = [option];
 
-    // Act
     component.onOptionChange(option);
 
-    // Assert
     expect(component.selectedOptions).not.toContain(option);
   });
 
-
   it('should reOpen a votation', () => {
-    // Arrange
     const votation = { id: 12 };
 
-    // Mock the service response
-    //mockTopicListService.put.and.returnValue(of({}));
     const mockResponse = {};
     mockTopicListService.reopenTopic.and.returnValue(of(mockResponse));
- 
-    // Act
-    component.reOpen(votation);
-     
 
-    // Assert
+    component.reOpen(votation);
+
     expect(mockTopicListService.reopenTopic).toHaveBeenCalledWith({
       id: votation.id,
       user: 'testUser',
-      token: 'testUser' // Adjust this based on your actual logic
-    } ); // Make sure correct URL is used
+      token: 'testUser',
+    });
 
-    
-    // Verify that getTopicList is called after reopening
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
-    
-    
-    /*expect(mockTopicListService.put).toHaveBeenCalledWith({
-      id: votation.id,
-      user: 'testUser',
-      token: 'testUser' // Adjust this based on your actual logic
-    }, 'http://localhost:8080/topics/reOpenTopic'); // Make sure correct URL is used
-
-    // Verify that getTopicList is called after reopening
-    expect(mockTopicListService.post).toHaveBeenCalled();*/
   });
   it('should close a votation', () => {
-    // Arrange
     const votation = { id: 1 };
 
-    // Mock the service response
-    //mockTopicListService.put.and.returnValue(of({}));
     const mockResponse = { entity: [] };
     mockTopicListService.closeTopic.and.returnValue(of(mockResponse));
 
-    // Act
     component.close(votation);
 
-    // Assert
     expect(mockTopicListService.closeTopic).toHaveBeenCalledWith({
       id: votation.id,
       user: 'testUser',
-      token: 'testUser' // Adjust this based on your actual logic
-    } ); // Make sure correct URL is used
+      token: 'testUser',
+    });
 
-    // Verify that getTopicList is called after closing
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
-    /*expect(mockTopicListService.put).toHaveBeenCalledWith({
-      id: votation.id,
-      user: 'testUser',
-      token: 'testUser' // Adjust this based on your actual logic
-    }, 'http://localhost:8080/topics/closeTopic'); // Make sure correct URL is used
-
-    // Verify that getTopicList is called after closing
-    expect(mockTopicListService.post).toHaveBeenCalled();*/
   });
-
 
   it('should change visualization Scroll', fakeAsync(() => {
     spyOn(component, 'defaultVisualization').and.callThrough();
 
     const visualization = 'Scroll';
-    component.changeVisualization(visualization);
-    tick(250); // Simulate async behavior
+    component.changeDisplay(visualization);
+    tick(250);
     expect(component.defaultVisualization).toHaveBeenCalledWith(visualization);
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
   }));
-  it('should change visualization Paginacion', fakeAsync(() => {
+  it('should change visualization pagination', fakeAsync(() => {
     spyOn(component, 'defaultVisualization').and.callThrough();
 
-    const visualization = 'Paginacion';
-    component.changeVisualization(visualization);
-    tick(250); // Simulate async behavior
+    const visualization = 'Pagination';
+    component.changeDisplay(visualization);
+    tick(250);
     expect(component.defaultVisualization).toHaveBeenCalledWith(visualization);
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
   }));
@@ -200,41 +172,44 @@ describe('TopicsListComponent', () => {
     spyOn(component, 'defaultVisualization').and.callThrough();
 
     const visualization = 'Cards';
-    component.changeVisualization(visualization);
-    tick(250); // Simulate async behavior
+    component.changeDisplay(visualization);
+    tick(250);
     expect(component.defaultVisualization).toHaveBeenCalledWith(visualization);
     expect(mockTopicListService.loadTopics_post).toHaveBeenCalled();
   }));
   it('should reset filters and fetch topic list when filters are changed', fakeAsync(() => {
     spyOn(component, 'getTopicList');
     component.pageIndex = 2;
-    component.dataSource = new MatTableDataSource<any>([/* your mock data */]);
+    component.dataSource = new MatTableDataSource<any>([
+      /* your mock data */
+    ]);
 
-    // Simulate changing the filters
-    component.onToggleChange({ source: { id: 'minesToggle'}, checked: true  });
+    component.onToggleChange({ source: { id: 'minesToggle' }, checked: true });
 
-    tick(); // Simulate the passage of time (async behavior)
+    tick();
 
-    // Check if filters were reset and topic list was fetched
     expect(component.pageIndex).toBe(1);
     expect(component.getTopicList).toHaveBeenCalled();
   }));
-  it('should change filters when toggles are changed', fakeAsync( () => {
-    // Simulate changing the filters
-    component.onToggleChange({ source: { id: 'minesToggle'}, checked: true  });
-    tick(250); // Simulate async behavior
-    component.onToggleChange({ source: { id: 'openedToggle'}, checked: true  });
-    tick(250); // Simulate async behavior
-    component.onToggleChange({ source: { id: 'closedToggle'}, checked: false  });
-    tick(250); // Simulate async behavior
-    component.onToggleChange({ source: { id: 'votePendingFilter'}, checked: true  });
-    tick(250); // Simulate async behavior
+  it('should change filters when toggles are changed', fakeAsync(() => {
+    component.onToggleChange({ source: { id: 'minesToggle' }, checked: true });
+    tick(250);
+    component.onToggleChange({ source: { id: 'openedToggle' }, checked: true });
+    tick(250);
+    component.onToggleChange({
+      source: { id: 'closedToggle' },
+      checked: false,
+    });
+    tick(250);
+    component.onToggleChange({
+      source: { id: 'votePendingFilter' },
+      checked: true,
+    });
+    tick(250);
 
-    // Check if filters are correctly updated 
     expect(component.minesFilter).toBeTrue();
     expect(component.openedFilter).toBeTrue();
     expect(component.closedFilter).toBeFalse();
-    expect(component.votePendingFilter).toBeTrue(); 
+    expect(component.votePendingFilter).toBeTrue();
   }));
-  /** */
 });

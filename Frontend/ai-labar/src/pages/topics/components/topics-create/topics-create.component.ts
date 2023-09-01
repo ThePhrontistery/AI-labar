@@ -121,28 +121,28 @@ export class TopicsCreateComponent implements OnInit {
       this.surveyOptions = [];
       this.surveyOptions.push({
         image: this.childComponent.selectedFilesBase64[1],
-        option: this.childComponent.surveyValue1,
+        option: this.childComponent.imageTextValue1,
       });
       this.surveyOptions.push({
         image: this.childComponent.selectedFilesBase64[2],
-        option: this.childComponent.surveyValue2,
+        option: this.childComponent.imageTextValue2,
       });
       if (
-        this.childComponent.surveyValue3 != null &&
-        this.childComponent.surveyValue3 != ''
+        this.childComponent.imageTextValue3 != null &&
+        this.childComponent.imageTextValue3 != ''
       ) {
         this.surveyOptions.push({
           image: this.childComponent.selectedFilesBase64[3],
-          option: this.childComponent.surveyValue3,
+          option: this.childComponent.imageTextValue3,
         });
       }
       if (
-        this.childComponent.surveyValue4 != null &&
-        this.childComponent.surveyValue4 != ''
+        this.childComponent.imageTextValue4 != null &&
+        this.childComponent.imageTextValue4 != ''
       ) {
         this.surveyOptions.push({
           image: this.childComponent.selectedFilesBase64[4],
-          option: this.childComponent.surveyValue4,
+          option: this.childComponent.imageTextValue4,
         });
       }
     }
