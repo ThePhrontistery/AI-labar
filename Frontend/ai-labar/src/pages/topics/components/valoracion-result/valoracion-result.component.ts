@@ -41,7 +41,7 @@ export class ValoracionResultComponent implements OnInit {
   loadResults() {
     const url = 'http://localhost:8080/topics/votingResults';
     const resultData = {
-      id: this.data.votacion.id,
+      id: this.data.votation.id,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
