@@ -26,12 +26,12 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * INICIA SESIÓN EN LA APLICACIÓN:
-     * 1. Si se aplica un cifrado SHA256 en frontend, el password enviado será el hash de la clave del usuario a través de dicho standard.
-     *    Si no se aplica, será el password en plano.
-     * 2. Si el login es un éxito, se devolverá el token y el tipo de visualización deseado por el usuario.
-     * 3. Es importante tener en cuenta, que por motivos de seguridad, en el mensaje de error no se dan pistas de si ha fallado el usuario
-     *    o la clave, sólo se indicará el mensaje “Login failed”.
+     * LOGS IN TO THE APPLICATION:
+     * 1. If SHA256 encryption is applied in the frontend, the sent password will be the hash of the user's password according to this standard.
+     *    If not, it will be the plain password.
+     * 2. If the login is successful, the token and the desired user interface type will be returned to the user.
+     * 3. It's important to note that for security reasons, the error message will not provide hints about whether the failure was due to the user
+     *    or the password; it will simply display the message "Login failed."
      */
     @PostMapping("/login")
     public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
@@ -42,13 +42,11 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * CREA UN USUARIO EN LA BBDD:
-     * 1. El password en este caso llegaría cifrado con SHA256 desde el frontend. En backend se cifrará de nuevo la clave en SHA256 y se generará
-     *    un token con el nombre del usuario (es único), el password y el id.
-     * 2. El campo gender puede tener los valores H (hombre) o M (mujer) y no es obligatorio.
-     * 3. El campo photo se debe recibir en Base64 y no es obligatorio.
-     * 4. Existe un campo visualization que no es obligatorio y por defecto tiene el valor “Paginación”. Este campo hace referencia al tipo de visualización
-     *    de los topics deseado. Los valores disponibles son: Paginación, Scroll, Cards.
+     * CREATES A USER IN THE DATABASE:
+     * 1. In this case, the password should arrive encrypted with SHA256 from the frontend. In the backend, the password will be re-encrypted in SHA256, and a token will be generated with the user's unique name, password, and ID.
+     * 2. The 'gender' field can have values H (male) or M (female) and is optional.
+     * 3. The 'photo' field should be received in Base64 and is optional.
+     * 4. There is a 'visualization' field that is not mandatory and defaults to "Pagination." This field refers to the desired type of topic visualization. Available values are: Pagination, Scroll, Cards.
      */
     @PostMapping("/createUser")
     public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel usersModel) {
@@ -59,11 +57,10 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * EDITA UN USUARIO DE LA BBDD:
-     * 1. El uso es similar a /createUser. La diferencia es que se requiere por seguridad el nombre del usuario y del token para realizar la modificación. De este
-     *    modo sólo el propio usuario puede modificar su perfil.
-     * 2. Para modificar la contraseña se usa el campo newPassword.
-     * 3. En el caso de modificarse el usuario, el token será regenerado, invalidando el anterior.
+     * EDITS A USER IN THE DATABASE:
+     * 1. The usage is similar to /createUser. The difference is that for security, the user's name and token are required to make the modification. This way, only the user themselves can modify their profile.
+     * 2. To change the password, use the 'newPassword' field.
+     * 3. In the case of modifying the user, the token will be regenerated, invalidating the previous one.
      */
     @PutMapping("/editUser")
     public ResponseEntity<SpecialResponse> editUser(@RequestBody UsersModel usersModel) {
@@ -74,7 +71,7 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * MODIFICA EL TIPO DE VISUALIZACIÓN DE LOS TOPICS PREFERIDO POR EL USUARIO
+     * MODIFIES THE PREFERRED TOPIC VISUALIZATION TYPE FOR THE USER
      */
     @PutMapping("/editVisualization")
     public ResponseEntity<SpecialResponse> editVisualization(@RequestBody UsersModel usersModel) {
@@ -85,9 +82,9 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * ELIMINA A UN USUAIRO DE LA BBDD:
-     * 1. Se elimina tanto el usuario como también su existencia en los grupos en los que esté asignado.
-     * 2. El user y el token son los datos imprescindibles para cualquier acción dentro de la aplicación.
+     * DELETES A USER FROM THE DATABASE:
+     * 1. Deletes both the user and their existence in any groups they are assigned to.
+     * 2. The user and the token are essential for any action within the application.
      */
     @DeleteMapping("/deleteUser")
     public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersModel usersModel) {
@@ -98,9 +95,9 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * DEVUELVE TODOS LOS USUARIOS QUE COINCIDAN CON EL TEXTO DEL MATCHER RECIBIDO:
-     * 1. Si el matcher se envía vacío devolverá todos los usuarios de la base de datos.
-     * 2. Los users se devuelven a través de un array de strings de las coincidencias encontradas (si es que existe alguna).
+     * RETURNS ALL USERS MATCHING THE RECEIVED MATCHER TEXT:
+     * 1. If the matcher is sent empty, it will return all users from the database.
+     * 2. Users are returned as an array of strings of found matches (if any).
      */
     @PostMapping("/getUsersByMatch")
     public ResponseEntity<SpecialResponse> getUsersByMatch(@RequestBody UsersModel usersModel) {
@@ -111,8 +108,7 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
-     * DEVUELVE TODOS LOS USUARIOS DE LA BBDD
-     *
+     * RETURNS ALL USERS FROM THE DATABASE
      */
     @PostMapping("/getAllUsers")
     public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersModel usersModel) {
@@ -122,9 +118,9 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
 
-    /* Inicio de métodos sólo para realizar pruebas */
+    /* Start of methods for testing purposes */
     /*
-     * DEVUELVE TODOS LOS DATOS DE TODOS LOS USUARIOS DE LA BBDD (EXCLUSIVO PARA PRUEBAS DE DESARROLLO, NO DEBE IR EN LA VERSIÓN FINAL)
+     * RETURNS ALL DATA FOR ALL USERS FROM THE DATABASE (EXCLUSIVE FOR DEVELOPMENT TESTING, SHOULD NOT BE INCLUDED IN THE FINAL VERSION)
      */
     @GetMapping("/getUsersDatabase")
     public ResponseEntity<SpecialResponse> getUsersDatabase() {
@@ -133,9 +129,9 @@ public class UsersController implements SpecialResponseInterface {
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
-    /* Fin métodos sólo para realizar pruebas */
+    /* End of methods for testing purposes */
 
-    // Manejo de las excepciones de cada caso de uso
+    // Exception handling for each use case
     @ExceptionHandler(LoginException.class)
     ResponseEntity<SpecialResponse> handlerLoginException (LoginException loginException){
         JSONObject responseJson = new JSONObject();
