@@ -151,7 +151,7 @@ export class LoginComponent implements OnInit {
             this.showRegistroFom = false;
             this.limpiarForm();
           },
-          (error) => {            
+          (error) => {
             alert(this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +'\n'+ error.error.message);
           }
         )
@@ -196,8 +196,6 @@ export class LoginComponent implements OnInit {
     } else {
       this.selectedFile = null;
       this.base64String = '';
-
-      console.log('Por favor, selecciona un archivo de imagen jpg, png o gif.');
     }
   }
 

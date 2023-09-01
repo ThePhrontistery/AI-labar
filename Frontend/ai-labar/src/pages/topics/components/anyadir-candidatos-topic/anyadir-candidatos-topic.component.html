@@ -1,14 +1,14 @@
-<h2>Añadir candidatos</h2>
-<p>Elegir por grupo o por usuario:</p>
+<h2>{{ 'ADD_CANDIDATES.ADD_CANDIDATES' | translate }}</h2>
+<p>{{ 'ADD_CANDIDATES.CHOOSE_GROUP_USER' | translate }}</p>
 
 <form [formGroup]="groupsForm">
   <mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
-    <mat-radio-button color="primary" value="group">Grupo</mat-radio-button>
-    <mat-radio-button color="primary" value="user">Usuario</mat-radio-button>
+    <mat-radio-button color="primary" value="group">{{ 'ADD_CANDIDATES.GROUP' | translate }}</mat-radio-button>
+    <mat-radio-button color="primary" value="user">{{ 'ADD_CANDIDATES.USER' | translate }}</mat-radio-button>
   </mat-radio-group>
   <div class="content" *ngIf="selectedOption == 'group'">
     <mat-form-field>
-      <mat-label>Seleccionar Grupo de Usuarios</mat-label>
+      <mat-label>{{ 'ADD_CANDIDATES.SELECT_USER_GROUP' | translate }}</mat-label>
       <mat-select
         formControlName="selectedGroup"
         (selectionChange)="loadUsers()"
@@ -19,12 +19,12 @@
       </mat-select>
     </mat-form-field>
 
-    <h3>Usuarios del Grupo Seleccionado</h3>
+    <h3>{{ 'ADD_CANDIDATES.USERS_SELECTED_GROUP' | translate }}</h3>
     <!-- List of users of the selected group -->
     <ul>
       <ng-container *ngFor="let user of usersGroups; let i = index">
         <p *ngIf="i === 0">
-          Total de miembros del grupo seleccionado: {{ usersGroups.length }}
+          {{ 'ADD_CANDIDATES.TOTAL_MEMBERS_GROUP' | translate }} {{ usersGroups.length }}
         </p>
         <li *ngIf="i < 6">
           {{ user }}
@@ -34,7 +34,7 @@
           *ngIf="i === 7 && usersGroups.length > limitCandidates"
           class="error"
         >
-          El número de candidatos para esta encuesta no puede ser mayor que
+        {{ 'ADD_CANDIDATES.MAX_NUMBER_CANDIDATES_ERROR' | translate }}
           {{ limitCandidates }}
         </p>
       </ng-container>
@@ -49,7 +49,7 @@
           color="accent"
           name="close"
         >
-          Cerrar
+        {{ 'ADD_CANDIDATES.CLOSE' | translate }}
         </button>
         <button
           class="button login-button ml16"
@@ -58,7 +58,7 @@
           (click)="saveSelection()"
           name="saveSelec"
         >
-          Guardar selección
+        {{ 'ADD_CANDIDATES.SAVE_SELECTION' | translate }}
         </button>
       </div>
     </div>
@@ -76,7 +76,7 @@
       />
     </mat-form-field>
     <div *ngIf="showUsers">
-      <p>{{ users.length }} usuarios encontrados</p>
+      <p>{{ users.length }} {{ 'ADD_CANDIDATES.USERS_FOUND' | translate }}</p>
       <div class="selectionPanel" #checkboxContainer>
         <mat-checkbox
           color="primary"
@@ -89,11 +89,11 @@
         </mat-checkbox>
       </div>
       <p *ngIf="selectedUsers.length > 8" class="error">
-        No se pueden seleccionar mas de 8 candidatos
+        {{ 'ADD_CANDIDATES.MAX_CANDIDATES_ERROR' | translate }}
       </p>
     </div>
     <div [class.oculto]="!showSelected">
-      <p>Usuarios seleccionados: {{ selectedUsers.length }}</p>
+      <p>{{ 'ADD_CANDIDATES.SELECTED_USERS' | translate }} {{ selectedUsers.length }}</p>
       <mat-form-field appearance="fill">
         <textarea
           formControlName="currentSelection"
@@ -114,7 +114,7 @@
           (click)="clearSelection()"
           name="clear"
         >
-          Limpiar selección
+        {{ 'ADD_CANDIDATES.CLEAR_SELECTION' | translate }}
         </button>
       </div>
       <div class="button right-button">
@@ -125,7 +125,7 @@
           [mat-dialog-close]="true"
           name="cancel"
         >
-          Cancelar
+        {{ 'ADD_CANDIDATES.CANCEL' | translate }}
         </button>
         <button
           [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
@@ -135,7 +135,7 @@
           (click)="saveGroup()"
           name="save"
         >
-          Guardar selección
+        {{ 'ADD_CANDIDATES.SAVE_SELECTION' | translate }}
         </button>
       </div>
     </div>
