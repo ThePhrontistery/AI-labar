@@ -88,7 +88,7 @@
       <div class="wizard-navigation">
         <div class="button right-button">
           <button mat-button color="accent" (click)="closeModal()">
-            Cancelar
+            {{ 'MODAL_VOTATION.CANCEL' | translate }}
           </button>
           <button
             class="login-button ml16"
@@ -96,7 +96,7 @@
             color="white"
             (click)="sendSelection()"
           >
-            Guardar
+          {{ 'MODAL_VOTATION.SAVE' | translate }}
           </button>
         </div>
       </div>
