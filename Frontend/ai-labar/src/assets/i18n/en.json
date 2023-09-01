@@ -30,6 +30,14 @@
       "CLEAR_SELECTION": "Clear selection",
       "CANCEL": "Cancel"
     },
+    "ADD_GROUPS": {
+      "ADD_GROUP": "Add group",
+      "SELECT_USER_GROUP": "Select User Group",
+      "USERS_SELECTED_GROUP": "Users of the Selected Group",
+      "TOTAL_USERS": "Total users:",
+      "CLOSE": "Close",
+      "SAVE_SELECTION": "Save selection"
+    },
     "ERROR_MESSAGES":{
       "CREATE_USER_ERROR":"Error creating user",
       "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:"

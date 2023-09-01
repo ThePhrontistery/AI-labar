@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsComponent } from '../groups/groups.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-anyadir-grupos-topic',
@@ -30,6 +31,7 @@ export class AnyadirGruposTopicComponent implements OnInit {
     private cookie: CookieService,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -72,7 +74,7 @@ export class AnyadirGruposTopicComponent implements OnInit {
         this.groups = data.entity;
       },
       (error) => {
-        console.log('Error al obtener los datos del combo box:', error);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
       }
     );
   }
@@ -91,7 +93,7 @@ export class AnyadirGruposTopicComponent implements OnInit {
         this.users = data.entity.members;
       },
       (error) => {
-        console.log('Error al obtener los datos del combo box:', error);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
       }
     );
   }
