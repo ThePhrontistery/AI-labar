@@ -1,4 +1,4 @@
-{ 
+{
     "LOGIN": {
       "INIT": "Log in",
       "USER": "User",
@@ -13,7 +13,25 @@
       "ADD_TOPIC":"Add topic",
       "LOGOUT":"logout"
     },
+    "ADD_CANDIDATES": {
+      "ADD_CANDIDATES": "Add candidates",
+      "CHOOSE_GROUP_USER": "Choose by group or by user:",
+      "GROUP": "Group",
+      "USER": "User",
+      "SELECT_USER_GROUP": "Select User Group",
+      "USERS_SELECTED_GROUP": "Users of the Selected Group",
+      "TOTAL_MEMBERS_GROUP": "Total members of the selected group:",
+      "MAX_NUMBER_CANDIDATES_ERROR": "The number of candidates for this survey cannot be greater than",
+      "CLOSE": "Close",
+      "SAVE_SELECTION": "Save selection",
+      "USERS_FOUND": "users found",
+      "MAX_CANDIDATES_ERROR": "You cannot select more than 8 candidates",
+      "SELECTED_USERS": "Selected users:",
+      "CLEAR_SELECTION": "Clear selection",
+      "CANCEL": "Cancel"
+    },
     "ERROR_MESSAGES":{
-      "CREATE_USER_ERROR":"Error creating user"
+      "CREATE_USER_ERROR":"Error creating user",
+      "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:"
     }
   }

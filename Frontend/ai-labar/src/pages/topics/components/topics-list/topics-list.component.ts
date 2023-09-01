@@ -489,7 +489,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     }, 250);
   }
 
-  // ethod to edit the display through an HTTP request.
+  // Method to edit the display through an HTTP request.
   editVisualizationFetch(visualizationBody: any) {
     fetch(`${environment.apiUrl}/users/editVisualization`, {
       method: 'PUT',
