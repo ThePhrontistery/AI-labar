@@ -13,6 +13,7 @@ import {
 import { ModalVotacionService } from './modal-votacion.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-modal-votacion',
@@ -66,7 +67,8 @@ export class ModalVotacionComponent implements OnChanges {
 
   constructor(
     private modalVotacionService: ModalVotacionService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private translate: TranslateService,
   ) {}
 
   /**
@@ -163,11 +165,11 @@ export class ModalVotacionComponent implements OnChanges {
     };
     this.modalVotacionService.voteTopics(voteTopicBody).subscribe(
       (response) => {
-        console.log('Selección enviada con éxito:', response);
+        alert(this.translate.instant('ERROR_MESSAGES.OK_SEND_SELECTION'));
         this.closeModal();
       },
       (error) => {
-        console.error('Error al enviar la selección:', error);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_SEND_SELECTION') +'\n'+ error.error.message);
       }
     );
   }

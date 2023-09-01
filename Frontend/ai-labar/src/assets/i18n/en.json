@@ -55,9 +55,20 @@
       "CANCEL": "Cancel",
       "SAVE_GROUP": "Save group"
     },
+    "IMAGE_TEXT_RESULT": {
+      "CLOSE": "Close"
+    },
+    "MODAL_VOTATION": {
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    },
     "ERROR_MESSAGES":{
       "CREATE_USER_ERROR":"Error creating user",
       "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
-      "CREATE_GROUP_ERROR": "Error al crear el grupo"
+      "CREATE_GROUP_ERROR": "Error al crear el grupo",
+      "ERROR_SEND_SELECTION": "Error while sending the selection:"
+    },
+    "OK_MESSAGES": {
+      "OK_SEND_SELECTION": "Selection sent successfully"
     }
   }
