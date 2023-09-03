@@ -1,20 +1,74 @@
-{ 
-    "LOGIN": {
-      "INIT": "Iniciar sesión",
-      "USER": "Usuario",
-      "PASSWORD": "Password",
-      "RECORD": "Registro",
-      "EMAIL": "E-mail",
-      "ADD_IMG": "Añadir imagen",
-      "CANCELAR": "Cancelar"
-    },
-    "TOPIC":{
-      "ADD_GROUP":"Añadir grupo",
-      "ADD_TOPIC":"Añadir topic",
-      "LOGOUT":"Salir"
-    },
-    "ERROR_MESSAGES":{
-      "CREATE_USER_ERROR":"Error al crear al usuario"
-    }
+{
+  "LOGIN": {
+    "INIT": "Iniciar sesión",
+    "USER": "Usuario",
+    "PASSWORD": "Password",
+    "RECORD": "Registro",
+    "EMAIL": "E-mail",
+    "ADD_IMG": "Añadir imagen",
+    "CANCELAR": "Cancelar"
+  },
+  "TOPIC": {
+    "ADD_GROUP": "Añadir grupo",
+    "ADD_TOPIC": "Añadir topic",
+    "LOGOUT": "Salir"
+  },
+  "ADD_CANDIDATES": {
+    "ADD_CANDIDATES": "Añadir candidatos",
+    "CHOOSE_GROUP_USER": "Elegir por grupo o por usuario:",
+    "GROUP": "Grupo",
+    "USER": "Usuario",
+    "SELECT_USER_GROUP": "Seleccionar Grupo de Usuarios",
+    "USERS_SELECTED_GROUP": "Usuarios del Grupo Seleccionado",
+    "TOTAL_MEMBERS_GROUP": "Total de miembros del grupo seleccionado:",
+    "MAX_NUMBER_CANDIDATES_ERROR": "El número de candidatos para esta encuesta no puede ser mayor que",
+    "CLOSE": "Cerrar",
+    "SAVE_SELECTION": "Guardar selección",
+    "USERS_FOUND": "usuarios encontrados",
+    "MAX_CANDIDATES_ERROR": "No se pueden seleccionar mas de 8 candidatos",
+    "SELECTED_USERS": "Usuarios seleccionados:",
+    "CLEAR_SELECTION": "Limpiar selección",
+    "CANCEL": "Cancelar"
+  },
+  "ADD_GROUPS": {
+    "ADD_GROUP": "Añadir grupo",
+    "SELECT_USER_GROUP": "Seleccionar Grupo de Usuarios",
+    "USERS_SELECTED_GROUP": "Usuarios del Grupo Seleccionado",
+    "TOTAL_USERS": "Total de usuarios:",
+    "CLOSE": "Cerrar",
+    "SAVE_SELECTION": "Guardar selección"
+  },
+  "AS_RESULT": {
+    "CLOSE": "Cerrar"
+  },
+  "ELIMINATION_CONFIRM": {
+    "YES": "Sí",
+    "NO": "No"
+  },
+  "CREATE_GROUPS":{
+    "CREATE_GROUP": "CREAR GRUPO",
+    "GROUP_NAME": "Nombre del grupo",
+    "SEARCH_USERS": "Buscar usuarios",
+    "USERS_FOUND": "usuarios encontrados",
+    "SELECTED_USERS": "Usuarios seleccionados:",
+    "CLEAR_SELECTION": "Limpiar selección",
+    "CANCEL": "Cancelar",
+    "SAVE_GROUP": "Guardar grupo"
+  },
+  "IMAGE_TEXT_RESULT": {
+    "CLOSE": "Cerrar"
+  },
+  "MODAL_VOTATION": {
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar"
+  },
+  "ERROR_MESSAGES": {
+    "CREATE_USER_ERROR": "Error al crear al usuario",
+    "ERROR_RETRIEVING_DATA_CB": "Error al obtener los datos del combo box:",
+    "CREATE_GROUP_ERROR": "Error al crear el grupo",
+    "ERROR_SEND_SELECTION": "Error al enviar la selección:"
+  },
+  "OK_MESSAGES": {
+    "OK_SEND_SELECTION": "Selección enviada con éxito"
   }
-  
+}

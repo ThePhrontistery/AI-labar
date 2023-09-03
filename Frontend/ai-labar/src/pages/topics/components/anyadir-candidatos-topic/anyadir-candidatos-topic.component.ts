@@ -16,6 +16,7 @@ import { IUser } from '../interfaces/emoji.model';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-anyadir-candidatos-topic',
@@ -78,6 +79,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     private fb: FormBuilder,
     private topicListService: TopicsListService,
     public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // Initialize the form group and controls
@@ -120,7 +122,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
         this.groups = data.entity;
       },
       (error) => {
-        console.log('Error al obtener los datos del combo box:', error);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
       }
     );
   }
@@ -141,7 +143,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
         this.usersGroups = data.entity.members;
       },
       (error) => {
-        console.log('Error al obtener los datos del combo box:', error);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
       }
     );
   }

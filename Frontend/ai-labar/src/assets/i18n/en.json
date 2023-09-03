@@ -1,4 +1,4 @@
-{ 
+{
     "LOGIN": {
       "INIT": "Log in",
       "USER": "User",
@@ -13,7 +13,62 @@
       "ADD_TOPIC":"Add topic",
       "LOGOUT":"logout"
     },
+    "ADD_CANDIDATES": {
+      "ADD_CANDIDATES": "Add candidates",
+      "CHOOSE_GROUP_USER": "Choose by group or by user:",
+      "GROUP": "Group",
+      "USER": "User",
+      "SELECT_USER_GROUP": "Select User Group",
+      "USERS_SELECTED_GROUP": "Users of the Selected Group",
+      "TOTAL_MEMBERS_GROUP": "Total members of the selected group:",
+      "MAX_NUMBER_CANDIDATES_ERROR": "The number of candidates for this survey cannot be greater than",
+      "CLOSE": "Close",
+      "SAVE_SELECTION": "Save selection",
+      "USERS_FOUND": "users found",
+      "MAX_CANDIDATES_ERROR": "You cannot select more than 8 candidates",
+      "SELECTED_USERS": "Selected users:",
+      "CLEAR_SELECTION": "Clear selection",
+      "CANCEL": "Cancel"
+    },
+    "ADD_GROUPS": {
+      "ADD_GROUP": "Add group",
+      "SELECT_USER_GROUP": "Select User Group",
+      "USERS_SELECTED_GROUP": "Users of the Selected Group",
+      "TOTAL_USERS": "Total users:",
+      "CLOSE": "Close",
+      "SAVE_SELECTION": "Save selection"
+    },
+    "AS_RESULT": {
+      "CLOSE": "Close"
+    },
+    "ELIMINATION_CONFIRM": {
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "CREATE_GROUPS":{
+      "CREATE_GROUP": "CREATE GROUP",
+      "GROUP_NAME": "Group name",
+      "SEARCH_USERS": "Search users",
+      "USERS_FOUND": "users found",
+      "SELECTED_USERS": "Selected users:",
+      "CLEAR_SELECTION": "Clear selection",
+      "CANCEL": "Cancel",
+      "SAVE_GROUP": "Save group"
+    },
+    "IMAGE_TEXT_RESULT": {
+      "CLOSE": "Close"
+    },
+    "MODAL_VOTATION": {
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    },
     "ERROR_MESSAGES":{
-      "CREATE_USER_ERROR":"Error creating user"
+      "CREATE_USER_ERROR":"Error creating user",
+      "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
+      "CREATE_GROUP_ERROR": "Error al crear el grupo",
+      "ERROR_SEND_SELECTION": "Error while sending the selection:"
+    },
+    "OK_MESSAGES": {
+      "OK_SEND_SELECTION": "Selection sent successfully"
     }
   }
