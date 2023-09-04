@@ -12,10 +12,9 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-image-text-result',
   templateUrl: './image-text-result.component.html',
-  styleUrls: ['./image-text-result.component.scss']
+  styleUrls: ['./image-text-result.component.scss'],
 })
 export class ImageTextResultComponent implements OnInit {
-
   // Array to store voting results
   result: IResult[] = [];
 
@@ -23,7 +22,7 @@ export class ImageTextResultComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
     private topicListService: TopicsListService
-  ) { }
+  ) {}
 
   /**
    * Initializes the component by loading the voting results.
@@ -35,21 +34,20 @@ export class ImageTextResultComponent implements OnInit {
   /**
    * Fetches and loads the voting results for the displayed topic.
    */
-  loadResults(){
-    const url = `${environment.apiUrl}/topics/votingResults`;
-    const resultData = {
-      "id": this.data.votation.id,
-      "user": this.cookie.get("user"),
-      "token": this.cookie.get("token")
-    };
+  loadResults() {
+    if (this.data && this.data.votation) {
+      const url = `${environment.apiUrl}/topics/votingResults`;
+      const resultData = {
+        id: this.data.votation.id,
+        user: this.cookie.get('user'),
+        token: this.cookie.get('token'),
+      };
 
-    this.topicListService.post(resultData, url).subscribe(
-      response => {
-        if (response){
+      this.topicListService.post(resultData, url).subscribe((response) => {
+        if (response) {
           this.result = response.entity;
         }
-      }
-    );
+      });
+    }
   }
-
 }
