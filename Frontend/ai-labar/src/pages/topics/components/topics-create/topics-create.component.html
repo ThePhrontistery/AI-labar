@@ -27,7 +27,7 @@
       </div>
       <div class="button right-button">
         <button mat-button color="accent" (click)="cancelSave()">
-          Cancelar
+          {{ 'TOPICS_CREATE.CANCEL' | translate }}
         </button>
         <button
           *ngIf="currentStep > 1"
@@ -36,7 +36,7 @@
           color="white"
           (click)="saveSurvey()"
         >
-          Guardar
+        {{ 'TOPICS_CREATE.SAVE' | translate }}
         </button>
       </div>
     </div>

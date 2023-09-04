@@ -25,6 +25,7 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LOCALE_ID, Inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Component displaying a list of topics and surveys.
@@ -98,6 +99,9 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   totalItems: number | undefined;
 
+  openStatusTranslation: string = '';
+  closedStatusTranslation: string = '';
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   loading = false;
   constructor(
@@ -105,6 +109,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     private topicsListServiceMock: TopicsListServiceMock,
     private dialog: MatDialog,
     private matPaginatorIntl: MatPaginatorIntl,
+    private translate: TranslateService,
     @Inject(LOCALE_ID) private locale: string,
     private cookie: CookieService
   ) {}
@@ -113,7 +118,9 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.defaultVisualization(this.cookie.get('visualization'));
     this.getTopicList();
-    this.matPaginatorIntl.itemsPerPageLabel = 'Topics por página: ';
+    this.matPaginatorIntl.itemsPerPageLabel = this.translate.instant('TOPICS_LIST.TOPICS_PAGE');
+    this.openStatusTranslation = this.translate.instant('TOPICS_LIST.OPEN_STATUS');
+    this.closedStatusTranslation = this.translate.instant('TOPICS_LIST.CLOSED_STATUS');
   }
 
   ngOnDestroy() {
@@ -186,7 +193,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert('Error al abrir el topico: ' + textError);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_OPEN_TOPIC') +'\n'+ textError);
       },
     });
   }
@@ -215,7 +222,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert('Error al cerra el topico: ' + textError);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_CLOSE_TOPIC') +'\n'+ textError);
       },
     });
   }
@@ -225,8 +232,8 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmarEliminacionTopicComponent, {
       width: '250px',
       data: {
-        title: 'Confirmar Eliminación',
-        message: '¿Estás seguro de que deseas eliminar esta encuesta?',
+        title: this.translate.instant('TOPICS_LIST.CONFIRM_DELETION'),
+        message: this.translate.instant('TOPICS_LIST.CONFIRM_DELETION_MESSAGE'),
       },
     });
 
@@ -269,7 +276,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             let textError = error.error.message;
             if (error.error.message === undefined)
               textError = error.error.error;
-            alert('Error al borrar el topico: ' + textError);
+            alert(this.translate.instant('ERROR_MESSAGES.ERROR_DELETE_TOPIC') +'\n'+ textError);
           },
         });
       }
@@ -421,7 +428,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert('Error al obtener los topicos: ' + textError);
+        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_TOPICS') +'\n'+ textError);
       },
     });
   }
