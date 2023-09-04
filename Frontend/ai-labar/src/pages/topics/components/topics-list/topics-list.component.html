@@ -458,7 +458,7 @@
   </button>
 </div>
 
-<app-modal-votacion
+<app-modal-votation
   [isOpen]="modalOpen"
   [options]="optionsVotation"
   [selectedOptions]="selectedOptions"
@@ -471,13 +471,13 @@
   [isSurveyImageTextSimple]="isSurveyImageTextSimple"
   [isSurveyOpinionMultiple]="isSurveyOpinionMultiple"
   [isSurveyImageTextMultiple]="isSurveyImageTextMultiple"
-  (onClose)="closeModalVotation()"
+  (onClose)="closeModalVotation($event)"
   (onOptionChange)="onOptionChange($event)"
-></app-modal-votacion>
+></app-modal-votation>
 
-<app-restultados-votacion
+<app-voting-results
   *ngIf="showResultsModal"
   [items]="listItems"
   [titleSurvey]="titleSurvey"
   (closeModal)="closeResultsModal()"
-></app-restultados-votacion>
+></app-voting-results>

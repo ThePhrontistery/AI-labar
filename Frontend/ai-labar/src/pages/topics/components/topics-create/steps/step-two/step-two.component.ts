@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Emoji } from '../../../interfaces/emoji.model';
-import { AnyadirGruposTopicComponent } from '../../../anyadir-grupos-topic/anyadir-grupos-topic.component';
+import { AddGroupsTopicComponent } from '../../../add-groups-topic/add-groups-topic.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AnyadirCandidatosTopicComponent } from '../../../anyadir-candidatos-topic/anyadir-candidatos-topic.component';
+import { AddCandidatesTopicComponent } from '../../../add-candidates-topic/add-candidates-topic.component';
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
@@ -26,9 +26,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-paso-dos',
-  templateUrl: './paso-dos.component.html',
-  styleUrls: ['./paso-dos.component.scss'],
+  selector: 'app-step-two',
+  templateUrl: './step-two.component.html',
+  styleUrls: ['./step-two.component.scss'],
   providers: [
     {
       provide: DateAdapter,
@@ -38,7 +38,7 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-export class PasoDosComponent implements OnInit, OnDestroy {
+export class StepTwoComponent implements OnInit, OnDestroy {
   /**
    * Data shared from the parent component.
    */
@@ -148,7 +148,7 @@ export class PasoDosComponent implements OnInit, OnDestroy {
    * Open a dialog to add participants to the survey.
    */
   openAddParticipants() {
-    const dialogRef = this.dialog.open(AnyadirGruposTopicComponent, {
+    const dialogRef = this.dialog.open(AddGroupsTopicComponent, {
       width: '400px',
     });
 
@@ -234,7 +234,7 @@ export class PasoDosComponent implements OnInit, OnDestroy {
    * Open a dialog to add candidates to the survey.
    */
   openAddCandidates() {
-    const dialogRef = this.dialog.open(AnyadirCandidatosTopicComponent, {
+    const dialogRef = this.dialog.open(AddCandidatesTopicComponent, {
       width: '500px',
       data: {},
     });

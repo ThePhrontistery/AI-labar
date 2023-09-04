@@ -5,11 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
  * Component for selecting a survey image in the first stage.
  */
 @Component({
-  selector: 'app-paso-uno',
-  templateUrl: './paso-uno.component.html',
-  styleUrls: ['./paso-uno.component.scss'],
+  selector: 'app-step-one',
+  templateUrl: './step-one.component.html',
+  styleUrls: ['./step-one.component.scss'],
 })
-export class PasoUnoComponent implements OnInit {
+export class StepOneComponent implements OnInit {
   /**
    * Data shared from the parent component.
    */

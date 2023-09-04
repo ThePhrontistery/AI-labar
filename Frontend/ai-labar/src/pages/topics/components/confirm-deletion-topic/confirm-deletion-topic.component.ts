@@ -5,11 +5,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  * Component to display a topic deletion confirmation dialog.
  */
 @Component({
-  selector: 'app-confirmar-eliminacion-topic',
-  templateUrl: './confirmar-eliminacion-topic.component.html',
-  styleUrls: ['./confirmar-eliminacion-topic.component.scss']
+  selector: 'app-confirm-deletion-topic',
+  templateUrl: './confirm-deletion-topic.component.html',
+  styleUrls: ['./confirm-deletion-topic.component.scss']
 })
-export class ConfirmarEliminacionTopicComponent {
+export class ConfirmDeletionTopicComponent {
 
   /**
    * Component builder.
@@ -18,7 +18,7 @@ export class ConfirmarEliminacionTopicComponent {
    * @param data Data passed to the dialog box.
    */
   constructor(
-    public dialogRef: MatDialogRef<ConfirmarEliminacionTopicComponent>,
+    public dialogRef: MatDialogRef<ConfirmDeletionTopicComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 

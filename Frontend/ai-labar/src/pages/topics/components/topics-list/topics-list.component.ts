@@ -11,12 +11,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { TopicResultComponent } from '../topic-result/topic-result.component';
-import { ValoracionResultComponent } from '../valoracion-result/valoracion-result.component';
+import { RatingResultComponent } from '../rating-result/rating-result.component';
 import { AsResultsComponent } from '../as-results/as-results.component';
 import { ImageTextResultComponent } from '../image-text-result/image-text-result.component';
 import { environment } from 'src/environments/environment';
 import { TopicsListServiceMock } from './topics-list.service.mock';
-import { ConfirmarEliminacionTopicComponent } from '../confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
+import { ConfirmDeletionTopicComponent } from '../confirm-deletion-topic/confirm-deletion-topic.component';
 import {
   MatPaginator,
   MatPaginatorIntl,
@@ -118,9 +118,15 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.defaultVisualization(this.cookie.get('visualization'));
     this.getTopicList();
-    this.matPaginatorIntl.itemsPerPageLabel = this.translate.instant('TOPICS_LIST.TOPICS_PAGE');
-    this.openStatusTranslation = this.translate.instant('TOPICS_LIST.OPEN_STATUS');
-    this.closedStatusTranslation = this.translate.instant('TOPICS_LIST.CLOSED_STATUS');
+    this.matPaginatorIntl.itemsPerPageLabel = this.translate.instant(
+      'TOPICS_LIST.TOPICS_PAGE'
+    );
+    this.openStatusTranslation = this.translate.instant(
+      'TOPICS_LIST.OPEN_STATUS'
+    );
+    this.closedStatusTranslation = this.translate.instant(
+      'TOPICS_LIST.CLOSED_STATUS'
+    );
   }
 
   ngOnDestroy() {
@@ -187,13 +193,21 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
       next: (response) => {
         if (response) {
-          this.getTopicList();
+          if (this.showScrollTable) {
+            votation.status = 1;
+          } else {
+            this.getTopicList();
+          }
         }
       },
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_OPEN_TOPIC') +'\n'+ textError);
+        alert(
+          this.translate.instant('ERROR_MESSAGES.ERROR_OPEN_TOPIC') +
+            '\n' +
+            textError
+        );
       },
     });
   }
@@ -216,20 +230,28 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
       next: (response) => {
         if (response) {
-          this.getTopicList();
+          if (this.showScrollTable) {
+            votation.status = 0;
+          } else {
+            this.getTopicList();
+          }
         }
       },
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_CLOSE_TOPIC') +'\n'+ textError);
+        alert(
+          this.translate.instant('ERROR_MESSAGES.ERROR_CLOSE_TOPIC') +
+            '\n' +
+            textError
+        );
       },
     });
   }
 
   // Method to delete a topic.
   delete(votation: any) {
-    const dialogRef = this.dialog.open(ConfirmarEliminacionTopicComponent, {
+    const dialogRef = this.dialog.open(ConfirmDeletionTopicComponent, {
       width: '250px',
       data: {
         title: this.translate.instant('TOPICS_LIST.CONFIRM_DELETION'),
@@ -276,7 +298,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             let textError = error.error.message;
             if (error.error.message === undefined)
               textError = error.error.error;
-            alert(this.translate.instant('ERROR_MESSAGES.ERROR_DELETE_TOPIC') +'\n'+ textError);
+            alert(
+              this.translate.instant('ERROR_MESSAGES.ERROR_DELETE_TOPIC') +
+                '\n' +
+                textError
+            );
           },
         });
       }
@@ -298,7 +324,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     this.reviewType();
   }
 
-  closeModalVotation(): void {
+  closeModalVotation(isCancel: any): void {
     this.modalOpen = false;
     this.isSurveyOpinionSimple = false;
     this.isSurveyRating = false;
@@ -306,7 +332,21 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     this.isSurveyImageTextSimple = false;
     this.isSurveyImageTextMultiple = false;
     this.isSurveyOpinionMultiple = false;
-    this.getTopicList();
+    if (isCancel) {
+      if (this.showScrollTable) {
+        const registro = this.dataSource.data.find(
+          (item: { id: any }) => item.id === this.idVotation
+        );
+
+        if (registro) {
+          registro.canVote = false;
+
+          this.dataSource.data = [...this.dataSource.data];
+        }
+      } else {
+        this.getTopicList();
+      }
+    }
   }
 
   onOptionChange(option: string): void {
@@ -343,7 +383,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (votation.type === 'TEXT_MULTIPLE' || votation.type === 'TEXT_SINGLE')
       component = TopicResultComponent;
     if (votation.type === 'AS') component = AsResultsComponent;
-    if (votation.type === 'RATING') component = ValoracionResultComponent;
+    if (votation.type === 'RATING') component = RatingResultComponent;
     if (votation.type === 'IMAGE_SINGLE' || votation.type === 'IMAGE_MULTIPLE')
       component = ImageTextResultComponent;
     if (component) this.openResult(votation, component);
@@ -428,7 +468,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_TOPICS') +'\n'+ textError);
+        alert(
+          this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_TOPICS') +
+            '\n' +
+            textError
+        );
       },
     });
   }

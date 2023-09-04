@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { AsResultsComponent } from './as-results.component';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { ResultadosVotacionService } from '../voting-results/voting-results.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { of } from 'rxjs';
 

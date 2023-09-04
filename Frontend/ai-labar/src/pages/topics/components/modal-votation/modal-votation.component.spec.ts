@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalVotacionComponent } from './modal-votacion.component';
-import { ModalVotacionService } from './modal-votacion.service';
+import { ModalVotationComponent } from './modal-votation.component';
+import { ModalVotacionService } from './modal-votation.service';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-describe('ModalVotacionComponent', () => {
-  let component: ModalVotacionComponent;
-  let fixture: ComponentFixture<ModalVotacionComponent>;
+describe('ModalVotationComponent', () => {
+  let component: ModalVotationComponent;
+  let fixture: ComponentFixture<ModalVotationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ModalVotacionComponent],
+      declarations: [ModalVotationComponent],
       providers: [ModalVotacionService, CookieService],
       imports: [HttpClientTestingModule,
         MatCheckboxModule,MatDialogModule]
@@ -20,7 +20,7 @@ describe('ModalVotacionComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalVotacionComponent);
+    fixture = TestBed.createComponent(ModalVotationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -30,7 +30,7 @@ describe('ModalVotacionComponent', () => {
   });
 
   it('should close modal on cancel button click', () => {
-    const fixture = TestBed.createComponent(ModalVotacionComponent);
+    const fixture = TestBed.createComponent(ModalVotationComponent);
     const component = fixture.componentInstance;
     component.isOpen = true;
     component.isSurveyOpinionSimple = true;

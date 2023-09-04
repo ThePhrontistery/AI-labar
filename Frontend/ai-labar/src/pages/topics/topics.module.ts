@@ -6,8 +6,8 @@ import { TopicsCreateComponent } from './components/topics-create/topics-create.
 import { TopicsListComponent } from './components/topics-list/topics-list.component';
 import { TopicsListService } from '../topics/components/topics-list/topics-list.service';
 import { TopicsListServiceMock } from '../topics/components/topics-list/topics-list.service.mock';
-import { PasoUnoComponent } from './components/topics-create/pasos/paso-uno/paso-uno.component';
-import { PasoDosComponent } from './components/topics-create/pasos/paso-dos/paso-dos.component';
+import { StepOneComponent } from './components/topics-create/steps/step-one/step-one.component';
+import { StepTwoComponent } from './components/topics-create/steps/step-two/step-two.component';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,22 +24,22 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ModalVotacionComponent } from './components/modal-votacion/modal-votacion.component';
-import { ModalVotacionService } from './components/modal-votacion/modal-votacion.service';
-import { ResultadosVotacionComponent } from './components/resultados-votacion/resultados-votacion.component';
+import { ModalVotationComponent } from './components/modal-votation/modal-votation.component';
+import { ModalVotacionService } from './components/modal-votation/modal-votation.service';
+import { VotingResultsComponent } from './components/voting-results/voting-results.component';
 import { TopicResultComponent } from './components/topic-result/topic-result.component';
-import { AnyadirGruposTopicComponent } from './components/anyadir-grupos-topic/anyadir-grupos-topic.component';
-import { ValoracionResultComponent } from './components/valoracion-result/valoracion-result.component';
+import { AddGroupsTopicComponent } from './components/add-groups-topic/add-groups-topic.component';
+import { RatingResultComponent } from './components/rating-result/rating-result.component';
 import { AsResultsComponent } from './components/as-results/as-results.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ImageTextResultComponent } from './components/image-text-result/image-text-result.component';
 import { MatSelectModule } from '@angular/material/select';
-import { AnyadirCandidatosTopicComponent } from './components/anyadir-candidatos-topic/anyadir-candidatos-topic.component';
+import { AddCandidatesTopicComponent } from './components/add-candidates-topic/add-candidates-topic.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ConfirmarEliminacionTopicComponent } from './components/confirmar-eliminacion-topic/confirmar-eliminacion-topic.component';
+import { ConfirmDeletionTopicComponent } from './components/confirm-deletion-topic/confirm-deletion-topic.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatCardModule } from '@angular/material/card';
@@ -58,18 +58,18 @@ export function HttpLoaderFactory(http: HttpClient) {
     TopicsComponent,
     TopicsCreateComponent,
     TopicsListComponent,
-    PasoUnoComponent,
-    PasoDosComponent,
-    ModalVotacionComponent,
-    ResultadosVotacionComponent,
+    StepOneComponent,
+    StepTwoComponent,
+    ModalVotationComponent,
+    VotingResultsComponent,
     GroupsComponent,
     TopicResultComponent,
-    AnyadirGruposTopicComponent,
-    ValoracionResultComponent,
+    AddGroupsTopicComponent,
+    RatingResultComponent,
     AsResultsComponent,
     ImageTextResultComponent,
-    AnyadirCandidatosTopicComponent,
-    ConfirmarEliminacionTopicComponent,
+    AddCandidatesTopicComponent,
+    ConfirmDeletionTopicComponent,
   ],
   imports: [
     TopicsRoutingModule,

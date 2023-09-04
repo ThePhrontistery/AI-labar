@@ -5,7 +5,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { IResultImage } from '../interfaces/emoji.model';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { ResultadosVotacionService } from '../voting-results/voting-results.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 

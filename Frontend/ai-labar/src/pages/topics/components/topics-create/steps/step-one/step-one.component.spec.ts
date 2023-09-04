@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PasoUnoComponent } from './paso-uno.component';
+import { StepOneComponent } from './step-one.component';
 
-xdescribe('PasoUnoComponent', () => {
-  let component: PasoUnoComponent;
-  let fixture: ComponentFixture<PasoUnoComponent>;
+xdescribe('StepOneComponent', () => {
+  let component: StepOneComponent;
+  let fixture: ComponentFixture<StepOneComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PasoUnoComponent],
+      declarations: [StepOneComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasoUnoComponent);
+    fixture = TestBed.createComponent(StepOneComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

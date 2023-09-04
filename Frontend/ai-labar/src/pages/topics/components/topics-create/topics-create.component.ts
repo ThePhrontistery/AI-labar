@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PasoDosComponent } from './pasos/paso-dos/paso-dos.component';
+import { StepTwoComponent } from './steps/step-two/step-two.component';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsCreateService } from './topics-create.service';
 import { Router } from '@angular/router';
@@ -15,8 +15,8 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./topics-create.component.scss'],
 })
 export class TopicsCreateComponent implements OnInit {
-  @ViewChild(PasoDosComponent)
-  childComponent: PasoDosComponent = new PasoDosComponent(this.dialog);
+  @ViewChild(StepTwoComponent)
+  childComponent: StepTwoComponent = new StepTwoComponent(this.dialog);
 
   currentStep = 1;
   sharedData: any = {};
