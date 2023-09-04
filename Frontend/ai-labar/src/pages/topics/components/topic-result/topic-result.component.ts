@@ -44,17 +44,19 @@ export class TopicResultComponent implements OnInit {
    * Make an HTTP request to the server to fetch the results.
    */
   loadResults() {
-    const url = `${environment.apiUrl}/topics/votingResults`;
-    const resultData = {
-      id: this.data.votation.id,
-      user: this.cookie.get('user'),
-      token: this.cookie.get('token'),
-    };
+    if (this.data && this.data.votation) {
+      const url = `${environment.apiUrl}/topics/votingResults`;
+      const resultData = {
+        id: this.data.votation.id,
+        user: this.cookie.get('user'),
+        token: this.cookie.get('token'),
+      };
 
-    this.topicListService.post(resultData, url).subscribe((response) => {
-      if (response) {
-        this.result = response.entity;
-      }
-    });
+      this.topicListService.post(resultData, url).subscribe((response) => {
+        if (response) {
+          this.result = response.entity;
+        }
+      });
+    }
   }
 }

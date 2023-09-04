@@ -14,7 +14,7 @@ describe('ImageTextResultComponent', () => {
   let fixture: ComponentFixture<ImageTextResultComponent>;
 
   const mockDialogData = {
-    votacion: {
+    votation: {
       id: 1,
       title: 'Test Voting',
     },
