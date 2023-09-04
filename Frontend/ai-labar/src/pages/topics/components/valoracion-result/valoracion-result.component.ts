@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji, IEmojiResult } from '../interfaces/emoji.model';
 import { TopicsListService } from '../topics-list/topics-list.service';
+import { environment } from 'src/environments/environment';
 
 /**
  * Component that displays the results of a rating survey with emojis.
@@ -39,7 +40,7 @@ export class ValoracionResultComponent implements OnInit {
 
   // Method to load the survey results.
   loadResults() {
-    const url = 'http://localhost:8080/topics/votingResults';
+    const url = `${environment.apiUrl}/topics/votingResults`;
     const resultData = {
       id: this.data.votation.id,
       user: this.cookie.get('user'),

@@ -28,7 +28,8 @@
     "MAX_CANDIDATES_ERROR": "No se pueden seleccionar mas de 8 candidatos",
     "SELECTED_USERS": "Usuarios seleccionados:",
     "CLEAR_SELECTION": "Limpiar selección",
-    "CANCEL": "Cancelar"
+    "CANCEL": "Cancelar",
+    "SEARCH_USERS": "Buscar usuarios"
   },
   "ADD_GROUPS": {
     "ADD_GROUP": "Añadir grupo",
@@ -45,7 +46,7 @@
     "YES": "Sí",
     "NO": "No"
   },
-  "CREATE_GROUPS":{
+  "CREATE_GROUPS": {
     "CREATE_GROUP": "CREAR GRUPO",
     "GROUP_NAME": "Nombre del grupo",
     "SEARCH_USERS": "Buscar usuarios",
@@ -62,11 +63,91 @@
     "CANCEL": "Cancelar",
     "SAVE": "Guardar"
   },
+  "VOTING_RESULTS": {
+    "CANCEL": "Cancelar"
+  },
+  "TOPIC_RESULT": {
+    "CLOSE": "Cerrar"
+  },
+  "STEP_TWO": {
+    "YOU_HAVE_SELECTED": "Has seleccionado:",
+    "CHOOSE_TITTLE": "Elige un título:",
+    "ENTER_VALUE": "Ingrese un valor",
+    "CHOOSE_CLOSING_DATE": "Elige una fecha de cierre:",
+    "CHOOSE_SELECTION_TYPE": "Elige el tipo de selección:",
+    "SIMPLE": "Simple",
+    "MULTIPLE": "Múltiple",
+    "CHOOSE_OPTIONS": "Elige las opciones:",
+    "ADD_CANDIDATES": "Añadir candidatos",
+    "LIST_CANDIDATES": "Lista de candidatos:",
+    "TOTAL_CANDIDATES": "Total de candidatos:",
+    "ADD_PARTICIPANTS": "Añadir participantes",
+    "LIST_PARTICIPANTS": "Lista de participantes:",
+    "TOTAL_PARTICIPANTS": "Total de participantes:"
+  },
+  "STEP_ONE": {
+    "CHOOSE_SURVEY_TYPE": "Elige un tipo de encuesta:",
+    "SELECT_IMAGE_SURVEY": "(Selecciona la imagen de el tipo de encuesta que desees)",
+    "VALUES_SURVEY_NAME": "Valores (Selección simple/multiple)",
+    "VALUES_IMAGE_SURVEY_NAME": "Valores con imagen (Selección simple/multiple)",
+    "EMOJIS_SURVEY_NAME": "Emojis (Selección simple)",
+    "EMPLOYEE_SURVEY_NAME": "Empleado (Selección simple)"
+  },
+  "TOPICS_CREATE": {
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar"
+  },
+  "TOPICS_LIST": {
+    "FILTERS": "Filtros:",
+    "OWN": "Propios",
+    "OPEN_FILTER": "Abiertos",
+    "CLOSED_FILTER": "Cerrados",
+    "PENDING_VOTE": "Pendientes de votar",
+    "TITLE": "Título",
+    "STATUS": "Estado",
+    "OPEN_STATUS": "Abierto",
+    "CLOSED_STATUS": "Cerrado",
+    "AUTHOR": "Autor",
+    "CLOSING_DATE": "Fecha de cierre",
+    "OPEN_SURVEY_COLUMN": "Abrir",
+    "OPEN_SURVEY": "Abrir votación",
+    "CLOSE_SURVEY_COLUMN": "Cerrar",
+    "CLOSE_SURVEY": "Cerrar votación",
+    "DELETE_SURVEY_COLUMN": "Eliminar",
+    "DELETE_SURVEY": "Eliminar votación",
+    "VOTE_SURVEY_COLUMN": "Votar",
+    "VOTE_SURVEY": "Votar",
+    "VIEW_RESULTS_SURVEY_COLUMN": "Ver resultados",
+    "VIEW_RESULTS_SURVEY": "Ver resultados",
+    "ACTIONS": "Acciones",
+    "WITHOUT_CLOSING_DATE": "Sin fecha de cierre",
+    "OPEN": "Abrir",
+    "CLOSE": "Cerrar",
+    "DELETE": "Eliminar",
+    "VOTE": "Votar",
+    "VIEW_RESULTS": "Ver resultados",
+    "PAGINATION": "Paginación",
+    "CARDS": "Tarjetas",
+    "SCROLL": "Scroll",
+    "TOPICS_PAGE": "Topics por página: ",
+    "CONFIRM_DELETION": "Confirmar Eliminación",
+    "CONFIRM_DELETION_MESSAGE": "¿Estás seguro de que deseas eliminar esta encuesta?"
+  },
+  "RATING_RESULT": {
+    "CLOSE": "Cerrar"
+  },
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error al crear al usuario",
     "ERROR_RETRIEVING_DATA_CB": "Error al obtener los datos del combo box:",
     "CREATE_GROUP_ERROR": "Error al crear el grupo",
-    "ERROR_SEND_SELECTION": "Error al enviar la selección:"
+    "ERROR_SEND_SELECTION": "Error al enviar la selección:",
+    "EMPTY_CLOSING_DATE": "La fecha de cierre está vacia.",
+    "EMPTY_TITLE": "El titulo está vacio.",
+    "TOPIC_CREATE_ERROR": "Se produjo un error al crear el topic: ",
+    "ERROR_OPEN_TOPIC": "Error al abrir el topic:",
+    "ERROR_CLOSE_TOPIC": "Error al cerrar el topic:",
+    "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
+    "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:"
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selección enviada con éxito"

@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { TopicsCreateService } from './topics-create.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for creating surveys of different types.
@@ -37,7 +38,8 @@ export class TopicsCreateComponent implements OnInit {
     private cookie: CookieService,
     private topicsCreateService: TopicsCreateService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {}
@@ -161,11 +163,11 @@ export class TopicsCreateComponent implements OnInit {
   valuesValidation(): boolean {
     const isValid = true;
     if (!this.childComponent.closingDate) {
-      alert('La fecha de cierre está vacia.');
+      alert(this.translate.instant('ERROR_MESSAGES.EMPTY_CLOSING_DATE'));
       return false;
     }
     if (!this.surveyTitle) {
-      alert('El titulo está vacio.');
+      alert(this.translate.instant('ERROR_MESSAGES.EMPTY_TITLE'));
       return false;
     }
     return isValid;
@@ -195,7 +197,7 @@ export class TopicsCreateComponent implements OnInit {
         (error) => {
           let textError = error.error.message;
           if (error.error.message === undefined) textError = error.error.error;
-          alert('Se produjo un error al crear el topic: ' + textError);
+          alert(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +'\n'+ error.error.message);
         }
       );
     }
