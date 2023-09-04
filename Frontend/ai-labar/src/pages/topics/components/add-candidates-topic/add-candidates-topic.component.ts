@@ -7,6 +7,7 @@ import {
   Inject,
   ViewChild,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -17,13 +18,14 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-candidates-topic',
   templateUrl: './add-candidates-topic.component.html',
   styleUrls: ['./add-candidates-topic.component.scss'],
 })
-export class AddCandidatesTopicComponent implements OnInit {
+export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   // Selected option: 'group' or 'individual'
   selectedOption: string = 'group';
 
@@ -73,6 +75,8 @@ export class AddCandidatesTopicComponent implements OnInit {
   // Previously selected option
   oldSelectedOption: string | undefined;
 
+  private ngUnsubscribe = new Subject();
+
   constructor(
     private topicsCreateService: TopicsCreateService,
     private cookie: CookieService,
@@ -89,6 +93,9 @@ export class AddCandidatesTopicComponent implements OnInit {
       selectedOption: ['group'], // Initial value for selectedOption
       currentSelection: [''],
     });
+  }
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.complete();
   }
 
   ngOnInit(): void {
@@ -117,14 +124,21 @@ export class AddCandidatesTopicComponent implements OnInit {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
-    this.topicsCreateService.getGroupsByUser(loadGroupsBody).subscribe(
-      (data) => {
-        this.groups = data.entity;
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-      }
-    );
+    this.topicsCreateService
+      .getGroupsByUser(loadGroupsBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+          this.groups = response.entity;
+        },
+        error: (error) => {
+          alert(
+            this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });
   }
 
   // Retrieve users from the selected group
@@ -138,14 +152,21 @@ export class AddCandidatesTopicComponent implements OnInit {
       token: this.cookie.get('token'),
       groupName: this.selectedGroup,
     };
-    this.topicsCreateService.getGroup(loadGroupBody).subscribe(
-      (data) => {
-        this.usersGroups = data.entity.members;
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-      }
-    );
+    this.topicsCreateService
+      .getGroup(loadGroupBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+          this.usersGroups = response.entity.members;
+        },
+        error: (error) => {
+          alert(
+            this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });
   }
 
   // Save the selected group and users to the dialog data and close the dialog
