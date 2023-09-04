@@ -1,0 +1,151 @@
+.filters-container {
+  padding: 10px;
+}
+
+.button-container {
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.image-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 30px;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.image-button:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.button-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row:hover {
+  background-color: #eee;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type {
+  padding-right: 0px;
+}
+
+#div1 {
+  overflow-y: scroll;
+  height: 70vh;
+}
+
+#div2 {
+  overflow-y: scroll;
+  height: 70vh;
+}
+
+.mat-card {
+  margin: 20px;
+}
+
+.mat-card > :last-child:not(.mat-card-footer),
+.mat-card-content > :last-child:not(.mat-card-footer) {
+  margin-bottom: 10px;
+}
+
+.mat-card-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card-item {
+  width: calc(33.33% - 20px);
+  min-width: 200px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  color: #3b4147;
+  font-weight: 500;
+}
+
+.card-item:hover {
+  background-color: #31b6ff08;
+}
+
+.closed {
+  background-color: #25aef917;
+}
+
+.card-item h3 {
+  font-size: x-large;
+  font-weight: bold;
+  color: #0070ad;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-buttons button {
+  margin-right: 10px;
+}
+
+.title-and-status {
+  flex-grow: 1;
+}
+
+.close-date {
+  margin-top: 8px;
+}
+
+.buttons {
+  margin: 0 auto;
+}
+
+.author {
+  align-self: flex-end;
+  margin-top: 8px;
+}
+
+.mat-slide-toggle {
+  padding: 5px;
+}

@@ -5,16 +5,25 @@ import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import java.util.List;
 
 public interface UsersRepositoryPort {
-    boolean login(String user, String password);
-    void createUser(UsersEntity usersEntity);
-    void editUser(UsersEntity usersEntity);
-    void deleteUser(Integer id);
-    List<String> getUsersByMatch(String matcher);
-    List<String> getAllUsers();
-    List<UsersEntity> getUsersDatabase();
+    boolean checkAuthorization(String user, String token);
+
+    boolean checkEmail(String email);
 
     boolean checkUser(String user);
-    boolean checkEmail(String email);
-    boolean checkAuthorization(String user, String token);
+
+    void createUser(UsersEntity usersEntity);
+
+    void deleteUser(Integer id);
+
+    void editUser(UsersEntity usersEntity);
+
+    List<String> getAllUsers();
+
     UsersEntity getUserByName(String user);
+
+    List<String> getUsersByMatch(String matcher);
+
+    List<UsersEntity> getUsersDatabase();
+
+    boolean login(String user, String password);
 }

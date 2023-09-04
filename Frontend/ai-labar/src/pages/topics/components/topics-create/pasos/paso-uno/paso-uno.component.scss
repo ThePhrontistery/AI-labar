@@ -1,0 +1,49 @@
+.image {
+  margin-right: 10px;
+}
+
+/* Estilo para el contenedor principal */
+.images-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+/* Estilo para cada imagen */
+.img-border {
+  border: 2px solid #0056b3;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.img-border:hover {
+  border-color: #007bff; /* Cambiar a tu color deseado al pasar el cursor */
+}
+
+/* Opcional: Estilo para el título y subtítulo */
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  img {
+    width: 100%;
+  }
+  .image {
+    width: 40%;
+    align-items: center;
+  }
+}
+
+/* Estilos para resoluciones mayores a 768px */
+@media (min-width: 769px) {
+  .image {
+    margin-right: 10px;
+  }
+}

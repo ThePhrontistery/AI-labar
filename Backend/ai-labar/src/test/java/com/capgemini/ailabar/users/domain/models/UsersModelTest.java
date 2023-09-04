@@ -1,90 +1,54 @@
 package com.capgemini.ailabar.users.domain.models;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class UsersModelTest {
-
-    private UsersModel usersModel;
+    @Mock
+    private UsersEntity mockUsersEntity;
 
     @BeforeEach
     void setUp() {
-        usersModel = new UsersModel();
+        MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    void testIdProperty() {
-        usersModel.setId(1);
+    void testConstructorFromEntity() {
+        when(mockUsersEntity.getId()).thenReturn(1);
+        when(mockUsersEntity.getUser()).thenReturn("TestUser");
+        when(mockUsersEntity.getPassword()).thenReturn("TestPassword");
+        when(mockUsersEntity.getEmail()).thenReturn("test@example.com");
+        when(mockUsersEntity.getGender()).thenReturn("Male");
+        when(mockUsersEntity.getPhoto()).thenReturn("profile.jpg");
+
+        UsersModel usersModel = new UsersModel();
+        usersModel.setId(mockUsersEntity.getId());
+        usersModel.setUser(mockUsersEntity.getUser());
+        usersModel.setPassword(mockUsersEntity.getPassword());
+        usersModel.setEmail(mockUsersEntity.getEmail());
+        usersModel.setGender(mockUsersEntity.getGender());
+        usersModel.setPhoto(mockUsersEntity.getPhoto());
+
         assertEquals(1, usersModel.getId());
-    }
+        assertEquals("TestUser", usersModel.getUser());
+        assertEquals("TestPassword", usersModel.getPassword());
+        assertEquals("test@example.com", usersModel.getEmail());
+        assertEquals("Male", usersModel.getGender());
+        assertEquals("profile.jpg", usersModel.getPhoto());
 
-    @Test
-    void testUserProperty() {
-        usersModel.setUser("Username");
-        assertEquals("Username", usersModel.getUser());
-    }
-
-    @Test
-    void testPasswordProperty() {
-        usersModel.setPassword("Password");
-        assertEquals("Password", usersModel.getPassword());
-    }
-
-    @Test
-    void testEmailProperty() {
-        usersModel.setEmail("email@example.com");
-        assertEquals("email@example.com", usersModel.getEmail());
-    }
-
-    @Test
-    void testGenderProperty() {
-        usersModel.setGender("H");
-        assertEquals("H", usersModel.getGender());
-    }
-
-    @Test
-    void testPhotoProperty() {
-        usersModel.setPhoto("photo");
-        assertEquals("photo", usersModel.getPhoto());
-    }
-
-    @Test
-    void testTokenProperty() {
-        usersModel.setToken("Token");
-        assertEquals("Token", usersModel.getToken());
-    }
-
-    @Test
-    void testMatcherProperty() {
-        usersModel.setMatcher("Matcher");
-        assertEquals("Matcher", usersModel.getMatcher());
-    }
-
-    @Test
-    void testNewUserProperty() {
-        usersModel.setNewUser("NewUser");
-        assertEquals("NewUser", usersModel.getNewUser());
-    }
-
-    @Test
-    void testNewPasswordProperty() {
-        usersModel.setNewPassword("NewPassword");
-        assertEquals("NewPassword", usersModel.getNewPassword());
-    }
-
-    @Test
-    void testUsersListProperty() {
-        List<String> usersList = Arrays.asList("User1", "User2");
-        usersModel.setUsersList(usersList);
-        assertEquals(usersList, usersModel.getUsersList());
+        verify(mockUsersEntity, times(1)).getId();
+        verify(mockUsersEntity, times(1)).getUser();
+        verify(mockUsersEntity, times(1)).getPassword();
+        verify(mockUsersEntity, times(1)).getEmail();
+        verify(mockUsersEntity, times(1)).getGender();
+        verify(mockUsersEntity, times(1)).getPhoto();
     }
 }

@@ -1,0 +1,26 @@
+@media (max-width: 768px) {
+  .wizard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+}
+
+@media (min-width: 769px) {
+  .wizard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .left-button {
+    order: -1;
+  }
+
+  .right-button {
+    float: right;
+  }
+}

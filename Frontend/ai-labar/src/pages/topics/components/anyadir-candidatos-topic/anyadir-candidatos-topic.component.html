@@ -1,0 +1,143 @@
+<h2>{{ 'ADD_CANDIDATES.ADD_CANDIDATES' | translate }}</h2>
+<p>{{ 'ADD_CANDIDATES.CHOOSE_GROUP_USER' | translate }}</p>
+
+<form [formGroup]="groupsForm">
+  <mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
+    <mat-radio-button color="primary" value="group">{{ 'ADD_CANDIDATES.GROUP' | translate }}</mat-radio-button>
+    <mat-radio-button color="primary" value="user">{{ 'ADD_CANDIDATES.USER' | translate }}</mat-radio-button>
+  </mat-radio-group>
+  <div class="content" *ngIf="selectedOption == 'group'">
+    <mat-form-field>
+      <mat-label>{{ 'ADD_CANDIDATES.SELECT_USER_GROUP' | translate }}</mat-label>
+      <mat-select
+        formControlName="selectedGroup"
+        (selectionChange)="loadUsers()"
+      >
+        <mat-option *ngFor="let group of groups" [value]="group">{{
+          group
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <h3>{{ 'ADD_CANDIDATES.USERS_SELECTED_GROUP' | translate }}</h3>
+    <!-- List of users of the selected group -->
+    <ul>
+      <ng-container *ngFor="let user of usersGroups; let i = index">
+        <p *ngIf="i === 0">
+          {{ 'ADD_CANDIDATES.TOTAL_MEMBERS_GROUP' | translate }} {{ usersGroups.length }}
+        </p>
+        <li *ngIf="i < 6">
+          {{ user }}
+        </li>
+        <li *ngIf="i === 5 && usersGroups.length > 6">...</li>
+        <p
+          *ngIf="i === 7 && usersGroups.length > limitCandidates"
+          class="error"
+        >
+        {{ 'ADD_CANDIDATES.MAX_NUMBER_CANDIDATES_ERROR' | translate }}
+          {{ limitCandidates }}
+        </p>
+      </ng-container>
+    </ul>
+
+    <div class="wizard-navigation">
+      <div class="button right-button">
+        <button
+          class="button"
+          (click)="closeDialog()"
+          mat-button
+          color="accent"
+          name="close"
+        >
+        {{ 'ADD_CANDIDATES.CLOSE' | translate }}
+        </button>
+        <button
+          class="button login-button ml16"
+          mat-raised-button
+          color="white"
+          (click)="saveSelection()"
+          name="saveSelec"
+        >
+        {{ 'ADD_CANDIDATES.SAVE_SELECTION' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="selectedOption == 'user'">
+    <mat-form-field appearance="fill">
+      <input
+        matInput
+        placeholder="{{ 'ADD_CANDIDATES.SEARCH_USERS' | translate }}"
+        type="text"
+        (input)="filterUsers()"
+        formControlName="searcher"
+        name="searcher"
+      />
+    </mat-form-field>
+    <div *ngIf="showUsers">
+      <p>{{ users.length }} {{ 'ADD_CANDIDATES.USERS_FOUND' | translate }}</p>
+      <div class="selectionPanel" #checkboxContainer>
+        <mat-checkbox
+          color="primary"
+          *ngFor="let user of users"
+          [formControlName]="user.name"
+          [class]="user.hidden ? 'hidden' : ''"
+          [checked]="user.checked"
+        >
+          {{ user.name }}
+        </mat-checkbox>
+      </div>
+      <p *ngIf="selectedUsers.length > 8" class="error">
+        {{ 'ADD_CANDIDATES.MAX_CANDIDATES_ERROR' | translate }}
+      </p>
+    </div>
+    <div [class.oculto]="!showSelected">
+      <p>{{ 'ADD_CANDIDATES.SELECTED_USERS' | translate }} {{ selectedUsers.length }}</p>
+      <mat-form-field appearance="fill">
+        <textarea
+          formControlName="currentSelection"
+          matInput
+          [value]="selectedUsers.join(', ')"
+          rows="3"
+          name="currentSelection"
+        ></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="wizard-navigation">
+      <div class="button left-button">
+        <button
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="clearSelection()"
+          name="clear"
+        >
+        {{ 'ADD_CANDIDATES.CLEAR_SELECTION' | translate }}
+        </button>
+      </div>
+      <div class="button right-button">
+        <button
+          class="button"
+          mat-button
+          color="accent"
+          [mat-dialog-close]="true"
+          name="cancel"
+        >
+        {{ 'ADD_CANDIDATES.CANCEL' | translate }}
+        </button>
+        <button
+          [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
+          mat-raised-button
+          color="white"
+          class="login-button ml16 rightButton"
+          (click)="saveGroup()"
+          name="save"
+        >
+        {{ 'ADD_CANDIDATES.SAVE_SELECTION' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -42,7 +42,7 @@ public class TopicsService implements LoadTopicUseCase, CreateTopicUseCase, Edit
     }
 
     @Override
-    public List<TopicsModel> loadTopics(UsersModel usersModel) {
+    public Map<String, Object> loadTopics(UsersModel usersModel) {
         try {
             return loadTopicUseCase.loadTopics(usersModel);
         } catch (LoadTopicException loadTopicsException) {

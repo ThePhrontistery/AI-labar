@@ -1,0 +1,72 @@
+<h1>{{ 'CREATE_GROUPS.CREATE_GROUP' | translate }}</h1>
+<form class="login-form" [formGroup]="groupsForm">
+  <mat-form-field appearance="fill">
+    <input
+      matInput
+      placeholder="{{ 'CREATE_GROUPS.GROUP_NAME' | translate }}"
+      type="text"
+      formControlName="groupName"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input
+      matInput
+      placeholder="{{ 'CREATE_GROUPS.SEARCH_USERS' | translate }}"
+      type="text"
+      (input)="filterUsers()"
+      formControlName="searcher"
+    />
+  </mat-form-field>
+  <div *ngIf="showUsers">
+    <p>{{ users.length }} {{ 'CREATE_GROUPS.USERS_FOUND' | translate }}</p>
+    <div class="selectionPanel" #checkboxContainer>
+      <mat-checkbox
+        color="primary"
+        *ngFor="let user of users"
+        [formControlName]="user.name"
+        [class]="user.hidden ? 'hidden' : ''"
+        [checked]="user.checked"
+      >
+        {{ user.name }}
+      </mat-checkbox>
+    </div>
+  </div>
+  <div [class.hidden]="!showSelected">
+    <p>{{ 'CREATE_GROUPS.SELECTED_USERS' | translate }} {{ selectedUsers.length }}</p>
+    <mat-form-field appearance="fill">
+      <textarea
+        formControlName="currentSelection"
+        matInput
+        [value]="selectedUsers.join(', ')"
+        rows="3"
+      ></textarea>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="wizard-navigation">
+  <div class="button left-button">
+    <button
+      mat-raised-button
+      color="white"
+      class="login-button"
+      (click)="clearSelection()"
+    >
+    {{ 'CREATE_GROUPS.CLEAR_SELECTION' | translate }}
+    </button>
+  </div>
+  <div class="button right-button">
+    <button class="button" [mat-dialog-close]="true" mat-button color="accent">
+      {{ 'CREATE_GROUPS.CANCEL' | translate }}
+    </button>
+    <button
+      [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
+      class="button login-button ml16"
+      mat-raised-button
+      color="white"
+      (click)="saveGroup()"
+    >
+    {{ 'CREATE_GROUPS.SAVE_GROUP' | translate }}
+    </button>
+  </div>
+</div>

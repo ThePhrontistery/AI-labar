@@ -2,7 +2,6 @@ package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
 import com.capgemini.ailabar.commons.utils.MailService;
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.CreateTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
@@ -15,6 +14,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -65,9 +67,9 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
 
         manageCloseDate();
 
-        checkMailService();
-
         topicsRepositoryPort.createTopic(topicsEntity);
+
+        manageMailService();
 
         manageOptions(topicsRepositoryPort.getTopicIdByTopicName(topicsEntity.getTitle()));
     }
@@ -149,6 +151,10 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
             topicsEntity.setGroupId(groupId);
         } else {
             topicsEntity.setGroupId(topicsRepositoryPort.getGroupIdByGroupNameAndAdmin(topicsModel.getGroupName(), topicsModel.getUser()));
+
+            if(topicsEntity.getGroupId() == null) {
+                throw new CreateTopicException("The user does not have any group with the indicated name");
+            }
         }
     }
 
@@ -176,17 +182,29 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
     private void manageCloseDate() {
         if(topicsModel.getCloseDate() != null && !topicsModel.getCloseDate().isBlank()) {
             String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDate());
+
             if(dateString.contains("KO")) {
                 throw new CreateTopicException(dateString);
             } else {
                 topicsEntity.setCloseDate(topicsModel.getCloseDate());
             }
+
+            try {
+                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                LocalDate currentDate = LocalDate.now();
+
+                if (!inputDate.isAfter(currentDate)) {
+                    throw new CreateTopicException("The closing date cannot be earlier than the current date");
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new CreateTopicException(dateTimeParseException.getMessage());
+            }
         }
     }
 
-    private void checkMailService() {
+    private void manageMailService() {
         if(!"false".equals(environment.getProperty("activate.mail"))) {
-            mailService.sendEmail(topicsModel);
+            mailService.sendEmail(topicsModel.getTitle(), topicsRepositoryPort.getEmailsByGroupId(topicsModel.getGroupId()));
         }
     }
 }

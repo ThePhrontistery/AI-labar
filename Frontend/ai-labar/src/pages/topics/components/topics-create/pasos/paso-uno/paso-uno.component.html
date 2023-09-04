@@ -1,0 +1,14 @@
+<h1>{{ 'STEP_ONE.CHOOSE_SURVEY_TYPE' | translate }}</h1>
+<h3>{{ 'STEP_ONE.SELECT_IMAGE_SURVEY' | translate }}</h3>
+
+<div class="images-container">
+  <div
+    *ngFor="let image of images"
+    (click)="selectImage(image)"
+    class="img-border image"
+  >
+    <h2 fxHide fxShow.sm="true" fxShow.gt-md="true">{{ image.name }}</h2>
+    <h5 fxHide fxShow.xs>{{ image.name }}</h5>
+    <img [src]="image.route" alt="{{ image.name }}" />
+  </div>
+</div>

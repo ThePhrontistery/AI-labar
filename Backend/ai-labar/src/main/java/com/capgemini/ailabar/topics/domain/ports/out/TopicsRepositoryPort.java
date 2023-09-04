@@ -22,6 +22,8 @@ public interface TopicsRepositoryPort {
 
     void closeTopic(TopicsEntity topicsEntity);
 
+    Integer countTotalTopics(String user, List<Integer> groupIds);
+
     void createTemporalGroup(String groupName, String admin);
 
     void createTopic(TopicsEntity topicsEntity);
@@ -37,6 +39,8 @@ public interface TopicsRepositoryPort {
     void deleteVotedByOnTopic(Integer topicId);
 
     void editTopic(TopicsEntity topicsEntity);
+
+    List<String> getEmailsByGroupId(Integer groupId);
 
     Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin);
 
@@ -66,9 +70,7 @@ public interface TopicsRepositoryPort {
 
     void insertOption(Integer topicId, String image, String option, Integer votes);
 
-    List<TopicsEntity> loadTopicsByAuthor(String user);
-
-    List<TopicsEntity> loadTopicsByGroupId(Integer groupId);
+    List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset);
 
     void reOpenTopic(TopicsEntity topicsEntity);
 

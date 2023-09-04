@@ -1,0 +1,16 @@
+.fact {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.option {
+  margin-right: 1rem;
+  width: 13%;
+}
+
+.fact img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 10px;
+}

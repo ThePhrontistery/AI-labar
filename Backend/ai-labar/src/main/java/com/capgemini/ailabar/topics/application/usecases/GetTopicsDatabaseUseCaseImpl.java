@@ -1,17 +1,11 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
-import com.capgemini.ailabar.groups.domain.ports.in.GetGroupsDatabaseUseCase;
-import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
-import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.GetTopicsDatabaseException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.GetTopicsDatabaseUseCase;
 import com.capgemini.ailabar.topics.domain.ports.out.TopicsRepositoryPort;
 import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
 import com.capgemini.ailabar.topics.infraestructure.utils.TopicsUtils;
-import com.capgemini.ailabar.votedby.domain.models.VotedByModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -25,14 +25,29 @@ public class UsersController implements SpecialResponseInterface {
         this.usersService = usersService;
     }
 
+    /*
+     * LOGS IN TO THE APPLICATION:
+     * 1. If SHA256 encryption is applied in the frontend, the sent password will be the hash of the user's password according to this standard.
+     *    If not, it will be the plain password.
+     * 2. If the login is successful, the token and the desired user interface type will be returned to the user.
+     * 3. It's important to note that for security reasons, the error message will not provide hints about whether the failure was due to the user
+     *    or the password; it will simply display the message "Login failed."
+     */
     @PostMapping("/login")
     public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
-        String token = usersService.login(usersModel);
+        List<String> loginData = usersService.login(usersModel);
         responseJson.put("message", "Login successful");
-        return new ResponseEntity<>(specialResponse(token, responseJson), HttpStatus.OK);
+        return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * CREATES A USER IN THE DATABASE:
+     * 1. In this case, the password should arrive encrypted with SHA256 from the frontend. In the backend, the password will be re-encrypted in SHA256, and a token will be generated with the user's unique name, password, and ID.
+     * 2. The 'gender' field can have values H (male) or M (female) and is optional.
+     * 3. The 'photo' field should be received in Base64 and is optional.
+     * 4. There is a 'visualization' field that is not mandatory and defaults to "Pagination." This field refers to the desired type of topic visualization. Available values are: Pagination, Scroll, Cards.
+     */
     @PostMapping("/createUser")
     public ResponseEntity<SpecialResponse> createUser(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -41,6 +56,12 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * EDITS A USER IN THE DATABASE:
+     * 1. The usage is similar to /createUser. The difference is that for security, the user's name and token are required to make the modification. This way, only the user themselves can modify their profile.
+     * 2. To change the password, use the 'newPassword' field.
+     * 3. In the case of modifying the user, the token will be regenerated, invalidating the previous one.
+     */
     @PutMapping("/editUser")
     public ResponseEntity<SpecialResponse> editUser(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -49,6 +70,22 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * MODIFIES THE PREFERRED TOPIC VISUALIZATION TYPE FOR THE USER
+     */
+    @PutMapping("/editVisualization")
+    public ResponseEntity<SpecialResponse> editVisualization(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.editVisualization(usersModel);
+        responseJson.put("message", "Visualization edited successfully");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    /*
+     * DELETES A USER FROM THE DATABASE:
+     * 1. Deletes both the user and their existence in any groups they are assigned to.
+     * 2. The user and the token are essential for any action within the application.
+     */
     @DeleteMapping("/deleteUser")
     public ResponseEntity<SpecialResponse> deleteUser(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -57,6 +94,11 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * RETURNS ALL USERS MATCHING THE RECEIVED MATCHER TEXT:
+     * 1. If the matcher is sent empty, it will return all users from the database.
+     * 2. Users are returned as an array of strings of found matches (if any).
+     */
     @PostMapping("/getUsersByMatch")
     public ResponseEntity<SpecialResponse> getUsersByMatch(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -65,6 +107,9 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(userMatchesList, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * RETURNS ALL USERS FROM THE DATABASE
+     */
     @PostMapping("/getAllUsers")
     public ResponseEntity<SpecialResponse> getAllUsers(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -73,7 +118,10 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
 
-    /* Inicio de métodos sólo para realizar pruebas */
+    /* Start of methods for testing purposes */
+    /*
+     * RETURNS ALL DATA FOR ALL USERS FROM THE DATABASE (EXCLUSIVE FOR DEVELOPMENT TESTING, SHOULD NOT BE INCLUDED IN THE FINAL VERSION)
+     */
     @GetMapping("/getUsersDatabase")
     public ResponseEntity<SpecialResponse> getUsersDatabase() {
         JSONObject responseJson = new JSONObject();
@@ -81,8 +129,9 @@ public class UsersController implements SpecialResponseInterface {
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
-    /* Fin métodos sólo para realizar pruebas */
+    /* End of methods for testing purposes */
 
+    // Exception handling for each use case
     @ExceptionHandler(LoginException.class)
     ResponseEntity<SpecialResponse> handlerLoginException (LoginException loginException){
         JSONObject responseJson = new JSONObject();
@@ -101,6 +150,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerEditUserException (EditUserException editUserException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", editUserException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EditVisualizationException.class)
+    ResponseEntity<SpecialResponse> handlerEditVisualizationException (EditVisualizationException editVisualizationException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", editVisualizationException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

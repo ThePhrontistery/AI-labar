@@ -47,6 +47,5 @@ public class DeleteGroupUseCaseImpl implements DeleteGroupUseCase {
 
         groupsRepositoryPort.deleteMembersByGroupId(groupsModel.getId());
         groupsRepositoryPort.deleteGroup(groupsModel.getId());
-
     }
 }

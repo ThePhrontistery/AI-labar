@@ -1,0 +1,155 @@
+{
+  "LOGIN": {
+    "INIT": "Log in",
+    "USER": "User",
+    "PASSWORD": "Password",
+    "RECORD": "Record",
+    "EMAIL": "E-mail",
+    "ADD_IMG": "Add image",
+    "CANCELAR": "Cancel"
+  },
+  "TOPIC": {
+    "ADD_GROUP": "Add group",
+    "ADD_TOPIC": "Add topic",
+    "LOGOUT": "logout"
+  },
+  "ADD_CANDIDATES": {
+    "ADD_CANDIDATES": "Add candidates",
+    "CHOOSE_GROUP_USER": "Choose by group or by user:",
+    "GROUP": "Group",
+    "USER": "User",
+    "SELECT_USER_GROUP": "Select User Group",
+    "USERS_SELECTED_GROUP": "Users of the Selected Group",
+    "TOTAL_MEMBERS_GROUP": "Total members of the selected group:",
+    "MAX_NUMBER_CANDIDATES_ERROR": "The number of candidates for this survey cannot be greater than",
+    "CLOSE": "Close",
+    "SAVE_SELECTION": "Save selection",
+    "USERS_FOUND": "users found",
+    "MAX_CANDIDATES_ERROR": "You cannot select more than 8 candidates",
+    "SELECTED_USERS": "Selected users:",
+    "CLEAR_SELECTION": "Clear selection",
+    "CANCEL": "Cancel",
+    "SEARCH_USERS": "Search users"
+  },
+  "ADD_GROUPS": {
+    "ADD_GROUP": "Add group",
+    "SELECT_USER_GROUP": "Select User Group",
+    "USERS_SELECTED_GROUP": "Users of the Selected Group",
+    "TOTAL_USERS": "Total users:",
+    "CLOSE": "Close",
+    "SAVE_SELECTION": "Save selection"
+  },
+  "AS_RESULT": {
+    "CLOSE": "Close"
+  },
+  "ELIMINATION_CONFIRM": {
+    "YES": "Yes",
+    "NO": "No"
+  },
+  "CREATE_GROUPS": {
+    "CREATE_GROUP": "CREATE GROUP",
+    "GROUP_NAME": "Group name",
+    "SEARCH_USERS": "Search users",
+    "USERS_FOUND": "users found",
+    "SELECTED_USERS": "Selected users:",
+    "CLEAR_SELECTION": "Clear selection",
+    "CANCEL": "Cancel",
+    "SAVE_GROUP": "Save group"
+  },
+  "IMAGE_TEXT_RESULT": {
+    "CLOSE": "Close"
+  },
+  "MODAL_VOTATION": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "VOTING_RESULTS": {
+    "CANCEL": "Cancel"
+  },
+  "TOPIC_RESULT": {
+    "CLOSE": "Close"
+  },
+  "STEP_TWO": {
+    "YOU_HAVE_SELECTED": "You have selected:",
+    "CHOOSE_TITTLE": "Choose a title:",
+    "ENTER_VALUE": "Enter a value",
+    "CHOOSE_CLOSING_DATE": "Choose a closing date:",
+    "CHOOSE_SELECTION_TYPE": "Choose the selection type:",
+    "SIMPLE": "Simple",
+    "MULTIPLE": "Multiple",
+    "CHOOSE_OPTIONS": "Select the options:",
+    "ADD_CANDIDATES": "Add candidates",
+    "LIST_CANDIDATES": "List of candidates:",
+    "TOTAL_CANDIDATES": "Total candidates:",
+    "ADD_PARTICIPANTS": "Add participants",
+    "LIST_PARTICIPANTS": "List of participants:",
+    "TOTAL_PARTICIPANTS": "Total participants:"
+  },
+  "STEP_ONE": {
+    "CHOOSE_SURVEY_TYPE": "Choose a survey type:",
+    "SELECT_IMAGE_SURVEY": "(Select the image for the type of survey you desire)",
+    "VALUES_SURVEY_NAME": "Values (Single/Multiple selection)",
+    "VALUES_IMAGE_SURVEY_NAME": "Values with image (Single/Multiple selection)",
+    "EMOJIS_SURVEY_NAME": "Emojis (Single selection)",
+    "EMPLOYEE_SURVEY_NAME": "Employee (Single selection)"
+  },
+  "TOPICS_CREATE": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "TOPICS_LIST": {
+    "FILTERS": "Filters:",
+    "OWN": "Own",
+    "OPEN_FILTER": "Open",
+    "CLOSED_FILTER": "Closed",
+    "PENDING_VOTE": "Pending voting",
+    "TITLE": "Title",
+    "STATUS": "Status",
+    "OPEN_STATUS": "Open",
+    "CLOSED_STATUS": "Closed",
+    "AUTHOR": "Author",
+    "CLOSING_DATE": "Closing date",
+    "OPEN_SURVEY_COLUMN": "Open",
+    "OPEN_SURVEY": "Open survey",
+    "CLOSE_SURVEY_COLUMN": "Close",
+    "CLOSE_SURVEY": "Close survey",
+    "DELETE_SURVEY_COLUMN": "Delete",
+    "DELETE_SURVEY": "Delete survey",
+    "VOTE_SURVEY_COLUMN": "Vote",
+    "VOTE_SURVEY": "Vote",
+    "VIEW_RESULTS_SURVEY_COLUMN": "View results",
+    "VIEW_RESULTS_SURVEY": "View results",
+    "ACTIONS": "Actions",
+    "WITHOUT_CLOSING_DATE": "Without clsing date",
+    "OPEN": "Open",
+    "CLOSE": "Close",
+    "DELETE": "Delete",
+    "VOTE": "Vote",
+    "VIEW_RESULTS": "View results",
+    "PAGINATION": "Pagination",
+    "CARDS": "Cards",
+    "SCROLL": "Scroll",
+    "TOPICS_PAGE": "Topics per page: ",
+    "CONFIRM_DELETION": "Confirm Deletion",
+    "CONFIRM_DELETION_MESSAGE": "¿Are you sure you want to delete this survey?"
+  },
+  "RATING_RESULT": {
+    "CLOSE": "Close"
+  },
+  "ERROR_MESSAGES": {
+    "CREATE_USER_ERROR": "Error creating user",
+    "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
+    "CREATE_GROUP_ERROR": "Error al crear el grupo",
+    "ERROR_SEND_SELECTION": "Error while sending the selection:",
+    "EMPTY_CLOSING_DATE": "The closing date is empty.",
+    "EMPTY_TITLE": "The title is empty.",
+    "TOPIC_CREATE_ERROR": "An error occurred while creating the topic: ",
+    "ERROR_OPEN_TOPIC": "Error when opening the topic:",
+    "ERROR_CLOSE_TOPIC": "Error when closing the topic:",
+    "ERROR_DELETE_TOPIC": "Error when deleting the topic:",
+    "ERROR_RETRIEVING_TOPICS": "Error while retrieving the topics:"
+  },
+  "OK_MESSAGES": {
+    "OK_SEND_SELECTION": "Selection sent successfully"
+  }
+}

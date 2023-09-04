@@ -9,6 +9,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class LoginUseCaseImpl implements LoginUseCase {
@@ -19,7 +22,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
     }
 
     @Override
-    public String login(UsersModel usersModel) {
+    public List<String> login(UsersModel usersModel) {
         if (usersModel.getUser().isBlank() || usersModel.getPassword().isBlank()) {
             throw new LoginException("User and password are required to login");
         }
@@ -34,6 +37,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
             throw new LoginException("User not found");
         }
 
-        return usersEntity.getToken();
+        List<String> loginData = new ArrayList<>();
+        loginData.add(usersEntity.getToken());
+        loginData.add(usersEntity.getVisualization());
+
+        return loginData;
     }
 }

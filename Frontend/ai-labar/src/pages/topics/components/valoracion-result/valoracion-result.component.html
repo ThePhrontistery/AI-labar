@@ -1,0 +1,48 @@
+<div class="modal">
+  <div class="modal-content">
+    <h2>{{ data.votation.title }}</h2>
+    <div class="padding-content">
+      <div class="inline">
+        <div
+          class="divided-container"
+          fxHide
+          fxShow.sm="true"
+          fxShow.gt-md="true"
+        >
+          <div *ngFor="let fact of results" class="fact">
+            <label class="resultEmoji" [for]="fact.emoji.id">{{
+              fact.emoji.icon
+            }}</label>
+          </div>
+        </div>
+        <div class="divided-container">
+          <div>
+            <div *ngFor="let fact of results" class="fact" fxHide fxShow.xs>
+              <label class="resultEmoji" [for]="fact.emoji.id">{{
+                fact.emoji.icon
+              }}</label>
+            </div>
+            <br />
+            <br />
+            <div *ngFor="let fact of optionsVoted" class="fact">
+              <label class="optionEmoji" [for]="fact.emoji.id">{{
+                fact.emoji.icon
+              }}</label>
+              <span class="votes">{{ fact.votes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        class="rightButton"
+        mat-button
+        color="accent"
+        [mat-dialog-close]="true"
+      >
+      {{ 'RATING_RESULT.CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

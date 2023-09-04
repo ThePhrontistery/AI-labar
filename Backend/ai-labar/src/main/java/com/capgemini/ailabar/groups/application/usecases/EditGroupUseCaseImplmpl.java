@@ -1,12 +1,10 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
-import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.exceptions.EditGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.EditGroupUseCase;
 import com.capgemini.ailabar.groups.domain.ports.out.GroupsRepositoryPort;
 import com.capgemini.ailabar.groups.infraestructure.entities.GroupsEntity;
-import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +55,10 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
             try {
                 if(!groupsEntity.getAdmin().equals(member)) {
                     groupsRepositoryPort.insertMember(groupsModel.getId(), groupsRepositoryPort.getUserIdByUserName(member));
+                }
+
+                if(member.equals(groupsModel.getUser())) {
+                    throw new EditGroupException("The group creator cannot be a member of the group, as they are already a member by default");
                 }
             } catch (EditGroupException editGroupException) {
                 throw new EditGroupException("An error occurred during the registration of group members");

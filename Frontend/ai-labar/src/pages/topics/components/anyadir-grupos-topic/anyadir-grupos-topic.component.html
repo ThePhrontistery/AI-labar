@@ -1,0 +1,51 @@
+<button
+  class="login-button"
+  mat-raised-button
+  color="white"
+  (click)="addGroup()"
+>
+{{ 'ADD_GROUPS.ADD_GROUP' | translate }}
+</button>
+
+<div>
+  <!-- Combo box to select groups -->
+  <mat-form-field>
+    <mat-label>{{ 'ADD_GROUPS.SELECT_USER_GROUP' | translate }}</mat-label>
+    <mat-select [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
+      <mat-option *ngFor="let group of groups" [value]="group">{{
+        group
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<h3>{{ 'ADD_GROUPS.USERS_SELECTED_GROUP' | translate }}</h3>
+<!-- List of users of the selected group -->
+<ul>
+  <ng-container *ngFor="let user of users; let i = index">
+    <p *ngIf="i === 0">{{ 'ADD_GROUPS.TOTAL_USERS' | translate }} {{ users.length }}</p>
+    <li *ngIf="i < 6">
+      {{ user }}
+    </li>
+    <li class="ellipsis" *ngIf="i === 5 && users.length > 6">...</li>
+  </ng-container>
+</ul>
+
+<!-- Close modal button -->
+<div class="wizard-navigation">
+  <div class="button left-button">
+    <button class="button" (click)="closeDialog()" mat-button color="accent">
+      {{ 'ADD_GROUPS.CLOSE' | translate }}
+    </button>
+  </div>
+  <div class="button right-button">
+    <button
+      class="button login-button ml16"
+      mat-raised-button
+      color="white"
+      (click)="saveSelection()"
+    >
+    {{ 'ADD_GROUPS.SAVE_SELECTION' | translate }}
+    </button>
+  </div>
+</div>

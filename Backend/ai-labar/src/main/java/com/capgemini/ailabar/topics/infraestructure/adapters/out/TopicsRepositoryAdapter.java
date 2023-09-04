@@ -42,6 +42,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId) {
+        return topicsRepository.checkIfUserCanVoteOnTopic(groupId, userId);
+    }
+
+    @Override
     public boolean checkMember(String member) {
         return topicsRepository.checkMember(member);
     }
@@ -49,11 +54,6 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public void closeTopic(TopicsEntity topicsEntity) {
         topicsRepository.save(topicsEntity);
-    }
-
-    @Override
-    public boolean checkIfUserCanVoteOnTopic(Integer groupId, Integer userId) {
-        return topicsRepository.checkIfUserCanVoteOnTopic(groupId, userId);
     }
 
     @Override
@@ -97,6 +97,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
+    public List<String> getEmailsByGroupId(Integer groupId) {
+        return topicsRepository.getEmailsByGroupId(groupId);
+    }
+
+    @Override
     public Integer getGroupIdByGroupNameAndAdmin(String groupName, String admin) {
         return topicsRepository.getGroupIdByGroupNameAndAdmin(groupName, admin);
     }
@@ -129,6 +134,11 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     @Override
     public TopicsEntity getTopicsEntityById(Integer id) {
         return topicsRepository.getTopicsEntityById(id);
+    }
+
+    @Override
+    public Integer countTotalTopics(String user, List<Integer> groupIds) {
+        return topicsRepository.countTotalTopics(user, groupIds);
     }
 
     @Override
@@ -167,13 +177,8 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public List<TopicsEntity> loadTopicsByAuthor(String user) {
-        return topicsRepository.loadTopicsByAuthor(user);
-    }
-
-    @Override
-    public List<TopicsEntity> loadTopicsByGroupId(Integer groupId) {
-        return topicsRepository.loadTopicsByGroupId(groupId);
+    public List<TopicsEntity> loadTopics(String user, List<Integer> groupIds, Integer limit, Integer offset) {
+        return topicsRepository.loadTopics(user, groupIds, limit, offset);
     }
 
     @Override

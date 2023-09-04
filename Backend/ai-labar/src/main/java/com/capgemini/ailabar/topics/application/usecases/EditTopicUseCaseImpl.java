@@ -3,7 +3,6 @@ package com.capgemini.ailabar.topics.application.usecases;
 import com.capgemini.ailabar.commons.utils.Constants;
 import com.capgemini.ailabar.commons.utils.MailService;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
-import com.capgemini.ailabar.topics.domain.exceptions.CreateTopicException;
 import com.capgemini.ailabar.topics.domain.exceptions.EditTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.EditTopicUseCase;
@@ -15,6 +14,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -79,7 +81,7 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
 
         manageCloseDate();
 
-        checkMailService();
+        manageMailService();
 
         topicsRepositoryPort.editTopic(topicsEntity);
     }
@@ -93,7 +95,7 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
         }
 
         if(topicsModel.getGroupName() != null && topicsModel.getMembers() != null) {
-            throw new CreateTopicException("You cannot send both a group name and a list of members, choose one of the two");
+            throw new EditTopicException("You cannot send both a group name and a list of members, choose one of the two");
         }
     }
 
@@ -137,7 +139,7 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
         if(topicsModel.getType().equals("AS")) {
             for (OptionsModel option : topicsModel.getOptions()) {
                 if (!topicsRepositoryPort.checkMember(option.getOption())) {
-                    throw new CreateTopicException("The user " + option.getOption() + " is not valid");
+                    throw new EditTopicException("The user " + option.getOption() + " is not valid");
                 }
             }
         }
@@ -196,6 +198,10 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
             }
 
             topicsEntity.setGroupId(topicsRepositoryPort.getGroupIdByGroupNameAndAdmin(topicsModel.getGroupName(), topicsModel.getUser()));
+
+            if(topicsEntity.getGroupId() == null) {
+                throw new EditTopicException("The user does not have any group with the indicated name");
+            }
         }
     }
 
@@ -259,12 +265,32 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
             } else {
                 topicsEntity.setCloseDate(topicsModel.getCloseDate());
             }
+
+            try {
+                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                LocalDate currentDate = LocalDate.now();
+
+                if (!inputDate.isAfter(currentDate)) {
+                    throw new EditTopicException("The closing date cannot be earlier than the current date");
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new EditTopicException(dateTimeParseException.getMessage());
+            }try {
+                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                LocalDate currentDate = LocalDate.now();
+
+                if (!inputDate.isAfter(currentDate)) {
+                    throw new EditTopicException("The closing date cannot be earlier than the current date");
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new EditTopicException(dateTimeParseException.getMessage());
+            }
         }
     }
 
-    private void checkMailService() {
+    private void manageMailService() {
         if(!"false".equals(environment.getProperty("activate.mail"))) {
-            mailService.sendEmail(topicsModel);
+            mailService.sendEmail(topicsModel.getTitle(), topicsRepositoryPort.getEmailsByGroupId(topicsModel.getGroupId()));
         }
     }
 }

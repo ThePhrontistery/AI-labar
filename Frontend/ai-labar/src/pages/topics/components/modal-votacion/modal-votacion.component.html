@@ -1,0 +1,105 @@
+<mat-dialog-actions>
+  <div
+    *ngIf="
+      isOpen &&
+      (isSurveyOpinionMultiple ||
+        isSurveyOpinionSimple ||
+        isSurveyRating ||
+        isSurveyVoting ||
+        isSurveyImageTextSimple ||
+        isSurveyImageTextMultiple)
+    "
+    class="modal"
+  >
+    <div class="modal-content">
+      <h2>{{ title }}</h2>
+      <div class="padding-content">
+        <ng-container *ngIf="isSurveyOpinionMultiple || isSurveyOpinionSimple">
+          <label *ngFor="let option of valuesVoting">
+            <input
+              [type]="isSurveyOpinionSimple ? 'radio' : 'checkbox'"
+              [checked]="
+                isSurveyOpinionMultiple
+                  ? selectedOptions.includes(option)
+                  : selectedOption === option
+              "
+              (change)="
+                isSurveyOpinionMultiple
+                  ? selectOption(option, $event)
+                  : selectOpinion(option)
+              "
+            />
+            {{ option }}
+          </label>
+        </ng-container>
+        <ng-container *ngIf="isSurveyRating">
+          <div *ngFor="let emoji of emojisVoting" class="emoji-option">
+            <input
+              type="radio"
+              [id]="emoji.id"
+              [value]="emoji"
+              [checked]="selectedEmoji === emoji"
+              (change)="selectEmoji(emoji)"
+            />
+            <label [for]="emoji.id">{{ emoji.icon }}</label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isSurveyVoting">
+          <div *ngFor="let item of itemsVoting" class="item-option">
+            <input
+              type="radio"
+              [id]="item.id"
+              [value]="item"
+              [checked]="selectedItem === item"
+              (change)="selectItem(item)"
+            />
+            <label [for]="item.id">
+              <img [src]="item.imageSrc" alt="Image" />
+              <span class="item-text">{{ item.text }}</span>
+            </label>
+          </div>
+        </ng-container>
+        <ng-container
+          *ngIf="isSurveyImageTextSimple || isSurveyImageTextMultiple"
+        >
+          <div *ngFor="let item of valuesVotingImageText" class="item-option">
+            <input
+              [type]="isSurveyImageTextSimple ? 'radio' : 'checkbox'"
+              [id]="item.id"
+              [value]="item"
+              [checked]="
+                isSurveyImageTextSimple
+                  ? selectedImageText === item
+                  : selectedOptions.includes(item)
+              "
+              (change)="
+                isSurveyImageTextSimple
+                  ? selectImageText(item)
+                  : selectImagesText(item, $event)
+              "
+            />
+            <label [for]="item.id">
+              <img [src]="item.imageSrc" alt="Image" />
+              <span class="item-text">{{ item.text }}</span>
+            </label>
+          </div>
+        </ng-container>
+      </div>
+      <div class="wizard-navigation">
+        <div class="button right-button">
+          <button mat-button color="accent" (click)="closeModal()">
+            {{ 'MODAL_VOTATION.CANCEL' | translate }}
+          </button>
+          <button
+            class="login-button ml16"
+            mat-raised-button
+            color="white"
+            (click)="sendSelection()"
+          >
+          {{ 'MODAL_VOTATION.SAVE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>
