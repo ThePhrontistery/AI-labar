@@ -5,7 +5,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
-import { AnyadirCandidatosTopicComponent } from './anyadir-candidatos-topic.component';
+import { AddCandidatesTopicComponent } from './add-candidates-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -18,9 +18,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { of } from 'rxjs';
 
-describe('AnyadirCandidatosTopicComponent', () => {
-  let component: AnyadirCandidatosTopicComponent;
-  let fixture: ComponentFixture<AnyadirCandidatosTopicComponent>;
+describe('AddCandidatesTopicComponent', () => {
+  let component: AddCandidatesTopicComponent;
+  let fixture: ComponentFixture<AddCandidatesTopicComponent>;
   let topicsCreateServiceSpy: jasmine.SpyObj<TopicsCreateService>;
   let cookieServiceSpy: jasmine.SpyObj<CookieService>;
   let topicsListServiceSpy: jasmine.SpyObj<TopicsListService>;
@@ -40,7 +40,7 @@ describe('AnyadirCandidatosTopicComponent', () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
-      declarations: [AnyadirCandidatosTopicComponent],
+      declarations: [AddCandidatesTopicComponent],
       providers: [
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
@@ -83,7 +83,7 @@ describe('AnyadirCandidatosTopicComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnyadirCandidatosTopicComponent);
+    fixture = TestBed.createComponent(AddCandidatesTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

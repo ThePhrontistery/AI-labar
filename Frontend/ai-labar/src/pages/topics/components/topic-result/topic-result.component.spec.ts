@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 
 import { TopicResultComponent } from './topic-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { ResultadosVotacionService } from '../voting-results/voting-results.service';
 import { IResult } from '../interfaces/emoji.model';
 
 describe('TopicResultComponent', () => {

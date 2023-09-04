@@ -9,11 +9,11 @@ import { GroupsComponent } from '../groups/groups.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-anyadir-grupos-topic',
-  templateUrl: './anyadir-grupos-topic.component.html',
-  styleUrls: ['./anyadir-grupos-topic.component.scss'],
+  selector: 'app-add-groups-topic',
+  templateUrl: './add-groups-topic.component.html',
+  styleUrls: ['./add-groups-topic.component.scss'],
 })
-export class AnyadirGruposTopicComponent implements OnInit {
+export class AddGroupsTopicComponent implements OnInit {
   selectedGroup: string | undefined;
   groups: string[] = [];
   users: string[] = [];
@@ -30,7 +30,7 @@ export class AnyadirGruposTopicComponent implements OnInit {
     private topicsCreateService: TopicsCreateService,
     private cookie: CookieService,
     private dialog: MatDialog,
-    public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
+    public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}

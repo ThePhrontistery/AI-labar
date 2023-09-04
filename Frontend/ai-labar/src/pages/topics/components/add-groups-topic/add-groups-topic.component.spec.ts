@@ -5,7 +5,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
-import { AnyadirGruposTopicComponent } from './anyadir-grupos-topic.component';
+import { AddGroupsTopicComponent } from './add-groups-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,9 +16,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { of } from 'rxjs';
 import { FormBuilder, FormsModule } from '@angular/forms';
 
-describe('AnyadirGruposTopicComponent', () => {
-  let component: AnyadirGruposTopicComponent;
-  let fixture: ComponentFixture<AnyadirGruposTopicComponent>;
+describe('AddGroupsTopicComponent', () => {
+  let component: AddGroupsTopicComponent;
+  let fixture: ComponentFixture<AddGroupsTopicComponent>;
   let topicsCreateServiceSpy: jasmine.SpyObj<TopicsCreateService>;
   let cookieServiceSpy: jasmine.SpyObj<CookieService>;
 
@@ -34,7 +34,7 @@ describe('AnyadirGruposTopicComponent', () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
-      declarations: [AnyadirGruposTopicComponent],
+      declarations: [AddGroupsTopicComponent],
       providers: [
         FormBuilder,
         { provide: TopicsCreateService, useValue: topicsCreateService },
@@ -70,7 +70,7 @@ describe('AnyadirGruposTopicComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnyadirGruposTopicComponent);
+    fixture = TestBed.createComponent(AddGroupsTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,7 +5,7 @@ import { TopicsCreateComponent } from './topics-create.component';
 import { TopicsCreateService } from './topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { of } from 'rxjs';
-import { PasoDosComponent } from './pasos/paso-dos/paso-dos.component';
+import { StepTwoComponent } from './steps/step-two/step-two.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TopicsListComponent } from '../topics-list/topics-list.component';
 import { Routes } from '@angular/router';
@@ -65,20 +65,20 @@ describe('TopicsCreateComponent', () => {
   });
 
   it('should call createTopics and navigate when valuesValidation is true', () => {
-    component.componenteHijo = new PasoDosComponent(mockDialog);
-    component.componenteHijo.textBoxValue = 'Test Title';
-    component.componenteHijo.isOpinionSurvey = true;
-    component.componenteHijo.selectedType = 'simple';
-    component.componenteHijo.surveyValue1 = 'Option 1';
-    component.componenteHijo.surveyValue2 = 'Option 2';
-    component.componenteHijo.closingDate = '01/01/2023';
-    component.groupSelectedParticipantes.push('testUser');
+    component.childComponent = new StepTwoComponent(mockDialog);
+    component.childComponent.textBoxValue = 'Test Title';
+    component.childComponent.isOpinionSurvey = true;
+    component.childComponent.selectedType = 'simple';
+    component.childComponent.surveyValue1 = 'Option 1';
+    component.childComponent.surveyValue2 = 'Option 2';
+    component.childComponent.closingDate = '01/01/2023';
+    component.groupSelectedParticipants.push('testUser');
     spyOn(component, 'valuesValidation').and.returnValue(true);
 
     const createTopicsBody = {
       title: 'Test Title',
       type: component.typeTS,
-      question: 'prueba',
+      question: 'test',
       options: [{ option: 'Option 1' }, { option: 'Option 2' }],
       user: 'testUser',
       groupName: ['testUser'],

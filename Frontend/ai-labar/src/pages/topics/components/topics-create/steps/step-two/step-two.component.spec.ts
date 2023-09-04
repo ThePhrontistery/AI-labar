@@ -6,22 +6,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
-import { PasoDosComponent, MY_FORMATS } from './paso-dos.component';
-import { AnyadirGruposTopicComponent } from '../../../anyadir-grupos-topic/anyadir-grupos-topic.component';
+import { StepTwoComponent, MY_FORMATS } from './step-two.component';
+import { AddGroupsTopicComponent } from '../../../add-groups-topic/add-groups-topic.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-describe('PasoDosComponent', () => {
-  let component: PasoDosComponent;
-  let fixture: ComponentFixture<PasoDosComponent>;
+describe('StepTwoComponent', () => {
+  let component: StepTwoComponent;
+  let fixture: ComponentFixture<StepTwoComponent>;
   let mockMatDialog: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
     mockMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
-      declarations: [PasoDosComponent],
+      declarations: [StepTwoComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -39,7 +39,7 @@ describe('PasoDosComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasoDosComponent);
+    fixture = TestBed.createComponent(StepTwoComponent);
     component = fixture.componentInstance;
     component.selectedImage = { nombre: 'Opinion' };
     fixture.detectChanges();
@@ -59,7 +59,7 @@ describe('PasoDosComponent', () => {
     component.openAddParticipants();
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(
-      AnyadirGruposTopicComponent,
+      AddGroupsTopicComponent,
       {
         width: '400px',
         data: {},

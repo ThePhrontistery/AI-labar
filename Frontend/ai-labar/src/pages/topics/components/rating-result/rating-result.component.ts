@@ -9,11 +9,11 @@ import { environment } from 'src/environments/environment';
  * Component that displays the results of a rating survey with emojis.
  */
 @Component({
-  selector: 'app-valoracion-result',
-  templateUrl: './valoracion-result.component.html',
-  styleUrls: ['./valoracion-result.component.scss'],
+  selector: 'app-rating-result',
+  templateUrl: './rating-result.component.html',
+  styleUrls: ['./rating-result.component.scss'],
 })
-export class ValoracionResultComponent implements OnInit {
+export class RatingResultComponent implements OnInit {
   // Variable and property declarations.
   message = '';
   emojis: Emoji[] = [
