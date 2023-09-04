@@ -5,7 +5,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { IResultImage } from '../interfaces/emoji.model';
-import { ResultadosVotacionService } from '../voting-results/voting-results.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 
@@ -32,7 +32,7 @@ export class AsResultsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
     private topicListService: TopicsListService,
-    private resultsService: ResultadosVotacionService
+    private resultsService: VotingResultsService
   ) {}
 
   /**

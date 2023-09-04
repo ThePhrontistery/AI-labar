@@ -11,7 +11,7 @@ import {
   OnDestroy,
   Output,
 } from '@angular/core';
-import { ModalVotacionService } from './modal-votation.service';
+import { ModalVotationService } from './modal-votation.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -70,7 +70,7 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   constructor(
-    private modalVotacionService: ModalVotacionService,
+    private modalVotationService: ModalVotationService,
     private cookie: CookieService,
     private translate: TranslateService
   ) {}
@@ -171,7 +171,7 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
-    this.modalVotacionService
+    this.modalVotationService
       .voteTopics(voteTopicBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
