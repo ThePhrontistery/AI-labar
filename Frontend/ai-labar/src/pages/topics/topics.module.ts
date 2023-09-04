@@ -25,7 +25,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ModalVotationComponent } from './components/modal-votation/modal-votation.component';
-import { ModalVotacionService } from './components/modal-votation/modal-votation.service';
+import { ModalVotationService } from './components/modal-votation/modal-votation.service';
 import { VotingResultsComponent } from './components/voting-results/voting-results.component';
 import { TopicResultComponent } from './components/topic-result/topic-result.component';
 import { AddGroupsTopicComponent } from './components/add-groups-topic/add-groups-topic.component';
@@ -111,7 +111,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TopicsListServiceMock,
     CookieService,
     TopicsCreateService,
-    ModalVotacionService,
+    ModalVotationService,
     HttpClientModule,
   ],
 })

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class ResultadosVotacionService {
+export class VotingResultsService {
   constructor() {}
   getWinnerOption(voteOptions: any[]): any[] {
     const maxVotes = Math.max(...voteOptions.map((option) => option.votes));

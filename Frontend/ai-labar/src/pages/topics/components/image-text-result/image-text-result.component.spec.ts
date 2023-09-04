@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageTextResultComponent } from './image-text-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../voting-results/voting-results.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { Operator, Observable } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ describe('ImageTextResultComponent', () => {
       providers: [TranslateService,
         CookieService,
         TopicsListService,
-        ResultadosVotacionService,
+        VotingResultsService,
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
       ],
     }).compileComponents();
