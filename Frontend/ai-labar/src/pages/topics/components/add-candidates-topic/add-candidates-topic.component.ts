@@ -11,7 +11,7 @@ import {
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AnyadirGruposTopicComponent } from '../anyadir-grupos-topic/anyadir-grupos-topic.component';
+import { AddGroupsTopicComponent } from '../add-groups-topic/add-groups-topic.component';
 import { IUser } from '../interfaces/emoji.model';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TopicsListService } from '../topics-list/topics-list.service';
@@ -19,11 +19,11 @@ import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-anyadir-candidatos-topic',
-  templateUrl: './anyadir-candidatos-topic.component.html',
-  styleUrls: ['./anyadir-candidatos-topic.component.scss'],
+  selector: 'app-add-candidates-topic',
+  templateUrl: './add-candidates-topic.component.html',
+  styleUrls: ['./add-candidates-topic.component.scss'],
 })
-export class AnyadirCandidatosTopicComponent implements OnInit {
+export class AddCandidatesTopicComponent implements OnInit {
   // Selected option: 'group' or 'individual'
   selectedOption: string = 'group';
 
@@ -78,7 +78,7 @@ export class AnyadirCandidatosTopicComponent implements OnInit {
     private cookie: CookieService,
     private fb: FormBuilder,
     private topicListService: TopicsListService,
-    public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
+    public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {

@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { ModalVotacionService } from './modal-votacion.service';
+import { ModalVotacionService } from './modal-votation.service';
 
 describe('ModalVotacionService', () => {
   let service: ModalVotacionService;

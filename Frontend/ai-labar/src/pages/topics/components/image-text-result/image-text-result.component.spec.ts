@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageTextResultComponent } from './image-text-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { ResultadosVotacionService } from '../voting-results/voting-results.service';
 import { Operator, Observable } from 'rxjs';
 
 describe('ImageTextResultComponent', () => {

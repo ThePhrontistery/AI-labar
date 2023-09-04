@@ -10,17 +10,17 @@ import {
   OnChanges,
   Output,
 } from '@angular/core';
-import { ModalVotacionService } from './modal-votacion.service';
+import { ModalVotacionService } from './modal-votation.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-modal-votacion',
-  templateUrl: './modal-votacion.component.html',
-  styleUrls: ['./modal-votacion.component.scss'],
+  selector: 'app-modal-votation',
+  templateUrl: './modal-votation.component.html',
+  styleUrls: ['./modal-votation.component.scss'],
 })
-export class ModalVotacionComponent implements OnChanges {
+export class ModalVotationComponent implements OnChanges {
   // Input properties for configuring the modal.
   @Input() isOpen: boolean = false;
   @Input() options: string[] = [];
@@ -116,14 +116,14 @@ export class ModalVotacionComponent implements OnChanges {
   /**
    * Closes the modal and resets arrays and selections.
    */
-  closeModal(): void {
+  closeModal(isCancel: any): void {
     this.itemsVoting = [];
     this.voteSurvey = [];
     this.selectedOptions = [];
     this.valuesVoting = [];
     this.emojisVoting = [];
     this.valuesVotingImageText = [];
-    this.onClose.emit();
+    this.onClose.emit(isCancel);
   }
 
   /**
@@ -165,8 +165,8 @@ export class ModalVotacionComponent implements OnChanges {
     };
     this.modalVotacionService.voteTopics(voteTopicBody).subscribe(
       (response) => {
-        alert(this.translate.instant('ERROR_MESSAGES.OK_SEND_SELECTION'));
-        this.closeModal();
+        this.closeModal(true);
+        alert(this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION'));
       },
       (error) => {
         alert(this.translate.instant('ERROR_MESSAGES.ERROR_SEND_SELECTION') +'\n'+ error.error.message);

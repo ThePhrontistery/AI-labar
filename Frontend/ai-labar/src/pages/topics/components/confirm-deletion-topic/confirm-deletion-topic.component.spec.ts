@@ -1,26 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfirmarEliminacionTopicComponent } from './confirmar-eliminacion-topic.component';
+import { ConfirmDeletionTopicComponent } from './confirm-deletion-topic.component';
 
-describe('ConfirmarEliminacionTopicComponent', () => {
-  let component: ConfirmarEliminacionTopicComponent;
-  let fixture: ComponentFixture<ConfirmarEliminacionTopicComponent>;
+describe('ConfirmDeletionTopicComponent', () => {
+  let component: ConfirmDeletionTopicComponent;
+  let fixture: ComponentFixture<ConfirmDeletionTopicComponent>;
   let mockMatDialogRef: jasmine.SpyObj<
-    MatDialogRef<ConfirmarEliminacionTopicComponent>
+    MatDialogRef<ConfirmDeletionTopicComponent>
   >;
 
   beforeEach(() => {
     mockMatDialogRef = jasmine.createSpyObj(['close']);
 
     TestBed.configureTestingModule({
-      declarations: [ConfirmarEliminacionTopicComponent],
+      declarations: [ConfirmDeletionTopicComponent],
       providers: [
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ConfirmarEliminacionTopicComponent);
+    fixture = TestBed.createComponent(ConfirmDeletionTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
