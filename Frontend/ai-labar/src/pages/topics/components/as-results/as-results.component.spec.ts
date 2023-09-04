@@ -5,6 +5,8 @@ import { AsResultsComponent } from './as-results.component';
 import { ResultadosVotacionService } from '../voting-results/voting-results.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { of } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AsResultsComponent', () => {
   let component: AsResultsComponent;
@@ -23,14 +25,14 @@ describe('AsResultsComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [ AsResultsComponent ],
-      providers: [
+      providers: [TranslateService,
         { provide: ResultadosVotacionService, useValue: resultsService },
         { provide: TopicsListService, useValue: topicsListService },
         { provide: CookieService, useValue: cookieService },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { votacion } }
       ],
-      imports: [MatDialogModule]
+      imports: [MatDialogModule,HttpClientTestingModule, TranslateModule.forRoot()]
     })
     .compileComponents();
 

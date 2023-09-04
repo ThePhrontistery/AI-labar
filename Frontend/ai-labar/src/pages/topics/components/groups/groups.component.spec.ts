@@ -16,6 +16,8 @@ import { ElementRef } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { of } from 'rxjs';
 import { IUser } from '../interfaces/emoji.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -39,9 +41,9 @@ describe('GroupsComponent', () => {
         BrowserAnimationsModule,
         MatCheckboxModule,
         MatFormFieldModule,
-        MatInputModule,
+        MatInputModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
-      providers: [
+      providers: [TranslateService,
         FormBuilder,
         CookieService,
         { provide: TopicsListService, useValue: mockTopicsListService },

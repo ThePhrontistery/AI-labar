@@ -5,6 +5,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from './../../login.service';
 import { LoginComponent } from './login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -17,7 +19,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      providers: [
+      providers: [TranslateService,
         LoginService,
         {
           provide: Router,
@@ -26,7 +28,7 @@ describe('LoginComponent', () => {
         CookieService,
         FormBuilder,
       ],
-      imports: [HttpClientModule],
+      imports: [HttpClientModule,HttpClientTestingModule, TranslateModule.forRoot()],
     }).compileComponents();
   });
 

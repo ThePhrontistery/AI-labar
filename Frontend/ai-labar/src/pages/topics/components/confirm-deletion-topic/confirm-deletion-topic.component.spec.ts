@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDeletionTopicComponent } from './confirm-deletion-topic.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConfirmDeletionTopicComponent', () => {
   let component: ConfirmDeletionTopicComponent;
@@ -14,7 +16,8 @@ describe('ConfirmDeletionTopicComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ConfirmDeletionTopicComponent],
-      providers: [
+      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [TranslateService,
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
