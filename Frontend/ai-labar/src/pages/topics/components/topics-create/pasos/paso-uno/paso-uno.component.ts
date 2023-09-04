@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for selecting a survey image in the first stage.
@@ -19,22 +20,22 @@ export class PasoUnoComponent implements OnInit {
    */
   images = [
     {
-      name: 'Valores (Selección simple/multiple)',
+      name: this.translate.instant('STEP_ONE.VALUES_SURVEY_NAME'),
       route: 'assets/images/imageOne.png',
       code: 'VAL',
     },
     {
-      name: 'Valores con imagen (Selección simple/multiple)',
+      name: this.translate.instant('STEP_ONE.VALUES_IMAGE_SURVEY_NAME'),
       route: 'assets/images/imageFour.png',
       code: 'VCI',
     },
     {
-      name: 'Emojis (Selección simple)',
+      name: this.translate.instant('STEP_ONE.EMOJIS_SURVEY_NAME'),
       route: 'assets/images/imageTwo.jpg',
       code: 'EMO',
     },
     {
-      name: 'Empleado (Selección simple)',
+      name: this.translate.instant('STEP_ONE.EMPLOYEE_SURVEY_NAME'),
       route: 'assets/images/imageThree.png',
       code: 'EMP',
     },
@@ -50,7 +51,9 @@ export class PasoUnoComponent implements OnInit {
    */
   @Output() parentMethodInvoked = new EventEmitter<any>();
 
-  constructor() {}
+  constructor(
+    private translate: TranslateService
+  ) {}
 
   /**
    * Method invoked upon initializing the component.

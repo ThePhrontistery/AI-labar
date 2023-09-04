@@ -1,20 +1,20 @@
 <div *ngIf="selectedImage.route">
-  <h2>Has seleccionado:</h2>
+  <h2>{{ 'STEP_TWO.YOU_HAVE_SELECTED' | translate }}</h2>
   <img [src]="selectedImage.route" alt="{{ selectedImage.name }}" />
 </div>
 
 <div class="form">
   <div>
-    <h2>Elige un título:</h2>
+    <h2>{{ 'STEP_TWO.CHOOSE_TITTLE' | translate }}</h2>
     <input
       type="text"
       [(ngModel)]="textBoxValue"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
   </div>
 
   <div>
-    <h2>Elige una fecha de cierre:</h2>
+    <h2>{{ 'STEP_TWO.CHOOSE_CLOSING_DATE' | translate }}</h2>
     <mat-form-field>
       <input
         matInput
@@ -29,49 +29,49 @@
   </div>
 
   <div *ngIf="isSurveyImageText || isOpinionSurvey">
-    <h2>Elige el tipo de selección:</h2>
+    <h2>{{ 'STEP_TWO.CHOOSE_SELECTION_TYPE' | translate }}</h2>
     <mat-form-field>
       <mat-select [(ngModel)]="selectedType">
-        <mat-option value="simple">Simple</mat-option>
-        <mat-option value="multiple">Múltiple</mat-option>
+        <mat-option value="simple">{{ 'STEP_TWO.SIMPLE' | translate }}</mat-option>
+        <mat-option value="multiple">{{ 'STEP_TWO.MULTIPLE' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
   <div *ngIf="isOpinionSurvey">
-    <h2>Elige las opciones:</h2>
+    <h2>{{ 'STEP_TWO.CHOOSE_OPTIONS' | translate }}</h2>
     <input
       type="text"
       [(ngModel)]="surveyValue1"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue2"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue3"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue4"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
   </div>
 
   <div *ngIf="isVotingSurvey">
-    <button mat-button (click)="openAddCandidates()">Añadir candidatos</button>
-    <h2>Lista de candidatos:</h2>
-    <!-- Listado de usuarios seleccionados -->
+    <button mat-button (click)="openAddCandidates()">{{ 'STEP_TWO.ADD_CANDIDATES' | translate }}</button>
+    <h2>{{ 'STEP_TWO.LIST_CANDIDATES' | translate }}</h2>
+    <!-- List of selected users -->
     <ul>
       <ng-container *ngFor="let user of usersCandidates; let i = index">
-        <p *ngIf="i === 0">Total de candidatos: {{ usersCandidates.length }}</p>
+        <p *ngIf="i === 0">{{ 'STEP_TWO.TOTAL_CANDIDATES' | translate }} {{ usersCandidates.length }}</p>
         <li *ngIf="i < 6">
           {{ user }}
         </li>
@@ -81,11 +81,11 @@
   </div>
 
   <div *ngIf="isSurveyImageText">
-    <h2>Elige las opciones:</h2>
+    <h2>{{ 'STEP_TWO.CHOOSE_OPTIONS' | translate }}</h2>
     <input
       type="text"
       [(ngModel)]="imageTextValue1"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <input
       type="file"
@@ -97,7 +97,7 @@
     <input
       type="text"
       [(ngModel)]="imageTextValue2"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <input
       type="file"
@@ -109,7 +109,7 @@
     <input
       type="text"
       [(ngModel)]="imageTextValue3"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <input
       type="file"
@@ -121,7 +121,7 @@
     <input
       type="text"
       [(ngModel)]="imageTextValue4"
-      placeholder="Ingrese un valor"
+      placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
     <input
       type="file"
@@ -133,13 +133,13 @@
 
   <div>
     <button mat-button (click)="openAddParticipants()">
-      Añadir participantes
+      {{ 'STEP_TWO.ADD_PARTICIPANTS' | translate }}
     </button>
-    <h2>Lista de participantes:</h2>
+    <h2>{{ 'STEP_TWO.LIST_PARTICIPANTS' | translate }}</h2>
     <!-- List of users in the selected group. -->
     <ul>
       <ng-container *ngFor="let user of users; let i = index">
-        <p *ngIf="i === 0">Total de participantes: {{ users.length }}</p>
+        <p *ngIf="i === 0">{{ 'STEP_TWO.TOTAL_PARTICIPANTS' | translate }} {{ users.length }}</p>
         <li *ngIf="i < 6">
           {{ user }}
         </li>
