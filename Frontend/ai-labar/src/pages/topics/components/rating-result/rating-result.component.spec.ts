@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { RatingResultComponent } from './rating-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('RatingResultComponent', () => {
   let component: RatingResultComponent;
@@ -27,8 +28,8 @@ describe('RatingResultComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [RatingResultComponent],
-      imports: [MatDialogModule, HttpClientTestingModule],
-      providers: [
+      imports: [MatDialogModule, HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [TranslateService,
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: testData },
         { provide: CookieService, useValue: mockCookieService },

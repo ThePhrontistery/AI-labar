@@ -11,6 +11,15 @@ import { AddGroupsTopicComponent } from '../../../add-groups-topic/add-groups-to
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+// Function TranslateModule
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 describe('StepTwoComponent', () => {
   let component: StepTwoComponent;
@@ -28,15 +37,15 @@ describe('StepTwoComponent', () => {
         MatDatepickerModule,
         MatFormFieldModule,
         MatInputModule,
-        MatNativeDateModule,
+        MatNativeDateModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
-      providers: [
+      providers: [TranslateService,
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: MomentDateAdapter, useClass: MomentDateAdapter },
         { provide: MY_FORMATS, useValue: MY_FORMATS },
       ],
     }).compileComponents();
-  });
+  }); 
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StepTwoComponent);
@@ -49,7 +58,7 @@ describe('StepTwoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open AnyadirParticipantes dialog', () => {
+  it('should open AddParticipants dialog', () => {
     const mockDialogRef: MatDialogRef<any, any> = {
       afterClosed: () => of({ selectedGroup: [], selectedUsers: [] }),
     } as MatDialogRef<any, any>;
@@ -61,8 +70,7 @@ describe('StepTwoComponent', () => {
     expect(mockMatDialog.open).toHaveBeenCalledWith(
       AddGroupsTopicComponent,
       {
-        width: '400px',
-        data: {},
+        width: '400px', 
       }
     );
   });

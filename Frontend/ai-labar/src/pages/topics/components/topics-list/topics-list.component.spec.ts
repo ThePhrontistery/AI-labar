@@ -22,6 +22,8 @@ import { environment } from 'src/environments/environment';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
@@ -50,7 +52,7 @@ describe('TopicsListComponent', () => {
     };
     TestBed.configureTestingModule({
       declarations: [TopicsListComponent, ModalVotationComponent],
-      providers: [
+      providers: [TranslateService,
         { provide: TopicsListService, useValue: mockServiceSpy },
         { provide: TopicsListServiceMock, useValue: mockServiceSpy },
         { provide: MatDialog, useValue: mockDialogSpy },
@@ -65,7 +67,7 @@ describe('TopicsListComponent', () => {
         MatSlideToggleModule,
         MatButtonModule,
         FormsModule,
-        MatDialogModule,
+        MatDialogModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 

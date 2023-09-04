@@ -9,6 +9,8 @@ import { StepTwoComponent } from './steps/step-two/step-two.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TopicsListComponent } from '../topics-list/topics-list.component';
 import { Routes } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 const routes: Routes = [
   { path: 'topics/topics-list', component: TopicsListComponent },
@@ -36,7 +38,7 @@ describe('TopicsCreateComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TopicsCreateComponent],
 
-      providers: [
+      providers: [TranslateService,
         { provide: TopicsCreateService, useValue: mockServiceSpy },
         { provide: CookieService, useValue: mockCookieServiceSpy },
         { provide: MatDialog, useValue: mockDialogSpy },
@@ -44,6 +46,7 @@ describe('TopicsCreateComponent', () => {
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule.withRoutes(routes),
+        HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 

@@ -17,6 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('AddCandidatesTopicComponent', () => {
   let component: AddCandidatesTopicComponent;
@@ -41,7 +43,7 @@ describe('AddCandidatesTopicComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [AddCandidatesTopicComponent],
-      providers: [
+      providers: [TranslateService,
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
         { provide: TopicsListService, useValue: topicsListService },
@@ -57,7 +59,7 @@ describe('AddCandidatesTopicComponent', () => {
         MatRadioModule,
         BrowserAnimationsModule,
         MatSelectModule,
-        MatCheckboxModule,
+        MatCheckboxModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 
@@ -128,8 +130,8 @@ describe('AddCandidatesTopicComponent', () => {
 
   it('should save group and close dialog', () => {
     const expectedData = {
-      grupoSeleccionado: null,
-      usuariosSeleccionados: ['user1', 'user2'],
+      selectedGroup: null,
+      selectedusers: ['user1', 'user2'],
     };
 
     component.selectedUsers = ['user1', 'user2'];

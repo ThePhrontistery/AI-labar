@@ -15,6 +15,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { of } from 'rxjs';
 import { FormBuilder, FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AddGroupsTopicComponent', () => {
   let component: AddGroupsTopicComponent;
@@ -35,7 +37,7 @@ describe('AddGroupsTopicComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [AddGroupsTopicComponent],
-      providers: [
+      providers: [TranslateService,
         FormBuilder,
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
@@ -50,7 +52,7 @@ describe('AddGroupsTopicComponent', () => {
         MatCheckboxModule,
         MatRadioModule,
         MatSelectModule,
-        BrowserAnimationsModule,
+        BrowserAnimationsModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 
@@ -101,8 +103,8 @@ describe('AddGroupsTopicComponent', () => {
     component.saveSelection();
 
     const expectedData = {
-      grupoSeleccionado: groups[0],
-      usuariosSeleccionados: users,
+      selectedGroup: groups[0],
+      selectedUsers: users,
     };
 
     expect(component.dialogRef.close).toHaveBeenCalledWith(expectedData);

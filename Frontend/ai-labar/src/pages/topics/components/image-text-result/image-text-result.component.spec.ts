@@ -5,7 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { ImageTextResultComponent } from './image-text-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { ResultadosVotacionService } from '../voting-results/voting-results.service';
-import { of } from 'rxjs';
+import { Operator, Observable } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('ImageTextResultComponent', () => {
   let component: ImageTextResultComponent;
@@ -21,8 +23,8 @@ describe('ImageTextResultComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ImageTextResultComponent],
-      imports: [MatDialogModule, HttpClientModule],
-      providers: [
+      imports: [MatDialogModule, HttpClientModule,HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [TranslateService,
         CookieService,
         TopicsListService,
         ResultadosVotacionService,
@@ -61,8 +63,26 @@ describe('ImageTextResultComponent', () => {
     // Spy on the service method
     const topicListService = TestBed.inject(TopicsListService);
     const postSpy = spyOn(topicListService, 'post').and.returnValue(
-      // Return a mock observable with the response using 'of'
-      of(mockResponse)
+      // Return a mock observable with the response
+      {
+        subscribe: (callback: any) => callback(mockResponse),
+        source: undefined,
+        operator: undefined,
+        lift: function <R>(
+          operator?: Operator<any, R> | undefined
+        ): Observable<R> {
+          throw new Error('Function not implemented.');
+        },
+        forEach: function (next: (value: any) => void): Promise<void> {
+          throw new Error('Function not implemented.');
+        },
+        pipe: function (): Observable<any> {
+          throw new Error('Function not implemented.');
+        },
+        toPromise: function (): Promise<any> {
+          throw new Error('Function not implemented.');
+        },
+      }
     );
 
     component.ngOnInit();

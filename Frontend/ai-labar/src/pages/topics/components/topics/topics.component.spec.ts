@@ -6,6 +6,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsComponent } from './topics.component';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('TopicsComponent', () => {
   let component: TopicsComponent;
@@ -20,9 +22,9 @@ describe('TopicsComponent', () => {
         RouterTestingModule.withRoutes([]),
         MatDialogModule,
         MatMenuModule,
-        MatIconModule,
+        MatIconModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
-      providers: [CookieService, MatDialog],
+      providers: [TranslateService,CookieService, MatDialog],
     }).compileComponents();
   });
 
