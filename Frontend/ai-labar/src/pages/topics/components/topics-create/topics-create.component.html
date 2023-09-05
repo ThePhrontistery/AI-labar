@@ -1,17 +1,17 @@
 <div class="wizard">
   <div class="wizard-content">
     <ng-container *ngIf="currentStep === 1">
-      <app-paso-uno
+      <app-step-one
         (sharedData)="(sharedData)"
         (parentMethodInvoked)="parentMethod($event)"
-      ></app-paso-uno>
+      ></app-step-one>
     </ng-container>
 
     <ng-container *ngIf="currentStep === 2">
-      <app-paso-dos
+      <app-step-two
         (sharedData)="(sharedData)"
         [selectedImage]="selectedImageStepOne"
-      ></app-paso-dos>
+      ></app-step-two>
     </ng-container>
     <div class="wizard-navigation">
       <div class="button left-button">

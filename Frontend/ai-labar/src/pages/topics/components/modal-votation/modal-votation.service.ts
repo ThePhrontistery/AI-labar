@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ModalVotacionService {
+export class ModalVotationService {
   constructor(private http: HttpClient) {}
 
   public voteTopics(body: any): Observable<any> {

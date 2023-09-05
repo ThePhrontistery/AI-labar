@@ -8,19 +8,21 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
 } from '@angular/core';
-import { ModalVotacionService } from './modal-votacion.service';
+import { ModalVotationService } from './modal-votation.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-modal-votacion',
-  templateUrl: './modal-votacion.component.html',
-  styleUrls: ['./modal-votacion.component.scss'],
+  selector: 'app-modal-votation',
+  templateUrl: './modal-votation.component.html',
+  styleUrls: ['./modal-votation.component.scss'],
 })
-export class ModalVotacionComponent implements OnChanges {
+export class ModalVotationComponent implements OnChanges, OnDestroy {
   // Input properties for configuring the modal.
   @Input() isOpen: boolean = false;
   @Input() options: string[] = [];
@@ -65,11 +67,17 @@ export class ModalVotacionComponent implements OnChanges {
   valuesVoting: any = [];
   valuesVotingImageText: any = [];
 
+  private ngUnsubscribe = new Subject();
+
   constructor(
-    private modalVotacionService: ModalVotacionService,
+    private modalVotationService: ModalVotationService,
     private cookie: CookieService,
-    private translate: TranslateService,
+    private translate: TranslateService
   ) {}
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.complete();
+  }
 
   /**
    * Reacts to changes in input properties and populates the corresponding arrays based on survey type.
@@ -116,14 +124,14 @@ export class ModalVotacionComponent implements OnChanges {
   /**
    * Closes the modal and resets arrays and selections.
    */
-  closeModal(): void {
+  closeModal(isCancel: any): void {
     this.itemsVoting = [];
     this.voteSurvey = [];
     this.selectedOptions = [];
     this.valuesVoting = [];
     this.emojisVoting = [];
     this.valuesVotingImageText = [];
-    this.onClose.emit();
+    this.onClose.emit(isCancel);
   }
 
   /**
@@ -163,15 +171,22 @@ export class ModalVotacionComponent implements OnChanges {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
-    this.modalVotacionService.voteTopics(voteTopicBody).subscribe(
-      (response) => {
-        alert(this.translate.instant('ERROR_MESSAGES.OK_SEND_SELECTION'));
-        this.closeModal();
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_SEND_SELECTION') +'\n'+ error.error.message);
-      }
-    );
+    this.modalVotationService
+      .voteTopics(voteTopicBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+          this.closeModal(true);
+          alert(this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION'));
+        },
+        error: (error) => {
+          alert(
+            this.translate.instant('ERROR_MESSAGES.ERROR_SEND_SELECTION') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });
   }
 
   /**

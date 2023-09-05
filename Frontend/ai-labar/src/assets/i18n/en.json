@@ -139,7 +139,7 @@
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error creating user",
     "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
-    "CREATE_GROUP_ERROR": "Error al crear el grupo",
+    "CREATE_GROUP_ERROR": "Error while creating the group",
     "ERROR_SEND_SELECTION": "Error while sending the selection:",
     "EMPTY_CLOSING_DATE": "The closing date is empty.",
     "EMPTY_TITLE": "The title is empty.",

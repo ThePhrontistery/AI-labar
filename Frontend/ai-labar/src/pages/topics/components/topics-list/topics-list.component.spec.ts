@@ -14,7 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { ModalVotacionComponent } from '../modal-votacion/modal-votacion.component';
+import { ModalVotationComponent } from '../modal-votation/modal-votation.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,6 +22,8 @@ import { environment } from 'src/environments/environment';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
@@ -49,8 +51,8 @@ describe('TopicsListComponent', () => {
       get: (key: string) => 'mocked-value',
     };
     TestBed.configureTestingModule({
-      declarations: [TopicsListComponent, ModalVotacionComponent],
-      providers: [
+      declarations: [TopicsListComponent, ModalVotationComponent],
+      providers: [TranslateService,
         { provide: TopicsListService, useValue: mockServiceSpy },
         { provide: TopicsListServiceMock, useValue: mockServiceSpy },
         { provide: MatDialog, useValue: mockDialogSpy },
@@ -65,7 +67,7 @@ describe('TopicsListComponent', () => {
         MatSlideToggleModule,
         MatButtonModule,
         FormsModule,
-        MatDialogModule,
+        MatDialogModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 

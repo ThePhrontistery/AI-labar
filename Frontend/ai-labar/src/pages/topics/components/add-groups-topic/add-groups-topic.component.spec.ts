@@ -5,7 +5,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
-import { AnyadirGruposTopicComponent } from './anyadir-grupos-topic.component';
+import { AddGroupsTopicComponent } from './add-groups-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -15,10 +15,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { of } from 'rxjs';
 import { FormBuilder, FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('AnyadirGruposTopicComponent', () => {
-  let component: AnyadirGruposTopicComponent;
-  let fixture: ComponentFixture<AnyadirGruposTopicComponent>;
+describe('AddGroupsTopicComponent', () => {
+  let component: AddGroupsTopicComponent;
+  let fixture: ComponentFixture<AddGroupsTopicComponent>;
   let topicsCreateServiceSpy: jasmine.SpyObj<TopicsCreateService>;
   let cookieServiceSpy: jasmine.SpyObj<CookieService>;
 
@@ -34,8 +36,8 @@ describe('AnyadirGruposTopicComponent', () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
-      declarations: [AnyadirGruposTopicComponent],
-      providers: [
+      declarations: [AddGroupsTopicComponent],
+      providers: [TranslateService,
         FormBuilder,
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
@@ -50,7 +52,7 @@ describe('AnyadirGruposTopicComponent', () => {
         MatCheckboxModule,
         MatRadioModule,
         MatSelectModule,
-        BrowserAnimationsModule,
+        BrowserAnimationsModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 
@@ -70,7 +72,7 @@ describe('AnyadirGruposTopicComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnyadirGruposTopicComponent);
+    fixture = TestBed.createComponent(AddGroupsTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -101,8 +103,8 @@ describe('AnyadirGruposTopicComponent', () => {
     component.saveSelection();
 
     const expectedData = {
-      grupoSeleccionado: groups[0],
-      usuariosSeleccionados: users,
+      selectedGroup: groups[0],
+      selectedUsers: users,
     };
 
     expect(component.dialogRef.close).toHaveBeenCalledWith(expectedData);

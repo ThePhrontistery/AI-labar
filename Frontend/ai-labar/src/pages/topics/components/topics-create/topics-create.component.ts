@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { PasoDosComponent } from './pasos/paso-dos/paso-dos.component';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { StepTwoComponent } from './steps/step-two/step-two.component';
 import { CookieService } from 'ngx-cookie-service';
 import { TopicsCreateService } from './topics-create.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Component for creating surveys of different types.
@@ -14,9 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './topics-create.component.html',
   styleUrls: ['./topics-create.component.scss'],
 })
-export class TopicsCreateComponent implements OnInit {
-  @ViewChild(PasoDosComponent)
-  childComponent: PasoDosComponent = new PasoDosComponent(this.dialog);
+export class TopicsCreateComponent implements OnInit, OnDestroy {
+  @ViewChild(StepTwoComponent)
+  childComponent: StepTwoComponent = new StepTwoComponent(this.dialog);
 
   currentStep = 1;
   sharedData: any = {};
@@ -34,6 +35,8 @@ export class TopicsCreateComponent implements OnInit {
   members: string[] = [];
   groupSelectedParticipants: string[] = [];
 
+  private ngUnsubscribe = new Subject();
+
   constructor(
     private cookie: CookieService,
     private topicsCreateService: TopicsCreateService,
@@ -41,6 +44,10 @@ export class TopicsCreateComponent implements OnInit {
     private dialog: MatDialog,
     private translate: TranslateService
   ) {}
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.complete();
+  }
 
   ngOnInit(): void {}
 
@@ -188,18 +195,20 @@ export class TopicsCreateComponent implements OnInit {
         closeDate: this.childComponent.closingDate,
         token: this.cookie.get('token'),
       };
-      this.topicsCreateService.createTopics(createTopicsBody).subscribe(
-        (response) => {
+      this.topicsCreateService.createTopics(createTopicsBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
           if (response) {
             this.router.navigate(['/topics/topics-list']);
           }
         },
-        (error) => {
+        error: error => {
           let textError = error.error.message;
           if (error.error.message === undefined) textError = error.error.error;
           alert(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +'\n'+ error.error.message);
         }
-      );
+      });
     }
   }
 }

@@ -10,17 +10,18 @@ import { of } from 'rxjs';
 
 import { TopicResultComponent } from './topic-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { IResult } from '../interfaces/emoji.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('TopicResultComponent', () => {
   let component: TopicResultComponent;
   let fixture: ComponentFixture<TopicResultComponent>;
   let mockTopicsListService: jasmine.SpyObj<TopicsListService>;
-  let mockResultsService: jasmine.SpyObj<ResultadosVotacionService>;
+  let mockResultsService: jasmine.SpyObj<VotingResultsService>;
 
   const mockDialogData = {
-    votacion: {
+    votation: {
       id: 1,
       title: 'Test Voting',
     },
@@ -45,13 +46,14 @@ describe('TopicResultComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [TopicResultComponent],
-      imports: [MatDialogModule, HttpClientTestingModule],
+      imports: [MatDialogModule, HttpClientTestingModule
+        , TranslateModule.forRoot()],
       providers: [
-        CookieService,
+        CookieService,TranslateService,
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
         { provide: MatDialogRef, useValue: {} },
         { provide: TopicsListService, useValue: mockTopicsListService },
-        { provide: ResultadosVotacionService, useValue: mockResultsService },
+        { provide: VotingResultsService, useValue: mockResultsService },
       ],
     }).compileComponents();
 
@@ -69,7 +71,7 @@ describe('TopicResultComponent', () => {
     component.ngOnInit();
     expect(mockTopicsListService.post).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        id: mockDialogData.votacion.id,
+        id: mockDialogData.votation.id,
         user: jasmine.any(String),
         token: jasmine.any(String),
       }),

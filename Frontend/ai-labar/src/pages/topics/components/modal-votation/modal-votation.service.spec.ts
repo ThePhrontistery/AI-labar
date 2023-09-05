@@ -1,16 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { ModalVotacionService } from './modal-votacion.service';
+import { ModalVotationService } from './modal-votation.service';
 
-describe('ModalVotacionService', () => {
-  let service: ModalVotacionService;
+describe('ModalVotationService', () => {
+  let service: ModalVotationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
     });
-    service = TestBed.inject(ModalVotacionService);
+    service = TestBed.inject(ModalVotationService);
   });
 
   it('should be created', () => {

@@ -5,7 +5,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
-import { AnyadirCandidatosTopicComponent } from './anyadir-candidatos-topic.component';
+import { AddCandidatesTopicComponent } from './add-candidates-topic.component';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -17,10 +17,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-describe('AnyadirCandidatosTopicComponent', () => {
-  let component: AnyadirCandidatosTopicComponent;
-  let fixture: ComponentFixture<AnyadirCandidatosTopicComponent>;
+describe('AddCandidatesTopicComponent', () => {
+  let component: AddCandidatesTopicComponent;
+  let fixture: ComponentFixture<AddCandidatesTopicComponent>;
   let topicsCreateServiceSpy: jasmine.SpyObj<TopicsCreateService>;
   let cookieServiceSpy: jasmine.SpyObj<CookieService>;
   let topicsListServiceSpy: jasmine.SpyObj<TopicsListService>;
@@ -40,8 +42,8 @@ describe('AnyadirCandidatosTopicComponent', () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
-      declarations: [AnyadirCandidatosTopicComponent],
-      providers: [
+      declarations: [AddCandidatesTopicComponent],
+      providers: [TranslateService,
         { provide: TopicsCreateService, useValue: topicsCreateService },
         { provide: CookieService, useValue: cookieService },
         { provide: TopicsListService, useValue: topicsListService },
@@ -57,7 +59,7 @@ describe('AnyadirCandidatosTopicComponent', () => {
         MatRadioModule,
         BrowserAnimationsModule,
         MatSelectModule,
-        MatCheckboxModule,
+        MatCheckboxModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
     }).compileComponents();
 
@@ -83,7 +85,7 @@ describe('AnyadirCandidatosTopicComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnyadirCandidatosTopicComponent);
+    fixture = TestBed.createComponent(AddCandidatesTopicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -128,8 +130,8 @@ describe('AnyadirCandidatosTopicComponent', () => {
 
   it('should save group and close dialog', () => {
     const expectedData = {
-      grupoSeleccionado: null,
-      usuariosSeleccionados: ['user1', 'user2'],
+      selectedGroup: null,
+      selectedusers: ['user1', 'user2'],
     };
 
     component.selectedUsers = ['user1', 'user2'];

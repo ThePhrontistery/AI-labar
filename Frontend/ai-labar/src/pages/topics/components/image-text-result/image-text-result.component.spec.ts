@@ -4,15 +4,17 @@ import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { ImageTextResultComponent } from './image-text-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../resultados-votacion/resultados-votacion.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { Operator, Observable } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('ImageTextResultComponent', () => {
   let component: ImageTextResultComponent;
   let fixture: ComponentFixture<ImageTextResultComponent>;
 
   const mockDialogData = {
-    votacion: {
+    votation: {
       id: 1,
       title: 'Test Voting',
     },
@@ -21,11 +23,11 @@ describe('ImageTextResultComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ImageTextResultComponent],
-      imports: [MatDialogModule, HttpClientModule],
-      providers: [
+      imports: [MatDialogModule, HttpClientModule,HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [TranslateService,
         CookieService,
         TopicsListService,
-        ResultadosVotacionService,
+        VotingResultsService,
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
       ],
     }).compileComponents();

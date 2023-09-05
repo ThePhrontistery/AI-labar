@@ -6,40 +6,49 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
-import { PasoDosComponent, MY_FORMATS } from './paso-dos.component';
-import { AnyadirGruposTopicComponent } from '../../../anyadir-grupos-topic/anyadir-grupos-topic.component';
+import { StepTwoComponent, MY_FORMATS } from './step-two.component';
+import { AddGroupsTopicComponent } from '../../../add-groups-topic/add-groups-topic.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('PasoDosComponent', () => {
-  let component: PasoDosComponent;
-  let fixture: ComponentFixture<PasoDosComponent>;
+// Function TranslateModule
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
+describe('StepTwoComponent', () => {
+  let component: StepTwoComponent;
+  let fixture: ComponentFixture<StepTwoComponent>;
   let mockMatDialog: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
     mockMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
-      declarations: [PasoDosComponent],
+      declarations: [StepTwoComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
         MatDatepickerModule,
         MatFormFieldModule,
         MatInputModule,
-        MatNativeDateModule,
+        MatNativeDateModule,HttpClientTestingModule, TranslateModule.forRoot()
       ],
-      providers: [
+      providers: [TranslateService,
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: MomentDateAdapter, useClass: MomentDateAdapter },
         { provide: MY_FORMATS, useValue: MY_FORMATS },
       ],
     }).compileComponents();
-  });
+  }); 
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasoDosComponent);
+    fixture = TestBed.createComponent(StepTwoComponent);
     component = fixture.componentInstance;
     component.selectedImage = { nombre: 'Opinion' };
     fixture.detectChanges();
@@ -49,7 +58,7 @@ describe('PasoDosComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open AnyadirParticipantes dialog', () => {
+  it('should open AddParticipants dialog', () => {
     const mockDialogRef: MatDialogRef<any, any> = {
       afterClosed: () => of({ selectedGroup: [], selectedUsers: [] }),
     } as MatDialogRef<any, any>;
@@ -59,10 +68,9 @@ describe('PasoDosComponent', () => {
     component.openAddParticipants();
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(
-      AnyadirGruposTopicComponent,
+      AddGroupsTopicComponent,
       {
-        width: '400px',
-        data: {},
+        width: '400px', 
       }
     );
   });

@@ -4,7 +4,7 @@
  * authentication process and the registration of new users.
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { LoginService } from '../../login.service';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
@@ -47,6 +47,8 @@ export class LoginComponent implements OnInit {
   // Storage of subscriptions for later cleaning
   private mySubscription: Subscription[] = [];
 
+  private ngUnsubscribe = new Subject();
+
   // Variables to handle image loading
   selectedFile!: any;
   base64String!: string;
@@ -79,6 +81,7 @@ export class LoginComponent implements OnInit {
    */
   ngOnDestroy() {
     this.mySubscription.forEach((item) => item.unsubscribe());
+    this.ngUnsubscribe.complete();
   }
 
   /**
@@ -109,6 +112,11 @@ export class LoginComponent implements OnInit {
           this.cookie.set('visualization', response.body.entity[1]);
           this.router.navigate(['/topics/topics-list']);
         }
+      },
+      (error) => {
+        alert( 
+            error.error.message
+        );
       })
     );
   }
@@ -146,15 +154,22 @@ export class LoginComponent implements OnInit {
 
       // Make the user creation request and handle the response
       this.mySubscription.push(
-        this.loginService.createUser(data).subscribe(
-          (response) => {
-            this.showRegistroFom = false;
-            this.limpiarForm();
-          },
-          (error) => {
-            alert(this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +'\n'+ error.error.message);
-          }
-        )
+        this.loginService
+          .createUser(data)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (response) => {
+              this.showRegistroFom = false;
+              this.limpiarForm();
+            },
+            error: (error) => {
+              alert(
+                this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +
+                  '\n' +
+                  error.error.message
+              );
+            },
+          })
       );
     }
   }

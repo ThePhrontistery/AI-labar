@@ -8,6 +8,7 @@ import {
   Inject,
   ViewChild,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -21,13 +22,14 @@ import { TopicsListService } from '../topics-list/topics-list.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-groups',
   templateUrl: './groups.component.html',
   styleUrls: ['./groups.component.scss'],
 })
-export class GroupsComponent implements OnInit {
+export class GroupsComponent implements OnInit, OnDestroy {
   // Whether the user list is being filtered
   filtering = true;
 
@@ -63,6 +65,8 @@ export class GroupsComponent implements OnInit {
   @ViewChild('checkboxContainer')
   checkboxContainer!: ElementRef;
 
+  private ngUnsubscribe = new Subject();
+
   constructor(
     private fb: FormBuilder,
     private cookie: CookieService,
@@ -71,6 +75,10 @@ export class GroupsComponent implements OnInit {
     private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.complete();
+  }
 
   ngOnInit(): void {
     // Initialize the component
@@ -164,17 +172,24 @@ export class GroupsComponent implements OnInit {
       token: this.cookie.get('token'),
     };
 
-    this.topicListService.post(groupBody, url).subscribe(
-      (response) => {
-        if (response) {
-          console.log(response);
-        }
-        this.dialogRef.close();
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.CREATE_GROUP_ERROR') +'\n'+ error.error.message);
-      }
-    );
+    this.topicListService
+      .post(groupBody, url)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            console.log(response);
+          }
+          this.dialogRef.close();
+        },
+        error: (error) => {
+          alert(
+            this.translate.instant('ERROR_MESSAGES.CREATE_GROUP_ERROR') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });
   }
 
   /**

@@ -4,11 +4,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-restultados-votacion',
-  templateUrl: './resultados-votacion.component.html',
-  styleUrls: ['./resultados-votacion.component.scss'],
+  selector: 'app-voting-results',
+  templateUrl: './voting-results.component.html',
+  styleUrls: ['./voting-results.component.scss'],
 })
-export class ResultadosVotacionComponent {
+export class VotingResultsComponent {
   /**
    * List of items representing the voting results.
    */

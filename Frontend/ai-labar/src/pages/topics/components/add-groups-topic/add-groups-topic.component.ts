@@ -1,22 +1,25 @@
 /**
  * Component to add groups to a topic.
  */
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsComponent } from '../groups/groups.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-anyadir-grupos-topic',
-  templateUrl: './anyadir-grupos-topic.component.html',
-  styleUrls: ['./anyadir-grupos-topic.component.scss'],
+  selector: 'app-add-groups-topic',
+  templateUrl: './add-groups-topic.component.html',
+  styleUrls: ['./add-groups-topic.component.scss'],
 })
-export class AnyadirGruposTopicComponent implements OnInit {
+export class AddGroupsTopicComponent implements OnInit, OnDestroy {
   selectedGroup: string | undefined;
   groups: string[] = [];
   users: string[] = [];
+
+  private ngUnsubscribe = new Subject();
 
   /**
    * Component builder.
@@ -30,10 +33,13 @@ export class AnyadirGruposTopicComponent implements OnInit {
     private topicsCreateService: TopicsCreateService,
     private cookie: CookieService,
     private dialog: MatDialog,
-    public dialogRef: MatDialogRef<AnyadirGruposTopicComponent>,
+    public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.complete();
+  }
 
   /**
    * It is executed when the component is initialized.
@@ -69,14 +75,16 @@ export class AnyadirGruposTopicComponent implements OnInit {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
-    this.topicsCreateService.getGroupsByUser(loadGroupsBody).subscribe(
-      (data) => {
-        this.groups = data.entity;
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-      }
-    );
+    this.topicsCreateService.getGroupsByUser(loadGroupsBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          this.groups = response.entity;
+        },
+        error: error => {
+          alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
+        }
+      });
   }
 
   /**
@@ -88,14 +96,16 @@ export class AnyadirGruposTopicComponent implements OnInit {
       token: this.cookie.get('token'),
       groupName: this.selectedGroup,
     };
-    this.topicsCreateService.getGroup(loadGroupBody).subscribe(
-      (data) => {
-        this.users = data.entity.members;
-      },
-      (error) => {
-        alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-      }
-    );
+    this.topicsCreateService.getGroup(loadGroupBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: response => {
+          this.users = response.entity.members;
+        },
+        error: error => {
+          alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
+        }
+      });
   }
 
   /**

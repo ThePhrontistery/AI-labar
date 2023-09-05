@@ -3,18 +3,19 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
-import { ValoracionResultComponent } from './valoracion-result.component';
+import { RatingResultComponent } from './rating-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-describe('ValoracionResultComponent', () => {
-  let component: ValoracionResultComponent;
-  let fixture: ComponentFixture<ValoracionResultComponent>;
-  let mockDialogRef: jasmine.SpyObj<MatDialogRef<ValoracionResultComponent>>;
+describe('RatingResultComponent', () => {
+  let component: RatingResultComponent;
+  let fixture: ComponentFixture<RatingResultComponent>;
+  let mockDialogRef: jasmine.SpyObj<MatDialogRef<RatingResultComponent>>;
   let mockCookieService: jasmine.SpyObj<CookieService>;
   let mockTopicListService: jasmine.SpyObj<TopicsListService>;
 
   const testData = {
-    votacion: {
+    votation: {
       id: 1,
       title: 'Test Votacion'
     }
@@ -26,9 +27,9 @@ describe('ValoracionResultComponent', () => {
     mockTopicListService = jasmine.createSpyObj(['post']);
 
     TestBed.configureTestingModule({
-      declarations: [ValoracionResultComponent],
-      imports: [MatDialogModule, HttpClientTestingModule],
-      providers: [
+      declarations: [RatingResultComponent],
+      imports: [MatDialogModule, HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [TranslateService,
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: testData },
         { provide: CookieService, useValue: mockCookieService },
@@ -36,7 +37,7 @@ describe('ValoracionResultComponent', () => {
       ]
     });
 
-    fixture = TestBed.createComponent(ValoracionResultComponent);
+    fixture = TestBed.createComponent(RatingResultComponent);
     component = fixture.componentInstance;
 
     mockCookieService.get.and.returnValue('testUser');

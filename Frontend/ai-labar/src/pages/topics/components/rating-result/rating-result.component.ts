@@ -9,11 +9,11 @@ import { environment } from 'src/environments/environment';
  * Component that displays the results of a rating survey with emojis.
  */
 @Component({
-  selector: 'app-valoracion-result',
-  templateUrl: './valoracion-result.component.html',
-  styleUrls: ['./valoracion-result.component.scss'],
+  selector: 'app-rating-result',
+  templateUrl: './rating-result.component.html',
+  styleUrls: ['./rating-result.component.scss'],
 })
-export class ValoracionResultComponent implements OnInit {
+export class RatingResultComponent implements OnInit {
   // Variable and property declarations.
   message = '';
   emojis: Emoji[] = [
@@ -40,22 +40,24 @@ export class ValoracionResultComponent implements OnInit {
 
   // Method to load the survey results.
   loadResults() {
-    const url = `${environment.apiUrl}/topics/votingResults`;
-    const resultData = {
-      id: this.data.votation.id,
-      user: this.cookie.get('user'),
-      token: this.cookie.get('token'),
-    };
-    this.topicListService.post(resultData, url).subscribe((response) => {
-      if (response) {
-        this.emojisVotation = [];
-        for (let i = 0; i < response.entity.length; i++) {
-          response.entity[i]['emoji'] = this.emojis[i];
-          this.optionsVoted = response.entity;
+    if (this.data && this.data.votation) {
+      const url = `${environment.apiUrl}/topics/votingResults`;
+      const resultData = {
+        id: this.data.votation.id,
+        user: this.cookie.get('user'),
+        token: this.cookie.get('token'),
+      };
+      this.topicListService.post(resultData, url).subscribe((response) => {
+        if (response) {
+          this.emojisVotation = [];
+          for (let i = 0; i < response.entity.length; i++) {
+            response.entity[i]['emoji'] = this.emojis[i];
+            this.optionsVoted = response.entity;
+          }
+          this.results = this.getWinnerOption(response.entity);
         }
-        this.results = this.getWinnerOption(response.entity);
-      }
-    });
+      });
+    }
   }
 
   // Method to determine the winning option based on votes.
