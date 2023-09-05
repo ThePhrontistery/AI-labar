@@ -131,7 +131,7 @@ describe('AddCandidatesTopicComponent', () => {
   it('should save group and close dialog', () => {
     const expectedData = {
       selectedGroup: null,
-      selectedusers: ['user1', 'user2'],
+      selectedUsers: ['user1', 'user2'],
     };
 
     component.selectedUsers = ['user1', 'user2'];
