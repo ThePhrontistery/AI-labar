@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalVotationComponent } from './modal-votation.component';
-import { ModalVotacionService } from './modal-votation.service';
+import { ModalVotationService } from './modal-votation.service';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -14,7 +14,7 @@ describe('ModalVotationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ModalVotationComponent],
-      providers: [ModalVotacionService, CookieService,TranslateService],
+      providers: [ModalVotationService, CookieService,TranslateService],
       imports: [HttpClientTestingModule, TranslateModule.forRoot(),
         MatCheckboxModule,MatDialogModule]
     }).compileComponents();

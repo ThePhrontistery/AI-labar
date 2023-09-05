@@ -5,7 +5,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { IResultImage } from '../interfaces/emoji.model';
-import { ResultadosVotacionService } from '../voting-results/voting-results.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 
@@ -32,7 +32,7 @@ export class AsResultsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
     private topicListService: TopicsListService,
-    private resultsService: ResultadosVotacionService
+    private resultsService: VotingResultsService
   ) {}
 
   /**
@@ -46,36 +46,40 @@ export class AsResultsComponent implements OnInit {
    * Load the voting results.
    */
   loadResults() {
-    const url = `${environment.apiUrl}/topics/votingResults`;
+    if (this.data && this.data.votation) {
+      const url = `${environment.apiUrl}/topics/votingResults`;
 
-    // Data necessary to request results.
-    const resultData = {
-      id: this.data.votation.id,
-      user: this.cookie.get('user'),
-      token: this.cookie.get('token'),
-    };
+      // Data necessary to request results.
+      const resultData = {
+        id: this.data.votation.id,
+        user: this.cookie.get('user'),
+        token: this.cookie.get('token'),
+      };
 
-    // Make a POST request to get the results.
-    this.topicListService.post(resultData, url).subscribe((response) => {
-      if (response && response.entity) {
-        // You get the winning option using the results service.
-        response.entity = this.resultsService.getWinnerOption(response.entity);
+      // Make a POST request to get the results.
+      this.topicListService.post(resultData, url).subscribe((response) => {
+        if (response && response.entity) {
+          // You get the winning option using the results service.
+          response.entity = this.resultsService.getWinnerOption(
+            response.entity
+          );
 
-        // Assign the 'option' property of each element.
-        response.entity.forEach((item: IResultImage) => {
-          item.option = item.option;
-        });
+          // Assign the 'option' property of each element.
+          response.entity.forEach((item: IResultImage) => {
+            item.option = item.option;
+          });
 
-        // Assigns a default image to non-image options.
-        for (let i = 0; i < response.entity.length; i++) {
-          if (response.entity[i].image === undefined) {
-            response.entity[i].image = 'assets/images/questionMark.png';
+          // Assigns a default image to non-image options.
+          for (let i = 0; i < response.entity.length; i++) {
+            if (response.entity[i].image === undefined) {
+              response.entity[i].image = 'assets/images/questionMark.png';
+            }
           }
-        }
 
-        // Assigns the results to the results array.
-        this.result = response.entity;
-      }
-    });
+          // Assigns the results to the results array.
+          this.result = response.entity;
+        }
+      });
+    }
   }
 }

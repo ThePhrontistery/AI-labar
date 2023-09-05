@@ -10,14 +10,14 @@ import { of } from 'rxjs';
 
 import { TopicResultComponent } from './topic-result.component';
 import { TopicsListService } from '../topics-list/topics-list.service';
-import { ResultadosVotacionService } from '../voting-results/voting-results.service';
+import { VotingResultsService } from '../voting-results/voting-results.service';
 import { IResult } from '../interfaces/emoji.model';
 
 describe('TopicResultComponent', () => {
   let component: TopicResultComponent;
   let fixture: ComponentFixture<TopicResultComponent>;
   let mockTopicsListService: jasmine.SpyObj<TopicsListService>;
-  let mockResultsService: jasmine.SpyObj<ResultadosVotacionService>;
+  let mockResultsService: jasmine.SpyObj<VotingResultsService>;
 
   const mockDialogData = {
     votacion: {
@@ -51,7 +51,7 @@ describe('TopicResultComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
         { provide: MatDialogRef, useValue: {} },
         { provide: TopicsListService, useValue: mockTopicsListService },
-        { provide: ResultadosVotacionService, useValue: mockResultsService },
+        { provide: VotingResultsService, useValue: mockResultsService },
       ],
     }).compileComponents();
 
