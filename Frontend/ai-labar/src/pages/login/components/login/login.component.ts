@@ -112,6 +112,11 @@ export class LoginComponent implements OnInit {
           this.cookie.set('visualization', response.body.entity[1]);
           this.router.navigate(['/topics/topics-list']);
         }
+      },
+      (error) => {
+        alert( 
+            error.error.message
+        );
       })
     );
   }

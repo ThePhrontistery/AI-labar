@@ -15,7 +15,7 @@ describe('RatingResultComponent', () => {
   let mockTopicListService: jasmine.SpyObj<TopicsListService>;
 
   const testData = {
-    votacion: {
+    votation: {
       id: 1,
       title: 'Test Votacion'
     }

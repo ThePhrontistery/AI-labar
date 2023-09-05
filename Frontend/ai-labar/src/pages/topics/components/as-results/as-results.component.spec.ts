@@ -15,7 +15,7 @@ describe('AsResultsComponent', () => {
   let topicsListServiceSpy: jasmine.SpyObj<TopicsListService>;
   let cookieServiceSpy: jasmine.SpyObj<CookieService>;
 
-  const votacion = { id: 1, title: 'Test Votación' };
+  const votation = { id: 1, title: 'Test Votación' };
   const result = [{ image: 'image1.jpg', option: 'Option 1' }, { image: 'image2.jpg', option: 'Option 2' }];
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('AsResultsComponent', () => {
         { provide: TopicsListService, useValue: topicsListService },
         { provide: CookieService, useValue: cookieService },
         { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { votacion } }
+        { provide: MAT_DIALOG_DATA, useValue: { votation } }
       ],
       imports: [MatDialogModule,HttpClientTestingModule, TranslateModule.forRoot()]
     })
@@ -54,9 +54,9 @@ describe('AsResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display votacion title', () => {
+  it('should display votation title', () => {
     const title = fixture.nativeElement.querySelector('h1').textContent;
-    expect(title).toEqual(votacion.title);
+    expect(title).toEqual(votation.title);
   });
 
   it('should load results on init', () => {
