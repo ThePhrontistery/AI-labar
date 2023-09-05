@@ -249,7 +249,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   saveGroup() {
     const data = {
       selectedGroup: null,
-      selectedusers: this.selectedUsers,
+      selectedUsers: this.selectedUsers,
     };
     this.dialogRef.close(data);
   }
