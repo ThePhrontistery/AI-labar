@@ -13,7 +13,8 @@ public class UsersEntity {
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "user")
+    //cambiado porque en postgres 'user' esta reservado
+    @Column(name = "user_name")
     private String user;
     @Column(name = "password")
     private String password;
