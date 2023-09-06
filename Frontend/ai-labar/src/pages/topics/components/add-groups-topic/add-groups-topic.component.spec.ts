@@ -17,6 +17,7 @@ import { of } from 'rxjs';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('AddGroupsTopicComponent', () => {
   let component: AddGroupsTopicComponent;
@@ -45,7 +46,7 @@ describe('AddGroupsTopicComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       imports: [
-        MatDialogModule,
+        MatDialogModule,MatSnackBarModule,
         FormsModule,
         MatFormFieldModule,
         MatInputModule,

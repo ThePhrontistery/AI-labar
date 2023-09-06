@@ -18,6 +18,7 @@ import { of } from 'rxjs';
 import { IUser } from '../interfaces/emoji.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -36,7 +37,7 @@ describe('GroupsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [GroupsComponent],
       imports: [
-        ReactiveFormsModule,
+        ReactiveFormsModule,MatSnackBarModule,
         MatDialogModule,
         BrowserAnimationsModule,
         MatCheckboxModule,

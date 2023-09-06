@@ -7,6 +7,8 @@ import { LoginComponent } from './login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -28,7 +30,7 @@ describe('LoginComponent', () => {
         CookieService,
         FormBuilder,
       ],
-      imports: [HttpClientModule,HttpClientTestingModule, TranslateModule.forRoot()],
+      imports: [HttpClientModule,HttpClientTestingModule, MatSnackBarModule,MatDialogModule,TranslateModule.forRoot()],
     }).compileComponents();
   });
 

@@ -6,6 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('ModalVotationComponent', () => {
   let component: ModalVotationComponent;
@@ -15,7 +16,7 @@ describe('ModalVotationComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ModalVotationComponent],
       providers: [ModalVotationService, CookieService,TranslateService],
-      imports: [HttpClientTestingModule, TranslateModule.forRoot(),
+      imports: [HttpClientTestingModule, TranslateModule.forRoot(),MatSnackBarModule,
         MatCheckboxModule,MatDialogModule]
     }).compileComponents();
   });
