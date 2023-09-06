@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 /**
  * Component for creating surveys of different types.
@@ -42,7 +43,8 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
     private topicsCreateService: TopicsCreateService,
     private router: Router,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private messageService: MessageService
   ) {}
 
   ngOnDestroy(): void {
@@ -170,11 +172,11 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
   valuesValidation(): boolean {
     const isValid = true;
     if (!this.childComponent.closingDate) {
-      alert(this.translate.instant('ERROR_MESSAGES.EMPTY_CLOSING_DATE'));
+      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.EMPTY_CLOSING_DATE'));
       return false;
     }
     if (!this.surveyTitle) {
-      alert(this.translate.instant('ERROR_MESSAGES.EMPTY_TITLE'));
+      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.EMPTY_TITLE'));
       return false;
     }
     return isValid;
@@ -206,7 +208,7 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
         error: error => {
           let textError = error.error.message;
           if (error.error.message === undefined) textError = error.error.error;
-          alert(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +'\n'+ error.error.message);
+          this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +'\n'+ error.error.message);
         }
       });
     }

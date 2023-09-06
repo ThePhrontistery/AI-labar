@@ -23,6 +23,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-groups',
@@ -73,6 +74,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     private topicListService: TopicsListService,
     public dialogRef: MatDialogRef<GroupsComponent>,
     private translate: TranslateService,
+    private messageService: MessageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -183,7 +185,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
           this.dialogRef.close();
         },
         error: (error) => {
-          alert(
+          this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.CREATE_GROUP_ERROR') +
               '\n' +
               error.error.message

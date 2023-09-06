@@ -147,7 +147,8 @@
     "ERROR_OPEN_TOPIC": "Error al abrir el topic:",
     "ERROR_CLOSE_TOPIC": "Error al cerrar el topic:",
     "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
-    "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:"
+    "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
+    "CLOSE_BUTTON": "Cerrar"
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selección enviada con éxito"

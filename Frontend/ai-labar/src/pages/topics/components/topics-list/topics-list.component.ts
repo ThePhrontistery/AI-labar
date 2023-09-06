@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LOCALE_ID, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '../../services/message.service';
 
 /**
  * Component displaying a list of topics and surveys.
@@ -111,7 +112,8 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     private matPaginatorIntl: MatPaginatorIntl,
     private translate: TranslateService,
     @Inject(LOCALE_ID) private locale: string,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private messageService: MessageService
   ) {}
 
   // Component and value initialization.
@@ -203,7 +205,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(
+        this.messageService.showErrorMessage(
           this.translate.instant('ERROR_MESSAGES.ERROR_OPEN_TOPIC') +
             '\n' +
             textError
@@ -240,7 +242,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(
+        this.messageService.showErrorMessage(
           this.translate.instant('ERROR_MESSAGES.ERROR_CLOSE_TOPIC') +
             '\n' +
             textError
@@ -298,7 +300,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             let textError = error.error.message;
             if (error.error.message === undefined)
               textError = error.error.error;
-            alert(
+              this.messageService.showErrorMessage(
               this.translate.instant('ERROR_MESSAGES.ERROR_DELETE_TOPIC') +
                 '\n' +
                 textError
@@ -468,7 +470,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       error: (error) => {
         let textError = error.error.message;
         if (error.error.message === undefined) textError = error.error.error;
-        alert(
+        this.messageService.showErrorMessage(
           this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_TOPICS') +
             '\n' +
             textError
