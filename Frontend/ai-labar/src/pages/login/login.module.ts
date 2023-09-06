@@ -16,6 +16,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageService } from '../topics/services/message.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -42,6 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [LoginService, CookieService,MessageService], // Agrega LoginService como proveedor
 })
