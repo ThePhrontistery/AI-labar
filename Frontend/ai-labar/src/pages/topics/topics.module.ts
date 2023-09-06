@@ -47,6 +47,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from './services/message.service';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -70,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ImageTextResultComponent,
     AddCandidatesTopicComponent,
     ConfirmDeletionTopicComponent,
+    ErrorMessageComponent,
   ],
   imports: [
     TopicsRoutingModule,
@@ -105,6 +109,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
+    MatSnackBarModule,
   ],
   providers: [
     TopicsListService,
@@ -113,6 +118,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TopicsCreateService,
     ModalVotationService,
     HttpClientModule,
+    MessageService
   ],
 })
 export class TopicsModule {}

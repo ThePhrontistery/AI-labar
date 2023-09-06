@@ -16,6 +16,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Emoji } from '../interfaces/emoji.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-modal-votation',
@@ -72,7 +73,8 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
   constructor(
     private modalVotationService: ModalVotationService,
     private cookie: CookieService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private messageService: MessageService
   ) {}
 
   ngOnDestroy(): void {
@@ -177,10 +179,10 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
       .subscribe({
         next: (response) => {
           this.closeModal(true);
-          alert(this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION'));
+          this.messageService.showSuccessMessage(this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION'));
         },
         error: (error) => {
-          alert(
+          this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.ERROR_SEND_SELECTION') +
               '\n' +
               error.error.message

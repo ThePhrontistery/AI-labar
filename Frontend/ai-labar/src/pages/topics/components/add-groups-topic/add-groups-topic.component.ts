@@ -2,12 +2,17 @@
  * Component to add groups to a topic.
  */
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsComponent } from '../groups/groups.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-add-groups-topic',
@@ -35,6 +40,7 @@ export class AddGroupsTopicComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
+    private messageService: MessageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnDestroy(): void {
@@ -75,15 +81,20 @@ export class AddGroupsTopicComponent implements OnInit, OnDestroy {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
-    this.topicsCreateService.getGroupsByUser(loadGroupsBody)
+    this.topicsCreateService
+      .getGroupsByUser(loadGroupsBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: response => {
+        next: (response) => {
           this.groups = response.entity;
         },
-        error: error => {
-          alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-        }
+        error: (error) => {
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
+              '\n' +
+              error.error.message
+          );
+        },
       });
   }
 
@@ -96,15 +107,20 @@ export class AddGroupsTopicComponent implements OnInit, OnDestroy {
       token: this.cookie.get('token'),
       groupName: this.selectedGroup,
     };
-    this.topicsCreateService.getGroup(loadGroupBody)
+    this.topicsCreateService
+      .getGroup(loadGroupBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: response => {
+        next: (response) => {
           this.users = response.entity.members;
         },
-        error: error => {
-          alert(this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +'\n'+ error.error.message);
-        }
+        error: (error) => {
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
+              '\n' +
+              error.error.message
+          );
+        },
       });
   }
 
