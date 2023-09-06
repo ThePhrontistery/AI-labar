@@ -98,12 +98,12 @@ export class LoginComponent implements OnInit {
     };
 
     // Store username
-    this.username = this.loginForm.value.user;
-
+    this.username = this.loginForm.value.user; 
     // Making the login request and handling the response
     this.mySubscription.push(
-      this.loginService.login(body).subscribe(
-        (response) => {
+      this.loginService.login(body)
+      .subscribe({
+        next: (response) => { 
           if (
             response &&
             response.body.entity &&
@@ -116,9 +116,9 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/topics/topics-list']);
           }
         },
-        (error) => {
+        error: (error) => { 
           this.messageService.showErrorMessage(error.error.message);
-        }
+        }}
       )
     );
   }
