@@ -11,6 +11,7 @@ import * as CryptoJS from 'crypto-js';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from 'src/pages/topics/services/message.service';
 
 @Component({
   selector: 'app-login',
@@ -65,7 +66,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private cookie: CookieService,
     private fb: FormBuilder,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private messageService: MessageService
   ) {}
 
   /**
@@ -100,24 +102,24 @@ export class LoginComponent implements OnInit {
 
     // Making the login request and handling the response
     this.mySubscription.push(
-      this.loginService.login(body).subscribe((response) => {
-        if (
-          response &&
-          response.body.entity &&
-          response.body.entity.length > 1
-        ) {
-          // Set cookies and redirect user
-          this.cookie.set('user', this.username);
-          this.cookie.set('token', response.body.entity[0]);
-          this.cookie.set('visualization', response.body.entity[1]);
-          this.router.navigate(['/topics/topics-list']);
+      this.loginService.login(body).subscribe(
+        (response) => {
+          if (
+            response &&
+            response.body.entity &&
+            response.body.entity.length > 1
+          ) {
+            // Set cookies and redirect user
+            this.cookie.set('user', this.username);
+            this.cookie.set('token', response.body.entity[0]);
+            this.cookie.set('visualization', response.body.entity[1]);
+            this.router.navigate(['/topics/topics-list']);
+          }
+        },
+        (error) => {
+          this.messageService.showErrorMessage(error.error.message);
         }
-      },
-      (error) => {
-        alert( 
-            error.error.message
-        );
-      })
+      )
     );
   }
 
@@ -163,7 +165,7 @@ export class LoginComponent implements OnInit {
               this.limpiarForm();
             },
             error: (error) => {
-              alert(
+              this.messageService.showErrorMessage(
                 this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +
                   '\n' +
                   error.error.message
