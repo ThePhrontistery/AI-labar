@@ -87,48 +87,72 @@
       [(ngModel)]="imageTextValue1"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
+    <label class="custom-file-upload">
+      <input
+        type="file"
+        name="image1"
+        (change)="onFileSelected($event, 1)"
+        accept="image/*"
+      />
+      <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
+    </label>
     <input
-      type="file"
-      name="image1"
-      (change)="onFileSelected($event, 1)"
-      accept="image/*"
-    />
+      type="text"[value]="imageName[1]" readonly class="imageName"
+    /> 
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue2"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
+    <label class="custom-file-upload">
+      <input
+        type="file"
+        name="image2"
+        (change)="onFileSelected($event, 2)"
+        accept="image/*"
+      />
+      <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
+    </label>
     <input
-      type="file"
-      name="image2"
-      (change)="onFileSelected($event, 2)"
-      accept="image/*"
-    />
+      type="text"[value]="imageName[2]" readonly class="imageName"
+    /> 
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue3"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
+    <label class="custom-file-upload">
+      <input
+        type="file"
+        name="image3"
+        (change)="onFileSelected($event, 3)"
+        accept="image/*"
+      />
+      <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
+    </label>
     <input
-      type="file"
-      name="imag3"
-      (change)="onFileSelected($event, 3)"
-      accept="image/*"
-    />
+      type="text"[value]="imageName[3]" readonly class="imageName"
+    /> 
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue4"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
     />
+    <label class="custom-file-upload">
+      <input
+        type="file"
+        name="image4"
+        (change)="onFileSelected($event, 4)"
+        accept="image/*"
+      />
+      <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
+    </label>
     <input
-      type="file"
-      name="imag4"
-      (change)="onFileSelected($event, 4)"
-      accept="image/*"
-    />
+      type="text"[value]="imageName[4]" readonly class="imageName"
+    /> 
   </div>
 
   <div>
