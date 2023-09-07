@@ -31,6 +31,9 @@ AI-labar is a fast and convenient ways to get the opinion of people on various t
 4. Configure the database connection if needed in the `application.properties` file.
 5. Run the Spring Boot application from IntelliJ IDEA.
 
+### Database
+For the creation of the database in Postgres, please review the file [Create Tables](/UML/create_tables_Ai-labar.sql)
+
 ## Usage
 TODO
 
