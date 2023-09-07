@@ -24,6 +24,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
@@ -59,7 +60,7 @@ describe('TopicsListComponent', () => {
         { provide: CookieService, useValue: mockCookieServiceSpy },
       ],
       imports: [
-        MatSortModule,
+        MatSortModule,MatSnackBarModule,
         MatTableModule,
         BrowserAnimationsModule,
         HttpClientModule,

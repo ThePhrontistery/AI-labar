@@ -11,7 +11,7 @@
   "TOPIC": {
     "ADD_GROUP": "Add group",
     "ADD_TOPIC": "Add topic",
-    "LOGOUT": "logout"
+    "LOGOUT": "Logout"
   },
   "ADD_CANDIDATES": {
     "ADD_CANDIDATES": "Add candidates",
@@ -83,6 +83,7 @@
     "TOTAL_CANDIDATES": "Total candidates:",
     "ADD_PARTICIPANTS": "Add participants",
     "LIST_PARTICIPANTS": "List of participants:",
+    "UPLOAD_FILE": "Upload image",
     "TOTAL_PARTICIPANTS": "Total participants:"
   },
   "STEP_ONE": {
@@ -130,6 +131,7 @@
     "CARDS": "Cards",
     "SCROLL": "Scroll",
     "TOPICS_PAGE": "Topics per page: ",
+    "TOPICS_PAGE_OF": "of",
     "CONFIRM_DELETION": "Confirm Deletion",
     "CONFIRM_DELETION_MESSAGE": "¿Are you sure you want to delete this survey?"
   },
@@ -147,7 +149,9 @@
     "ERROR_OPEN_TOPIC": "Error when opening the topic:",
     "ERROR_CLOSE_TOPIC": "Error when closing the topic:",
     "ERROR_DELETE_TOPIC": "Error when deleting the topic:",
-    "ERROR_RETRIEVING_TOPICS": "Error while retrieving the topics:"
+    "ERROR_RETRIEVING_TOPICS": "Error while retrieving the topics:",
+    "REPEATED_OPTIONS":"There cannot be repeated options.",
+    "CLOSE_BUTTON": "Close"
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selection sent successfully"

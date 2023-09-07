@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('AddCandidatesTopicComponent', () => {
   let component: AddCandidatesTopicComponent;
@@ -52,7 +53,7 @@ describe('AddCandidatesTopicComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ],
       imports: [
-        MatDialogModule,
+        MatDialogModule,MatSnackBarModule,
         ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
@@ -131,7 +132,7 @@ describe('AddCandidatesTopicComponent', () => {
   it('should save group and close dialog', () => {
     const expectedData = {
       selectedGroup: null,
-      selectedusers: ['user1', 'user2'],
+      selectedUsers: ['user1', 'user2'],
     };
 
     component.selectedUsers = ['user1', 'user2'];

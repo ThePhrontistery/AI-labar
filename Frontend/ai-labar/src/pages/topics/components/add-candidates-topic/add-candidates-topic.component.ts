@@ -19,6 +19,7 @@ import { TopicsListService } from '../topics-list/topics-list.service';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-add-candidates-topic',
@@ -84,6 +85,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
     private topicListService: TopicsListService,
     public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
+    private messageService: MessageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // Initialize the form group and controls
@@ -132,7 +134,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
           this.groups = response.entity;
         },
         error: (error) => {
-          alert(
+          this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
               '\n' +
               error.error.message
@@ -160,7 +162,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
           this.usersGroups = response.entity.members;
         },
         error: (error) => {
-          alert(
+          this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.ERROR_RETRIEVING_DATA_CB') +
               '\n' +
               error.error.message
@@ -249,7 +251,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   saveGroup() {
     const data = {
       selectedGroup: null,
-      selectedusers: this.selectedUsers,
+      selectedUsers: this.selectedUsers,
     };
     this.dialogRef.close(data);
   }

@@ -11,6 +11,8 @@ import * as CryptoJS from 'crypto-js';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from 'src/pages/topics/services/message.service';
+import { LanguageService } from 'src/pages/language.service';
 
 @Component({
   selector: 'app-login',
@@ -53,6 +55,9 @@ export class LoginComponent implements OnInit {
   selectedFile!: any;
   base64String!: string;
 
+  currentLanguage!: string;
+  textButtonLanguage!: string;
+
   /**
    * Component builder.
    * @param loginService Login service
@@ -65,14 +70,24 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private cookie: CookieService,
     private fb: FormBuilder,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private messageService: MessageService,
+    private languageService: LanguageService
   ) {}
 
   /**
    * Method that is executed when the component is initialized.
    */
   ngOnInit(): void {
+    this.translate.addLangs(['en', 'es']);
     this.translate.setDefaultLang('en');
+
+    this.currentLanguage = this.languageService.getLanguage();
+    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
+      this.translate.use(this.currentLanguage);
+    }
+
+    this.changeTextButtonLanguage();
   }
 
   /**
@@ -96,28 +111,28 @@ export class LoginComponent implements OnInit {
     };
 
     // Store username
-    this.username = this.loginForm.value.user;
-
+    this.username = this.loginForm.value.user; 
     // Making the login request and handling the response
     this.mySubscription.push(
-      this.loginService.login(body).subscribe((response) => {
-        if (
-          response &&
-          response.body.entity &&
-          response.body.entity.length > 1
-        ) {
-          // Set cookies and redirect user
-          this.cookie.set('user', this.username);
-          this.cookie.set('token', response.body.entity[0]);
-          this.cookie.set('visualization', response.body.entity[1]);
-          this.router.navigate(['/topics/topics-list']);
-        }
-      },
-      (error) => {
-        alert( 
-            error.error.message
-        );
-      })
+      this.loginService.login(body)
+      .subscribe({
+        next: (response) => { 
+          if (
+            response &&
+            response.body.entity &&
+            response.body.entity.length > 1
+          ) {
+            // Set cookies and redirect user
+            this.cookie.set('user', this.username);
+            this.cookie.set('token', response.body.entity[0]);
+            this.cookie.set('visualization', response.body.entity[1]);
+            this.router.navigate(['/topics/topics-list']);
+          }
+        },
+        error: (error) => { 
+          this.messageService.showErrorMessage(error.error.message);
+        }}
+      )
     );
   }
 
@@ -163,7 +178,7 @@ export class LoginComponent implements OnInit {
               this.limpiarForm();
             },
             error: (error) => {
-              alert(
+              this.messageService.showErrorMessage(
                 this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +
                   '\n' +
                   error.error.message
@@ -219,6 +234,20 @@ export class LoginComponent implements OnInit {
    */
   limpiarForm() {
     this.form.reset();
+  }
+
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+    this.currentLanguage = this.languageService.getLanguage();
+    this.changeTextButtonLanguage();
+  }
+
+  changeTextButtonLanguage(){
+    if (this.currentLanguage === 'EN'){
+      this.textButtonLanguage = 'ES';
+    }else {
+      this.textButtonLanguage = 'EN';
+    }
   }
 
   /**

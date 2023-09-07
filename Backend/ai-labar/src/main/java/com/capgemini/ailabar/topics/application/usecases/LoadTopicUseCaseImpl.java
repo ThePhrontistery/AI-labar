@@ -148,8 +148,9 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
         }
 
         if(status) {
-            nativeCountQuery.setParameter("status", statusValue);
-            nativeLoadQuery.setParameter("status", statusValue);
+            String valueStatus=""+statusValue;
+            nativeCountQuery.setParameter("status",valueStatus);
+            nativeLoadQuery.setParameter("status", valueStatus);
         }
 
         if(votePending) {

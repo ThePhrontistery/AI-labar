@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for selecting a survey image in the first stage.
@@ -15,27 +15,31 @@ export class StepOneComponent implements OnInit {
    */
   @Input() sharedData: any;
 
+  values_name: string = '';
+  values_img_name: string = '';
+  emojis_name: string = '';
+  employer_name: string = '';
   /**
    * List of available survey images.
    */
   images = [
     {
-      name: this.translate.instant('STEP_ONE.VALUES_SURVEY_NAME'),
+      name: this.values_name,
       route: 'assets/images/imageOne.png',
       code: 'VAL',
     },
     {
-      name: this.translate.instant('STEP_ONE.VALUES_IMAGE_SURVEY_NAME'),
+      name: this.values_img_name,
       route: 'assets/images/imageFour.png',
       code: 'VCI',
     },
     {
-      name: this.translate.instant('STEP_ONE.EMOJIS_SURVEY_NAME'),
+      name: this.emojis_name,
       route: 'assets/images/imageTwo.jpg',
       code: 'EMO',
     },
     {
-      name: this.translate.instant('STEP_ONE.EMPLOYEE_SURVEY_NAME'),
+      name: this.employer_name,
       route: 'assets/images/imageThree.png',
       code: 'EMP',
     },
@@ -51,14 +55,70 @@ export class StepOneComponent implements OnInit {
    */
   @Output() parentMethodInvoked = new EventEmitter<any>();
 
-  constructor(
-    private translate: TranslateService
-  ) {}
+  constructor(private translate: TranslateService) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate
+        .get('STEP_ONE.VALUES_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.values_name = translation;
+          this.images[0].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.VALUES_IMAGE_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.values_img_name = translation;
+          this.images[1].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.EMOJIS_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.emojis_name = translation;
+          this.images[2].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.EMPLOYEE_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.employer_name = translation;
+          this.images[3].name = translation;
+        });
+    });
+  }
 
   /**
    * Method invoked upon initializing the component.
    */
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.translate
+      .get('STEP_ONE.VALUES_SURVEY_NAME')
+      .subscribe((translation: string) => {
+        this.values_name = translation;
+        this.images[0].name = translation;
+      });
+
+    this.translate
+      .get('STEP_ONE.VALUES_IMAGE_SURVEY_NAME')
+      .subscribe((translation: string) => {
+        this.values_img_name = translation;
+        this.images[1].name = translation;
+      });
+
+    this.translate
+      .get('STEP_ONE.EMOJIS_SURVEY_NAME')
+      .subscribe((translation: string) => {
+        this.emojis_name = translation;
+        this.images[2].name = translation;
+      });
+
+    this.translate
+      .get('STEP_ONE.EMPLOYEE_SURVEY_NAME')
+      .subscribe((translation: string) => {
+        this.employer_name = translation;
+        this.images[3].name = translation;
+      });
+  }
 
   /**
    * Select an image from the list and emit the event to the parent component.

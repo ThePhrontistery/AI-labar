@@ -149,3 +149,39 @@ body {
   align-items: center;
   flex-direction: column;
 }
+
+.success-message {
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+}
+
+.success-message .mat-snack-bar-action {
+  display: none;
+}
+
+.borderless-dialog .mat-dialog-container {
+  padding: 0px;
+  overflow: hidden;
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.mat-snack-bar-container {
+  min-width: 1px !important;
+  padding: 30px !important;
+}
+
+.login-button {
+  margin-top: 16px;
+  background-color: #fff;
+  color: #29abe2;
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}

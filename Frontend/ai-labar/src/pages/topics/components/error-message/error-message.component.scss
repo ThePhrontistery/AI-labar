@@ -1,0 +1,35 @@
+.error-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-dialog-content {
+  background-color: #f44336;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  display: table;
+}
+
+.message {
+  display: table-row;
+}
+
+.button-container {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.button-container button.mat-button {
+  background-color: white;
+  color: #f44336;
+}

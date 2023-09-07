@@ -1,61 +1,45 @@
-.content {
-  margin-top: 60px;
+.toolbar {
+  background-color: #0070ad;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo img {
+  width: 40px; /* Tamaño del logo */
+  height: auto;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  margin-right: 16px;
 }
 
 .user-icon {
-  color: white;
   font-size: 32px;
+  margin-right: 8px;
 }
 
 .username {
-  margin-left: 8px;
   color: white;
 }
 
-.add-user-button {
-  background-color: white;
-  color: #0070ad;
-  border-radius: 4px;
-  padding: 8px 16px;
-}
-
-.add-user-button:hover {
-  background-color: #0070ad;
+.menu-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
   color: white;
-}
-
-.add-user-icon {
-  color: #0070ad;
   font-size: 24px;
-}
-
-.wd16 {
-  width: 16px;
-}
-.hoover {
-  order: -1;
-}
-
-.right {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  float: right;
-  width: 100%;
-  margin-right: 16px;
-}
-
-.ml16 {
   margin-left: 16px;
 }
 
-.vertical-menu {
-  flex-direction: column;
-  display: flex;
+.menu-button:hover {
+  background-color: #00578a; /* Color de fondo al pasar el mouse */
+  border-radius: 50%; /* Hace que el botón sea circular */
+}
+
+.content{
+  margin-top: 80px;
 }

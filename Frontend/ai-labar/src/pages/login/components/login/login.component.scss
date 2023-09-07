@@ -127,6 +127,10 @@
   animation: pulse-animation 1s ease-in-out infinite;
 }
 
+.align-right-button {
+  margin-left: auto;
+}
+
 @keyframes gradient-animation {
   from {
     background-position: center center;

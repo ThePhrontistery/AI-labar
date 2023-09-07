@@ -11,6 +11,7 @@ import { TopicsListComponent } from '../topics-list/topics-list.component';
 import { Routes } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const routes: Routes = [
   { path: 'topics/topics-list', component: TopicsListComponent },
@@ -44,7 +45,7 @@ describe('TopicsCreateComponent', () => {
         { provide: MatDialog, useValue: mockDialogSpy },
       ],
       imports: [
-        BrowserAnimationsModule,
+        BrowserAnimationsModule,MatSnackBarModule,
         RouterTestingModule.withRoutes(routes),
         HttpClientTestingModule, TranslateModule.forRoot()
       ],

@@ -57,7 +57,7 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
 
     @Override
     public List<String> getUsersByMatch(String matcher) {
-        return usersRepository.getUsersByNameMatch(matcher);
+        return usersRepository.getUsersByNameMatch(matcher.toUpperCase());
     }
 
     @Override

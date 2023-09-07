@@ -10,6 +10,7 @@
     <mat-card *ngIf="!showRegistroFom" class="login-card">
       <mat-card-header>
         <mat-card-title>{{ 'LOGIN.INIT' | translate }}</mat-card-title>
+        <button mat-raised-button class="align-right-button" (click)="toggleLanguage()">{{ textButtonLanguage }}</button>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="loginForm">

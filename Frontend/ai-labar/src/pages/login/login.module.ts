@@ -12,8 +12,12 @@ import { CookieService } from 'ngx-cookie-service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from '../topics/services/message.service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { LanguageService } from '../language.service';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -38,8 +42,10 @@ export function HttpLoaderFactory(http: HttpClient) {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    MatSnackBarModule,
+    MatDialogModule
   ],
-  providers: [LoginService, CookieService], // Agrega LoginService como proveedor
+  providers: [LoginService, CookieService,MessageService, TranslateService, LanguageService ], // Agrega LoginService como proveedor
 })
 export class LoginModule {}
