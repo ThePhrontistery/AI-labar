@@ -12,6 +12,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'src/pages/topics/services/message.service';
+import { LanguageService } from 'src/pages/language.service';
 
 @Component({
   selector: 'app-login',
@@ -54,6 +55,9 @@ export class LoginComponent implements OnInit {
   selectedFile!: any;
   base64String!: string;
 
+  currentLanguage!: string;
+  textButtonLanguage!: string;
+
   /**
    * Component builder.
    * @param loginService Login service
@@ -67,14 +71,23 @@ export class LoginComponent implements OnInit {
     private cookie: CookieService,
     private fb: FormBuilder,
     private translate: TranslateService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private languageService: LanguageService
   ) {}
 
   /**
    * Method that is executed when the component is initialized.
    */
   ngOnInit(): void {
+    this.translate.addLangs(['en', 'es']);
     this.translate.setDefaultLang('en');
+
+    this.currentLanguage = this.languageService.getLanguage();
+    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
+      this.translate.use(this.currentLanguage);
+    }
+
+    this.changeTextButtonLanguage();
   }
 
   /**
@@ -221,6 +234,20 @@ export class LoginComponent implements OnInit {
    */
   limpiarForm() {
     this.form.reset();
+  }
+
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+    this.currentLanguage = this.languageService.getLanguage();
+    this.changeTextButtonLanguage();
+  }
+
+  changeTextButtonLanguage(){
+    if (this.currentLanguage === 'EN'){
+      this.textButtonLanguage = 'ES';
+    }else {
+      this.textButtonLanguage = 'EN';
+    }
   }
 
   /**

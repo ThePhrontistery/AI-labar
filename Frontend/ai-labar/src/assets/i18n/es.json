@@ -131,6 +131,7 @@
     "CARDS": "Tarjetas",
     "SCROLL": "Scroll",
     "TOPICS_PAGE": "Topics por página: ",
+    "TOPICS_PAGE_OF": "de",
     "CONFIRM_DELETION": "Confirmar Eliminación",
     "CONFIRM_DELETION_MESSAGE": "¿Estás seguro de que deseas eliminar esta encuesta?"
   },

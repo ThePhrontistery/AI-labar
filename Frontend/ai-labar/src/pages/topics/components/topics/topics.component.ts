@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { GroupsComponent } from '../groups/groups.component';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from 'src/pages/language.service';
 
 /**
  * Component for the management of topics and groups.
@@ -19,6 +20,9 @@ export class TopicsComponent implements OnInit {
    */
   user = this.cookie.get('user');
 
+  currentLanguage!: string;
+  textButtonLanguage!: string;
+
   /**
    * Constructor of the component.
    * @param cookie Service for working with cookies.
@@ -30,7 +34,8 @@ export class TopicsComponent implements OnInit {
     private cookie: CookieService,
     private router: Router,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private languageService: LanguageService
   ) {}
 
   /**
@@ -41,7 +46,15 @@ export class TopicsComponent implements OnInit {
     if (this.cookie.get('user') === '' || this.cookie.get('token') === '') {
       this.router.navigate(['login']);
     }
+    this.translate.addLangs(['en', 'es']);
     this.translate.setDefaultLang('en');
+
+    this.currentLanguage = this.languageService.getLanguage();
+    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
+      this.translate.use(this.currentLanguage);
+    }
+
+    this.changeTextButtonLanguage();
   }
 
   /**
@@ -55,26 +68,23 @@ export class TopicsComponent implements OnInit {
   }
 
   /**
-   * Navigate to the page to add a new topic.
-   */
-  addTopic() {
-    this.router.navigate(['/topics/topics-create']);
-  }
-
-  /**
    * Navigate back to the list of topics.
    */
   back() {
     this.router.navigate(['/topics/topics-list']);
   }
 
-  /**
-   * Open a dialog to add a new group.
-   */
-  addGroup() {
-    const dialogRef = this.dialog.open(GroupsComponent, {
-      width: '750px',
-      data: {},
-    });
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+    this.currentLanguage = this.languageService.getLanguage();
+    this.changeTextButtonLanguage();
+  }
+
+  changeTextButtonLanguage(){
+    if (this.currentLanguage === 'EN'){
+      this.textButtonLanguage = 'ES';
+    }else {
+      this.textButtonLanguage = 'EN';
+    }
   }
 }

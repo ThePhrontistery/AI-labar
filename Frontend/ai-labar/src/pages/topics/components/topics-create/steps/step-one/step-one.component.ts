@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for selecting a survey image in the first stage.
@@ -55,15 +55,42 @@ export class StepOneComponent implements OnInit {
    */
   @Output() parentMethodInvoked = new EventEmitter<any>();
 
-  constructor(
-    private translate: TranslateService
-  ) { }
+  constructor(private translate: TranslateService) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate
+        .get('STEP_ONE.VALUES_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.values_name = translation;
+          this.images[0].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.VALUES_IMAGE_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.values_img_name = translation;
+          this.images[1].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.EMOJIS_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.emojis_name = translation;
+          this.images[2].name = translation;
+        });
+
+      this.translate
+        .get('STEP_ONE.EMPLOYEE_SURVEY_NAME')
+        .subscribe((translation: string) => {
+          this.employer_name = translation;
+          this.images[3].name = translation;
+        });
+    });
+  }
 
   /**
    * Method invoked upon initializing the component.
    */
   ngOnInit(): void {
-
     this.translate
       .get('STEP_ONE.VALUES_SURVEY_NAME')
       .subscribe((translation: string) => {
