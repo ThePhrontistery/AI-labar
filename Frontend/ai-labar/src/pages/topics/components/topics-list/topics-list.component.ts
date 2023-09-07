@@ -320,7 +320,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   // Method to vote in a survey.
   vote(votation: any) {
     this.idVotation = votation.id;
-    this.optionsVotation = votation.options;
+    this.optionsVotation = votation.options.sort((a : any, b : any) => { 
+      const optionA = a.option.toString();
+      const optionB = b.option.toString();      
+      return optionA.localeCompare(optionB);
+    });;
     this.titleVotation = votation.title;
     this.typeVoting = votation.type;
     this.openModal();

@@ -45,13 +45,13 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private translate: TranslateService,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.complete();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   /**
    * Move to the next step in survey creation.
@@ -162,7 +162,25 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
       this.members = this.childComponent.users;
       this.groupSelectedParticipants = this.childComponent.selectedGroup;
     }
-    this.createTopics();
+    if (this.repeated()) {
+      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.REPEATED_OPTIONS'));
+    } else {
+      this.createTopics();
+    }
+  }
+
+  repeated(): boolean {
+    const optionsViews = new Set(); 
+
+    for (const item of this.surveyOptions) {
+      const option = item.option;
+      if (optionsViews.has(option)) {
+        return true;
+      } else {
+        optionsViews.add(option);
+      }
+    }
+     return false;
   }
 
   /**
@@ -198,19 +216,19 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
         token: this.cookie.get('token'),
       };
       this.topicsCreateService.createTopics(createTopicsBody)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: response => {
-          if (response) {
-            this.router.navigate(['/topics/topics-list']);
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: response => {
+            if (response) {
+              this.router.navigate(['/topics/topics-list']);
+            }
+          },
+          error: error => {
+            let textError = error.error.message;
+            if (error.error.message === undefined) textError = error.error.error;
+            this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') + '\n' + error.error.message);
           }
-        },
-        error: error => {
-          let textError = error.error.message;
-          if (error.error.message === undefined) textError = error.error.error;
-          this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +'\n'+ error.error.message);
-        }
-      });
+        });
     }
   }
 }

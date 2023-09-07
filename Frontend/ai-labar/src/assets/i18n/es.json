@@ -149,6 +149,7 @@
     "ERROR_CLOSE_TOPIC": "Error al cerrar el topic:",
     "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
     "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
+    "REPEATED_OPTIONS":"No pueden haber opciones repetidas.",
     "CLOSE_BUTTON": "Cerrar"
   },
   "OK_MESSAGES": {
