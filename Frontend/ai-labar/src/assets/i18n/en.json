@@ -149,6 +149,7 @@
     "ERROR_CLOSE_TOPIC": "Error when closing the topic:",
     "ERROR_DELETE_TOPIC": "Error when deleting the topic:",
     "ERROR_RETRIEVING_TOPICS": "Error while retrieving the topics:",
+    "REPEATED_OPTIONS":"There cannot be repeated options.",
     "CLOSE_BUTTON": "Close"
   },
   "OK_MESSAGES": {
