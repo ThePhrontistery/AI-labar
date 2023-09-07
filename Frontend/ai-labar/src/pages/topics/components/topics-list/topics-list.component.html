@@ -1,33 +1,43 @@
 <div class="filters-container">
-  <b>{{ 'TOPICS_LIST.FILTERS' | translate }}</b>
-  <mat-slide-toggle
-    id="minesToggle"
-    [(ngModel)]="minesFilter"
-    (change)="onToggleChange($event)"
-  >
-  {{ 'TOPICS_LIST.OWN' | translate }}
-  </mat-slide-toggle>
-  <mat-slide-toggle
-    id="openedToggle"
-    [(ngModel)]="openedFilter"
-    (change)="onToggleChange($event)"
-  >
-  {{ 'TOPICS_LIST.OPEN_FILTER' | translate }}
-  </mat-slide-toggle>
-  <mat-slide-toggle
-    id="closedToggle"
-    [(ngModel)]="closedFilter"
-    (change)="onToggleChange($event)"
-  >
-  {{ 'TOPICS_LIST.CLOSED_FILTER' | translate }}
-  </mat-slide-toggle>
-  <mat-slide-toggle
-    id="votePendingToggle"
-    [(ngModel)]="votePendingFilter"
-    (change)="onToggleChange($event)"
-  >
-  {{ 'TOPICS_LIST.PENDING_VOTE' | translate }}
-  </mat-slide-toggle>
+  <div>
+    <b>{{ 'TOPICS_LIST.FILTERS' | translate }}</b>
+    <mat-slide-toggle
+      id="minesToggle"
+      [(ngModel)]="minesFilter"
+      (change)="onToggleChange($event)"
+    >
+    {{ 'TOPICS_LIST.OWN' | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="openedToggle"
+      [(ngModel)]="openedFilter"
+      (change)="onToggleChange($event)"
+    >
+    {{ 'TOPICS_LIST.OPEN_FILTER' | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="closedToggle"
+      [(ngModel)]="closedFilter"
+      (change)="onToggleChange($event)"
+    >
+    {{ 'TOPICS_LIST.CLOSED_FILTER' | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="votePendingToggle"
+      [(ngModel)]="votePendingFilter"
+      (change)="onToggleChange($event)"
+    >
+    {{ 'TOPICS_LIST.PENDING_VOTE' | translate }}
+    </mat-slide-toggle>
+</div>
+  <div class="actions">
+    <button mat-raised-button class="action-button" (click)="addGroup()">
+      {{ "TOPIC.ADD_GROUP" | translate }}
+    </button>
+    <button mat-raised-button class="action-button" (click)="addTopic()">
+      {{ "TOPIC.ADD_TOPIC" | translate }}
+    </button>
+  </div>
 </div>
 
 <div
