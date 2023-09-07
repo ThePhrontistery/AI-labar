@@ -11,7 +11,7 @@
   "TOPIC": {
     "ADD_GROUP": "Add group",
     "ADD_TOPIC": "Add topic",
-    "LOGOUT": "logout"
+    "LOGOUT": "Logout"
   },
   "ADD_CANDIDATES": {
     "ADD_CANDIDATES": "Add candidates",
@@ -131,6 +131,7 @@
     "CARDS": "Cards",
     "SCROLL": "Scroll",
     "TOPICS_PAGE": "Topics per page: ",
+    "TOPICS_PAGE_OF": "of",
     "CONFIRM_DELETION": "Confirm Deletion",
     "CONFIRM_DELETION_MESSAGE": "¿Are you sure you want to delete this survey?"
   },

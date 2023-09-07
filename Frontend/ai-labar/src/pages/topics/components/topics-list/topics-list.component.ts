@@ -25,8 +25,10 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LOCALE_ID, Inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MessageService } from '../../services/message.service';
+import { GroupsComponent } from '../groups/groups.component';
+import { Router } from '@angular/router';
 
 /**
  * Component displaying a list of topics and surveys.
@@ -113,28 +115,86 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     @Inject(LOCALE_ID) private locale: string,
     private cookie: CookieService,
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private router: Router
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.matPaginatorIntl.itemsPerPageLabel = this.translate.instant(
+        'TOPICS_LIST.TOPICS_PAGE'
+      );
+
+      const pageOf = this.translate.instant(
+        'TOPICS_LIST.TOPICS_PAGE_OF'
+      );
+
+      this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+        if (length === 0 || pageSize === 0) {
+          return `0 ` + pageOf + ` ${length}`;
+        }
+        length = Math.max(length, 0);
+        const startIndex = page * pageSize;
+        const endIndex =
+          startIndex < length
+            ? Math.min(startIndex + pageSize, length)
+            : startIndex + pageSize;
+        return `${startIndex + 1} - ${endIndex} ` + pageOf + ` ${length}`;
+
+      };
+
+      this.matPaginatorIntl.changes.next();
+
+      this.translate
+        .get('TOPICS_LIST.OPEN_STATUS')
+        .subscribe((translation: string) => {
+          this.openStatusTranslation = translation;
+        });
+
+      this.translate
+        .get('TOPICS_LIST.CLOSED_STATUS')
+        .subscribe((translation: string) => {
+          this.closedStatusTranslation = translation;
+        });
+    });
+  }
 
   // Component and value initialization.
   ngOnInit(): void {
     this.defaultVisualization(this.cookie.get('visualization'));
     this.getTopicList();
     this.translate
-    .get('TOPICS_LIST.TOPICS_PAGE')
-    .subscribe((translation: string) => {
-      this.matPaginatorIntl.itemsPerPageLabel = translation;
-    });
+      .get('TOPICS_LIST.TOPICS_PAGE')
+      .subscribe((translation: string) => {
+        this.matPaginatorIntl.itemsPerPageLabel = translation;
+      });
     this.translate
-    .get('TOPICS_LIST.OPEN_STATUS')
-    .subscribe((translation: string) => {
-      this.openStatusTranslation = translation;
-    });
+      .get('TOPICS_LIST.OPEN_STATUS')
+      .subscribe((translation: string) => {
+        this.openStatusTranslation = translation;
+      });
     this.translate
-    .get('TOPICS_LIST.CLOSED_STATUS')
-    .subscribe((translation: string) => {
-      this.closedStatusTranslation = translation;
-    }); 
+      .get('TOPICS_LIST.CLOSED_STATUS')
+      .subscribe((translation: string) => {
+        this.closedStatusTranslation = translation;
+      });
+
+      this.translate
+      .get('TOPICS_LIST.TOPICS_PAGE_OF')
+      .subscribe((translation: string) => {
+        this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+          if (length === 0 || pageSize === 0) {
+            return `0 ` + translation + ` ${length}`;
+          }
+          length = Math.max(length, 0);
+          const startIndex = page * pageSize;
+          const endIndex =
+            startIndex < length
+              ? Math.min(startIndex + pageSize, length)
+              : startIndex + pageSize;
+          return `${startIndex + 1} - ${endIndex} ` + translation + ` ${length}`;
+
+        };
+      });
+
   }
 
   ngOnDestroy() {
@@ -306,7 +366,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             let textError = error.error.message;
             if (error.error.message === undefined)
               textError = error.error.error;
-              this.messageService.showErrorMessage(
+            this.messageService.showErrorMessage(
               this.translate.instant('ERROR_MESSAGES.ERROR_DELETE_TOPIC') +
                 '\n' +
                 textError
@@ -320,11 +380,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   // Method to vote in a survey.
   vote(votation: any) {
     this.idVotation = votation.id;
-    this.optionsVotation = votation.options.sort((a : any, b : any) => { 
+    this.optionsVotation = votation.options.sort((a: any, b: any) => {
       const optionA = a.option.toString();
-      const optionB = b.option.toString();      
+      const optionB = b.option.toString();
       return optionA.localeCompare(optionB);
-    });;
+    });
     this.titleVotation = votation.title;
     this.typeVoting = votation.type;
     this.openModal();
@@ -574,5 +634,41 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     const table1Height = this.topicsTable.nativeElement.clientHeight;
     const fillHeight = div1Height - table1Height + 6;
     this.fill.nativeElement.style.height = fillHeight + 'px';
+  }
+
+  /**
+   * Navigate to the page to add a new topic.
+   */
+  addTopic() {
+    this.router.navigate(['/topics/topics-create']);
+  }
+
+  /**
+   * Open a dialog to add a new group.
+   */
+  addGroup() {
+    const dialogRef = this.dialog.open(GroupsComponent, {
+      width: '750px',
+      data: {},
+    });
+  }
+
+
+  getRangeLabel(page: number, pageSize: number, length: number){
+    if (length === 0 || pageSize === 0) {
+      return `0 de ${length}`;
+    }
+    length = Math.max(length, 0);
+    const startIndex = page * pageSize;
+    const endIndex =
+      startIndex < length
+        ? Math.min(startIndex + pageSize, length)
+        : startIndex + pageSize;
+    const itemsPerPageLabel = this.translate.instant(
+      'TOPICS_LIST.TOPICS_PAGE'
+    );
+
+    return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} de ${length}`;
+
   }
 }

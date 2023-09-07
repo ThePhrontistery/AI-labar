@@ -1,5 +1,9 @@
 .filters-container {
   padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .button-container {
@@ -148,4 +152,22 @@ td.mat-footer-cell:last-of-type {
 
 .mat-slide-toggle {
   padding: 5px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.action-button {
+  color: white;
+  background-color: #0070ad;
+  margin-left: 16px;
+  border-radius: 4px;
+  padding: 8px 16px;
+}
+
+.action-button:hover {
+  color: #0070ad;
+  background-color: white;
 }

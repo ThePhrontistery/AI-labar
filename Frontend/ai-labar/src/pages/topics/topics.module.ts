@@ -50,6 +50,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageService } from './services/message.service';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { LanguageService } from '../language.service';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -118,7 +119,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TopicsCreateService,
     ModalVotationService,
     HttpClientModule,
-    MessageService
+    MessageService,
+    LanguageService
   ],
 })
 export class TopicsModule {}
