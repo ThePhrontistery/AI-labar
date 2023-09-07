@@ -71,6 +71,7 @@ export class StepTwoComponent implements OnInit, OnDestroy {
   imageTextValue2: string = '';
   imageTextValue3: string = '';
   imageTextValue4: string = '';
+  imageName: string[] = [];
 
   // List of available emojis for rating surveys
   emojis: Emoji[] = [
@@ -131,6 +132,10 @@ export class StepTwoComponent implements OnInit, OnDestroy {
       this.isVotingSurvey = true;
     } else if (this.selectedImage.code === this.imageTextTopicCode) {
       this.isSurveyImageText = true;
+      this.imageName[1]='';
+      this.imageName[2]='';
+      this.imageName[3]='';
+      this.imageName[4]='';
     }
   }
 
@@ -209,7 +214,9 @@ export class StepTwoComponent implements OnInit, OnDestroy {
     this.selectedFiles[imageNumber] = event.target.files[0];
     const file = this.selectedFiles[imageNumber];
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader(); 
+      this.imageName[imageNumber] = file.name;
+
       reader.onloadend = () => {
         const base64data = reader.result?.toString()?.split(',')[1];
         if (base64data) {

@@ -120,15 +120,21 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.defaultVisualization(this.cookie.get('visualization'));
     this.getTopicList();
-    this.matPaginatorIntl.itemsPerPageLabel = this.translate.instant(
-      'TOPICS_LIST.TOPICS_PAGE'
-    );
-    this.openStatusTranslation = this.translate.instant(
-      'TOPICS_LIST.OPEN_STATUS'
-    );
-    this.closedStatusTranslation = this.translate.instant(
-      'TOPICS_LIST.CLOSED_STATUS'
-    );
+    this.translate
+    .get('TOPICS_LIST.TOPICS_PAGE')
+    .subscribe((translation: string) => {
+      this.matPaginatorIntl.itemsPerPageLabel = translation;
+    });
+    this.translate
+    .get('TOPICS_LIST.OPEN_STATUS')
+    .subscribe((translation: string) => {
+      this.openStatusTranslation = translation;
+    });
+    this.translate
+    .get('TOPICS_LIST.CLOSED_STATUS')
+    .subscribe((translation: string) => {
+      this.closedStatusTranslation = translation;
+    }); 
   }
 
   ngOnDestroy() {
