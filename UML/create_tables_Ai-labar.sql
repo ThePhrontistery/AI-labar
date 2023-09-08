@@ -45,6 +45,7 @@ CREATE TABLE users (
     token VARCHAR NOT NULL,
     gender VARCHAR,
     photo VARCHAR,
+    language VARCHAR,
     visualization VARCHAR NOT NULL DEFAULT 'Paginacion'
 );
 
