@@ -89,13 +89,13 @@ describe('StepTwoComponent', () => {
   });
 
   it('should update closingDate on date selection', () => {
-    const event = { value: new Date(2023, 8, 8) };
+    const event = { value: new Date(2025, 8, 8),target:{value:new Date(2025, 8, 8)} };
     component.onDateSelected(event);
-    expect(component.closingDate).toBe('08/09/2023');
+    expect(component.closingDate).toBe('08/09/2025');
   });
 
   it('should correctly format fechaString', () => {
-    const formattedDate = component.formatDate('2023-08-28');
-    expect(formattedDate).toBe('28/08/2023');
+    const formattedDate = component.formatDate('2025-08-28');
+    expect(formattedDate).toBe('28/08/2025');
   });
 });

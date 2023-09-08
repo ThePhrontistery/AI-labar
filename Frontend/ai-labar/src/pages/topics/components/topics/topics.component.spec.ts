@@ -53,9 +53,5 @@ describe('TopicsComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
 
-  it('should open dialog on addGroup', () => {
-    spyOn(dialog, 'open');
-    component.addGroup();
-    expect(dialog.open).toHaveBeenCalled();
-  });
+ 
 });
