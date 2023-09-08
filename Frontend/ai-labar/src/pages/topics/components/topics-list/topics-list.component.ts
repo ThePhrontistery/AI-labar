@@ -123,11 +123,13 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         'TOPICS_LIST.TOPICS_PAGE'
       );
 
-      const pageOf = this.translate.instant(
-        'TOPICS_LIST.TOPICS_PAGE_OF'
-      );
+      const pageOf = this.translate.instant('TOPICS_LIST.TOPICS_PAGE_OF');
 
-      this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+      this.matPaginatorIntl.getRangeLabel = (
+        page: number,
+        pageSize: number,
+        length: number
+      ) => {
         if (length === 0 || pageSize === 0) {
           return `0 ` + pageOf + ` ${length}`;
         }
@@ -138,7 +140,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             ? Math.min(startIndex + pageSize, length)
             : startIndex + pageSize;
         return `${startIndex + 1} - ${endIndex} ` + pageOf + ` ${length}`;
-
       };
 
       this.matPaginatorIntl.changes.next();
@@ -177,10 +178,14 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         this.closedStatusTranslation = translation;
       });
 
-      this.translate
+    this.translate
       .get('TOPICS_LIST.TOPICS_PAGE_OF')
       .subscribe((translation: string) => {
-        this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+        this.matPaginatorIntl.getRangeLabel = (
+          page: number,
+          pageSize: number,
+          length: number
+        ) => {
           if (length === 0 || pageSize === 0) {
             return `0 ` + translation + ` ${length}`;
           }
@@ -190,11 +195,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             startIndex < length
               ? Math.min(startIndex + pageSize, length)
               : startIndex + pageSize;
-          return `${startIndex + 1} - ${endIndex} ` + translation + ` ${length}`;
-
+          return (
+            `${startIndex + 1} - ${endIndex} ` + translation + ` ${length}`
+          );
         };
       });
-
   }
 
   ngOnDestroy() {
@@ -653,8 +658,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  getRangeLabel(page: number, pageSize: number, length: number){
+  getRangeLabel(page: number, pageSize: number, length: number) {
     if (length === 0 || pageSize === 0) {
       return `0 de ${length}`;
     }
@@ -664,11 +668,8 @@ export class TopicsListComponent implements OnInit, OnDestroy {
       startIndex < length
         ? Math.min(startIndex + pageSize, length)
         : startIndex + pageSize;
-    const itemsPerPageLabel = this.translate.instant(
-      'TOPICS_LIST.TOPICS_PAGE'
-    );
+    const itemsPerPageLabel = this.translate.instant('TOPICS_LIST.TOPICS_PAGE');
 
     return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} de ${length}`;
-
   }
 }
