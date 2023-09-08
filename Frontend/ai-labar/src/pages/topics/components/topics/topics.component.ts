@@ -5,6 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { GroupsComponent } from '../groups/groups.component';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/pages/language.service';
+import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 /**
  * Component for the management of topics and groups.
@@ -23,6 +25,8 @@ export class TopicsComponent implements OnInit {
   currentLanguage!: string;
   textButtonLanguage!: string;
 
+  private ngUnsubscribe = new Subject();
+
   /**
    * Constructor of the component.
    * @param cookie Service for working with cookies.
@@ -35,7 +39,8 @@ export class TopicsComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private messageService: MessageService
   ) {}
 
   /**
@@ -65,6 +70,7 @@ export class TopicsComponent implements OnInit {
     this.cookie.delete('user');
     this.cookie.delete('token');
     this.router.navigate(['login']);
+    this.languageService.setLanguage(this.languageService.getDefaultLanguage());
   }
 
   /**
@@ -78,6 +84,27 @@ export class TopicsComponent implements OnInit {
     this.languageService.toggleLanguage();
     this.currentLanguage = this.languageService.getLanguage();
     this.changeTextButtonLanguage();
+
+    /*const saveLanguageBody = {
+      language: this.currentLanguage,
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+    };
+    this.languageService
+      .saveLanguage(saveLanguageBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+
+        },
+        error: (error) => {
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_SEND_LANGUAGE') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });*/
   }
 
   changeTextButtonLanguage(){

@@ -10,11 +10,11 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="logOut()">
-        {{ "TOPIC.LOGOUT" | translate }}
-      </button>
       <button mat-menu-item (click)="toggleLanguage()">
         {{ textButtonLanguage }}
+      </button>
+      <button mat-menu-item (click)="logOut()">
+        {{ "TOPIC.LOGOUT" | translate }}
       </button>
     </mat-menu>
   </div>
