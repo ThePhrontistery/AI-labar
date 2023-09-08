@@ -171,3 +171,12 @@ td.mat-footer-cell:last-of-type {
   color: #0070ad;
   background-color: white;
 }
+
+.filters-container-xs {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 10px;
+  flex-direction: column;
+}
