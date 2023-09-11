@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { GroupsComponent } from '../groups/groups.component';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/pages/language.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MessageService } from '../../services/message.service';
@@ -41,7 +41,15 @@ export class TopicsComponent implements OnInit {
     private translate: TranslateService,
     private languageService: LanguageService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate
+      .get('LANGUAGE.CHANGE')
+      .subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
+    });
+  }
 
   /**
    * Method invoked upon initializing the component.
@@ -58,10 +66,13 @@ export class TopicsComponent implements OnInit {
     if (this.cookie.get('language') != this.currentLanguage) {
       this.languageService.toggleLanguage();
       this.currentLanguage = this.languageService.getLanguage();
-      this.changeTextButtonLanguage();
     }
 
-    this.changeTextButtonLanguage();
+    this.translate
+      .get('LANGUAGE.CHANGE')
+      .subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
   }
 
   /**
@@ -85,7 +96,7 @@ export class TopicsComponent implements OnInit {
   toggleLanguage() {
     this.languageService.toggleLanguage();
     this.currentLanguage = this.languageService.getLanguage();
-    this.changeTextButtonLanguage();
+    this.textButtonLanguage = this.translate.instant('LANGUAGE.CHANGE');
 
     const saveLanguageBody = {
       language: this.currentLanguage,
@@ -105,13 +116,5 @@ export class TopicsComponent implements OnInit {
           );
         },
       });
-  }
-
-  changeTextButtonLanguage() {
-    if (this.currentLanguage === 'EN') {
-      this.textButtonLanguage = 'Change Language: ES';
-    } else {
-      this.textButtonLanguage = 'Cambiar idioma: EN';
-    }
   }
 }
