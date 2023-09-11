@@ -75,9 +75,7 @@ export class LoginComponent implements OnInit {
     private languageService: LanguageService
   ) {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.translate
-      .get('LANGUAGE.CHANGE')
-      .subscribe((translation: string) => {
+      this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
         this.textButtonLanguage = translation;
       });
     });
@@ -92,7 +90,6 @@ export class LoginComponent implements OnInit {
 
     this.currentLanguage = this.languageService.getLanguage();
     if (this.languageService.getDefaultLanguage() != this.currentLanguage) {
-
       if (this.currentLanguage === 'ES') {
         this.languageService.setLanguage('ES');
         this.translate.use('es');
@@ -102,11 +99,9 @@ export class LoginComponent implements OnInit {
       }
     }
 
-      this.translate
-      .get('LANGUAGE.CHANGE')
-      .subscribe((translation: string) => {
-        this.textButtonLanguage = translation;
-      });
+    this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+      this.textButtonLanguage = translation;
+    });
   }
 
   /**
@@ -152,6 +147,7 @@ export class LoginComponent implements OnInit {
                 this.languageService.getDefaultLanguage()
               );
             }
+            this.crearMiniatura(response.body.entity[3], 32, 32);
 
             this.router.navigate(['/topics/topics-list']);
           }
@@ -251,7 +247,20 @@ export class LoginComponent implements OnInit {
     const file: File = ev.target.files[0];
     if (file && this.isImageFile(file)) {
       this.selectedFile = file;
-      this.convertToBase64();
+
+      if (this.selectedFile) {
+        const fileSize = this.selectedFile.size;
+        if (fileSize > 5 * 1024 * 1024) {
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_USER_IMAGE_SIZE')
+          );
+
+          this.selectedFile = null;
+          this.fileName = '';
+        } else {
+          this.convertToBase64();
+        }
+      }
     } else {
       this.selectedFile = null;
       this.base64String = '';
@@ -282,5 +291,24 @@ export class LoginComponent implements OnInit {
       };
       reader.readAsDataURL(this.selectedFile);
     }
+  }
+
+  private crearMiniatura(imagenBase64: any, ancho: number, alto: number) {
+    const canvas = document.createElement('canvas');
+    canvas.width = ancho;
+    canvas.height = alto;
+    const contexto = canvas.getContext('2d');
+    const imagen = new Image();
+    imagen.src = imagenBase64;
+
+    if (contexto === null) return;
+
+    imagen.onload = () => {
+      contexto.drawImage(imagen, 0, 0, ancho, alto);
+
+      const miniaturaBase64 = canvas.toDataURL();
+
+      this.cookie.set('photo', miniaturaBase64);
+    };
   }
 }

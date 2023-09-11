@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 export class LoginService {
   constructor(private http: HttpClient) {}
 
+  public userImage: string = '';
+
   public login(body: any): Observable<any> {
     const url = `${environment.apiUrl}/users/login`;
     return this.http.post<any>(url, body, { observe: 'response' });
@@ -16,5 +18,13 @@ export class LoginService {
   public createUser(body: any): Observable<any> {
     const url = `${environment.apiUrl}/users/createUser`;
     return this.http.post<any>(url, body, { observe: 'response' });
+  }
+
+  setUserImage(image: string) {
+    this.userImage = image;
+  }
+
+  getUserImage(): string {
+    return this.userImage;
   }
 }

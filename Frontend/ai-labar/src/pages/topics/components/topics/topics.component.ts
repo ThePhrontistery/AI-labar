@@ -7,6 +7,7 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/pages/language.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MessageService } from '../../services/message.service';
+import { LoginService } from 'src/pages/login/login.service';
 
 /**
  * Component for the management of topics and groups.
@@ -25,6 +26,9 @@ export class TopicsComponent implements OnInit {
   currentLanguage!: string;
   textButtonLanguage!: string;
 
+  userImage = this.cookie.get('photo');
+  userImageIsNull: boolean = true;
+
   private ngUnsubscribe = new Subject();
 
   /**
@@ -40,7 +44,8 @@ export class TopicsComponent implements OnInit {
     private dialog: MatDialog,
     private translate: TranslateService,
     private languageService: LanguageService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private loginService: LoginService
   ) {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.translate
@@ -73,6 +78,10 @@ export class TopicsComponent implements OnInit {
       .subscribe((translation: string) => {
         this.textButtonLanguage = translation;
       });
+
+    if (this.userImage != "null"){
+      this.userImageIsNull = false;
+    }
   }
 
   /**
