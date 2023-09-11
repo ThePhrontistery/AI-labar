@@ -155,7 +155,8 @@
     "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
     "REPEATED_OPTIONS":"No pueden haber opciones repetidas.",
     "CLOSE_BUTTON": "Cerrar",
-    "ERROR_SEND_LANGUAGE": "No se ha podido guardar el idioma"
+    "ERROR_SEND_LANGUAGE": "No se ha podido guardar el idioma",
+    "ERROR_USER_IMAGE_SIZE": "La imagen es demasiado grande. El tamaño máximo permitido es de 5MB."
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selección enviada con éxito"
