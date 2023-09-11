@@ -41,6 +41,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
         loginData.add(usersEntity.getToken());
         loginData.add(usersEntity.getVisualization());
         loginData.add(usersEntity.getLanguage());
+        loginData.add(usersEntity.getPhoto());
 
         return loginData;
     }
