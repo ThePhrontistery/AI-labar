@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'src/pages/topics/services/message.service';
 import { LanguageService } from 'src/pages/language.service';
 
@@ -73,7 +73,15 @@ export class LoginComponent implements OnInit {
     private translate: TranslateService,
     private messageService: MessageService,
     private languageService: LanguageService
-  ) {}
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate
+      .get('LANGUAGE.CHANGE')
+      .subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
+    });
+  }
 
   /**
    * Method that is executed when the component is initialized.
@@ -86,8 +94,11 @@ export class LoginComponent implements OnInit {
     if (this.languageService.getDefaultLanguage() != this.currentLanguage) {
       this.translate.use(this.currentLanguage);
     }
-
-    this.changeTextButtonLanguage();
+      this.translate
+      .get('LANGUAGE.CHANGE')
+      .subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
   }
 
   /**
@@ -128,7 +139,10 @@ export class LoginComponent implements OnInit {
             if (response.body.entity[2]) {
               this.cookie.set('language', response.body.entity[2]);
             } else {
-              this.cookie.set('language', this.languageService.getDefaultLanguage());
+              this.cookie.set(
+                'language',
+                this.languageService.getDefaultLanguage()
+              );
             }
 
             this.router.navigate(['/topics/topics-list']);
@@ -246,15 +260,7 @@ export class LoginComponent implements OnInit {
   toggleLanguage() {
     this.languageService.toggleLanguage();
     this.currentLanguage = this.languageService.getLanguage();
-    this.changeTextButtonLanguage();
-  }
-
-  changeTextButtonLanguage() {
-    if (this.currentLanguage === 'EN') {
-      this.textButtonLanguage = 'Change Language: ES';
-    } else {
-      this.textButtonLanguage = 'Cambiar idioma: EN';
-    }
+    this.textButtonLanguage = this.translate.instant('LANGUAGE.CHANGE');
   }
 
   /**

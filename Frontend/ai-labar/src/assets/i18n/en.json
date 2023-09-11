@@ -138,6 +138,9 @@
   "RATING_RESULT": {
     "CLOSE": "Close"
   },
+  "LANGUAGE": {
+    "CHANGE": "Change Language: ES"
+  },
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error creating user",
     "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
