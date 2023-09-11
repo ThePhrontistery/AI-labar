@@ -18,7 +18,7 @@ import { MessageService } from '../../services/message.service';
 })
 export class TopicsCreateComponent implements OnInit, OnDestroy {
   @ViewChild(StepTwoComponent)
-  childComponent: StepTwoComponent = new StepTwoComponent(this.dialog);
+  childComponent: StepTwoComponent = new StepTwoComponent(this.dialog,this.translate,this.messageService);
 
   currentStep = 1;
   sharedData: any = {};
@@ -170,7 +170,7 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
   }
 
   repeated(): boolean {
-    const optionsViews = new Set(); 
+    const optionsViews = new Set();
 
     for (const item of this.surveyOptions) {
       const option = item.option;
