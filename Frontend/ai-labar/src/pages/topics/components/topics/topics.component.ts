@@ -48,9 +48,7 @@ export class TopicsComponent implements OnInit {
     private loginService: LoginService
   ) {
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.translate
-      .get('LANGUAGE.CHANGE')
-      .subscribe((translation: string) => {
+      this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
         this.textButtonLanguage = translation;
       });
     });
@@ -73,13 +71,10 @@ export class TopicsComponent implements OnInit {
       this.currentLanguage = this.languageService.getLanguage();
     }
 
-    this.translate
-      .get('LANGUAGE.CHANGE')
-      .subscribe((translation: string) => {
-        this.textButtonLanguage = translation;
-      });
-
-    if (this.userImage != "null"){
+    this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+      this.textButtonLanguage = translation;
+    });
+    if (this.userImage != '') {
       this.userImageIsNull = false;
     }
   }
