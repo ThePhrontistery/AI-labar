@@ -55,8 +55,10 @@ export class TopicsComponent implements OnInit {
     this.translate.setDefaultLang('en');
 
     this.currentLanguage = this.languageService.getLanguage();
-    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
-      this.translate.use(this.currentLanguage);
+    if (this.cookie.get('language') != this.currentLanguage) {
+      this.languageService.toggleLanguage();
+      this.currentLanguage = this.languageService.getLanguage();
+      this.changeTextButtonLanguage();
     }
 
     this.changeTextButtonLanguage();
@@ -85,7 +87,7 @@ export class TopicsComponent implements OnInit {
     this.currentLanguage = this.languageService.getLanguage();
     this.changeTextButtonLanguage();
 
-    /*const saveLanguageBody = {
+    const saveLanguageBody = {
       language: this.currentLanguage,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
@@ -94,9 +96,7 @@ export class TopicsComponent implements OnInit {
       .saveLanguage(saveLanguageBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: (response) => {
-
-        },
+        next: (response) => {},
         error: (error) => {
           this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.ERROR_SEND_LANGUAGE') +
@@ -104,14 +104,14 @@ export class TopicsComponent implements OnInit {
               error.error.message
           );
         },
-      });*/
+      });
   }
 
-  changeTextButtonLanguage(){
-    if (this.currentLanguage === 'EN'){
-      this.textButtonLanguage = 'ES';
-    }else {
-      this.textButtonLanguage = 'EN';
+  changeTextButtonLanguage() {
+    if (this.currentLanguage === 'EN') {
+      this.textButtonLanguage = 'Change Language: ES';
+    } else {
+      this.textButtonLanguage = 'Cambiar idioma: EN';
     }
   }
 }

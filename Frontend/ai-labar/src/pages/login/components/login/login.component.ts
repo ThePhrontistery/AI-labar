@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
     this.translate.setDefaultLang('en');
 
     this.currentLanguage = this.languageService.getLanguage();
-    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
+    if (this.languageService.getDefaultLanguage() != this.currentLanguage) {
       this.translate.use(this.currentLanguage);
     }
 
@@ -114,8 +114,7 @@ export class LoginComponent implements OnInit {
     this.username = this.loginForm.value.user;
     // Making the login request and handling the response
     this.mySubscription.push(
-      this.loginService.login(body)
-      .subscribe({
+      this.loginService.login(body).subscribe({
         next: (response) => {
           if (
             response &&
@@ -126,13 +125,19 @@ export class LoginComponent implements OnInit {
             this.cookie.set('user', this.username);
             this.cookie.set('token', response.body.entity[0]);
             this.cookie.set('visualization', response.body.entity[1]);
+            if (response.body.entity[2]) {
+              this.cookie.set('language', response.body.entity[2]);
+            } else {
+              this.cookie.set('language', this.languageService.getDefaultLanguage());
+            }
+
             this.router.navigate(['/topics/topics-list']);
           }
         },
         error: (error) => {
           this.messageService.showErrorMessage(error.error.message);
-        }}
-      )
+        },
+      })
     );
   }
 
@@ -244,11 +249,11 @@ export class LoginComponent implements OnInit {
     this.changeTextButtonLanguage();
   }
 
-  changeTextButtonLanguage(){
-    if (this.currentLanguage === 'EN'){
-      this.textButtonLanguage = 'Idioma: ES';
-    }else {
-      this.textButtonLanguage = 'Language: EN';
+  changeTextButtonLanguage() {
+    if (this.currentLanguage === 'EN') {
+      this.textButtonLanguage = 'Change Language: ES';
+    } else {
+      this.textButtonLanguage = 'Cambiar idioma: EN';
     }
   }
 
