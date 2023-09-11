@@ -37,7 +37,7 @@ export class LanguageService {
   }
 
   public saveLanguage(body: any): Observable<any> {
-    const url = `${environment.apiUrl}/users/createUser`;
-    return this.http.post<any>(url, body, { observe: 'response' });
+    const url = `${environment.apiUrl}/users/editLanguage`;
+    return this.http.put<any>(url, body, { observe: 'response' });
   }
 }
