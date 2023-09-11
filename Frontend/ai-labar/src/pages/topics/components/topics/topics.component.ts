@@ -92,6 +92,7 @@ export class TopicsComponent implements OnInit {
     this.cookie.delete('user');
     this.cookie.delete('token');
     this.cookie.delete('language');
+    this.cookie.delete('photo');
     this.router.navigate(['login']);
   }
 
