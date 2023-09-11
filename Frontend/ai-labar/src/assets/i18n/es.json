@@ -151,7 +151,8 @@
     "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
     "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
     "REPEATED_OPTIONS":"No pueden haber opciones repetidas.",
-    "CLOSE_BUTTON": "Cerrar"
+    "CLOSE_BUTTON": "Cerrar",
+    "ERROR_SEND_LANGUAGE": "No se ha podido guardar el idioma"
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selección enviada con éxito"
