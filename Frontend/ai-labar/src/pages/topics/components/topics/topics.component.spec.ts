@@ -8,6 +8,7 @@ import { TopicsComponent } from './topics.component';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('TopicsComponent', () => {
   let component: TopicsComponent;
@@ -22,9 +23,12 @@ describe('TopicsComponent', () => {
         RouterTestingModule.withRoutes([]),
         MatDialogModule,
         MatMenuModule,
-        MatIconModule,HttpClientTestingModule, TranslateModule.forRoot()
+        MatIconModule,
+        HttpClientTestingModule,
+        MatSnackBarModule,
+        TranslateModule.forRoot(),
       ],
-      providers: [TranslateService,CookieService, MatDialog],
+      providers: [TranslateService, CookieService, MatDialog],
     }).compileComponents();
   });
 
@@ -52,6 +56,4 @@ describe('TopicsComponent', () => {
     component.logOut();
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
-
- 
 });
