@@ -82,8 +82,8 @@ export class TopicsComponent implements OnInit {
   logOut() {
     this.cookie.delete('user');
     this.cookie.delete('token');
+    this.cookie.delete('language');
     this.router.navigate(['login']);
-    this.languageService.setLanguage(this.languageService.getDefaultLanguage());
   }
 
   /**
