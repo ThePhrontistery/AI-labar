@@ -92,8 +92,16 @@ export class LoginComponent implements OnInit {
 
     this.currentLanguage = this.languageService.getLanguage();
     if (this.languageService.getDefaultLanguage() != this.currentLanguage) {
-      this.translate.use(this.currentLanguage);
+
+      if (this.currentLanguage === 'ES') {
+        this.languageService.setLanguage('ES');
+        this.translate.use('es');
+      } else {
+        this.languageService.setLanguage('EN');
+        this.translate.use('en');
+      }
     }
+
       this.translate
       .get('LANGUAGE.CHANGE')
       .subscribe((translation: string) => {

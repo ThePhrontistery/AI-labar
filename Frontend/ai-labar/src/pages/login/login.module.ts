@@ -21,7 +21,7 @@ import { LanguageService } from '../language.service';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 @NgModule({
   declarations: [LoginComponent],
@@ -39,7 +39,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        useFactory: (HttpLoaderFactory),
         deps: [HttpClient]
       }
     }),
