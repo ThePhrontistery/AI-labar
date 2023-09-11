@@ -182,7 +182,7 @@ export class LoginComponent implements OnInit {
         data['photo'] = this.base64String !== '' ? this.base64String : '';
       }
 
-      //data['language'] = this.currentLanguage;
+      data['language'] = this.currentLanguage;
 
       // Remove unnecessary properties before sending
       delete data.imageFunctional;
