@@ -28,6 +28,8 @@ public class UsersEntity {
     private String token;
     @Column(name = "visualization")
     private String visualization;
+    @Column(name = "language")
+    private String language;
 
     public UsersEntity() {}
 
@@ -38,5 +40,6 @@ public class UsersEntity {
         this.gender = usersModel.getGender();
         this.photo = usersModel.getPhoto();
         this.visualization = "Paginacion";
+        this.language=usersModel.getLanguage();
     }
 }

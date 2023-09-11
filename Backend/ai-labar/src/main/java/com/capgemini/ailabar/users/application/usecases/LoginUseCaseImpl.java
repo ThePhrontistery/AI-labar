@@ -40,6 +40,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
         List<String> loginData = new ArrayList<>();
         loginData.add(usersEntity.getToken());
         loginData.add(usersEntity.getVisualization());
+        loginData.add(usersEntity.getLanguage());
 
         return loginData;
     }

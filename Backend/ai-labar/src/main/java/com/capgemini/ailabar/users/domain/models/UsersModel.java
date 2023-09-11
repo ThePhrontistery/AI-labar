@@ -15,6 +15,7 @@ public class UsersModel {
     private String photo;
     private String token;
     private String visualization;
+    private String language;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer page;
     @JsonInclude(JsonInclude.Include.NON_NULL)

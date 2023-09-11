@@ -1,8 +1,8 @@
 package com.capgemini.ailabar.users.application.usecases;
 
-import com.capgemini.ailabar.users.domain.exceptions.EditVisualizationException;
+import com.capgemini.ailabar.users.domain.exceptions.EditLanguageException;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
-import com.capgemini.ailabar.users.domain.ports.in.EditVisualizationUseCase;
+import com.capgemini.ailabar.users.domain.ports.in.EditLanguageUseCase;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
@@ -10,26 +10,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class EditVisualizationUseCaseImpl implements EditVisualizationUseCase {
+public class EditLanguageUseCaseImpl implements EditLanguageUseCase {
     private final UsersRepositoryPort usersRepositoryPort;
 
-    public EditVisualizationUseCaseImpl(UsersRepositoryPort usersRepositoryPort) {
+    public EditLanguageUseCaseImpl(UsersRepositoryPort usersRepositoryPort) {
         this.usersRepositoryPort = usersRepositoryPort;
     }
 
     @Override
-    public void editVisualization(UsersModel usersModel) {
-        if(usersModel.getUser().isBlank() || usersModel.getToken().isBlank() || usersModel.getVisualization().isBlank()) {
-            throw new EditVisualizationException("User name, visualization and token are required");
+    public void editLanguage(UsersModel usersModel) {
+        if(usersModel.getUser().isBlank() || usersModel.getToken().isBlank() || usersModel.getLanguage().isBlank()) {
+            throw new EditLanguageException("User name, language and token are required");
         }
 
         if(Boolean.FALSE.equals(usersRepositoryPort.checkAuthorization(usersModel.getUser(), usersModel.getToken()))) {
-            throw new EditVisualizationException("Unauthorized user");
+            throw new EditLanguageException("Unauthorized user");
         }
 
         UsersEntity userEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
 
-        userEntity.setVisualization(usersModel.getVisualization());
+        userEntity.setLanguage(usersModel.getLanguage());
 
         usersRepositoryPort.editUser(userEntity);
     }
