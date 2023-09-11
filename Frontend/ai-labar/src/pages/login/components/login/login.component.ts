@@ -147,7 +147,7 @@ export class LoginComponent implements OnInit {
                 this.languageService.getDefaultLanguage()
               );
             }
-            this.crearMiniatura(response.body.entity[3], 32, 32);
+            this.createThumbnailImage(response.body.entity[3], 32, 32);
 
             this.router.navigate(['/topics/topics-list']);
           }
@@ -293,22 +293,26 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private crearMiniatura(imagenBase64: any, ancho: number, alto: number) {
+  private createThumbnailImage(
+    imageBase64: any,
+    width: number,
+    height: number
+  ) {
     const canvas = document.createElement('canvas');
-    canvas.width = ancho;
-    canvas.height = alto;
-    const contexto = canvas.getContext('2d');
-    const imagen = new Image();
-    imagen.src = imagenBase64;
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    const image = new Image();
+    image.src = imageBase64;
 
-    if (contexto === null) return;
+    if (context === null) return;
 
-    imagen.onload = () => {
-      contexto.drawImage(imagen, 0, 0, ancho, alto);
+    image.onload = () => {
+      context.drawImage(image, 0, 0, width, height);
 
-      const miniaturaBase64 = canvas.toDataURL();
+      const thumbnailBase64 = canvas.toDataURL();
 
-      this.cookie.set('photo', miniaturaBase64);
+      this.cookie.set('photo', thumbnailBase64);
     };
   }
 }
