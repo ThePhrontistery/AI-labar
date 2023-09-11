@@ -128,7 +128,7 @@ export class LoginComponent implements OnInit {
             if (response.body.entity[2]) {
               this.cookie.set('language', response.body.entity[2]);
             } else {
-              this.cookie.set('language', 'EN');
+              this.cookie.set('language', this.languageService.getDefaultLanguage());
             }
 
             this.router.navigate(['/topics/topics-list']);
