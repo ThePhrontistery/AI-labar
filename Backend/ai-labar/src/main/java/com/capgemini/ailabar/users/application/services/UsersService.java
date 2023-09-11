@@ -9,26 +9,29 @@ import java.util.List;
 
 @Service
 public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUseCase, DeleteUserUseCase,
-        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase {
+        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase,EditLanguageUseCase {
     private final LoginUseCase loginUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final EditUserUseCase editUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final GetUsersByMatchUseCase getUsersByMatch;
     private final EditVisualizationUseCase editVisualizationUseCase;
+    private final EditLanguageUseCase editLanguageUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUsersDatabaseUseCase getUsersDatabaseUseCase;
 
     public UsersService(LoginUseCase loginUseCase, CreateUserUseCase createUserUseCase,
                         EditUserUseCase editUserUseCase, DeleteUserUseCase deleteUserUseCase,
                         GetUsersByMatchUseCase getUsersByMatch, EditVisualizationUseCase editVisualizationUseCase,
-                        GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase) {
+                        GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase ,
+                        EditLanguageUseCase editLanguageUseCase) {
         this.loginUseCase = loginUseCase;
         this.createUserUseCase = createUserUseCase;
         this.editUserUseCase = editUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
         this.getUsersByMatch = getUsersByMatch;
         this.editVisualizationUseCase = editVisualizationUseCase;
+        this.editLanguageUseCase = editLanguageUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.getUsersDatabaseUseCase = getUsersDatabaseUseCase;
     }
@@ -65,6 +68,15 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
             editVisualizationUseCase.editVisualization(usersModel);
         } catch (EditVisualizationException editVisualizationException) {
             throw editVisualizationException;
+        }
+    }
+
+    @Override
+    public void editLanguage(UsersModel usersModel) {
+        try {
+            editLanguageUseCase.editLanguage(usersModel);
+        } catch (EditLanguageException editLanguageException) {
+            throw editLanguageException;
         }
     }
 

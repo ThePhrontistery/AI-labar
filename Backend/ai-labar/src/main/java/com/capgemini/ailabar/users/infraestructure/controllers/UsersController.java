@@ -82,6 +82,17 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
+     * MODIFIES THE PREFERRED TOPIC LANGUAGE TYPE FOR THE USER
+     */
+    @PutMapping("/editLanguage")
+    public ResponseEntity<SpecialResponse> editLanguage(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.editLanguage(usersModel);
+        responseJson.put("message", "Language edited successfully");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    /*
      * DELETES A USER FROM THE DATABASE:
      * 1. Deletes both the user and their existence in any groups they are assigned to.
      * 2. The user and the token are essential for any action within the application.
