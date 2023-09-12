@@ -46,6 +46,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSnackBarModule,
     MatDialogModule
   ],
-  providers: [LoginService, CookieService,MessageService, TranslateService, LanguageService ], // Agrega LoginService como proveedor
+  providers: [LoginService, CookieService,MessageService, TranslateService, LanguageService ],
 })
 export class LoginModule {}
