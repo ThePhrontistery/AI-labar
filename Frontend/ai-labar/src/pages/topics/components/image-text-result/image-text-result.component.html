@@ -1,9 +1,16 @@
-<h1>{{ data.votation.title }}</h1>
-<div *ngFor="let fact of result" class="fact">
-  <span class="option bold">{{ "(" + fact.votes + ")" }}</span>
-  <img [src]="fact.image" width="40%" height="auto" alt="Image" />
-  <span class="bold">{{ fact.option }}</span>
+<div class="modal-content">
+  <h1 class="votation-title">{{ data.votation.title }}</h1>
+  <div *ngFor="let fact of result" class="fact">
+    <span class="option bold">{{ "(" + fact.votes + ")" }}</span>
+    <img [src]="fact.image" width="40%" height="auto" alt="Image" />
+    <span class="bold">{{ fact.option }}</span>
+  </div>
+  <button
+    class="rightButton"
+    mat-button
+    color="accent"
+    [mat-dialog-close]="true"
+  >
+    {{ "IMAGE_TEXT_RESULT.CLOSE" | translate }}
+  </button>
 </div>
-<button class="rightButton" mat-button color="accent" [mat-dialog-close]="true">
-  {{ 'IMAGE_TEXT_RESULT.CLOSE' | translate }}
-</button>
