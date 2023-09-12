@@ -147,9 +147,9 @@ export class LoginComponent implements OnInit {
                 this.languageService.getDefaultLanguage()
               );
             }
-            this.createThumbnailImage(response.body.entity[3], 32, 32);
-
-            this.router.navigate(['/topics/topics-list']);
+            if (response.body.entity[3]) {
+              this.createThumbnailImage(response.body.entity[3], 32, 32);
+            }
           }
         },
         error: (error) => {
@@ -311,8 +311,13 @@ export class LoginComponent implements OnInit {
       context.drawImage(image, 0, 0, width, height);
 
       const thumbnailBase64 = canvas.toDataURL();
-
       this.cookie.set('photo', thumbnailBase64);
+
+      this.showContent();
     };
+  }
+
+  private showContent() {
+    this.router.navigate(['/topics/topics-list']);
   }
 }
