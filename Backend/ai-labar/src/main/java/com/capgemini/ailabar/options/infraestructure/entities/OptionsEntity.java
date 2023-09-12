@@ -19,7 +19,7 @@ public class OptionsEntity {
     private TopicsEntity topic;
     @Column(name = "image")
     private String image;
-    @Column(name = "option")
+    @Column(name = "topic_option")
     private String option;
     @Column(name = "votes")
     private Integer votes;

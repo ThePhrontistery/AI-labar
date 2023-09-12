@@ -100,11 +100,11 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     void insertMember(@Param("groupId") Integer groupId, @Param("userId") Integer userId);
 
     @Modifying
-    @Query(value = "INSERT INTO options (topic_id, option, votes) VALUES (:topicId, :option, :votes)", nativeQuery = true)
+    @Query(value = "INSERT INTO options (topic_id, topic_option, votes) VALUES (:topicId, :option, :votes)", nativeQuery = true)
     void insertOption(@Param("topicId") Integer topicId, @Param("option") String option, @Param("votes") Integer votes);
 
     @Modifying
-    @Query(value = "INSERT INTO options (topic_id, image, option, votes) VALUES (:topicId, :image, :option, :votes)", nativeQuery = true)
+    @Query(value = "INSERT INTO options (topic_id, image, topic_option, votes) VALUES (:topicId, :image, :option, :votes)", nativeQuery = true)
     void insertOption(@Param("topicId") Integer topicId, @Param("image") String image, @Param("option") String option, @Param("votes") Integer votes);
 
     @Query(value = "SELECT * FROM topics " +
