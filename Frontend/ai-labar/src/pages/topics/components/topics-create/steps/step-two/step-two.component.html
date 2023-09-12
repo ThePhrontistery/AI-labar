@@ -10,6 +10,7 @@
       type="text"
       [(ngModel)]="textBoxValue"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="50"
     />
   </div>
 
@@ -44,24 +45,28 @@
       type="text"
       [(ngModel)]="surveyValue1"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue2"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue3"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue4"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
   </div>
 
@@ -86,6 +91,7 @@
       type="text"
       [(ngModel)]="imageTextValue1"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <label class="custom-file-upload">
       <input
@@ -98,12 +104,13 @@
     </label>
     <input
       type="text"[value]="imageName[1]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue2"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <label class="custom-file-upload">
       <input
@@ -116,12 +123,13 @@
     </label>
     <input
       type="text"[value]="imageName[2]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue3"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <label class="custom-file-upload">
       <input
@@ -134,12 +142,13 @@
     </label>
     <input
       type="text"[value]="imageName[3]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue4"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
     />
     <label class="custom-file-upload">
       <input
@@ -152,7 +161,7 @@
     </label>
     <input
       type="text"[value]="imageName[4]" readonly class="imageName"
-    /> 
+    />
   </div>
 
   <div>
