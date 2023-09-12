@@ -77,9 +77,10 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     @Query("SELECT o FROM OptionsEntity o WHERE o.topic.id = :topicId order by o.votes desc")
     List<OptionsEntity> getOptions(@Param("topicId") Integer topicId);
 
-    @Query("SELECT t.id FROM TopicsEntity t WHERE t.title = :topicTitle")
+    @Query("SELECT t.id FROM TopicsEntity t WHERE t.title = :topicTitle ")
     Integer getTopicIdByTopicName(@Param("topicTitle") String topicTitle);
-
+    @Query("SELECT t.id FROM TopicsEntity t WHERE t.title = :title AND t.author = :user")
+    Integer getTopicIdByTitleAndAuthor(@Param("title") String title, @Param("user") String user);
     @Query("SELECT t FROM TopicsEntity t WHERE t.id = :id")
     TopicsEntity getTopicsEntityById(@Param("id") Integer id);
 

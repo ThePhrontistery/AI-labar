@@ -125,7 +125,10 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     public Integer getTopicIdByTopicName(String topicTitle) {
         return topicsRepository.getTopicIdByTopicName(topicTitle);
     }
-
+    @Override
+    public Integer getTopicIdByTitleAndAuthor(String topicTitle,String user) {
+        return topicsRepository.getTopicIdByTitleAndAuthor(topicTitle,user);
+    }
     @Override
     public List<TopicsEntity> getTopicsDatabase() {
         return topicsRepository.findAll();
