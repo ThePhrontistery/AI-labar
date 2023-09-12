@@ -51,7 +51,7 @@ public interface TopicsRepositoryPort {
     List<OptionsEntity> getOptions(Integer topicId);
 
     Integer getTopicIdByTopicName(String topicTitle);
-
+    Integer getTopicIdByTitleAndAuthor(String title, String user);
     List<TopicsEntity> getTopicsDatabase();
 
     TopicsEntity getTopicsEntityById(Integer id);

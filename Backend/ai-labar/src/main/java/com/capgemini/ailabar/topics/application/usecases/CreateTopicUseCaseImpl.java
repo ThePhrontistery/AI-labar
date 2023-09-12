@@ -71,7 +71,7 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
 
         manageMailService();
 
-        manageOptions(topicsRepositoryPort.getTopicIdByTopicName(topicsEntity.getTitle()));
+        manageOptions(topicsRepositoryPort.getTopicIdByTitleAndAuthor(topicsEntity.getTitle(),topicsEntity.getAuthor()));
     }
 
     private void checkValues() {
