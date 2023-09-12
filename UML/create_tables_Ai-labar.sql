@@ -19,7 +19,7 @@ CREATE TABLE options (
     id SERIAL PRIMARY KEY,
     topic_id INTEGER NOT NULL,
     image VARCHAR,
-    option VARCHAR NOT NULL,
+    topic_option VARCHAR NOT NULL,
     votes INTEGER NOT NULL
 );
 
