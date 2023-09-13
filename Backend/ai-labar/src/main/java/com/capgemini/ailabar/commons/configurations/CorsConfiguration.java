@@ -20,13 +20,10 @@ public class CorsConfiguration implements WebMvcConfigurer {
     @Value("${allowed.origins}")
     private String allowedOrigins;
 
-    @Value("${allowed.port}")
-    private String allowedPort;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String allowedOrigin = allowedOrigins + ":" + allowedPort;
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigin)
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 
