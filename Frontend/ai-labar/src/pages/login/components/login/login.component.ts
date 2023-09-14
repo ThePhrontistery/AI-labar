@@ -149,7 +149,7 @@ export class LoginComponent implements OnInit {
             }
             if (response.body.entity[3]) {
               this.createThumbnailImage(response.body.entity[3], 32, 32);
-            }else{
+            } else {
               this.showContent();
             }
           }
@@ -295,30 +295,46 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /**
+   * Create a thumbnail image from a base64 representation of an image.
+   *
+   * @param {string} imageBase64 - The base64 representation of the image.
+   * @param {number} width - Desired width of the thumbnail image.
+   * @param {number} height - Desired height of the thumbnail image.
+   */
   private createThumbnailImage(
-    imageBase64: any,
+    imageBase64: string,
     width: number,
     height: number
   ) {
+    // Create a canvas to draw the thumbnail image on.
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext('2d');
+
+    // Create a new instance of Image and set the source as the base64 image.
     const image = new Image();
     image.src = imageBase64;
 
+    // Check if the canvas context has been successfully created.
     if (context === null) return;
 
+    // When the image is successfully loaded, it draws the image on the canvas and obtains the base64 representation of the thumbnail image.
     image.onload = () => {
       context.drawImage(image, 0, 0, width, height);
 
-      const thumbnailBase64 = canvas.toDataURL();
-      this.cookie.set('photo', thumbnailBase64);
+      // Converts the thumbnail image to base64 and stores it in a cookie named 'photo'.
+      this.cookie.set('photo', canvas.toDataURL());
 
+      // Display the content after creating the thumbnail image.
       this.showContent();
     };
   }
 
+  /**
+   * Navigate to the topic list view after displaying the content.
+   */
   private showContent() {
     this.router.navigate(['/topics/topics-list']);
   }

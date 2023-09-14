@@ -50,15 +50,12 @@ export class RatingResultComponent implements OnInit {
       this.topicListService.post(resultData, url).subscribe((response) => {
         if (response) {
           this.emojisVotation = [];
-          response.entity.sort((a : any, b : any) => { 
+          response.entity.sort((a: any, b: any) => {
             const optionA = parseInt(a.option);
-            const optionB = parseInt(b.option);            
+            const optionB = parseInt(b.option);
             return optionA - optionB;
           });
           for (let i = 0; i < response.entity.length; i++) {
-           /* response.entity[i]['emoji'] = this.emojis.filter(
-              (obj) => obj.id.toString() === response.entity[i].option.toString()
-            );*/
             response.entity[i]['emoji'] = this.emojis[i];
             this.optionsVoted = response.entity;
           }

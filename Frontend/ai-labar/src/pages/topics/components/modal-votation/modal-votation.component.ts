@@ -151,11 +151,21 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Handles the selection of images/text items.
+   *
+   * @param {any} item - The item to be selected or deselected.
+   * @param {any} event - The event object triggered by the selection action.
+   */
   selectImagesText(item: any, event: any): void {
     if (event.target.checked) {
+      // Add the selected item's text to the voteSurvey array.
       this.voteSurvey.push(item.text);
+
+      // Emit an event indicating the item change.
       this.onItemChange.emit(item.text);
     } else {
+      // If the item is deselected, remove it from the voteSurvey array.
       const index = this.voteSurvey.indexOf(item.text);
       if (index !== -1) {
         this.voteSurvey.splice(index, 1);
@@ -179,7 +189,9 @@ export class ModalVotationComponent implements OnChanges, OnDestroy {
       .subscribe({
         next: (response) => {
           this.closeModal(true);
-          this.messageService.showSuccessMessage(this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION'));
+          this.messageService.showSuccessMessage(
+            this.translate.instant('OK_MESSAGES.OK_SEND_SELECTION')
+          );
         },
         error: (error) => {
           this.messageService.showErrorMessage(
