@@ -658,18 +658,34 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  getRangeLabel(page: number, pageSize: number, length: number) {
+  /**
+   * Generates a label for displaying the range of items shown on a page within a paginated list.
+   *
+   * @param {number} page - The current page number (0-based index).
+   * @param {number} pageSize - The number of items displayed per page.
+   * @param {number} length - The total number of items in the list.
+   * @returns {string} A label indicating the range of items displayed on the current page.
+   */
+  getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0 || pageSize === 0) {
-      return `0 de ${length}`;
+      // Return a label indicating no items if the length or pageSize is 0.
+      return `0 of ${length}`;
     }
+
+    // Ensure the length is non-negative.
     length = Math.max(length, 0);
+
+    // Calculate the start and end index for the current page.
     const startIndex = page * pageSize;
     const endIndex =
       startIndex < length
         ? Math.min(startIndex + pageSize, length)
         : startIndex + pageSize;
+
+    // Retrieve the label for items per page.
     const itemsPerPageLabel = this.translate.instant('TOPICS_LIST.TOPICS_PAGE');
 
-    return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} de ${length}`;
+    // Construct and return the range label.
+    return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} of ${length}`;
   }
 }

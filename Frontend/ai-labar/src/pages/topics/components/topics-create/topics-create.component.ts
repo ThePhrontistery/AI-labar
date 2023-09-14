@@ -18,7 +18,11 @@ import { MessageService } from '../../services/message.service';
 })
 export class TopicsCreateComponent implements OnInit, OnDestroy {
   @ViewChild(StepTwoComponent)
-  childComponent: StepTwoComponent = new StepTwoComponent(this.dialog,this.translate,this.messageService);
+  childComponent: StepTwoComponent = new StepTwoComponent(
+    this.dialog,
+    this.translate,
+    this.messageService
+  );
 
   currentStep = 1;
   sharedData: any = {};
@@ -45,13 +49,13 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private translate: TranslateService,
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.complete();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   /**
    * Move to the next step in survey creation.
@@ -161,29 +165,45 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
     if (this.childComponent.users.length > 0) {
       this.members = this.childComponent.users;
       this.groupSelectedParticipants = this.childComponent.selectedGroup;
-    }else{
-      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.ERROR_NO_PARTICIPANTS'));
+    } else {
+      this.messageService.showErrorMessage(
+        this.translate.instant('ERROR_MESSAGES.ERROR_NO_PARTICIPANTS')
+      );
       return;
     }
     if (this.repeated()) {
-      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.REPEATED_OPTIONS'));
+      this.messageService.showErrorMessage(
+        this.translate.instant('ERROR_MESSAGES.REPEATED_OPTIONS')
+      );
     } else {
       this.createTopics();
     }
   }
 
+  /**
+   * Checks if there are repeated options within the surveyOptions array.
+   *
+   * @returns {boolean} True if there are repeated options, otherwise false.
+   */
   repeated(): boolean {
+    // Create a Set to store unique option values.
     const optionsViews = new Set();
 
+    // Iterate through the surveyOptions array.
     for (const item of this.surveyOptions) {
       const option = item.option;
+
+      // If the option is already in the Set, it's a repeated option, so return true.
       if (optionsViews.has(option)) {
         return true;
       } else {
+        // Otherwise, add the option to the Set to track it as a seen option.
         optionsViews.add(option);
       }
     }
-     return false;
+
+    // If no repeated options were found, return false.
+    return false;
   }
 
   /**
@@ -193,11 +213,15 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
   valuesValidation(): boolean {
     const isValid = true;
     if (!this.childComponent.closingDate) {
-      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.EMPTY_CLOSING_DATE'));
+      this.messageService.showErrorMessage(
+        this.translate.instant('ERROR_MESSAGES.EMPTY_CLOSING_DATE')
+      );
       return false;
     }
     if (!this.surveyTitle) {
-      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.EMPTY_TITLE'));
+      this.messageService.showErrorMessage(
+        this.translate.instant('ERROR_MESSAGES.EMPTY_TITLE')
+      );
       return false;
     }
     return isValid;
@@ -218,19 +242,25 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
         closeDate: this.childComponent.closingDate,
         token: this.cookie.get('token'),
       };
-      this.topicsCreateService.createTopics(createTopicsBody)
+      this.topicsCreateService
+        .createTopics(createTopicsBody)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe({
-          next: response => {
+          next: (response) => {
             if (response) {
               this.router.navigate(['/topics/topics-list']);
             }
           },
-          error: error => {
+          error: (error) => {
             let textError = error.error.message;
-            if (error.error.message === undefined) textError = error.error.error;
-            this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') + '\n' + error.error.message);
-          }
+            if (error.error.message === undefined)
+              textError = error.error.error;
+            this.messageService.showErrorMessage(
+              this.translate.instant('ERROR_MESSAGES.TOPIC_CREATE_ERROR') +
+                '\n' +
+                error.error.message
+            );
+          },
         });
     }
   }
