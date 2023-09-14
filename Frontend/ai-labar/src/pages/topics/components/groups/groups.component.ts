@@ -61,7 +61,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   // Whether to show the selected users
   showSelected: boolean = false;
-
+  private searchTimer: any;
   // Reference to the checkbox container element
   @ViewChild('checkboxContainer')
   checkboxContainer!: ElementRef;
@@ -84,7 +84,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Initialize the component
-    this.getUsers();
+    //this.getUsers();
   }
 
   /**
@@ -110,6 +110,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
    * Loads the user list into the form and sets up FormControl listeners.
    */
   loadForm() {
+    this.users = [];
     this.usersNames.map((item) => {
       let user = {
         name: item,
@@ -134,10 +135,16 @@ export class GroupsComponent implements OnInit, OnDestroy {
   filterUsers(): void {
     this.filtering = true;
     this.users = [];
-    let search = this.groupsForm.value.searcher.toLowerCase();
+    let search = this.groupsForm.value.searcher.toUpperCase();
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
     if (search.length >= 3) {
       this.matcher = search;
-      this.getUsersFilter();
+      //this.getUsersFilter();
+      this.searchTimer = setTimeout(() => {
+        this.getUsersFilter();
+      }, 200); 
       this.showUsers = true;
     } else {
       this.showUsers = false;
@@ -217,7 +224,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
   /**
    * Fetches filtered user list from the server.
    */
-  getUsersFilter() {
+  getUsersFilter() { 
     const url = `${environment.apiUrl}/users/getUsersByMatch`;
     const loadTopicsBody = {
       user: this.cookie.get('user'),
