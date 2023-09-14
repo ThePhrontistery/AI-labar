@@ -98,22 +98,37 @@ export class TopicsComponent implements OnInit {
     this.router.navigate(['/topics/topics-list']);
   }
 
-  toggleLanguage() {
+  /**
+   * Toggles the application language between available options.
+   * This function updates the current language, UI text, and saves the language preference for the user.
+   */
+  toggleLanguage(): void {
+    // Toggle the application language using the language service.
     this.languageService.toggleLanguage();
+
+    // Retrieve and update the current language.
     this.currentLanguage = this.languageService.getLanguage();
+
+    // Update the text for the language toggle button.
     this.textButtonLanguage = this.translate.instant('LANGUAGE.CHANGE');
 
+    // Prepare the request body to save the selected language preference.
     const saveLanguageBody = {
       language: this.currentLanguage,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
+
+    // Save the language preference by making an HTTP request.
     this.languageService
       .saveLanguage(saveLanguageBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-        next: (response) => {},
+        next: (response) => {
+          // Handle successful response if needed.
+        },
         error: (error) => {
+          // Handle errors, show an error message.
           this.messageService.showErrorMessage(
             this.translate.instant('ERROR_MESSAGES.ERROR_SEND_LANGUAGE') +
               '\n' +
