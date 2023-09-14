@@ -121,7 +121,7 @@
     "VIEW_RESULTS_SURVEY_COLUMN": "View results",
     "VIEW_RESULTS_SURVEY": "View results",
     "ACTIONS": "Actions",
-    "WITHOUT_CLOSING_DATE": "Without clsing date",
+    "WITHOUT_CLOSING_DATE": "Without closing date",
     "OPEN": "Open",
     "CLOSE": "Close",
     "DELETE": "Delete",
@@ -156,7 +156,8 @@
     "REPEATED_OPTIONS":"There cannot be repeated options.",
     "CLOSE_BUTTON": "Close",
     "ERROR_SEND_LANGUAGE": "The language could not be saved",
-    "ERROR_USER_IMAGE_SIZE": "The image is too large. The maximum allowed size is 5MB."
+    "ERROR_USER_IMAGE_SIZE": "The image is too large. The maximum allowed size is 5MB.",
+    "ERROR_NO_PARTICIPANTS": "You have not selected participants."
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selection sent successfully"

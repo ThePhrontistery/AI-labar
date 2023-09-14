@@ -161,6 +161,9 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
     if (this.childComponent.users.length > 0) {
       this.members = this.childComponent.users;
       this.groupSelectedParticipants = this.childComponent.selectedGroup;
+    }else{
+      this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.ERROR_NO_PARTICIPANTS'));
+      return;
     }
     if (this.repeated()) {
       this.messageService.showErrorMessage(this.translate.instant('ERROR_MESSAGES.REPEATED_OPTIONS'));
