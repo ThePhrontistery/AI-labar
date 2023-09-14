@@ -144,7 +144,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
       //this.getUsersFilter();
       this.searchTimer = setTimeout(() => {
         this.getUsersFilter();
-      }, 200); 
+      }, 400); 
       this.showUsers = true;
     } else {
       this.showUsers = false;
