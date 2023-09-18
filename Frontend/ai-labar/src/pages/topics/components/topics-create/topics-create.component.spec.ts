@@ -12,6 +12,7 @@ import { Routes } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from '../../services/message.service';
 
 const routes: Routes = [
   { path: 'topics/topics-list', component: TopicsListComponent },
@@ -24,6 +25,8 @@ describe('TopicsCreateComponent', () => {
   let mockCookieService: jasmine.SpyObj<CookieService>;
   let mockDialog: jasmine.SpyObj<MatDialog>;
   let topicsCreateServiceMock: jasmine.SpyObj<TopicsCreateService>;
+  let translateService: jasmine.SpyObj<TranslateService>;
+  let messageService: jasmine.SpyObj<MessageService>;
 
   beforeEach(() => {
     const mockServiceSpy = jasmine.createSpyObj('TopicsCreateService', [
@@ -39,7 +42,7 @@ describe('TopicsCreateComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TopicsCreateComponent],
 
-      providers: [TranslateService,
+      providers: [TranslateService, MessageService,
         { provide: TopicsCreateService, useValue: mockServiceSpy },
         { provide: CookieService, useValue: mockCookieServiceSpy },
         { provide: MatDialog, useValue: mockDialogSpy },
@@ -62,6 +65,14 @@ describe('TopicsCreateComponent', () => {
     mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
 
     mockCookieService.get.and.returnValue('testUser');
+
+    translateService = TestBed.inject(
+      TranslateService
+    ) as jasmine.SpyObj<TranslateService>;
+
+    messageService = TestBed.inject(
+      MessageService
+    ) as jasmine.SpyObj<MessageService>;
   });
 
   it('should create', () => {
@@ -69,7 +80,7 @@ describe('TopicsCreateComponent', () => {
   });
 
   it('should call createTopics and navigate when valuesValidation is true', () => {
-    component.childComponent = new StepTwoComponent(mockDialog);
+    component.childComponent = new StepTwoComponent(mockDialog,translateService,messageService);
     component.childComponent.textBoxValue = 'Test Title';
     component.childComponent.isOpinionSurvey = true;
     component.childComponent.selectedType = 'simple';
