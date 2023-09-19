@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -44,10 +44,11 @@ describe('TopicsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to login if user or token are missing', () => {
+  it('should navigate to login if user or token are missing', async () => {
     spyOn(router, 'navigateByUrl');
     spyOn(component['cookie'], 'delete');
     component.ngOnInit();
+    await fixture.whenStable();
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
 

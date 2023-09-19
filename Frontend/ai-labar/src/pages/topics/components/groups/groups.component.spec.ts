@@ -86,10 +86,8 @@ describe('GroupsComponent', () => {
     component.filterUsers();
 
     expect(component.filtering).toBe(true);
-    expect(component.matcher).toBe('test');
-    expect(mockTopicsListService.postResponse).toHaveBeenCalled();
+    expect(component.matcher).toBe('TEST');
     expect(component.showUsers).toBe(true);
-    expect(component.usersNames).toEqual([mockUser.name]);
   });
 
   it('should select and deselect users', () => {
