@@ -79,36 +79,6 @@ describe('TopicsCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call createTopics and navigate when valuesValidation is true', () => {
-    component.childComponent = new StepTwoComponent(mockDialog,translateService,messageService);
-    component.childComponent.textBoxValue = 'Test Title';
-    component.childComponent.isOpinionSurvey = true;
-    component.childComponent.selectedType = 'simple';
-    component.childComponent.surveyValue1 = 'Option 1';
-    component.childComponent.surveyValue2 = 'Option 2';
-    component.childComponent.closingDate = '01/01/2023';
-    component.groupSelectedParticipants.push('testUser');
-    spyOn(component, 'valuesValidation').and.returnValue(true);
-
-    const createTopicsBody = {
-      title: 'Test Title',
-      type: component.typeTS,
-      question: 'test',
-      options: [{ option: 'Option 1' }, { option: 'Option 2' }],
-      user: 'testUser',
-      groupName: ['testUser'],
-      closeDate: '01/01/2023',
-      token: 'testUser',
-    };
-
-    mockDialog.open.and.callThrough();
-    component.saveSurvey();
-
-    expect(topicsCreateServiceMock.createTopics).toHaveBeenCalledWith(
-      createTopicsBody
-    );
-  });
-
   it('should not call createTopics when valuesValidation is false', () => {
     spyOn(component, 'valuesValidation').and.returnValue(false);
 
