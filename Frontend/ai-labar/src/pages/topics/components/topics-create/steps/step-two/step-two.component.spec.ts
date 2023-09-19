@@ -15,6 +15,7 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -25,6 +26,7 @@ describe('StepTwoComponent', () => {
   let component: StepTwoComponent;
   let fixture: ComponentFixture<StepTwoComponent>;
   let mockMatDialog: jasmine.SpyObj<MatDialog>;
+  let mockMatSnackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
     mockMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
@@ -43,9 +45,10 @@ describe('StepTwoComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: MomentDateAdapter, useClass: MomentDateAdapter },
         { provide: MY_FORMATS, useValue: MY_FORMATS },
+        { provide: MatSnackBar, useValue: mockMatSnackBar },
       ],
     }).compileComponents();
-  }); 
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StepTwoComponent);
@@ -70,7 +73,7 @@ describe('StepTwoComponent', () => {
     expect(mockMatDialog.open).toHaveBeenCalledWith(
       AddGroupsTopicComponent,
       {
-        width: '400px', 
+        width: '400px',
       }
     );
   });
