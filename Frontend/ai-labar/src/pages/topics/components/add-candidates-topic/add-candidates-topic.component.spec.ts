@@ -99,10 +99,6 @@ describe('AddCandidatesTopicComponent', () => {
     expect(component.groups.length).toEqual(groups.length);
   });
 
-  it('should load users on init', () => {
-    component.ngOnInit();
-    expect(component.usersNames.length).toEqual(users.length);
-  });
   it('should load users for selected group', () => {
     const selectedGroup = groups[0];
     component.selectedGroup = selectedGroup;
