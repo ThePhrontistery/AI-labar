@@ -144,7 +144,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
       //this.getUsersFilter();
       this.searchTimer = setTimeout(() => {
         this.getUsersFilter();
-      }, 400); 
+      }, 400);
       this.showUsers = true;
     } else {
       this.showUsers = false;
@@ -173,7 +173,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
    * Creates a new group with the selected users and saves it to the server.
    */
   saveGroup() {
-    const url = `${environment.apiUrl}/groups/createGroup`;
     const groupBody = {
       groupName: this.groupsForm.value.groupName,
       members: this.selectedUsers,
@@ -182,7 +181,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     };
 
     this.topicListService
-      .post(groupBody, url)
+      .createGroup(groupBody)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response) => {
@@ -224,7 +223,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
   /**
    * Fetches filtered user list from the server.
    */
-  getUsersFilter() { 
+  getUsersFilter() {
     const url = `${environment.apiUrl}/users/getUsersByMatch`;
     const loadTopicsBody = {
       user: this.cookie.get('user'),
