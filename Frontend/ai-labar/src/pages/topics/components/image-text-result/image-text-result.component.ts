@@ -36,14 +36,13 @@ export class ImageTextResultComponent implements OnInit {
    */
   loadResults() {
     if (this.data && this.data.votation) {
-      const url = `${environment.apiUrl}/topics/votingResults`;
       const resultData = {
         id: this.data.votation.id,
         user: this.cookie.get('user'),
         token: this.cookie.get('token'),
       };
 
-      this.topicListService.post(resultData, url).subscribe((response) => {
+      this.topicListService.votingResults(resultData).subscribe((response) => {
         if (response) {
           this.result = response.entity;
         }

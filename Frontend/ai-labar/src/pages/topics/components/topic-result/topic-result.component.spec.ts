@@ -41,7 +41,7 @@ describe('TopicResultComponent', () => {
   ];
 
   beforeEach(() => {
-    mockTopicsListService = jasmine.createSpyObj(['post']);
+    mockTopicsListService = jasmine.createSpyObj(['votingResults']);
     mockResultsService = jasmine.createSpyObj(['getVotingResults']);
 
     TestBed.configureTestingModule({
@@ -60,7 +60,7 @@ describe('TopicResultComponent', () => {
     fixture = TestBed.createComponent(TopicResultComponent);
     component = fixture.componentInstance;
 
-    mockTopicsListService.post.and.returnValue(of({ entity: mockResultData }));
+    mockTopicsListService.votingResults.and.returnValue(of({ entity: mockResultData }));
   });
 
   it('should create', () => {
@@ -69,13 +69,12 @@ describe('TopicResultComponent', () => {
 
   it('should load results', () => {
     component.ngOnInit();
-    expect(mockTopicsListService.post).toHaveBeenCalledWith(
+    expect(mockTopicsListService.votingResults).toHaveBeenCalledWith(
       jasmine.objectContaining({
         id: mockDialogData.votation.id,
         user: jasmine.any(String),
         token: jasmine.any(String),
       }),
-      jasmine.any(String)
     );
     expect(component.result).toEqual(mockResultData);
   });
