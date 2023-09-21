@@ -4,7 +4,9 @@ CREATE DATABASE ai_labar;
 CREATE TABLE groups (
     id SERIAL PRIMARY KEY,
     group_name VARCHAR NOT NULL,
-    admin VARCHAR NOT NULL
+    admin VARCHAR NOT NULL,
+    creation_date TIMESTAMP NOT NULL,
+    last_modification_date TIMESTAMP
 );
 
 -- Crear la tabla "members" en PostgreSQL
@@ -33,7 +35,11 @@ CREATE TABLE topics (
     group_id INTEGER NOT NULL,
     close_date VARCHAR,
     visits INTEGER NOT NULL DEFAULT 0,
-    status VARCHAR NOT NULL DEFAULT '1'
+    status VARCHAR NOT NULL DEFAULT '1',
+    reopening_date TIMESTAMP,
+    last_modification_date TIMESTAMP,
+    executed_closure_date TIMESTAMP,
+    creation_date TIMESTAMP
 );
 
 -- Crear la tabla "users" en PostgreSQL
@@ -46,14 +52,19 @@ CREATE TABLE users (
     gender VARCHAR,
     photo VARCHAR,
     language VARCHAR,
-    visualization VARCHAR NOT NULL DEFAULT 'Paginacion'
+    visualization VARCHAR NOT NULL DEFAULT 'Paginacion',
+    registration_date TIMESTAMP,
+    last_modification_date TIMESTAMP,
+    online INTEGER,
+    deactivation_date TIMESTAMP
 );
 
 -- Crear la tabla "voted_by" en PostgreSQL
 CREATE TABLE voted_by (
     id SERIAL PRIMARY KEY,
     topic_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL
+    user_id INTEGER NOT NULL,
+    voting_date TIMESTAMP
 );
 
 -- Crear la tabla "sqlite_sequence" en PostgreSQL
