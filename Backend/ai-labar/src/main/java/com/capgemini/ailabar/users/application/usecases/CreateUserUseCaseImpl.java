@@ -26,7 +26,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
         }
 
         if (Boolean.TRUE.equals(usersRepositoryPort.checkUser(usersModel.getUser()))) {
-            throw new CreateUserException("The user already existsThe user already exists");
+            throw new CreateUserException("The user already exists");
         }
 
         if (Boolean.TRUE.equals(usersRepositoryPort.checkEmail(usersModel.getEmail()))) {
