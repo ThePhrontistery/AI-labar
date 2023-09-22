@@ -160,9 +160,12 @@
     "CLOSE_BUTTON": "Close",
     "ERROR_SEND_LANGUAGE": "The language could not be saved",
     "ERROR_USER_IMAGE_SIZE": "The image is too large. The maximum allowed size is 5MB.",
-    "ERROR_NO_PARTICIPANTS": "You have not selected participants."
+    "ERROR_NO_PARTICIPANTS": "You have not selected participants.",
+    "ERROR_EDIT_GROUP":"Unable to edit the group"
   },
   "OK_MESSAGES": {
-    "OK_SEND_SELECTION": "Selection sent successfully"
+    "OK_SEND_SELECTION": "Selection sent successfully",
+    "OK_EDIT_GROUP":"The group has been successfully edited",
+    "OK_CREATE_GROUP":"The group has been successfully created"
   }
 }

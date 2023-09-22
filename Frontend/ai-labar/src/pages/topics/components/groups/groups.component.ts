@@ -301,10 +301,10 @@ export class GroupsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response) => {
-          if (response) {
-            console.log(response);
-          }
           this.dialogRef.close();
+          this.messageService.showSuccessMessage(
+            this.translate.instant('OK_MESSAGES.OK_CREATE_GROUP')
+          );
         },
         error: (error) => {
           this.messageService.showErrorMessage(
@@ -333,14 +333,14 @@ export class GroupsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (response) => {
-          if (response) {
-            console.log(response);
-          }
           this.dialogRef.close();
+          this.messageService.showSuccessMessage(
+            this.translate.instant('OK_MESSAGES.OK_EDIT_GROUP')
+          );
         },
         error: (error) => {
           this.messageService.showErrorMessage(
-            this.translate.instant('ERROR_MESSAGES.CREATE_GROUP_ERROR') +
+            this.translate.instant('ERROR_MESSAGES.ERROR_EDIT_GROUP') +
               '\n' +
               error.error.message
           );
