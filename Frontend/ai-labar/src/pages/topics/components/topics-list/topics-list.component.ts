@@ -53,7 +53,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'title',
     'author',
-    'closeDate',
+    'closeDateString',
     'status',
     'open',
     'close',
