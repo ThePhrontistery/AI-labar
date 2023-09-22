@@ -206,6 +206,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
         name: item,
         checked: false,
         hidden: false,
+        modal: false
       };
       this.users.push(user);
     });
@@ -232,7 +233,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
       //this.getUsersFilter();
       this.searchTimer = setTimeout(() => {
         this.getUsersFilter();
-      }, 400); 
+      }, 400);
       this.showUsers = true;
     } else {
       this.showUsers = false;

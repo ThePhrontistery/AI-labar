@@ -37,4 +37,9 @@ export class TopicsListService {
     const url = `${environment.apiUrl}/groups/createGroup`;
     return this.http.post<any>(url, body);
   }
+
+  public editGroup(body: any): Observable<any> {
+    const url = `${environment.apiUrl}/groups/editGroup`;
+    return this.http.put<any>(url, body);
+  }
 }
