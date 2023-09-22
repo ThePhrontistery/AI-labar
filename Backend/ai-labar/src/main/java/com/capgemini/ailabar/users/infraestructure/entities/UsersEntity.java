@@ -4,6 +4,7 @@ import com.capgemini.ailabar.users.domain.models.UsersModel;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -30,6 +31,14 @@ public class UsersEntity {
     private String visualization;
     @Column(name = "language")
     private String language;
+    @Column(name = "online")
+    private Integer online;
+    @Column(name = "registration_date")
+    private Timestamp registrationDate;
+    @Column(name = "last_modification_date")
+    private Timestamp lastModificationDate;
+    @Column(name = "deactivation_date")
+    private Timestamp deactivationDate;
 
     public UsersEntity() {}
 
@@ -40,6 +49,6 @@ public class UsersEntity {
         this.gender = usersModel.getGender();
         this.photo = usersModel.getPhoto();
         this.visualization = "Paginacion";
-        this.language=usersModel.getLanguage();
+        this.language = usersModel.getLanguage();
     }
 }

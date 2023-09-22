@@ -1,10 +1,12 @@
 package com.capgemini.ailabar.topics.domain.models;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -20,9 +22,27 @@ public class TopicsModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer groupId;
     private List<String> members;
-    private String closeDate;
+    private Timestamp closeDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String closeDateString;
     private Integer visits;
     private Integer status;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp creationDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String creationDateFormatted;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp lastModificationDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String lastModificationDateFormatted;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp executedClosureDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String executedClosureDateFormatted;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp reopeningDate;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String reopeningDateFormatted;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String user;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -44,5 +64,15 @@ public class TopicsModel {
         this.closeDate = topicsEntity.getCloseDate();
         this.visits = topicsEntity.getVisits();
         this.status = topicsEntity.getStatus();
+        this.creationDateFormatted = DateTime.timestampToString(topicsEntity.getCreationDate());
+        if(topicsEntity.getLastModificationDate() != null) {
+            this.lastModificationDateFormatted = DateTime.timestampToString(topicsEntity.getLastModificationDate());
+        }
+        if(topicsEntity.getExecutedClosureDate() != null) {
+            this.executedClosureDateFormatted = DateTime.timestampToString(topicsEntity.getExecutedClosureDate());
+        }
+        if(topicsEntity.getReopeningDate() != null) {
+            this.reopeningDateFormatted = DateTime.timestampToString(topicsEntity.getReopeningDate());
+        }
     }
 }

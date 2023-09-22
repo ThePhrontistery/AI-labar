@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.users.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.users.domain.exceptions.CreateUserException;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.CreateUserUseCase;
@@ -43,6 +44,8 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
         UsersEntity usersEntity = new UsersEntity(usersModel);
         usersEntity.setPassword(hashedPassword);
         usersEntity.setToken("");
+        usersEntity.setOnline(0);
+        usersEntity.setRegistrationDate(DateTime.actualDateAndTime());
         usersRepositoryPort.createUser(usersEntity);
 
         usersEntity = usersRepositoryPort.getUserByName(usersModel.getUser());

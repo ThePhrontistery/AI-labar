@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.groups.domain.exceptions.EditGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.EditGroupUseCase;
@@ -65,6 +66,7 @@ public class EditGroupUseCaseImplmpl implements EditGroupUseCase {
             }
         });
 
+        groupsEntity.setLastModificationDate(DateTime.actualDateAndTime());
         groupsRepositoryPort.editGroup(groupsEntity);
     }
 }

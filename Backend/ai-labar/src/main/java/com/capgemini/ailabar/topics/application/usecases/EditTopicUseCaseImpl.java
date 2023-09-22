@@ -1,8 +1,10 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.commons.utils.MailService;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
+import com.capgemini.ailabar.topics.domain.exceptions.CreateTopicException;
 import com.capgemini.ailabar.topics.domain.exceptions.EditTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.EditTopicUseCase;
@@ -14,7 +16,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -82,6 +87,8 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
         manageCloseDate();
 
         manageMailService();
+
+        topicsEntity.setLastModificationDate(DateTime.actualDateAndTime());
 
         topicsRepositoryPort.editTopic(topicsEntity);
     }
@@ -206,11 +213,26 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
     }
 
     private void manageOptions() {
-        if(TopicsUtils.checkIfOptionsChanged(TopicsUtils.transformToOptionsModelList(topicsRepositoryPort.getOptions(topicsEntity.getId())), topicsModel.getOptions())) {
-            updateOptions();
-        } else {
-            if(topicsModel.getType().equals(Constants.TopicType.IMAGE_SINGLE.toString()) || topicsModel.getType().equals(Constants.TopicType.IMAGE_MULTIPLE.toString())) {
-                updateOptionsImages();
+        if(topicsModel.getCloseDateString() != null && !topicsModel.getCloseDateString().isBlank()) {
+            String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDateString());
+
+            if(dateString.contains("KO")) {
+                throw new CreateTopicException(dateString);
+            } else {
+                LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+                topicsEntity.setCloseDate(Timestamp.from(instant));
+            }
+
+            try {
+                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                LocalDate currentDate = LocalDate.now();
+
+                if (!inputDate.isAfter(currentDate)) {
+                    throw new CreateTopicException("The closing date cannot be earlier than the current date");
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new CreateTopicException(dateTimeParseException.getMessage());
             }
         }
     }
@@ -245,7 +267,7 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
 
     private void checkCloseDate() {
         if(topicsModel.getCloseDate() != null) {
-            if(topicsModel.getCloseDate().isBlank() && topicsEntity.getCloseDate() != null) {
+            if(topicsEntity.getCloseDate() != null) {
                 topicsEntity.setCloseDate(null);
             } else {
                 topicsEntity.setCloseDate(topicsModel.getCloseDate());
@@ -258,32 +280,15 @@ public class EditTopicUseCaseImpl implements EditTopicUseCase {
     }
 
     private void manageCloseDate() {
-        if(topicsModel.getCloseDate() != null && !topicsModel.getCloseDate().isBlank()) {
-            String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDate());
-            if(dateString.contains("KO")) {
-                throw new EditTopicException(dateString);
-            } else {
-                topicsEntity.setCloseDate(topicsModel.getCloseDate());
-            }
+        if(topicsModel.getCloseDate() != null) {
+            Timestamp date = topicsModel.getCloseDate();
+            topicsEntity.setCloseDate(date);
 
-            try {
-                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
-                LocalDate currentDate = LocalDate.now();
+            LocalDate inputDate = date.toLocalDateTime().toLocalDate();
+            LocalDate currentDate = LocalDate.now();
 
-                if (!inputDate.isAfter(currentDate)) {
-                    throw new EditTopicException("The closing date cannot be earlier than the current date");
-                }
-            } catch (DateTimeParseException dateTimeParseException) {
-                throw new EditTopicException(dateTimeParseException.getMessage());
-            }try {
-                LocalDate inputDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
-                LocalDate currentDate = LocalDate.now();
-
-                if (!inputDate.isAfter(currentDate)) {
-                    throw new EditTopicException("The closing date cannot be earlier than the current date");
-                }
-            } catch (DateTimeParseException dateTimeParseException) {
-                throw new EditTopicException(dateTimeParseException.getMessage());
+            if (!inputDate.isAfter(currentDate)) {
+                throw new CreateTopicException("The closing date cannot be earlier than the current date");
             }
         }
     }

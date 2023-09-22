@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.users.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.users.domain.exceptions.EditVisualizationException;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.EditVisualizationUseCase;
@@ -30,6 +31,7 @@ public class EditVisualizationUseCaseImpl implements EditVisualizationUseCase {
         UsersEntity userEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
 
         userEntity.setVisualization(usersModel.getVisualization());
+        userEntity.setLastModificationDate(DateTime.actualDateAndTime());
 
         usersRepositoryPort.editUser(userEntity);
     }

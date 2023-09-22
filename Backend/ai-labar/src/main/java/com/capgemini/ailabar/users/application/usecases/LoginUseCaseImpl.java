@@ -37,6 +37,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
             throw new LoginException("User not found");
         }
 
+        usersEntity.setOnline(1);
+
+        usersRepositoryPort.editUser(usersEntity);
+
         List<String> loginData = new ArrayList<>();
         loginData.add(usersEntity.getToken());
         loginData.add(usersEntity.getVisualization());
