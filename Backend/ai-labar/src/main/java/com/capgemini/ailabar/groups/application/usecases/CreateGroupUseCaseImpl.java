@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.groups.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.groups.domain.exceptions.CreateGroupException;
 import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import com.capgemini.ailabar.groups.domain.ports.in.CreateGroupUseCase;
@@ -43,6 +44,7 @@ public class CreateGroupUseCaseImpl implements CreateGroupUseCase {
         });
 
         GroupsEntity groupsEntity = new GroupsEntity(groupsModel);
+        groupsEntity.setCreationDate(DateTime.actualDateAndTime());
 
         groupsRepositoryPort.createGroup(groupsEntity);
 

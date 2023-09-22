@@ -13,8 +13,6 @@ public interface UsersRepositoryPort {
 
     void createUser(UsersEntity usersEntity);
 
-    void deleteUser(Integer id);
-
     void editUser(UsersEntity usersEntity);
 
     List<String> getAllUsers();
@@ -24,6 +22,10 @@ public interface UsersRepositoryPort {
     List<String> getUsersByMatch(String matcher);
 
     List<UsersEntity> getUsersDatabase();
+
+    void disbleGroupsByUserAdmin(String admin, String deactivatedName);
+
+    void deleteMembersByUserId(Integer userId);
 
     boolean login(String user, String password);
 }

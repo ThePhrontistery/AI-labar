@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -60,7 +61,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     void deleteVotedByOnTopic(@Param("topicId") Integer topicId);
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.status = :status AND t.closeDate <= :date")
-    List<TopicsEntity> getByStatusAndCloseDateLessThanEqual(@Param("status") Integer status, @Param("date") String date);
+    List<TopicsEntity> getByStatusAndCloseDateLessThanEqual(@Param("status") Integer status, @Param("date") long date);
 
     @Query("SELECT u.email FROM UsersEntity u WHERE u.id IN (SELECT m.user.id FROM MembersEntity m WHERE m.group.id = :groupId)")
     List<String> getEmailsByGroupId(@Param("groupId") Integer groupId);
@@ -110,7 +111,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query(value = "SELECT * FROM topics " +
             "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
-            "ORDER BY id DESC " +
+            "ORDER BY close_date, id DESC " +
             "LIMIT :limit OFFSET :offset", nativeQuery = true)
     List<TopicsEntity> loadTopics(@Param("user") String user,
                                   @Param("groupIds") List<Integer> groupIds,
@@ -118,8 +119,8 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
                                   @Param("offset") Integer offset);
 
     @Modifying
-    @Query(value = "INSERT INTO voted_by (topic_id, user_id) VALUES (:topicId, :userId)", nativeQuery = true)
-    void registerUserVoted(@Param("topicId") Integer topicId, @Param("userId") Integer userId);
+    @Query(value = "INSERT INTO voted_by (topic_id, user_id, voting_date) VALUES (:topicId, :userId, :votingDate)", nativeQuery = true)
+    void registerUserVoted(@Param("topicId") Integer topicId, @Param("userId") Integer userId, @Param("votingDate") Timestamp votingDate);
 
     @Modifying
     @Query("UPDATE OptionsEntity o SET o.image = :newImage WHERE o.id = :optionId")

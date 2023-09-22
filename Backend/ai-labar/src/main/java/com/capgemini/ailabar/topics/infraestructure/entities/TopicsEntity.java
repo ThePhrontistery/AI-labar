@@ -4,6 +4,7 @@ import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -24,11 +25,19 @@ public class TopicsEntity {
     @Column(name = "group_id")
     private Integer groupId;
     @Column(name = "close_date")
-    private String closeDate;
+    private Timestamp closeDate;
     @Column(name = "visits")
     private Integer visits;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "creation_date")
+    private Timestamp creationDate;
+    @Column(name = "last_modification_date")
+    private Timestamp lastModificationDate;
+    @Column(name = "executed_closure_date")
+    private Timestamp executedClosureDate;
+    @Column(name = "reopening_date")
+    private Timestamp reopeningDate;
 
     public TopicsEntity() {}
 
