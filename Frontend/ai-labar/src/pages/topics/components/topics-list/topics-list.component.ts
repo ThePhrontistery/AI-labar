@@ -53,7 +53,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'title',
     'author',
-    'closeDate',
+    'closeDateString',
     'status',
     'open',
     'close',
@@ -250,7 +250,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   // Method to reopen a closed topic.
   reOpen(votation: any) {
-    const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
       id: votation.id,
       user: this.cookie.get('user'),
@@ -260,7 +259,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.reopenTopic(closingData);
     } else {
-      serviceCall = this.topicListService.put(closingData, url);
+      serviceCall = this.topicListService.reOpenTopic(closingData);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -287,7 +286,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   // Method to close an open topic.
   close(votation: any) {
-    const url = `${environment.apiUrl}/topics/closeTopic`;
     const closingData = {
       id: votation.id,
       user: this.cookie.get('user'),
@@ -297,7 +295,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.closeTopic(closingData);
     } else {
-      serviceCall = this.topicListService.put(closingData, url);
+      serviceCall = this.topicListService.closeTopic(closingData);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -334,7 +332,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const url = `${environment.apiUrl}/topics/deleteTopic`;
         const deletionData = {
           id: votation.id,
           user: this.cookie.get('user'),
@@ -345,7 +342,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         if (environment.mockup) {
           serviceCall = this.topicsListServiceMock.deleteTopic(deletionData);
         } else {
-          serviceCall = this.topicListService.delete(deletionData, url);
+          serviceCall = this.topicListService.deleteTopic(deletionData);
         }
 
         serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -498,7 +495,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
@@ -510,7 +506,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
     } else {
-      serviceCall = this.topicListService.post(loadTopicsBody, url);
+      serviceCall = this.topicListService.loadTopics(loadTopicsBody);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -651,7 +647,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   /**
    * Open a dialog to add a new group.
    */
-  addGroup() {
+  managingGroups() {
     const dialogRef = this.dialog.open(GroupsComponent, {
       width: '750px',
       data: {},

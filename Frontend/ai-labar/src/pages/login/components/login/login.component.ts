@@ -150,6 +150,7 @@ export class LoginComponent implements OnInit {
             if (response.body.entity[3]) {
               this.createThumbnailImage(response.body.entity[3], 32, 32);
             } else {
+              this.cookie.set('photo', '');
               this.showContent();
             }
           }
