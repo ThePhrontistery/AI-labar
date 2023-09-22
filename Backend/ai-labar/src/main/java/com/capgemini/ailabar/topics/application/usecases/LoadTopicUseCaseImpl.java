@@ -131,7 +131,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
             loadQuery += "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) ";
         }
 
-        loadQuery += "ORDER BY t.id DESC " +
+        loadQuery += "ORDER BY t.close_date, t.id DESC " +
                 "LIMIT :limit OFFSET :offset";
 
         Query nativeCountQuery = entityManager.createNativeQuery(countQuery)

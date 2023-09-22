@@ -4,7 +4,6 @@ import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import com.capgemini.ailabar.users.domain.exceptions.LoginException;
 import com.capgemini.ailabar.users.domain.exceptions.*;
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.application.services.UsersService;
 import org.json.JSONObject;
@@ -136,11 +135,22 @@ public class UsersController implements SpecialResponseInterface {
     @GetMapping("/getUsersDatabase")
     public ResponseEntity<SpecialResponse> getUsersDatabase() {
         JSONObject responseJson = new JSONObject();
-        List<UsersEntity> usersList = usersService.getUsersDatabase();
+        List<UsersModel> usersList = usersService.getUsersDatabase();
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
     /* End of methods for testing purposes */
+
+    /*
+     * LOGS OUT TO THE APPLICATION
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<SpecialResponse> logout(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.logout(usersModel);
+        responseJson.put("message", "Logout successful");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
 
     // Exception handling for each use case
     @ExceptionHandler(LoginException.class)
@@ -196,6 +206,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerGetUsersDatabaseException (GetUsersDatabaseException getUsersDatabaseException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", getUsersDatabaseException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(LogoutException.class)
+    ResponseEntity<SpecialResponse> handlerLogoutException (LogoutException logoutException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", logoutException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

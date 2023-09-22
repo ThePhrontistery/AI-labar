@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.options.infraestructure.entities.OptionsEntity;
 import com.capgemini.ailabar.topics.domain.exceptions.VoteTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
@@ -78,7 +79,7 @@ public class VoteTopicUseCaseImpl implements VoteTopicUseCase {
 
     private void registerUserVoted(Integer topicId, Integer userId) {
         try {
-            topicsRepositoryPort.registerUserVoted(topicId, userId);
+            topicsRepositoryPort.registerUserVoted(topicId, userId, DateTime.actualDateAndTime());
         } catch (VoteTopicException voteException) {
             throw new VoteTopicException("An error occurred while registering the user as a voter");
         }

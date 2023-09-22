@@ -36,11 +36,6 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public void deleteUser(Integer id) {
-        usersRepository.deleteById(id);
-    }
-
-    @Override
     public void editUser(UsersEntity usersEntity) {
         usersRepository.save(usersEntity);
     }
@@ -63,6 +58,16 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     @Override
     public List<UsersEntity> getUsersDatabase() {
         return usersRepository.findAll();
+    }
+
+    @Override
+    public void disbleGroupsByUserAdmin(String admin, String deactivatedName) {
+        usersRepository.disbleGroupsByUserAdmin(admin, deactivatedName);
+    }
+
+    @Override
+    public void deleteMembersByUserId(Integer userId) {
+        usersRepository.deleteMembersByUserId(userId);
     }
 
     @Override

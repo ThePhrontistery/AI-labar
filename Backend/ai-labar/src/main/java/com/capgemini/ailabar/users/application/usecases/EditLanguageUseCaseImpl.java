@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.users.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.users.domain.exceptions.EditLanguageException;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.EditLanguageUseCase;
@@ -30,6 +31,7 @@ public class EditLanguageUseCaseImpl implements EditLanguageUseCase {
         UsersEntity userEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
 
         userEntity.setLanguage(usersModel.getLanguage());
+        userEntity.setLastModificationDate(DateTime.actualDateAndTime());
 
         usersRepositoryPort.editUser(userEntity);
     }
