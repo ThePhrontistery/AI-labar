@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.LoadTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
@@ -131,7 +132,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
             loadQuery += "AND t.id NOT IN (SELECT v.topic_id FROM voted_by v WHERE v.user_id = :userId) ";
         }
 
-        loadQuery += "ORDER BY t.close_date, t.id DESC " +
+        loadQuery += "ORDER BY t.close_date DESC, t.id DESC  " +
                 "LIMIT :limit OFFSET :offset";
 
         Query nativeCountQuery = entityManager.createNativeQuery(countQuery)
@@ -189,6 +190,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                         topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
                     }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
+                    topicsModel.setCloseDateString(DateTime.timestampToStringDate(topicsModel.getCloseDate()));
                     return topicsModel;
                 })
                 .forEach(allModels::add);

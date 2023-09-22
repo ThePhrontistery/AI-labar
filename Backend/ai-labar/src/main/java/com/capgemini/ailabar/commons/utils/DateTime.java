@@ -14,8 +14,15 @@ public final class DateTime {
     }
 
     public static String timestampToString(Timestamp timestamp) {
+        if (timestamp==null) {return null;}
         Date date = new Date(timestamp.getTime());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return dateFormat.format(date);
+    }
+    public static String timestampToStringDate(Timestamp timestamp) {
+        if (timestamp==null) {return null;}
+        Date date = new Date(timestamp.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
     }
 }

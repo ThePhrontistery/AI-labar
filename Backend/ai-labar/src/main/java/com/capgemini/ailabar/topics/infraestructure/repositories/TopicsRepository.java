@@ -111,7 +111,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
 
     @Query(value = "SELECT * FROM topics " +
             "WHERE (author = :user OR (group_id IN :groupIds AND author != :user)) " +
-            "ORDER BY close_date, id DESC " +
+            "ORDER BY close_date DESC, id DESC " +
             "LIMIT :limit OFFSET :offset", nativeQuery = true)
     List<TopicsEntity> loadTopics(@Param("user") String user,
                                   @Param("groupIds") List<Integer> groupIds,

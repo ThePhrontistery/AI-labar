@@ -226,6 +226,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
+    this.totalItems = undefined;
     if (this.paginator) this.paginator.firstPage();
     this.getTopicList();
   }
