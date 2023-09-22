@@ -647,7 +647,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   /**
    * Open a dialog to add a new group.
    */
-  addGroup() {
+  managingGroups() {
     const dialogRef = this.dialog.open(GroupsComponent, {
       width: '750px',
       data: {},

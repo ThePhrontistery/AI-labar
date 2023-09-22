@@ -9,7 +9,7 @@
     "CANCELAR": "Cancelar"
   },
   "TOPIC": {
-    "ADD_GROUP": "Añadir grupo",
+    "MANAGING_GROUPS": "Gestionar grupos",
     "ADD_TOPIC": "Añadir topic",
     "LOGOUT": "Salir"
   },
@@ -46,7 +46,7 @@
     "YES": "Sí",
     "NO": "No"
   },
-  "CREATE_GROUPS": {
+  "MANAGING_GROUPS": {
     "CREATE_GROUP": "CREAR GRUPO",
     "GROUP_NAME": "Nombre del grupo",
     "SEARCH_USERS": "Buscar usuarios",
@@ -54,7 +54,10 @@
     "SELECTED_USERS": "Usuarios seleccionados:",
     "CLEAR_SELECTION": "Limpiar selección",
     "CANCEL": "Cancelar",
-    "SAVE_GROUP": "Guardar grupo"
+    "SAVE_GROUP": "Guardar grupo",
+    "CREATE":"Crear grupo",
+    "EDIT":"Editar grupo",
+    "MANAGING_GROUP": "GESTIONAR GRUPO"
   },
   "IMAGE_TEXT_RESULT": {
     "CLOSE": "Cerrar"
