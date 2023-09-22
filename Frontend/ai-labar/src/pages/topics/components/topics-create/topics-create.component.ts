@@ -239,7 +239,7 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
         options: this.surveyOptions,
         user: this.cookie.get('user'),
         groupName: this.groupSelectedParticipants,
-        closeDate: this.childComponent.closingDate,
+        closeDateString: this.childComponent.closingDate,
         token: this.cookie.get('token'),
       };
       this.topicsCreateService
