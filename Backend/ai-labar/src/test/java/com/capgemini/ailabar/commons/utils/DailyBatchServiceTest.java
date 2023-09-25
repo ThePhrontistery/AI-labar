@@ -11,9 +11,13 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -35,23 +39,26 @@ class DailyBatchServiceTest {
 
     @Test
     void testCloseExpiredTopics() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate currentDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2022, 12, 31);
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
+        Date currentTimestamp = Date.from(Instant.now());
 
         TopicsEntity topic1 = new TopicsEntity();
         topic1.setStatus(1);
-        topic1.setCloseDate(currentDate.minusDays(1).format(dateFormatter));
+        topic1.setCloseDate(timestamp);
 
         TopicsEntity topic2 = new TopicsEntity();
         topic2.setStatus(1);
-        topic2.setCloseDate(currentDate.format(dateFormatter));
+        topic2.setCloseDate(timestamp);
 
         List<TopicsEntity> topics = Arrays.asList(topic1, topic2);
 
-        when(topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter))).thenReturn(topics);
+        when(topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentTimestamp)).thenReturn(topics);
 
         dailyBatchService.closeExpiredTopics();
 
-        verify(topicsRepository, times(1)).getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter));
+        verify(topicsRepository, times(1)).getByStatusAndCloseDateLessThanEqual(1, currentTimestamp);
     }
 }
