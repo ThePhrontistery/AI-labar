@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -61,7 +62,7 @@ public interface TopicsRepository extends JpaRepository<TopicsEntity, Integer> {
     void deleteVotedByOnTopic(@Param("topicId") Integer topicId);
 
     @Query("SELECT t FROM TopicsEntity t WHERE t.status = :status AND t.closeDate <= :date")
-    List<TopicsEntity> getByStatusAndCloseDateLessThanEqual(@Param("status") Integer status, @Param("date") long date);
+    List<TopicsEntity> getByStatusAndCloseDateLessThanEqual(@Param("status") Integer status, @Param("date") Date date);
 
     @Query("SELECT u.email FROM UsersEntity u WHERE u.id IN (SELECT m.user.id FROM MembersEntity m WHERE m.group.id = :groupId)")
     List<String> getEmailsByGroupId(@Param("groupId") Integer groupId);

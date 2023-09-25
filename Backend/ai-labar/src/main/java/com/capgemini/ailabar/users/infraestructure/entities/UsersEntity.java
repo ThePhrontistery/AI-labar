@@ -31,8 +31,6 @@ public class UsersEntity {
     private String visualization;
     @Column(name = "language")
     private String language;
-    @Column(name = "online")
-    private Integer online;
     @Column(name = "registration_date")
     private Timestamp registrationDate;
     @Column(name = "last_modification_date")

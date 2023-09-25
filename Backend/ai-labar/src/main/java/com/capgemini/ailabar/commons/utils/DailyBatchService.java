@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,9 +21,9 @@ public class DailyBatchService {
     }
 
     public void closeExpiredTopics() {
-        Instant currentTimestamp = Instant.now();
+        Date currentTimestamp = Date.from(Instant.now());
 
-        List<TopicsEntity> topics = topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentTimestamp.toEpochMilli());
+        List<TopicsEntity> topics = topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentTimestamp);
 
         for (TopicsEntity topic : topics) {
             topic.setStatus(0);

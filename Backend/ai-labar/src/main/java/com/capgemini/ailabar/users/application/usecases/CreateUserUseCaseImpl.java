@@ -44,7 +44,6 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
         UsersEntity usersEntity = new UsersEntity(usersModel);
         usersEntity.setPassword(hashedPassword);
         usersEntity.setToken("");
-        usersEntity.setOnline(0);
         usersEntity.setRegistrationDate(DateTime.actualDateAndTime());
         usersRepositoryPort.createUser(usersEntity);
 

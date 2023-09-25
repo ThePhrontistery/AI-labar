@@ -190,7 +190,7 @@ public class LoadTopicUseCaseImpl implements LoadTopicUseCase {
                         topicsModel.setOptions(addUsersPhotos(topicsModel.getOptions()));
                     }
                     topicsModel.setCanVote(!topicsRepositoryPort.checkIfUserAlreadyVoted(topicEntity.getId(), userId));
-                    topicsModel.setCloseDateString(DateTime.timestampToStringDate(topicsModel.getCloseDate()));
+                    topicsModel.setCloseDateString(DateTime.timestampToStringWithoutTime(topicsModel.getCloseDate()));
                     return topicsModel;
                 })
                 .forEach(allModels::add);
