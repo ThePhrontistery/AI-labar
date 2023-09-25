@@ -22,6 +22,8 @@ class GroupsModelTest {
 
     @Test
     void testConstructorFromEntity() {
+
+
         when(mockGroupsEntity.getId()).thenReturn(1);
         when(mockGroupsEntity.getGroupName()).thenReturn("TestGroup");
         when(mockGroupsEntity.getAdmin()).thenReturn("AdminUser");
