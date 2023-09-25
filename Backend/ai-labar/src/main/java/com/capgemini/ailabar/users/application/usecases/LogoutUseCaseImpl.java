@@ -9,6 +9,9 @@ import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/*
+ * Actualmente sin uso. Creado por si en algún momento se desea ejecutar un control de sesión
+ */
 @Service
 @Transactional
 public class LogoutUseCaseImpl implements LogoutUseCase {
@@ -34,8 +37,5 @@ public class LogoutUseCaseImpl implements LogoutUseCase {
             throw new LoginException("User not found");
         }
 
-        usersEntity.setOnline(0);
-
-        usersRepositoryPort.editUser(usersEntity);
     }
 }

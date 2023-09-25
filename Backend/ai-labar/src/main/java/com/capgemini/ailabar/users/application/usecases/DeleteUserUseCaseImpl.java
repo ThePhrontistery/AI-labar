@@ -31,7 +31,6 @@ public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
         UsersEntity usersEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
         String deactivatedName = usersEntity.getUser() + " **Deactivated** " + usersEntity.getId();
         usersEntity.setUser(deactivatedName);
-        usersEntity.setOnline(0);
         usersEntity.setDeactivationDate(DateTime.actualDateAndTime());
         usersRepositoryPort.editUser(usersEntity);
 

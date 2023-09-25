@@ -19,7 +19,8 @@ public final class DateTime {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return dateFormat.format(date);
     }
-    public static String timestampToStringDate(Timestamp timestamp) {
+
+    public static String timestampToStringWithoutTime(Timestamp timestamp) {
         if (timestamp==null) {return null;}
         Date date = new Date(timestamp.getTime());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

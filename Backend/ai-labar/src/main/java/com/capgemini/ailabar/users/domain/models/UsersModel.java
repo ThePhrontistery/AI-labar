@@ -59,7 +59,6 @@ public class UsersModel {
         this.token = usersEntity.getToken();
         this.visualization = usersEntity.getVisualization();
         this.language = usersEntity.getLanguage();
-        this.online = usersEntity.getOnline();
         this.registrationDateFormatted = DateTime.timestampToString(usersEntity.getRegistrationDate());
         if(usersEntity.getLastModificationDate() != null) {
             this.lastModificationDateFormatted = DateTime.timestampToString(usersEntity.getLastModificationDate());

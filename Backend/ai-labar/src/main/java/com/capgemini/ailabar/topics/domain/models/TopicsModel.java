@@ -22,6 +22,7 @@ public class TopicsModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer groupId;
     private List<String> members;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp closeDate;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String closeDateString;
@@ -61,6 +62,9 @@ public class TopicsModel {
         this.question = topicsEntity.getQuestion();
         this.author = topicsEntity.getAuthor();
         this.groupId = topicsEntity.getGroupId();
+        if(topicsEntity.getCloseDate() != null) {
+            this.closeDateString = DateTime.timestampToStringWithoutTime(topicsEntity.getCloseDate());
+        }
         this.closeDate = topicsEntity.getCloseDate();
         this.visits = topicsEntity.getVisits();
         this.status = topicsEntity.getStatus();
