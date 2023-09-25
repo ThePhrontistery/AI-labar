@@ -29,7 +29,7 @@ public class GetGroupsDatabaseUseCaseImpl implements GetGroupsDatabaseUseCase {
         }
 
         List<GroupsModel> groupsModelList = new ArrayList<>();
-        /* Revisar en la nueva versión ya que cambiará */
+
         for (GroupsEntity groupEntity : groupsList) {
             GroupsModel groupModel = new GroupsModel(groupEntity);
 

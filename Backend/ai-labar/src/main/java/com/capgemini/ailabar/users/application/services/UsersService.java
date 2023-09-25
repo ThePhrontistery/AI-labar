@@ -3,13 +3,13 @@ package com.capgemini.ailabar.users.application.services;
 import com.capgemini.ailabar.users.domain.exceptions.*;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.*;
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUseCase, DeleteUserUseCase,
-        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase,EditLanguageUseCase {
+        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase,
+        EditLanguageUseCase, LogoutUseCase {
     private final LoginUseCase loginUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final EditUserUseCase editUserUseCase;
@@ -19,12 +19,13 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
     private final EditLanguageUseCase editLanguageUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUsersDatabaseUseCase getUsersDatabaseUseCase;
+    private final LogoutUseCase logoutUseCase;
 
     public UsersService(LoginUseCase loginUseCase, CreateUserUseCase createUserUseCase,
                         EditUserUseCase editUserUseCase, DeleteUserUseCase deleteUserUseCase,
                         GetUsersByMatchUseCase getUsersByMatch, EditVisualizationUseCase editVisualizationUseCase,
                         GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase ,
-                        EditLanguageUseCase editLanguageUseCase) {
+                        EditLanguageUseCase editLanguageUseCase, LogoutUseCase logoutUseCase) {
         this.loginUseCase = loginUseCase;
         this.createUserUseCase = createUserUseCase;
         this.editUserUseCase = editUserUseCase;
@@ -34,6 +35,7 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
         this.editLanguageUseCase = editLanguageUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.getUsersDatabaseUseCase = getUsersDatabaseUseCase;
+        this.logoutUseCase = logoutUseCase;
     }
     @Override
     public List<String> login(UsersModel usersModel) {
@@ -108,11 +110,20 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
     }
 
     @Override
-    public List<UsersEntity> getUsersDatabase() {
+    public List<UsersModel> getUsersDatabase() {
         try {
             return this.getUsersDatabaseUseCase.getUsersDatabase();
         } catch (GetUsersDatabaseException getUsersDatabaseException) {
             throw getUsersDatabaseException;
+        }
+    }
+
+    @Override
+    public void logout(UsersModel usersModel) {
+        try {
+            logoutUseCase.logout(usersModel);
+        } catch (LogoutException logoutException) {
+            throw logoutException;
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.Constants;
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.commons.utils.MailService;
 import com.capgemini.ailabar.options.domain.models.OptionsModel;
 import com.capgemini.ailabar.topics.domain.exceptions.CreateTopicException;
@@ -14,7 +15,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -66,6 +70,8 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
         checkGroup();
 
         manageCloseDate();
+
+        topicsEntity.setCreationDate(DateTime.actualDateAndTime());
 
         topicsRepositoryPort.createTopic(topicsEntity);
 
@@ -180,13 +186,15 @@ public class CreateTopicUseCaseImpl implements CreateTopicUseCase {
     }
 
     private void manageCloseDate() {
-        if(topicsModel.getCloseDate() != null && !topicsModel.getCloseDate().isBlank()) {
-            String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDate());
+        if(topicsModel.getCloseDateString() != null && !topicsModel.getCloseDateString().isBlank()) {
+            String dateString = TopicsUtils.validateFormatDate(topicsModel.getCloseDateString());
 
             if(dateString.contains("KO")) {
                 throw new CreateTopicException(dateString);
             } else {
-                topicsEntity.setCloseDate(topicsModel.getCloseDate());
+                LocalDate localDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+                topicsEntity.setCloseDate(Timestamp.from(instant));
             }
 
             try {

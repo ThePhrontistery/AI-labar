@@ -1,9 +1,11 @@
 package com.capgemini.ailabar.users.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.users.domain.exceptions.DeleteUserException;
 import com.capgemini.ailabar.users.domain.ports.in.DeleteUserUseCase;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
+import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,14 @@ public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
             throw new DeleteUserException("Unauthorized user");
         }
 
-        usersRepositoryPort.deleteUser(usersRepositoryPort.getUserByName(usersModel.getUser()).getId());
+        UsersEntity usersEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
+        String deactivatedName = usersEntity.getUser() + " **Deactivated** " + usersEntity.getId();
+        usersEntity.setUser(deactivatedName);
+        usersEntity.setDeactivationDate(DateTime.actualDateAndTime());
+        usersRepositoryPort.editUser(usersEntity);
+
+        usersRepositoryPort.disbleGroupsByUserAdmin(usersEntity.getUser(), deactivatedName);
+
+        usersRepositoryPort.deleteMembersByUserId(usersEntity.getId());
     }
 }

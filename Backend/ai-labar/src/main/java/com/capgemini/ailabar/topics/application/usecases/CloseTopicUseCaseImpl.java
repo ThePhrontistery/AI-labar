@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.topics.domain.exceptions.CloseTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.CloseTopicUseCase;
@@ -23,22 +24,24 @@ public class CloseTopicUseCaseImpl implements CloseTopicUseCase {
             throw new CloseTopicException("Unauthorized user");
         }
 
-        TopicsEntity topicEntity = topicsRepositoryPort.getTopicsEntityById(topicsModel.getId());
+        TopicsEntity topicsEntity = topicsRepositoryPort.getTopicsEntityById(topicsModel.getId());
 
-        if(topicEntity == null) {
+        if(topicsEntity == null) {
             throw new CloseTopicException("There is no topic with that id");
         }
 
-        if(!topicEntity.getAuthor().equals(topicsModel.getUser())) {
+        if(!topicsEntity.getAuthor().equals(topicsModel.getUser())) {
             throw new CloseTopicException("The user is not the author of the topic");
         }
 
-        if(topicEntity.getStatus().equals(0)) {
+        if(topicsEntity.getStatus().equals(0)) {
             throw new CloseTopicException("The topic is currently closed");
         }
 
-        topicEntity.setStatus(0);
+        topicsEntity.setStatus(0);
+        topicsEntity.setReopeningDate(null);
+        topicsEntity.setExecutedClosureDate(DateTime.actualDateAndTime());
 
-        topicsRepositoryPort.closeTopic(topicEntity);
+        topicsRepositoryPort.closeTopic(topicsEntity);
     }
 }

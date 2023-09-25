@@ -4,6 +4,7 @@ import com.capgemini.ailabar.groups.domain.models.GroupsModel;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -17,6 +18,10 @@ public class GroupsEntity {
     private String groupName;
     @Column(name = "admin")
     private String admin;
+    @Column(name = "creation_date")
+    private Timestamp creationDate;
+    @Column(name = "last_modification_date")
+    private Timestamp lastModificationDate;
 
     public GroupsEntity() {}
 

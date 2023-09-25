@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,20 +15,19 @@ import java.util.List;
 public class DailyBatchService {
     private final TopicsRepository topicsRepository;
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
     @Autowired
     public DailyBatchService(TopicsRepository topicsRepository) {
         this.topicsRepository = topicsRepository;
     }
 
     public void closeExpiredTopics() {
-        LocalDate currentDate = LocalDate.now();
+        Date currentTimestamp = Date.from(Instant.now());
 
-        List<TopicsEntity> topics = topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentDate.format(dateFormatter));
+        List<TopicsEntity> topics = topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentTimestamp);
 
         for (TopicsEntity topic : topics) {
             topic.setStatus(0);
+            topic.setExecutedClosureDate(DateTime.actualDateAndTime());
             topicsRepository.save(topic);
         }
     }

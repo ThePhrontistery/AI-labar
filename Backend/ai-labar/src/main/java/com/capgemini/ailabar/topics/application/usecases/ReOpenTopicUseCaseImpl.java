@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.topics.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.topics.domain.exceptions.ReOpenTopicException;
 import com.capgemini.ailabar.topics.domain.models.TopicsModel;
 import com.capgemini.ailabar.topics.domain.ports.in.ReOpenTopicUseCase;
@@ -38,6 +39,8 @@ public class ReOpenTopicUseCaseImpl implements ReOpenTopicUseCase {
         }
 
         topicsEntity.setStatus(1);
+        topicsEntity.setExecutedClosureDate(null);
+        topicsEntity.setReopeningDate(DateTime.actualDateAndTime());
 
         topicsRepositoryPort.reOpenTopic(topicsEntity);
     }

@@ -2,6 +2,7 @@ package com.capgemini.ailabar.users.infraestructure.repositories;
 
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,14 +26,22 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Override
     List<UsersEntity> findAll();
 
-    @Query("SELECT u.user FROM UsersEntity u")
+    @Query("SELECT u.user FROM UsersEntity u WHERE u.user NOT LIKE '%Deactivated%'")
     List<String> getAllUsers();
 
     @Query("SELECT u FROM UsersEntity u WHERE u.user = :user")
     UsersEntity getUserByName(@Param("user") String user);
 
-    @Query("SELECT u.user FROM UsersEntity u WHERE upper(u.user) LIKE %:matcher% ")
+    @Query("SELECT u.user FROM UsersEntity u WHERE upper(u.user) LIKE %:matcher% AND u.user NOT LIKE '%Deactivated%'")
     List<String> getUsersByNameMatch(@Param("matcher") String matcher);
+
+    @Modifying
+    @Query("UPDATE GroupsEntity g SET g.admin = :deactivatedName WHERE g.admin = :admin")
+    void disbleGroupsByUserAdmin(@Param("admin") String admin, @Param("deactivatedName") String deactivatedName);
+
+    @Modifying
+    @Query("DELETE FROM MembersEntity m WHERE m.user.id = :userId")
+    void deleteMembersByUserId(@Param("userId") Integer userId);
 
     @Override
     <S extends UsersEntity> S save(S entity);
