@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,12 +21,16 @@ class TopicsEntityTest {
 
     @Test
     void testTopicsEntityCreation() {
+        LocalDate localDate = LocalDate.of(2022, 12, 31);
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
         when(mockTopicsModel.getTitle()).thenReturn("TestTitle");
         when(mockTopicsModel.getType()).thenReturn("TestType");
         when(mockTopicsModel.getQuestion()).thenReturn("TestQuestion");
         when(mockTopicsModel.getAuthor()).thenReturn("TestAuthor");
         when(mockTopicsModel.getGroupId()).thenReturn(1);
-        when(mockTopicsModel.getCloseDate()).thenReturn("2023-12-31");
+        when(mockTopicsModel.getCloseDate()).thenReturn(timestamp);
         when(mockTopicsModel.getVisits()).thenReturn(100);
         when(mockTopicsModel.getStatus()).thenReturn(1);
 
@@ -32,7 +41,7 @@ class TopicsEntityTest {
         assertEquals("TestQuestion", topicsEntity.getQuestion());
         assertEquals("TestAuthor", topicsEntity.getAuthor());
         assertEquals(1, topicsEntity.getGroupId());
-        assertEquals("2023-12-31", topicsEntity.getCloseDate());
+        assertEquals(timestamp, topicsEntity.getCloseDate());
         assertEquals(100, topicsEntity.getVisits());
         assertEquals(1, topicsEntity.getStatus());
     }

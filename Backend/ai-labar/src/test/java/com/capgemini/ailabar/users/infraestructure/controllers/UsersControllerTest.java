@@ -192,19 +192,19 @@ class UsersControllerTest {
 
     @Test
     void testGetUsersDatabaseSuccess() {
-        UsersEntity user1 = new UsersEntity();
+        UsersModel user1 = new UsersModel();
         user1.setId(1);
         user1.setUser("User1");
 
-        UsersEntity user2 = new UsersEntity();
+        UsersModel user2 = new UsersModel();
         user2.setId(2);
         user2.setUser("User2");
 
-        List<UsersEntity> usersEntitiesList = new ArrayList<>();
-        usersEntitiesList.add(user1);
-        usersEntitiesList.add(user2);
+        List<UsersModel> usersModelList = new ArrayList<>();
+        usersModelList.add(user1);
+        usersModelList.add(user2);
 
-        when(usersService.getUsersDatabase()).thenReturn(usersEntitiesList);
+        when(usersService.getUsersDatabase()).thenReturn(usersModelList);
 
         String expectedMessage = "OK";
 
@@ -214,7 +214,7 @@ class UsersControllerTest {
         SpecialResponse specialResponse = actualResponse.getBody();
         assertNotNull(specialResponse);
         assertEquals(expectedMessage, specialResponse.getMessage());
-        assertEquals(usersEntitiesList, specialResponse.getEntity());
+        assertEquals(usersModelList, specialResponse.getEntity());
 
         verify(usersService, times(1)).getUsersDatabase();
     }
