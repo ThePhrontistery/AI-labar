@@ -20,6 +20,11 @@
 .user-icon {
   font-size: 32px;
   margin-right: 8px;
+  background-size: cover;
+  display: inline-block;
+  background-image: url("../../../../assets/icons/account_circle.svg");
+  height: 30px;
+  width: 30px;
 }
 
 .user-image {
@@ -44,6 +49,6 @@
   border-radius: 50%; /* Hace que el botón sea circular */
 }
 
-.content{
+.content {
   margin-top: 80px;
 }

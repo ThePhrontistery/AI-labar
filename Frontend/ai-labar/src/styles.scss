@@ -185,3 +185,8 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
+
+button:disabled .button-reopen{
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
