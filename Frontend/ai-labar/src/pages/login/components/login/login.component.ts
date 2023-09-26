@@ -122,6 +122,7 @@ export class LoginComponent implements OnInit {
     const body = {
       user: this.loginForm.value.user,
       password: CryptoJS.SHA256(this.loginForm.value.password).toString(),
+      language: this.currentLanguage
     };
 
     // Store username
