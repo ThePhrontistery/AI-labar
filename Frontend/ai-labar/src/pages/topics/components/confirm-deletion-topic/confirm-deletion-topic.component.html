@@ -4,16 +4,24 @@
 </div>
 <div mat-dialog-actions class="wizard">
   <div class="button left-button">
-    <button mat-button color="accent" (click)="onCancelClick()">{{ 'ELIMINATION_CONFIRM.NO' | translate }}</button>
+    <button
+      id="confirm-deletion-topic-no-button"
+      mat-button
+      color="accent"
+      (click)="onCancelClick()"
+    >
+      {{ "ELIMINATION_CONFIRM.NO" | translate }}
+    </button>
   </div>
   <div class="button right-button">
     <button
+      id="confirm-deletion-topic-yes-button"
       class="login-button ml16"
       mat-raised-button
       color="white"
       (click)="onConfirmClick()"
     >
-    {{ 'ELIMINATION_CONFIRM.YES' | translate }}
+      {{ "ELIMINATION_CONFIRM.YES" | translate }}
     </button>
   </div>
 </div>

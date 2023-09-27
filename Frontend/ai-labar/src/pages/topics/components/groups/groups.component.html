@@ -11,6 +11,7 @@
   <div *ngIf="selectedOption == 'create'">
     <mat-form-field appearance="fill">
       <input
+        id="groups-group-name-input"
         matInput
         placeholder="{{ 'MANAGING_GROUPS.GROUP_NAME' | translate }}"
         type="text"
@@ -19,6 +20,7 @@
     </mat-form-field>
     <mat-form-field appearance="fill">
       <input
+        id="groups-searcher-input"
         matInput
         placeholder="{{ 'MANAGING_GROUPS.SEARCH_USERS' | translate }}"
         type="text"
@@ -47,6 +49,7 @@
       </p>
       <mat-form-field appearance="fill">
         <textarea
+          id="groups-current-selection-input"
           formControlName="currentSelection"
           matInput
           [value]="selectedUsers.join(', ')"
@@ -57,6 +60,7 @@
     <div class="wizard-navigation">
       <div class="button left-button">
         <button
+          id="groups-clear-button"
           mat-raised-button
           color="white"
           class="login-button"
@@ -66,10 +70,17 @@
         </button>
       </div>
       <div class="button right-button">
-        <button class="button" [mat-dialog-close]="true" mat-button color="accent">
+        <button
+          id="groups-cancel-button"
+          class="button"
+          [mat-dialog-close]="true"
+          mat-button
+          color="accent"
+        >
           {{ "MANAGING_GROUPS.CANCEL" | translate }}
         </button>
         <button
+          id="groups-save-button"
           [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
           class="button login-button ml16"
           mat-raised-button
@@ -99,6 +110,7 @@
     <div [class.oculto]="!showSelectedGroup">
       <mat-form-field appearance="fill">
         <input
+          id="groups-searcher-group-input"
           matInput
           placeholder="{{ 'MANAGING_GROUPS.SEARCH_USERS' | translate }}"
           type="text"
@@ -109,7 +121,9 @@
     </div>
 
     <div *ngIf="showUsersGroups">
-      <p>{{ usersGroups.length }} {{ "ADD_CANDIDATES.USERS_FOUND" | translate }}</p>
+      <p>
+        {{ usersGroups.length }} {{ "ADD_CANDIDATES.USERS_FOUND" | translate }}
+      </p>
       <div class="selectionPanel" #checkboxContainer>
         <mat-checkbox
           color="primary"
@@ -134,6 +148,7 @@
       </p>
       <mat-form-field appearance="fill">
         <textarea
+          id="groups-current-selection-users-input"
           formControlName="currentSelection"
           matInput
           [value]="selectedUsersGroup.join(', ')"
@@ -145,6 +160,7 @@
     <div class="wizard-navigation">
       <div class="button left-button">
         <button
+          id="groups-clearGroup-button"
           mat-raised-button
           color="white"
           class="login-button"
@@ -154,10 +170,17 @@
         </button>
       </div>
       <div class="button right-button">
-        <button class="button" [mat-dialog-close]="true" mat-button color="accent">
+        <button
+          id="groups-cancelGroup-button"
+          class="button"
+          [mat-dialog-close]="true"
+          mat-button
+          color="accent"
+        >
           {{ "MANAGING_GROUPS.CANCEL" | translate }}
         </button>
         <button
+          id="groups-saveGroup-button"
           [disabled]="this.selectedUsersGroup.length === 0"
           class="button login-button ml16"
           mat-raised-button
@@ -169,5 +192,4 @@
       </div>
     </div>
   </div>
-
 </form>
