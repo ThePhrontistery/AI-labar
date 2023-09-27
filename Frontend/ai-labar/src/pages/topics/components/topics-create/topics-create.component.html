@@ -21,12 +21,13 @@
           color="white"
           *ngIf="currentStep > 1"
           (click)="goToPreviousStep()"
+          id="topics-create-previous-button"
         >
           Atrás
         </button>
       </div>
       <div class="button right-button">
-        <button mat-button color="accent" (click)="cancelSave()">
+        <button mat-button color="accent" (click)="cancelSave()" id="topics-create-cancel-button">
           {{ 'TOPICS_CREATE.CANCEL' | translate }}
         </button>
         <button
@@ -35,6 +36,7 @@
           mat-raised-button
           color="white"
           (click)="saveSurvey()"
+          id="topics-create-save-button"
         >
         {{ 'TOPICS_CREATE.SAVE' | translate }}
         </button>
