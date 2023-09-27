@@ -31,10 +31,10 @@
     </mat-slide-toggle>
   </div>
   <div class="actions">
-    <button mat-raised-button class="action-button" (click)="managingGroups()">
+    <button mat-raised-button class="action-button" (click)="managingGroups()" id="topic-list-managing-groups-button">
       {{ "TOPIC.MANAGING_GROUPS" | translate }}
     </button>
-    <button mat-raised-button class="action-button" (click)="addTopic()">
+    <button mat-raised-button class="action-button" (click)="addTopic()" id="topic-list-add-topic-button">
       {{ "TOPIC.ADD_TOPIC" | translate }}
     </button>
   </div>
@@ -44,28 +44,28 @@
   <div>
     <b>{{ "TOPICS_LIST.FILTERS" | translate }}</b>
     <mat-slide-toggle
-      id="minesToggle"
+      id="minesToggleXS"
       [(ngModel)]="minesFilter"
       (change)="onToggleChange($event)"
     >
       {{ "TOPICS_LIST.OWN" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
-      id="openedToggle"
+      id="openedToggleXS"
       [(ngModel)]="openedFilter"
       (change)="onToggleChange($event)"
     >
       {{ "TOPICS_LIST.OPEN_FILTER" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
-      id="closedToggle"
+      id="closedToggleXS"
       [(ngModel)]="closedFilter"
       (change)="onToggleChange($event)"
     >
       {{ "TOPICS_LIST.CLOSED_FILTER" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
-      id="votePendingToggle"
+      id="votePendingToggleXS"
       [(ngModel)]="votePendingFilter"
       (change)="onToggleChange($event)"
     >
@@ -73,10 +73,10 @@
     </mat-slide-toggle>
   </div>
   <div class="actions">
-    <button mat-raised-button class="action-button" (click)="managingGroups()">
+    <button mat-raised-button class="action-button" (click)="managingGroups()" id="topic-list-managing-groups-buttonXS">
       {{ "TOPIC.MANAGING_GROUPS" | translate }}
     </button>
-    <button mat-raised-button class="action-button" (click)="addTopic()">
+    <button mat-raised-button class="action-button" (click)="addTopic()" id="topic-list-add-topic-buttonXS">
       {{ "TOPIC.ADD_TOPIC" | translate }}
     </button>
   </div>
@@ -158,8 +158,9 @@
           class="capBlue"
           (click)="reOpen(element)"
           mat-button
+          id="topic-list-reopen-tablet-button"
         >
-          <mat-icon svgIcon="lock_open" class="button-reopen"></mat-icon>
+          <mat-icon svgIcon="lock_open" class="button-reopen" ></mat-icon>
         </button>
       </td>
     </ng-container>
@@ -189,6 +190,7 @@
           class="capBlue"
           (click)="close(element)"
           mat-button
+          id="topic-list-close-tablet-button"
         >
           <mat-icon svgIcon="lock" class="button-reopen"></mat-icon>
         </button>
@@ -219,6 +221,7 @@
           class="capBlue"
           (click)="delete(element)"
           mat-button
+          id="topic-list-delete-tablet-button"
         >
           <mat-icon svgIcon="delete" class="button-reopen"></mat-icon>
         </button>
@@ -249,6 +252,7 @@
           class="capBlue"
           (click)="vote(element)"
           mat-button
+          id="topic-list-vote-tablet-button"
         >
           <mat-icon svgIcon="how_to_vote" class="button-reopen"></mat-icon>
         </button>
@@ -279,6 +283,7 @@
           class="capBlue"
           (click)="results(element)"
           mat-button
+          id="topic-list-visibility-tablet-button"
         >
           <mat-icon svgIcon="visibility" class="button-reopen"></mat-icon>
         </button>
@@ -290,7 +295,7 @@
         {{ "TOPICS_LIST.ACTIONS" | translate }}
       </th>
       <td mat-cell *matCellDef="let element" fxHide fxShow.xs>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
+        <button mat-icon-button [matMenuTriggerFor]="menu" id="topic-list-more-vert-button">
           <mat-icon svgIcon="more_vert" class="button-reopen"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
@@ -300,6 +305,7 @@
             class="capBlue"
             (click)="reOpen(element)"
             mat-button
+            id="topic-list-reopen-tablet-menu-button"
           >
             <mat-icon svgIcon="lock_open" class="button-reopen"></mat-icon>
           </button>
@@ -309,6 +315,7 @@
             class="capBlue"
             (click)="close(element)"
             mat-button
+            id="topic-list-close-tablet-menu-button"
           >
             <mat-icon svgIcon="lock" class="button-reopen"></mat-icon>
           </button>
@@ -318,6 +325,7 @@
             class="capBlue"
             (click)="delete(element)"
             mat-button
+            id="topic-list-delete-tablet-menu-button"
           >
             <mat-icon svgIcon="delete" class="button-reopen"></mat-icon>
           </button>
@@ -327,6 +335,7 @@
             class="capBlue"
             (click)="vote(element)"
             mat-button
+            id="topic-list-vote-button"
           >
             <mat-icon svgIcon="how_to_vote" class="button-reopen"></mat-icon>
           </button>
@@ -336,6 +345,7 @@
             class="capBlue"
             (click)="results(element)"
             mat-button
+            id="topic-list-visibility-tablet-menu-button"
           >
             <mat-icon svgIcon="visibility" class="button-reopen"></mat-icon>
           </button>
@@ -395,6 +405,7 @@
             [disabled]="element.status === 1 || element.author !== user"
             class="capBlue"
             (click)="reOpen(element)"
+            id="topic-list-reopen-card-button"
           >
             <mat-icon
               svgIcon="lock_open"
@@ -417,6 +428,7 @@
             [disabled]="element.status === 0 || element.author !== user"
             class="capBlue"
             (click)="close(element)"
+            id="topic-list-close-card-button"
           >
             <mat-icon
               svgIcon="lock"
@@ -438,6 +450,7 @@
             *ngIf="element.author === user"
             class="capBlue"
             (click)="delete(element)"
+            id="topic-list-delete-card-button"
           >
             <mat-icon
               svgIcon="delete"
@@ -452,6 +465,7 @@
             [disabled]="element.status === 0 || !element.canVote"
             class="capBlue"
             (click)="vote(element)"
+            id="topic-list-vote-card-button"
           >
             <mat-icon
               svgIcon="how_to_vote"
@@ -466,6 +480,7 @@
             [disabled]="element.status === 1"
             class="capBlue"
             (click)="results(element)"
+            id="topic-list-visibility-card-button"
           >
             <mat-icon
               svgIcon="visibility"
@@ -500,6 +515,7 @@
     mat-button
     [color]="showPaginatedTable ? 'primary' : 'default'"
     class="image-button pagination-button"
+    id="topic-list-pagination-button"
   >
     <div
       class="button-image"
@@ -516,6 +532,7 @@
     mat-button
     [color]="showScrollTable ? 'primary' : 'default'"
     class="image-button scroll-button"
+    id="topic-list-scroll-button"
   >
     <div
       class="button-image"
@@ -532,6 +549,7 @@
     mat-button
     [color]="showCards ? 'primary' : 'default'"
     class="image-button cards-button"
+    id="topic-list-cards-button"
   >
     <div
       class="button-image"

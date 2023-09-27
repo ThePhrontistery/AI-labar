@@ -11,14 +11,14 @@
       <img class="user-image" [src]="userImage" height="auto" alt="Image" />
     </div>
     <span class="username">{{ user }}</span>
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-button">
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-button" id="topics-menu-button">
       <mat-icon svgIcon="arrow_drop_down" class="button-reopen"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="toggleLanguage()">
+      <button mat-menu-item (click)="toggleLanguage()"  id="topics-language-button">
         {{ textButtonLanguage }}
       </button>
-      <button mat-menu-item (click)="logOut()">
+      <button mat-menu-item (click)="logOut()"  id="topics-logout-button">
         {{ "TOPIC.LOGOUT" | translate }}
       </button>
     </mat-menu>
