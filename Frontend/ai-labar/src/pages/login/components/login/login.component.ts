@@ -8,11 +8,13 @@ import { Subject, Subscription, takeUntil } from 'rxjs';
 import { LoginService } from '../../login.service';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
+import * as JSEncryptModule from 'jsencrypt';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'src/pages/topics/services/message.service';
 import { LanguageService } from 'src/pages/language.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -57,6 +59,8 @@ export class LoginComponent implements OnInit {
 
   currentLanguage!: string;
   textButtonLanguage!: string;
+
+  publicKey: any;
 
   /**
    * Component builder.
@@ -113,16 +117,68 @@ export class LoginComponent implements OnInit {
     this.ngUnsubscribe.complete();
   }
 
+  async getPublicKey(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.loginService.getPublicKey().subscribe({
+        next: (response) => {
+          if (response && response.body && response.body.entity) {
+            this.publicKey = response.body.entity;
+            resolve();
+          } else {
+            reject(new Error('Respuesta inválida desde el servidor.'));
+          }
+        },
+        error: (error) => {
+          this.messageService.showErrorMessage(error.error.message);
+          reject(error);
+        },
+      });
+    });
+  }
+
+  encryptText(textToEncrypt: string): string | null {
+    if (!this.publicKey) {
+      console.error('Clave pública no disponible.');
+      return null;
+    }
+  
+    const encrypt = new JSEncryptModule.JSEncrypt();
+    encrypt.setPublicKey(this.publicKey);
+  
+    const encryptedText = encrypt.encrypt(textToEncrypt);
+  
+    if (!encryptedText) {
+      console.error('Error al cifrar el texto.');
+      return null;
+    }
+  
+    return encryptedText;
+  }
+
   /**
    * Handles the click event on the login button.
    * Perform user authentication and redirect if successful.
    */
-  loginClick(): void {
-    // Create the login request body
-    const body = {
-      user: this.loginForm.value.user,
-      password: CryptoJS.SHA256(this.loginForm.value.password).toString(),
-    };
+  async loginClick(): Promise<void> {
+    let body;
+
+    if (environment.loginCap) {
+      await this.getPublicKey();
+
+      const encryptedPassword = this.encryptText(this.loginForm.value.password);
+
+      body = {
+        user: this.loginForm.value.user,
+        password: encryptedPassword,
+        language: this.currentLanguage,
+      };
+    } else {
+      body = {
+        user: this.loginForm.value.user,
+        password: CryptoJS.SHA256(this.loginForm.value.password).toString(),
+        language: this.currentLanguage,
+      };
+    }
 
     // Store username
     this.username = this.loginForm.value.user;
@@ -208,8 +264,8 @@ export class LoginComponent implements OnInit {
             error: (error) => {
               this.messageService.showErrorMessage(
                 this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +
-                  '\n' +
-                  error.error.message
+                '\n' +
+                error.error.message
               );
             },
           })

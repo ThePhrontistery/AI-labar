@@ -4,6 +4,8 @@ import com.capgemini.ailabar.users.domain.exceptions.*;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.*;
 import org.springframework.stereotype.Service;
+
+import java.security.PrivateKey;
 import java.util.List;
 
 @Service
@@ -38,9 +40,9 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
         this.logoutUseCase = logoutUseCase;
     }
     @Override
-    public List<String> login(UsersModel usersModel) {
+    public List<String> login(UsersModel usersModel, PrivateKey privateKey) {
         try {
-            return loginUseCase.login(usersModel);
+            return loginUseCase.login(usersModel, privateKey);
         } catch (LoginException loginException) {
             throw loginException;
         }
