@@ -77,7 +77,7 @@
   </div>
 
   <div *ngIf="isVotingSurvey">
-    <button mat-button (click)="openAddCandidates()">{{ 'STEP_TWO.ADD_CANDIDATES' | translate }}</button>
+    <button id="step-two-add-candidates-button" mat-button (click)="openAddCandidates()">{{ 'STEP_TWO.ADD_CANDIDATES' | translate }}</button>
     <h2>{{ 'STEP_TWO.LIST_CANDIDATES' | translate }}</h2>
     <!-- List of selected users -->
     <ul>

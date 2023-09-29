@@ -12,7 +12,7 @@
   <!-- Combo box to select groups -->
   <mat-form-field>
     <mat-label>{{ "ADD_GROUPS.SELECT_USER_GROUP" | translate }}</mat-label>
-    <mat-select [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
+    <mat-select id="add-groups-topic-select-group" [(ngModel)]="selectedGroup" (selectionChange)="loadUsers()">
       <mat-option *ngFor="let group of groups" [value]="group">{{
         group
       }}</mat-option>
