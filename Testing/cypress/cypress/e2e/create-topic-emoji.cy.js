@@ -17,7 +17,7 @@ describe("Your Cypress Test Suite", () => {
     cy.get("#topicsTable").should("be.visible");
 
     cy.get("#topic-list-add-topic-button").click();
-    cy.url().should("include", Cypress.env('CYPRESS_TOPICS_CREATE_URL'));
+    cy.url().should("include",  "/#/topics/topics-create");
     cy.wait(1000);
 
     cy.get(".images-container div").should('have.length', 4).eq(2).click();
