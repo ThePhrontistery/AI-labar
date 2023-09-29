@@ -4,9 +4,11 @@ describe("Your Cypress Test Suite", () => {
 
     cy.visit("http://localhost:4200/ailabar");
 
-    cy.get('[formControlName="user"]').type(Cypress.env('CYPRESS_USERNAME'));
+    cy.get('[formControlName="user"]').type(Cypress.env("CYPRESS_USERNAME"));
 
-    cy.get('[formControlName="password"]').type(Cypress.env('CYPRESS_PASSWORD'));
+    cy.get('[formControlName="password"]').type(
+      Cypress.env("CYPRESS_PASSWORD")
+    );
 
     cy.get("#login-login-button").click();
 
@@ -16,12 +18,15 @@ describe("Your Cypress Test Suite", () => {
   it("should interact with the elements and perform assertions", () => {
     cy.get("#topicsTable").should("be.visible");
 
+    cy.log("Let's create a topic");
     cy.get("#topic-list-add-topic-button").click();
-    cy.url().should("include",  "/#/topics/topics-create");
+    cy.url().should("include", "/#/topics/topics-create");
     cy.wait(1000);
 
-    cy.get(".images-container div").should('have.length', 4).eq(3).click();
+    cy.log("We selected the topic of EMPLOYEES");
+    cy.get(".images-container div").should("have.length", 4).eq(3).click();
 
+    cy.log("Fill out all the fields");
     cy.get("#step-two-tittle-input").type("Cypress test employee");
 
     cy.get("#step-two-date-input").should("be.visible").click();
@@ -50,6 +55,7 @@ describe("Your Cypress Test Suite", () => {
 
     cy.wait(1000);
 
+    cy.log("We click on 'Save'");
     cy.get("#topics-create-save-button").click();
 
     cy.get("#topicsTable tbody tr")
@@ -66,18 +72,22 @@ describe("Your Cypress Test Suite", () => {
           const parts = id.split("-");
           const lastPart = parts[parts.length - 1];
           cy.wait(1000);
+          cy.log("We took the survey");
           cy.get(`#topic-list-vote-tablet-button-${lastPart}`).click();
           cy.wait(1000);
           cy.get(".modal input").first().click();
           cy.wait(1000);
           cy.get(`#modal-votation-save-button`).click();
           cy.wait(1000);
+          cy.log("We're closing the survey");
           cy.get(`#topic-list-close-tablet-button-${lastPart}`).click();
           cy.wait(1000);
+          cy.log("We visualize the results");
           cy.get(`#topic-list-visibility-tablet-button-${lastPart}`).click();
           cy.wait(1000);
           cy.get(`#as-results-close-button`).click();
           cy.wait(1000);
+          cy.log("We visualize the results");
           cy.get(`#topic-list-delete-tablet-button-${lastPart}`).click();
           cy.wait(1000);
           cy.get(`#confirm-deletion-topic-yes-button`).click();
