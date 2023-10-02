@@ -27,4 +27,9 @@ export class LoginService {
   getUserImage(): string {
     return this.userImage;
   }
+
+  getPublicKey(): Observable<any> {
+    const url = `${environment.apiUrl}/users/getPublicKey`;
+    return this.http.get<any>(url, { observe: 'response' });
+  }
 }

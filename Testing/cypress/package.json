@@ -1,0 +1,27 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:development": "cross-env CYPRESS_ENV=development cypress open",
+    "cypress:production": "cross-env CYPRESS_ENV=production cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "cross-env": "^7.0.3",
+    "cypress": "^13.2.0",
+    "typescript": "^5.2.2"
+  },
+  "baseUrl": "http://localhost:4200/ailabar",
+  "viewportWidth": 1280,
+  "viewportHeight": 720,
+  "integrationFolder": "cypress/tests",
+  "fixturesFolder": "cypress/fixtures",
+  "supportFile": "cypress/support/index.js",
+  "testFiles": "**/*.spec.js"
+}

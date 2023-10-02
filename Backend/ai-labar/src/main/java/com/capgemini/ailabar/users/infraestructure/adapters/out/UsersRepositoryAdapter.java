@@ -71,6 +71,11 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
+    public void updateToken(Integer userId, String newToken) {
+        usersRepository.updateToken(userId, newToken);
+    }
+
+    @Override
     public boolean login(String user, String password) {
         return usersRepository.checkLogin(user, password);
     }
