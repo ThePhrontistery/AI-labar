@@ -62,6 +62,8 @@ export class LoginComponent implements OnInit {
 
   publicKey: any;
 
+  loginCap!: boolean;
+
   /**
    * Component builder.
    * @param loginService Login service
@@ -106,6 +108,8 @@ export class LoginComponent implements OnInit {
     this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
       this.textButtonLanguage = translation;
     });
+
+    this.loginCap = environment.loginCap;
   }
 
   /**
@@ -141,17 +145,17 @@ export class LoginComponent implements OnInit {
       console.error('Clave pública no disponible.');
       return null;
     }
-  
+
     const encrypt = new JSEncryptModule.JSEncrypt();
     encrypt.setPublicKey(this.publicKey);
-  
+
     const encryptedText = encrypt.encrypt(textToEncrypt);
-  
+
     if (!encryptedText) {
       console.error('Error al cifrar el texto.');
       return null;
     }
-  
+
     return encryptedText;
   }
 
