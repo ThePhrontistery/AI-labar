@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.users.domain.ports.out;
 
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public interface UsersRepositoryPort {
     void disbleGroupsByUserAdmin(String admin, String deactivatedName);
 
     void deleteMembersByUserId(Integer userId);
+
+    void updateToken(@Param("userId") Integer userId, @Param("newToken") String newToken);
 
     boolean login(String user, String password);
 }
