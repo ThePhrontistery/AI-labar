@@ -43,6 +43,10 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Query("DELETE FROM MembersEntity m WHERE m.user.id = :userId")
     void deleteMembersByUserId(@Param("userId") Integer userId);
 
+    @Modifying
+    @Query("UPDATE UsersEntity u SET u.token = :newToken WHERE u.id = :userId")
+    void updateToken(@Param("userId") Integer userId, @Param("newToken") String newToken);
+
     @Override
     <S extends UsersEntity> S save(S entity);
 }

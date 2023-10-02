@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.users.infraestructure.controllers;
 
 import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
+import com.capgemini.ailabar.commons.utils.RSAKeyPairGeneratorService;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import com.capgemini.ailabar.users.domain.exceptions.LoginException;
 import com.capgemini.ailabar.users.domain.exceptions.*;
@@ -8,20 +9,46 @@ import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.application.services.UsersService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.PrivateKey;
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 public class UsersController implements SpecialResponseInterface {
+    private final RSAKeyPairGeneratorService rsaKeyPairGeneratorService;
     private final UsersService usersService;
+    private final Environment environment;
+    private PrivateKey privateKey;
 
     @Autowired
-    public UsersController(UsersService usersService) {
+    public UsersController(RSAKeyPairGeneratorService rsaKeyPairGeneratorService, UsersService usersService,
+                           Environment environment) {
+        this.rsaKeyPairGeneratorService = rsaKeyPairGeneratorService;
         this.usersService = usersService;
+        this.environment = environment;
+    }
+
+    /*
+     * GENERATE AND PROVIDE AN RSA PUBLIC KEY FOR ENCRYPTION ON THE FRONTEND
+     */
+    @GetMapping("/getPublicKey")
+    public ResponseEntity<SpecialResponse> getPublicKey() {
+        JSONObject responseJson = new JSONObject();
+        String publicKey = null;
+        try {
+            rsaKeyPairGeneratorService.generateKeys();
+            this.privateKey = rsaKeyPairGeneratorService.getPrivateKey();
+            publicKey = rsaKeyPairGeneratorService.publicKeyToString();
+        } catch (Exception e) {
+            throw new LoginException("An error occurred while obtaining the RSA public key");
+        }
+        responseJson.put("message", "PublicKey obtained successful");
+        return new ResponseEntity<>(specialResponse(publicKey, responseJson), HttpStatus.OK);
     }
 
     /*
@@ -34,8 +61,16 @@ public class UsersController implements SpecialResponseInterface {
      */
     @PostMapping("/login")
     public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
+        if("true".equals(environment.getProperty("login.cap.active"))) {
+            try {
+                usersModel.setPassword(rsaKeyPairGeneratorService.decryptWithPrivateKey(usersModel.getPassword(), privateKey));
+            } catch (Exception e) {
+                throw new LoginException("An error occurred while decrypting the RSA encryption");
+            }
+        }
+
         JSONObject responseJson = new JSONObject();
-        List<String> loginData = usersService.login(usersModel);
+        List<String> loginData = usersService.login(usersModel, privateKey);
         responseJson.put("message", "Login successful");
         return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
