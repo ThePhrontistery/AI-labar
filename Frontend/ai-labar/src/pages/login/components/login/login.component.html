@@ -48,7 +48,7 @@
           >
             {{ "LOGIN.INIT" | translate }}
           </button>
-          <button
+          <button *ngIf="!loginCap"
             id="login-registration-button"
             mat-raised-button
             color="white"
@@ -61,7 +61,7 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card *ngIf="showRegistroFom" class="login-card">
+    <mat-card *ngIf="showRegistroFom && !loginCap" class="login-card">
       <mat-card-header>
         <mat-card-title>{{ "LOGIN.REGISTER" | translate }}</mat-card-title>
       </mat-card-header>
@@ -101,7 +101,7 @@
               matPrefix
               (click)="upload($event)"
             >
-              <mat-icon>attach_file</mat-icon>
+              <mat-icon svgIcon="attach_file"></mat-icon>
             </button>
             <input
               id="login-image-text-input"

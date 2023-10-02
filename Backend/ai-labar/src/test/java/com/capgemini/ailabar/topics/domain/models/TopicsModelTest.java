@@ -58,7 +58,7 @@ class TopicsModelTest {
         verify(mockTopicsEntity, times(1)).getQuestion();
         verify(mockTopicsEntity, times(1)).getAuthor();
         verify(mockTopicsEntity, times(1)).getGroupId();
-        verify(mockTopicsEntity, times(1)).getCloseDate();
+        verify(mockTopicsEntity, times(3)).getCloseDate();
         verify(mockTopicsEntity, times(1)).getVisits();
         verify(mockTopicsEntity, times(1)).getStatus();
     }

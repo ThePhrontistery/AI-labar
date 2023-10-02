@@ -30,5 +30,6 @@ export class AppModule {
     matIconRegistry.addSvgIcon('more_vert', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
     matIconRegistry.addSvgIcon('arrow_drop_down', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/arrow_drop_down.svg'));
     matIconRegistry.addSvgIcon('account_circle', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/account_circle.svg'));
+    matIconRegistry.addSvgIcon('attach_file', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/attach_file.svg'));
   }
 }

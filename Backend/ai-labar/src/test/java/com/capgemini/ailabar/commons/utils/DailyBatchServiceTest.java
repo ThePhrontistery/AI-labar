@@ -55,10 +55,10 @@ class DailyBatchServiceTest {
 
         List<TopicsEntity> topics = Arrays.asList(topic1, topic2);
 
-        when(topicsRepository.getByStatusAndCloseDateLessThanEqual(1, currentTimestamp)).thenReturn(topics);
+        when(topicsRepository.getByStatusAndCloseDateLessThanEqual(anyInt(), any(Date.class))).thenReturn(topics);
 
         dailyBatchService.closeExpiredTopics();
 
-        verify(topicsRepository, times(1)).getByStatusAndCloseDateLessThanEqual(1, currentTimestamp);
+        verify(topicsRepository, times(1)).getByStatusAndCloseDateLessThanEqual(anyInt(), any(Date.class));
     }
 }

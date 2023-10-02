@@ -20,7 +20,7 @@ import java.security.PrivateKey;
 import java.util.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class LoginUseCaseImpl implements LoginUseCase {
     private final UsersRepositoryPort usersRepositoryPort;
     private final Environment environment;
