@@ -70,8 +70,12 @@ public class LoginUseCaseImpl implements LoginUseCase {
     private String loginCap(UsersModel usersModel) {
         JSONObject jsonObject = requestToCapgemini(usersModel);
 
-        if(!usersRepositoryPort.checkUser(usersModel.getUser())) {
-            createCapgeminiUser(usersModel, jsonObject);
+        JSONObject decodedClaims = readJWT(jsonObject);
+
+        if(!usersRepositoryPort.checkEmail(decodedClaims.getString("email"))) {
+            // Descomentar cuando se quiera volver a registrar a los usuarios con el primer login en la aplicación
+            //createCapgeminiUser(usersModel, jsonObject);
+            throw new LoginException("Usuario no autorizado en la aplicación");
         }
 
         String token = jsonObject.getString("token");

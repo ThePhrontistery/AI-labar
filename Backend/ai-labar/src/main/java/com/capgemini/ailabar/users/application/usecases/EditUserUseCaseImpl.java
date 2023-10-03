@@ -39,6 +39,10 @@ public class EditUserUseCaseImpl implements EditUserUseCase {
             throw new EditUserException("The new username already exists");
         }
 
+        if (Boolean.TRUE.equals(usersRepositoryPort.checkEmail(usersModel.getEmail()))) {
+            throw new EditUserException("The email already exists");
+        }
+
         UsersEntity userEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
 
         if(usersModel.getNewUser() != null && !usersModel.getNewUser().isBlank()) {

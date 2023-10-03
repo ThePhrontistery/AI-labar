@@ -17,8 +17,8 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.email = :email")
     boolean checkEmail(@Param("email") String email);
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.password = :password")
-    boolean checkLogin(@Param("user") String user, @Param("password") String password);
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.email = :email AND u.password = :password")
+    boolean checkLogin(@Param("email") String email, @Param("password") String password);
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.user = :user")
     boolean checkUser(@Param("user") String user);
