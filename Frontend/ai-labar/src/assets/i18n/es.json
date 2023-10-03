@@ -3,13 +3,13 @@
     "INIT": "Iniciar sesión",
     "USER": "Usuario",
     "PASSWORD": "Password",
-    "RECORD": "Registro",
+    "REGISTER": "Registro",
     "EMAIL": "E-mail",
     "ADD_IMG": "Añadir imagen",
     "CANCELAR": "Cancelar"
   },
   "TOPIC": {
-    "ADD_GROUP": "Añadir grupo",
+    "MANAGING_GROUPS": "Gestionar grupos",
     "ADD_TOPIC": "Añadir topic",
     "LOGOUT": "Salir"
   },
@@ -46,7 +46,7 @@
     "YES": "Sí",
     "NO": "No"
   },
-  "CREATE_GROUPS": {
+  "MANAGING_GROUPS": {
     "CREATE_GROUP": "CREAR GRUPO",
     "GROUP_NAME": "Nombre del grupo",
     "SEARCH_USERS": "Buscar usuarios",
@@ -54,7 +54,10 @@
     "SELECTED_USERS": "Usuarios seleccionados:",
     "CLEAR_SELECTION": "Limpiar selección",
     "CANCEL": "Cancelar",
-    "SAVE_GROUP": "Guardar grupo"
+    "SAVE_GROUP": "Guardar grupo",
+    "CREATE":"Crear grupo",
+    "EDIT":"Editar grupo",
+    "MANAGING_GROUP": "GESTIONAR GRUPO"
   },
   "IMAGE_TEXT_RESULT": {
     "CLOSE": "Cerrar"
@@ -138,6 +141,9 @@
   "RATING_RESULT": {
     "CLOSE": "Cerrar"
   },
+  "LANGUAGE": {
+    "CHANGE": "Cambiar idioma: EN"
+  },
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error al crear al usuario",
     "ERROR_RETRIEVING_DATA_CB": "Error al obtener los datos del combo box:",
@@ -151,9 +157,15 @@
     "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
     "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
     "REPEATED_OPTIONS":"No pueden haber opciones repetidas.",
-    "CLOSE_BUTTON": "Cerrar"
+    "CLOSE_BUTTON": "Cerrar",
+    "ERROR_SEND_LANGUAGE": "No se ha podido guardar el idioma",
+    "ERROR_USER_IMAGE_SIZE": "La imagen es demasiado grande. El tamaño máximo permitido es de 5MB.",
+    "ERROR_NO_PARTICIPANTS": "No ha seleccionado participantes.",
+    "ERROR_EDIT_GROUP":"No se ha podido editar el grupo"
   },
   "OK_MESSAGES": {
-    "OK_SEND_SELECTION": "Selección enviada con éxito"
+    "OK_SEND_SELECTION": "Selección enviada con éxito",
+    "OK_EDIT_GROUP":"El grupo se ha editado con éxito",
+    "OK_CREATE_GROUP":"El grupo se ha creado con éxito"
   }
 }

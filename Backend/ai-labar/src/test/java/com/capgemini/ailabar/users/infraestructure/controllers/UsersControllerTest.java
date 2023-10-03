@@ -1,16 +1,21 @@
 package com.capgemini.ailabar.users.infraestructure.controllers;
 
+import com.capgemini.ailabar.commons.utils.RSAKeyPairGeneratorService;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import com.capgemini.ailabar.users.application.services.UsersService;
+import com.capgemini.ailabar.users.application.usecases.LoginUseCaseImpl;
 import com.capgemini.ailabar.users.domain.exceptions.*;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
+import com.capgemini.ailabar.users.domain.ports.out.UsersRepositoryPort;
 import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -31,28 +36,45 @@ class UsersControllerTest {
     @Mock
     private UsersService usersService;
 
+    @Mock
+    private UsersRepositoryPort usersRepositoryPort;
+
+    @Mock
+    private Environment environment;
+
+    @Mock
+    private RSAKeyPairGeneratorService rsaService;
+
+    @InjectMocks
+    private LoginUseCaseImpl loginUseCase;
+
     @Test
     void testLoginSuccess() {
         UsersModel usersModel = new UsersModel();
         usersModel.setUser("testUser");
         usersModel.setPassword("testPassword");
 
-        List<String> loginData = new ArrayList<>();
-        loginData.add("validToken");
-        loginData.add("visualization");
-        when(usersService.login(usersModel)).thenReturn(loginData);
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setToken("validToken");
+        usersEntity.setVisualization("visualization");
+        usersEntity.setLanguage("language");
+        usersEntity.setPhoto("photo");
 
-        String expectedMessage = "Login successful";
+        when(environment.getProperty("login.cap.active")).thenReturn("false");
+        when(usersRepositoryPort.login(usersModel.getUser(), DigestUtils.sha256Hex(usersModel.getPassword()))).thenReturn(true);
+        when(usersRepositoryPort.getUserByName(usersModel.getUser())).thenReturn(usersEntity);
 
-        ResponseEntity<SpecialResponse> actualResponse = usersController.login(usersModel);
+        List<String> result = loginUseCase.login(usersModel, rsaService.getPrivateKey());
 
-        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
-        SpecialResponse specialResponse = actualResponse.getBody();
-        assertNotNull(specialResponse);
-        assertEquals(expectedMessage, specialResponse.getMessage());
-        assertEquals(loginData, specialResponse.getEntity());
+        assertEquals(4, result.size());
+        assertEquals("validToken", result.get(0));
+        assertEquals("visualization", result.get(1));
+        assertEquals("language", result.get(2));
+        assertEquals("photo", result.get(3));
 
-        verify(usersService, times(1)).login(usersModel);
+        verify(usersRepositoryPort, times(1)).login(usersModel.getUser(), DigestUtils.sha256Hex(usersModel.getPassword()));
+        verify(usersRepositoryPort, times(1)).getUserByName(usersModel.getUser());
+        verifyNoMoreInteractions(usersRepositoryPort);
     }
 
     @Test
@@ -192,19 +214,19 @@ class UsersControllerTest {
 
     @Test
     void testGetUsersDatabaseSuccess() {
-        UsersEntity user1 = new UsersEntity();
+        UsersModel user1 = new UsersModel();
         user1.setId(1);
         user1.setUser("User1");
 
-        UsersEntity user2 = new UsersEntity();
+        UsersModel user2 = new UsersModel();
         user2.setId(2);
         user2.setUser("User2");
 
-        List<UsersEntity> usersEntitiesList = new ArrayList<>();
-        usersEntitiesList.add(user1);
-        usersEntitiesList.add(user2);
+        List<UsersModel> usersModelList = new ArrayList<>();
+        usersModelList.add(user1);
+        usersModelList.add(user2);
 
-        when(usersService.getUsersDatabase()).thenReturn(usersEntitiesList);
+        when(usersService.getUsersDatabase()).thenReturn(usersModelList);
 
         String expectedMessage = "OK";
 
@@ -214,7 +236,7 @@ class UsersControllerTest {
         SpecialResponse specialResponse = actualResponse.getBody();
         assertNotNull(specialResponse);
         assertEquals(expectedMessage, specialResponse.getMessage());
-        assertEquals(usersEntitiesList, specialResponse.getEntity());
+        assertEquals(usersModelList, specialResponse.getEntity());
 
         verify(usersService, times(1)).getUsersDatabase();
     }

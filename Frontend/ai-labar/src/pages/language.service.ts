@@ -1,11 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
-  constructor(private translate: TranslateService) {}
+  constructor(private translate: TranslateService, private http: HttpClient) {}
 
   private currentLanguage: string = 'EN';
 
@@ -31,5 +34,10 @@ export class LanguageService {
 
   getDefaultLanguage(){
     return this.defaultLanguage;
+  }
+
+  public saveLanguage(body: any): Observable<any> {
+    const url = `${environment.apiUrl}/users/editLanguage`;
+    return this.http.put<any>(url, body, { observe: 'response' });
   }
 }

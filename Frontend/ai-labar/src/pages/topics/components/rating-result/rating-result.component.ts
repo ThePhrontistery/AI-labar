@@ -41,24 +41,20 @@ export class RatingResultComponent implements OnInit {
   // Method to load the survey results.
   loadResults() {
     if (this.data && this.data.votation) {
-      const url = `${environment.apiUrl}/topics/votingResults`;
       const resultData = {
         id: this.data.votation.id,
         user: this.cookie.get('user'),
         token: this.cookie.get('token'),
       };
-      this.topicListService.post(resultData, url).subscribe((response) => {
+      this.topicListService.votingResults(resultData).subscribe((response) => {
         if (response) {
           this.emojisVotation = [];
-          response.entity.sort((a : any, b : any) => { 
+          response.entity.sort((a: any, b: any) => {
             const optionA = parseInt(a.option);
-            const optionB = parseInt(b.option);            
+            const optionB = parseInt(b.option);
             return optionA - optionB;
           });
           for (let i = 0; i < response.entity.length; i++) {
-           /* response.entity[i]['emoji'] = this.emojis.filter(
-              (obj) => obj.id.toString() === response.entity[i].option.toString()
-            );*/
             response.entity[i]['emoji'] = this.emojis[i];
             this.optionsVoted = response.entity;
           }

@@ -10,6 +10,8 @@
       type="text"
       [(ngModel)]="textBoxValue"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="50"
+      id="step-two-tittle-input"
     />
   </div>
 
@@ -22,6 +24,7 @@
         (dateChange)="onDateSelected($event)"
         matDatepickerParse
         [min]="minDate"
+        id="step-two-date-input"
       />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -44,29 +47,37 @@
       type="text"
       [(ngModel)]="surveyValue1"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-surveyValue1-input"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue2"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-surveyValue2-input"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue3"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-surveyValue3-input"
     />
     <p></p>
     <input
       type="text"
       [(ngModel)]="surveyValue4"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-surveyValue4-input"
     />
   </div>
 
   <div *ngIf="isVotingSurvey">
-    <button mat-button (click)="openAddCandidates()">{{ 'STEP_TWO.ADD_CANDIDATES' | translate }}</button>
+    <button id="step-two-add-candidates-button" mat-button (click)="openAddCandidates()">{{ 'STEP_TWO.ADD_CANDIDATES' | translate }}</button>
     <h2>{{ 'STEP_TWO.LIST_CANDIDATES' | translate }}</h2>
     <!-- List of selected users -->
     <ul>
@@ -86,6 +97,8 @@
       type="text"
       [(ngModel)]="imageTextValue1"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-imageTextValue1-input"
     />
     <label class="custom-file-upload">
       <input
@@ -93,17 +106,20 @@
         name="image1"
         (change)="onFileSelected($event, 1)"
         accept="image/*"
+        id="step-two-image1-input"
       />
       <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
     </label>
     <input
       type="text"[value]="imageName[1]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue2"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-imageTextValue2-input"
     />
     <label class="custom-file-upload">
       <input
@@ -111,17 +127,20 @@
         name="image2"
         (change)="onFileSelected($event, 2)"
         accept="image/*"
+        id="step-two-image2-input"
       />
       <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
     </label>
     <input
       type="text"[value]="imageName[2]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue3"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-imageTextValue3-input"
     />
     <label class="custom-file-upload">
       <input
@@ -129,17 +148,20 @@
         name="image3"
         (change)="onFileSelected($event, 3)"
         accept="image/*"
+        id="step-two-image3-input"
       />
       <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
     </label>
     <input
       type="text"[value]="imageName[3]" readonly class="imageName"
-    /> 
+    />
     <p></p>
     <input
       type="text"
       [(ngModel)]="imageTextValue4"
       placeholder="{{ 'STEP_TWO.ENTER_VALUE' | translate }}"
+      maxlength="200"
+      id="step-two-imageTextValue4-input"
     />
     <label class="custom-file-upload">
       <input
@@ -147,16 +169,17 @@
         name="image4"
         (change)="onFileSelected($event, 4)"
         accept="image/*"
+        id="step-two-image4-input"
       />
       <span>{{ 'STEP_TWO.UPLOAD_FILE' | translate }}</span>
     </label>
     <input
       type="text"[value]="imageName[4]" readonly class="imageName"
-    /> 
+    />
   </div>
 
   <div>
-    <button mat-button (click)="openAddParticipants()">
+    <button mat-button (click)="openAddParticipants()" id="step-two-openAddParticipants-button">
       {{ 'STEP_TWO.ADD_PARTICIPANTS' | translate }}
     </button>
     <h2>{{ 'STEP_TWO.LIST_PARTICIPANTS' | translate }}</h2>

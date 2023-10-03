@@ -12,10 +12,10 @@
     class="modal"
   >
     <div class="modal-content">
-      <h2>{{ title }}</h2>
+      <h1 class="votation-title">{{ title }}</h1>
       <div class="padding-content">
         <ng-container *ngIf="isSurveyOpinionMultiple || isSurveyOpinionSimple">
-          <label *ngFor="let option of valuesVoting">
+          <label *ngFor="let option of valuesVoting; let i = index">
             <input
               [type]="isSurveyOpinionSimple ? 'radio' : 'checkbox'"
               [checked]="
@@ -28,30 +28,33 @@
                   ? selectOption(option, $event)
                   : selectOpinion(option)
               "
+              [id]="'modal-votation-options-input-' + i"
             />
             {{ option }}
           </label>
         </ng-container>
         <ng-container *ngIf="isSurveyRating">
-          <div *ngFor="let emoji of emojisVoting" class="emoji-option">
+          <div *ngFor="let emoji of emojisVoting; let i = index" class="emoji-option">
             <input
               type="radio"
               [id]="emoji.id"
               [value]="emoji"
               [checked]="selectedEmoji === emoji"
               (change)="selectEmoji(emoji)"
+              [id]="'modal-votation-emoji-input-' + i"
             />
             <label [for]="emoji.id">{{ emoji.icon }}</label>
           </div>
         </ng-container>
         <ng-container *ngIf="isSurveyVoting">
-          <div *ngFor="let item of itemsVoting" class="item-option">
+          <div *ngFor="let item of itemsVoting; let i = index" class="item-option">
             <input
               type="radio"
               [id]="item.id"
               [value]="item"
               [checked]="selectedItem === item"
               (change)="selectItem(item)"
+              [id]="'modal-votation-survey-input-' + i" 
             />
             <label [for]="item.id">
               <img [src]="item.imageSrc" alt="Image" />
@@ -62,7 +65,7 @@
         <ng-container
           *ngIf="isSurveyImageTextSimple || isSurveyImageTextMultiple"
         >
-          <div *ngFor="let item of valuesVotingImageText" class="item-option">
+          <div *ngFor="let item of valuesVotingImageText; let i = index" class="item-option">
             <input
               [type]="isSurveyImageTextSimple ? 'radio' : 'checkbox'"
               [id]="item.id"
@@ -76,7 +79,8 @@
                 isSurveyImageTextSimple
                   ? selectImageText(item)
                   : selectImagesText(item, $event)
-              "
+              " 
+              [id]="'modal-votation-image-input-' + i"
             />
             <label [for]="item.id">
               <img [src]="item.imageSrc" alt="Image" />
@@ -87,7 +91,8 @@
       </div>
       <div class="wizard-navigation">
         <div class="button right-button">
-          <button mat-button color="accent" (click)="closeModal(false)">
+          <button mat-button color="accent" (click)="closeModal(false)" 
+          id="modal-votation-close-button">
             {{ 'MODAL_VOTATION.CANCEL' | translate }}
           </button>
           <button
@@ -95,6 +100,7 @@
             mat-raised-button
             color="white"
             (click)="sendSelection()"
+            id="modal-votation-save-button"
           >
           {{ 'MODAL_VOTATION.SAVE' | translate }}
           </button>

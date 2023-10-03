@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { TopicsComponent } from './topics.component';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('TopicsComponent', () => {
   let component: TopicsComponent;
@@ -22,9 +23,12 @@ describe('TopicsComponent', () => {
         RouterTestingModule.withRoutes([]),
         MatDialogModule,
         MatMenuModule,
-        MatIconModule,HttpClientTestingModule, TranslateModule.forRoot()
+        MatIconModule,
+        HttpClientTestingModule,
+        MatSnackBarModule,
+        TranslateModule.forRoot(),
       ],
-      providers: [TranslateService,CookieService, MatDialog],
+      providers: [TranslateService, CookieService, MatDialog],
     }).compileComponents();
   });
 
@@ -40,10 +44,11 @@ describe('TopicsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to login if user or token are missing', () => {
+  it('should navigate to login if user or token are missing', async () => {
     spyOn(router, 'navigateByUrl');
     spyOn(component['cookie'], 'delete');
     component.ngOnInit();
+    await fixture.whenStable();
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
 
@@ -51,11 +56,5 @@ describe('TopicsComponent', () => {
     spyOn(router, 'navigateByUrl');
     component.logOut();
     expect(router.navigateByUrl).toHaveBeenCalled();
-  });
-
-  it('should open dialog on addGroup', () => {
-    spyOn(dialog, 'open');
-    component.addGroup();
-    expect(dialog.open).toHaveBeenCalled();
   });
 });

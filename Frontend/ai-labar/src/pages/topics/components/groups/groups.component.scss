@@ -54,6 +54,13 @@ h1 {
   float: right;
 }
 
+.mat-radio-button {
+  margin-right: 80px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
 @media (max-width: 768px) {
   .wizard-navigation {
     display: flex;
@@ -83,4 +90,10 @@ h1 {
   .right-button {
     float: right;
   }
+
+  .oculto {
+    display: none;
+  }
 }
+
+

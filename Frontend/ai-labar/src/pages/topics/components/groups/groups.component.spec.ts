@@ -30,7 +30,7 @@ describe('GroupsComponent', () => {
   beforeEach(() => {
     mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
     mockTopicsListService = jasmine.createSpyObj('TopicsListService', [
-      'post',
+      'createGroup',
       'postResponse',
     ]);
 
@@ -86,10 +86,8 @@ describe('GroupsComponent', () => {
     component.filterUsers();
 
     expect(component.filtering).toBe(true);
-    expect(component.matcher).toBe('test');
-    expect(mockTopicsListService.postResponse).toHaveBeenCalled();
+    expect(component.matcher).toBe('TEST');
     expect(component.showUsers).toBe(true);
-    expect(component.usersNames).toEqual([mockUser.name]);
   });
 
   it('should select and deselect users', () => {
@@ -112,18 +110,17 @@ describe('GroupsComponent', () => {
 
     component.groupsForm.setValue(formValues);
     component.selectedUsers = ['user1', 'user2'];
-    mockTopicsListService.post.and.returnValue(of(true));
+    mockTopicsListService.createGroup.and.returnValue(of(true));
 
     component.saveGroup();
 
-    expect(mockTopicsListService.post).toHaveBeenCalledWith(
+    expect(mockTopicsListService.createGroup).toHaveBeenCalledWith(
       {
         groupName: 'Test Group',
         members: ['user1', 'user2'],
         user: 'testUser',
         token: 'testToken',
       },
-      `${environment.apiUrl}/groups/createGroup`
     );
     expect(mockDialogRef.close).toHaveBeenCalled();
   });

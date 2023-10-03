@@ -20,7 +20,7 @@ describe('AsResultsComponent', () => {
 
   beforeEach(async () => {
     const resultsService = jasmine.createSpyObj('VotingResultsService', ['getWinnerOption']);
-    const topicsListService = jasmine.createSpyObj('TopicsListService', ['post']);
+    const topicsListService = jasmine.createSpyObj('TopicsListService', ['votingResults']);
     const cookieService = jasmine.createSpyObj('CookieService', ['get']);
 
     await TestBed.configureTestingModule({
@@ -41,7 +41,7 @@ describe('AsResultsComponent', () => {
     cookieServiceSpy = TestBed.inject(CookieService) as jasmine.SpyObj<CookieService>;
 
     resultsServiceSpy.getWinnerOption.and.returnValue(result);
-    topicsListServiceSpy.post.and.returnValue(of({ entity: result }));
+    topicsListServiceSpy.votingResults.and.returnValue(of({ entity: result }));
   });
 
   beforeEach(() => {

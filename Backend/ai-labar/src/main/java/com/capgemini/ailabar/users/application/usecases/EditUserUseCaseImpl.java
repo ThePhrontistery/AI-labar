@@ -1,5 +1,6 @@
 package com.capgemini.ailabar.users.application.usecases;
 
+import com.capgemini.ailabar.commons.utils.DateTime;
 import com.capgemini.ailabar.users.domain.exceptions.EditUserException;
 import com.capgemini.ailabar.users.domain.ports.in.EditUserUseCase;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
@@ -59,6 +60,7 @@ public class EditUserUseCaseImpl implements EditUserUseCase {
 
         String token = DigestUtils.sha256Hex(userEntity.getUser()+userEntity.getPassword()+userEntity.getId());
         userEntity.setToken(token);
+        userEntity.setLastModificationDate(DateTime.actualDateAndTime());
 
         usersRepositoryPort.editUser(userEntity);
     }

@@ -6,6 +6,7 @@ import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
 import com.capgemini.ailabar.topics.infraestructure.repositories.TopicsRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -125,7 +126,10 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     public Integer getTopicIdByTopicName(String topicTitle) {
         return topicsRepository.getTopicIdByTopicName(topicTitle);
     }
-
+    @Override
+    public Integer getTopicIdByTitleAndAuthor(String topicTitle,String user) {
+        return topicsRepository.getTopicIdByTitleAndAuthor(topicTitle,user);
+    }
     @Override
     public List<TopicsEntity> getTopicsDatabase() {
         return topicsRepository.findAll();
@@ -187,8 +191,8 @@ public class TopicsRepositoryAdapter implements TopicsRepositoryPort {
     }
 
     @Override
-    public void registerUserVoted(Integer topicId, Integer userId) {
-        topicsRepository.registerUserVoted(topicId, userId);
+    public void registerUserVoted(Integer topicId, Integer userId, Timestamp votingDate) {
+        topicsRepository.registerUserVoted(topicId, userId, votingDate);
     }
 
     @Override

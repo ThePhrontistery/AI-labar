@@ -51,10 +51,11 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MessageService } from './services/message.service';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { LanguageService } from '../language.service';
+import { LoginService } from '../login/login.service';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -120,7 +121,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ModalVotationService,
     HttpClientModule,
     MessageService,
-    LanguageService
+    LanguageService,
+    LoginService
   ],
 })
 export class TopicsModule {}

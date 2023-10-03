@@ -43,7 +43,6 @@ public final class TopicsUtils {
         }
     }
 
-
     public static List<OptionsModel> initiateVoting(String type, List<OptionsModel> list) {
         return list.stream()
                 .map(element -> {

@@ -1,5 +1,5 @@
 <div class="modal">
-  <h2>{{ titleSurvey }}</h2>
+  <h1 class="votation-title">{{ titleSurvey }}</h1>
   <ul>
     <li *ngFor="let item of items">({{ item.votes }}) {{ item.option }}</li>
   </ul>
@@ -8,6 +8,7 @@
     mat-button
     color="accent"
     (click)="onCloseModal()"
+    id="voting-results-close-button"
   >
   {{ 'VOTING_RESULTS.CANCEL' | translate }}
   </button>

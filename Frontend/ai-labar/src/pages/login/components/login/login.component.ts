@@ -8,11 +8,13 @@ import { Subject, Subscription, takeUntil } from 'rxjs';
 import { LoginService } from '../../login.service';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
+import * as JSEncryptModule from 'jsencrypt';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'src/pages/topics/services/message.service';
 import { LanguageService } from 'src/pages/language.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -58,6 +60,10 @@ export class LoginComponent implements OnInit {
   currentLanguage!: string;
   textButtonLanguage!: string;
 
+  publicKey: any;
+
+  loginCap!: boolean;
+
   /**
    * Component builder.
    * @param loginService Login service
@@ -73,7 +79,13 @@ export class LoginComponent implements OnInit {
     private translate: TranslateService,
     private messageService: MessageService,
     private languageService: LanguageService
-  ) {}
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
+    });
+  }
 
   /**
    * Method that is executed when the component is initialized.
@@ -83,11 +95,21 @@ export class LoginComponent implements OnInit {
     this.translate.setDefaultLang('en');
 
     this.currentLanguage = this.languageService.getLanguage();
-    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
-      this.translate.use(this.currentLanguage);
+    if (this.languageService.getDefaultLanguage() != this.currentLanguage) {
+      if (this.currentLanguage === 'ES') {
+        this.languageService.setLanguage('ES');
+        this.translate.use('es');
+      } else {
+        this.languageService.setLanguage('EN');
+        this.translate.use('en');
+      }
     }
 
-    this.changeTextButtonLanguage();
+    this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+      this.textButtonLanguage = translation;
+    });
+
+    this.loginCap = environment.loginCap;
   }
 
   /**
@@ -99,24 +121,75 @@ export class LoginComponent implements OnInit {
     this.ngUnsubscribe.complete();
   }
 
+  async getPublicKey(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.loginService.getPublicKey().subscribe({
+        next: (response) => {
+          if (response && response.body && response.body.entity) {
+            this.publicKey = response.body.entity;
+            resolve();
+          } else {
+            reject(new Error('Respuesta inválida desde el servidor.'));
+          }
+        },
+        error: (error) => {
+          this.messageService.showErrorMessage(error.error.message);
+          reject(error);
+        },
+      });
+    });
+  }
+
+  encryptText(textToEncrypt: string): string | null {
+    if (!this.publicKey) {
+      console.error('Clave pública no disponible.');
+      return null;
+    }
+
+    const encrypt = new JSEncryptModule.JSEncrypt();
+    encrypt.setPublicKey(this.publicKey);
+
+    const encryptedText = encrypt.encrypt(textToEncrypt);
+
+    if (!encryptedText) {
+      console.error('Error al cifrar el texto.');
+      return null;
+    }
+
+    return encryptedText;
+  }
+
   /**
    * Handles the click event on the login button.
    * Perform user authentication and redirect if successful.
    */
-  loginClick(): void {
-    // Create the login request body
-    const body = {
-      user: this.loginForm.value.user,
-      password: CryptoJS.SHA256(this.loginForm.value.password).toString(),
-    };
+  async loginClick(): Promise<void> {
+    let body;
+
+    if (environment.loginCap) {
+      await this.getPublicKey();
+
+      const encryptedPassword = this.encryptText(this.loginForm.value.password);
+
+      body = {
+        user: this.loginForm.value.user,
+        password: encryptedPassword,
+        language: this.currentLanguage,
+      };
+    } else {
+      body = {
+        user: this.loginForm.value.user,
+        password: CryptoJS.SHA256(this.loginForm.value.password).toString(),
+        language: this.currentLanguage,
+      };
+    }
 
     // Store username
-    this.username = this.loginForm.value.user; 
+    this.username = this.loginForm.value.user;
     // Making the login request and handling the response
     this.mySubscription.push(
-      this.loginService.login(body)
-      .subscribe({
-        next: (response) => { 
+      this.loginService.login(body).subscribe({
+        next: (response) => {
           if (
             response &&
             response.body.entity &&
@@ -126,13 +199,26 @@ export class LoginComponent implements OnInit {
             this.cookie.set('user', this.username);
             this.cookie.set('token', response.body.entity[0]);
             this.cookie.set('visualization', response.body.entity[1]);
-            this.router.navigate(['/topics/topics-list']);
+            if (response.body.entity[2]) {
+              this.cookie.set('language', response.body.entity[2]);
+            } else {
+              this.cookie.set(
+                'language',
+                this.languageService.getDefaultLanguage()
+              );
+            }
+            if (response.body.entity[3]) {
+              this.createThumbnailImage(response.body.entity[3], 32, 32);
+            } else {
+              this.cookie.set('photo', '');
+              this.showContent();
+            }
           }
         },
-        error: (error) => { 
+        error: (error) => {
           this.messageService.showErrorMessage(error.error.message);
-        }}
-      )
+        },
+      })
     );
   }
 
@@ -163,6 +249,8 @@ export class LoginComponent implements OnInit {
         data['photo'] = this.base64String !== '' ? this.base64String : '';
       }
 
+      data['language'] = this.currentLanguage;
+
       // Remove unnecessary properties before sending
       delete data.imageFunctional;
       delete data.imageVisible;
@@ -180,8 +268,8 @@ export class LoginComponent implements OnInit {
             error: (error) => {
               this.messageService.showErrorMessage(
                 this.translate.instant('ERROR_MESSAGES.CREATE_USER_ERROR') +
-                  '\n' +
-                  error.error.message
+                '\n' +
+                error.error.message
               );
             },
           })
@@ -222,7 +310,20 @@ export class LoginComponent implements OnInit {
     const file: File = ev.target.files[0];
     if (file && this.isImageFile(file)) {
       this.selectedFile = file;
-      this.convertToBase64();
+
+      if (this.selectedFile) {
+        const fileSize = this.selectedFile.size;
+        if (fileSize > 5 * 1024 * 1024) {
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_USER_IMAGE_SIZE')
+          );
+
+          this.selectedFile = null;
+          this.fileName = '';
+        } else {
+          this.convertToBase64();
+        }
+      }
     } else {
       this.selectedFile = null;
       this.base64String = '';
@@ -239,15 +340,7 @@ export class LoginComponent implements OnInit {
   toggleLanguage() {
     this.languageService.toggleLanguage();
     this.currentLanguage = this.languageService.getLanguage();
-    this.changeTextButtonLanguage();
-  }
-
-  changeTextButtonLanguage(){
-    if (this.currentLanguage === 'EN'){
-      this.textButtonLanguage = 'ES';
-    }else {
-      this.textButtonLanguage = 'EN';
-    }
+    this.textButtonLanguage = this.translate.instant('LANGUAGE.CHANGE');
   }
 
   /**
@@ -261,5 +354,49 @@ export class LoginComponent implements OnInit {
       };
       reader.readAsDataURL(this.selectedFile);
     }
+  }
+
+  /**
+   * Create a thumbnail image from a base64 representation of an image.
+   *
+   * @param {string} imageBase64 - The base64 representation of the image.
+   * @param {number} width - Desired width of the thumbnail image.
+   * @param {number} height - Desired height of the thumbnail image.
+   */
+  private createThumbnailImage(
+    imageBase64: string,
+    width: number,
+    height: number
+  ) {
+    // Create a canvas to draw the thumbnail image on.
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+
+    // Create a new instance of Image and set the source as the base64 image.
+    const image = new Image();
+    image.src = imageBase64;
+
+    // Check if the canvas context has been successfully created.
+    if (context === null) return;
+
+    // When the image is successfully loaded, it draws the image on the canvas and obtains the base64 representation of the thumbnail image.
+    image.onload = () => {
+      context.drawImage(image, 0, 0, width, height);
+
+      // Converts the thumbnail image to base64 and stores it in a cookie named 'photo'.
+      this.cookie.set('photo', canvas.toDataURL());
+
+      // Display the content after creating the thumbnail image.
+      this.showContent();
+    };
+  }
+
+  /**
+   * Navigate to the topic list view after displaying the content.
+   */
+  private showContent() {
+    this.router.navigate(['/topics/topics-list']);
   }
 }

@@ -8,6 +8,7 @@ export interface IUser {
   name: string;
   checked: boolean;
   hidden: boolean;
+  modal: boolean;
 }
 export interface IResult {
   option: string;

@@ -3,6 +3,7 @@ package com.capgemini.ailabar.topics.domain.ports.out;
 import com.capgemini.ailabar.options.infraestructure.entities.OptionsEntity;
 import com.capgemini.ailabar.topics.infraestructure.entities.TopicsEntity;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface TopicsRepositoryPort {
@@ -51,7 +52,7 @@ public interface TopicsRepositoryPort {
     List<OptionsEntity> getOptions(Integer topicId);
 
     Integer getTopicIdByTopicName(String topicTitle);
-
+    Integer getTopicIdByTitleAndAuthor(String title, String user);
     List<TopicsEntity> getTopicsDatabase();
 
     TopicsEntity getTopicsEntityById(Integer id);
@@ -74,7 +75,7 @@ public interface TopicsRepositoryPort {
 
     void reOpenTopic(TopicsEntity topicsEntity);
 
-    void registerUserVoted(Integer topicId, Integer userId);
+    void registerUserVoted(Integer topicId, Integer userId, Timestamp votingDate);
 
     void updateOptionImage(Integer optionId, String newImage);
 

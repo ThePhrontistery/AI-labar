@@ -20,11 +20,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 describe('TopicsListComponent', () => {
   let component: TopicsListComponent;
@@ -33,6 +36,7 @@ describe('TopicsListComponent', () => {
   let mockDialog: jasmine.SpyObj<MatDialog>;
   let mockCookieService: jasmine.SpyObj<CookieService>;
   let cookieServiceMock: Partial<CookieService>;
+  let router: Router;
 
   beforeEach(() => {
     environment.mockup = true;
@@ -60,10 +64,12 @@ describe('TopicsListComponent', () => {
         { provide: CookieService, useValue: mockCookieServiceSpy },
       ],
       imports: [
+        RouterTestingModule.withRoutes([]),
         MatSortModule,MatSnackBarModule,
         MatTableModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        MatTooltipModule,
         MatPaginatorModule,
         MatSlideToggleModule,
         MatButtonModule,

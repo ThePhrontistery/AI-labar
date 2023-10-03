@@ -1,40 +1,102 @@
-<div class="filters-container">
+<div class="filters-container" fxHide fxShow.sm="true" fxShow.gt-md="true">
   <div>
-    <b>{{ 'TOPICS_LIST.FILTERS' | translate }}</b>
+    <b>{{ "TOPICS_LIST.FILTERS" | translate }}</b>
     <mat-slide-toggle
       id="minesToggle"
       [(ngModel)]="minesFilter"
       (change)="onToggleChange($event)"
     >
-    {{ 'TOPICS_LIST.OWN' | translate }}
+      {{ "TOPICS_LIST.OWN" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
       id="openedToggle"
       [(ngModel)]="openedFilter"
       (change)="onToggleChange($event)"
     >
-    {{ 'TOPICS_LIST.OPEN_FILTER' | translate }}
+      {{ "TOPICS_LIST.OPEN_FILTER" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
       id="closedToggle"
       [(ngModel)]="closedFilter"
       (change)="onToggleChange($event)"
     >
-    {{ 'TOPICS_LIST.CLOSED_FILTER' | translate }}
+      {{ "TOPICS_LIST.CLOSED_FILTER" | translate }}
     </mat-slide-toggle>
     <mat-slide-toggle
       id="votePendingToggle"
       [(ngModel)]="votePendingFilter"
       (change)="onToggleChange($event)"
     >
-    {{ 'TOPICS_LIST.PENDING_VOTE' | translate }}
+      {{ "TOPICS_LIST.PENDING_VOTE" | translate }}
     </mat-slide-toggle>
-</div>
+  </div>
   <div class="actions">
-    <button mat-raised-button class="action-button" (click)="addGroup()">
-      {{ "TOPIC.ADD_GROUP" | translate }}
+    <button
+      mat-raised-button
+      class="action-button"
+      (click)="managingGroups()"
+      id="topic-list-managing-groups-button"
+    >
+      {{ "TOPIC.MANAGING_GROUPS" | translate }}
     </button>
-    <button mat-raised-button class="action-button" (click)="addTopic()">
+    <button
+      mat-raised-button
+      class="action-button"
+      (click)="addTopic()"
+      id="topic-list-add-topic-button"
+    >
+      {{ "TOPIC.ADD_TOPIC" | translate }}
+    </button>
+  </div>
+</div>
+
+<div class="filters-container-xs" fxHide fxShow.xs>
+  <div>
+    <b>{{ "TOPICS_LIST.FILTERS" | translate }}</b>
+    <mat-slide-toggle
+      id="minesToggleXS"
+      [(ngModel)]="minesFilter"
+      (change)="onToggleChange($event)"
+    >
+      {{ "TOPICS_LIST.OWN" | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="openedToggleXS"
+      [(ngModel)]="openedFilter"
+      (change)="onToggleChange($event)"
+    >
+      {{ "TOPICS_LIST.OPEN_FILTER" | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="closedToggleXS"
+      [(ngModel)]="closedFilter"
+      (change)="onToggleChange($event)"
+    >
+      {{ "TOPICS_LIST.CLOSED_FILTER" | translate }}
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      id="votePendingToggleXS"
+      [(ngModel)]="votePendingFilter"
+      (change)="onToggleChange($event)"
+    >
+      {{ "TOPICS_LIST.PENDING_VOTE" | translate }}
+    </mat-slide-toggle>
+  </div>
+  <div class="actions">
+    <button
+      mat-raised-button
+      class="action-button"
+      (click)="managingGroups()"
+      id="topic-list-managing-groups-buttonXS"
+    >
+      {{ "TOPIC.MANAGING_GROUPS" | translate }}
+    </button>
+    <button
+      mat-raised-button
+      class="action-button"
+      (click)="addTopic()"
+      id="topic-list-add-topic-buttonXS"
+    >
       {{ "TOPIC.ADD_TOPIC" | translate }}
     </button>
   </div>
@@ -55,29 +117,46 @@
     matSort
   >
     <!-- Title Column -->
+    <ng-container matColumnDef="id" style="visibility: hidden">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "TOPICS_LIST.TITLE" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+    <!-- Title Column -->
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'TOPICS_LIST.TITLE' | translate }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "TOPICS_LIST.TITLE" | translate }}
+      </th>
       <td mat-cell *matCellDef="let element">{{ element.title }}</td>
     </ng-container>
 
     <!-- Status Column -->
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'TOPICS_LIST.STATUS' | translate }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "TOPICS_LIST.STATUS" | translate }}
+      </th>
       <td mat-cell *matCellDef="let element">
-        {{ element.status === 1 ? openStatusTranslation : closedStatusTranslation }}
+        {{
+          element.status === 1 ? openStatusTranslation : closedStatusTranslation
+        }}
       </td>
     </ng-container>
 
     <!-- Author Column -->
     <ng-container matColumnDef="author">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'TOPICS_LIST.AUTHOR' | translate }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "TOPICS_LIST.AUTHOR" | translate }}
+      </th>
       <td mat-cell *matCellDef="let element">{{ element.author }}</td>
     </ng-container>
 
     <!-- Close Date Column -->
-    <ng-container matColumnDef="closeDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'TOPICS_LIST.CLOSING_DATE' | translate }}</th>
-      <td mat-cell *matCellDef="let element">{{ element.closeDate }}</td>
+    <ng-container matColumnDef="closeDateString">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "TOPICS_LIST.CLOSING_DATE" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.closeDateString }}</td>
     </ng-container>
 
     <!-- Actions Column -->
@@ -90,7 +169,7 @@
         fxShow.sm="true"
         fxShow.gt-md="true"
       >
-      {{ 'TOPICS_LIST.OPEN_SURVEY_COLUMN' | translate }}
+        {{ "TOPICS_LIST.OPEN_SURVEY_COLUMN" | translate }}
       </th>
 
       <td
@@ -106,8 +185,9 @@
           class="capBlue"
           (click)="reOpen(element)"
           mat-button
+          id="topic-list-reopen-tablet-button-{{ element.id }}"
         >
-          <mat-icon>lock_open</mat-icon>
+          <mat-icon svgIcon="lock_open" class="button-reopen"></mat-icon>
         </button>
       </td>
     </ng-container>
@@ -121,7 +201,7 @@
         fxShow.sm="true"
         fxShow.gt-md="true"
       >
-      {{ 'TOPICS_LIST.CLOSE_SURVEY_COLUMN' | translate }}
+        {{ "TOPICS_LIST.CLOSE_SURVEY_COLUMN" | translate }}
       </th>
 
       <td
@@ -137,8 +217,9 @@
           class="capBlue"
           (click)="close(element)"
           mat-button
+          id="topic-list-close-tablet-button-{{ element.id }}"
         >
-          <mat-icon>lock</mat-icon>
+          <mat-icon svgIcon="lock" class="button-reopen"></mat-icon>
         </button>
       </td>
     </ng-container>
@@ -152,7 +233,7 @@
         fxShow.sm="true"
         fxShow.gt-md="true"
       >
-      {{ 'TOPICS_LIST.DELETE_SURVEY_COLUMN' | translate }}
+        {{ "TOPICS_LIST.DELETE_SURVEY_COLUMN" | translate }}
       </th>
       <td
         mat-cell
@@ -167,8 +248,9 @@
           class="capBlue"
           (click)="delete(element)"
           mat-button
+          id="topic-list-delete-tablet-button-{{ element.id }}"
         >
-          <mat-icon>delete</mat-icon>
+          <mat-icon svgIcon="delete" class="button-reopen"></mat-icon>
         </button>
       </td>
     </ng-container>
@@ -182,7 +264,7 @@
         fxShow.sm="true"
         fxShow.gt-md="true"
       >
-      {{ 'TOPICS_LIST.VOTE_SURVEY_COLUMN' | translate }}
+        {{ "TOPICS_LIST.VOTE_SURVEY_COLUMN" | translate }}
       </th>
       <td
         mat-cell
@@ -197,8 +279,9 @@
           class="capBlue"
           (click)="vote(element)"
           mat-button
+          id="topic-list-vote-tablet-button-{{ element.id }}"
         >
-          <mat-icon>how_to_vote</mat-icon>
+          <mat-icon svgIcon="how_to_vote" class="button-reopen"></mat-icon>
         </button>
       </td>
     </ng-container>
@@ -212,7 +295,7 @@
         fxShow.sm="true"
         fxShow.gt-md="true"
       >
-      {{ 'TOPICS_LIST.VIEW_RESULTS_SURVEY_COLUMN' | translate }}
+        {{ "TOPICS_LIST.VIEW_RESULTS_SURVEY_COLUMN" | translate }}
       </th>
       <td
         mat-cell
@@ -227,19 +310,24 @@
           class="capBlue"
           (click)="results(element)"
           mat-button
+          id="topic-list-visibility-tablet-button-{{ element.id }}"
         >
-          <mat-icon>visibility</mat-icon>
+          <mat-icon svgIcon="visibility" class="button-reopen"></mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="result2">
       <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide fxShow.xs>
-        {{ 'TOPICS_LIST.ACTIONS' | translate }}
+        {{ "TOPICS_LIST.ACTIONS" | translate }}
       </th>
       <td mat-cell *matCellDef="let element" fxHide fxShow.xs>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          id="topic-list-more-vert-button-{{ element.id }}"
+        >
+          <mat-icon svgIcon="more_vert" class="button-reopen"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button
@@ -248,8 +336,9 @@
             class="capBlue"
             (click)="reOpen(element)"
             mat-button
+            id="topic-list-reopen-tablet-menu-button-{{ element.id }}"
           >
-            <mat-icon>lock_open</mat-icon>
+            <mat-icon svgIcon="lock_open" class="button-reopen"></mat-icon>
           </button>
           <button
             matTooltip="{{ 'TOPICS_LIST.CLOSE_SURVEY' | translate }}"
@@ -257,8 +346,9 @@
             class="capBlue"
             (click)="close(element)"
             mat-button
+            id="topic-list-close-tablet-menu-button-{{ element.id }}"
           >
-            <mat-icon>lock</mat-icon>
+            <mat-icon svgIcon="lock" class="button-reopen"></mat-icon>
           </button>
           <button
             matTooltip="{{ 'TOPICS_LIST.DELETE_SURVEY' | translate }}"
@@ -266,8 +356,9 @@
             class="capBlue"
             (click)="delete(element)"
             mat-button
+            id="topic-list-delete-tablet-menu-button-{{ element.id }}"
           >
-            <mat-icon>delete</mat-icon>
+            <mat-icon svgIcon="delete" class="button-reopen"></mat-icon>
           </button>
           <button
             [disabled]="element.status === 0 || !element.canVote"
@@ -275,8 +366,9 @@
             class="capBlue"
             (click)="vote(element)"
             mat-button
+            id="topic-list-vote-button-{{ element.id }}"
           >
-            <mat-icon>how_to_vote</mat-icon>
+            <mat-icon svgIcon="how_to_vote" class="button-reopen"></mat-icon>
           </button>
           <button
             [disabled]="element.status === 1"
@@ -284,8 +376,9 @@
             class="capBlue"
             (click)="results(element)"
             mat-button
+            id="topic-list-visibility-tablet-menu-button-{{ element.id }}"
           >
-            <mat-icon>visibility</mat-icon>
+            <mat-icon svgIcon="visibility" class="button-reopen"></mat-icon>
           </button>
         </mat-menu>
       </td>
@@ -314,18 +407,25 @@
         <div class="title-and-status">
           <h3>{{ element.title }}</h3>
           <p>
-            <b>{{ 'TOPICS_LIST.STATUS' | translate }}:</b> {{ element.status === 1 ? openStatusTranslation : closedStatusTranslation }}
+            <b>{{ "TOPICS_LIST.STATUS" | translate }}:</b>
+            {{
+              element.status === 1
+                ? openStatusTranslation
+                : closedStatusTranslation
+            }}
           </p>
           <p
             class="close-date"
             *ngIf="
-              element.closeDate !== undefined && element.closeDate !== null
+              element.closeDateString !== undefined &&
+              element.closeDateString !== null
             "
           >
-            <b>{{ 'TOPICS_LIST.CLOSING_DATE' | translate }}:</b> {{ element.closeDate }}
+            <b>{{ "TOPICS_LIST.CLOSING_DATE" | translate }}:</b>
+            {{ element.closeDateString }}
           </p>
-          <p class="close-date" *ngIf="!element.closeDate">
-            <b>{{ 'TOPICS_LIST.WITHOUT_CLOSING_DATE' | translate }}</b>
+          <p class="close-date" *ngIf="!element.closeDateString">
+            <b>{{ "TOPICS_LIST.WITHOUT_CLOSING_DATE" | translate }}</b>
           </p>
         </div>
 
@@ -336,15 +436,21 @@
             [disabled]="element.status === 1 || element.author !== user"
             class="capBlue"
             (click)="reOpen(element)"
+            id="topic-list-reopen-card-button-{{ element.id }}"
           >
             <mat-icon
+              svgIcon="lock_open"
+              class="button-reopen"
               *ngIf="element.author === user"
-              [matTooltip]="element.status === 1 ? 'TOPICS_LIST.CLOSE' : 'TOPICS_LIST.OPEN' | translate"
+              [matTooltip]="
+                element.status === 1
+                  ? 'TOPICS_LIST.CLOSE'
+                  : ('TOPICS_LIST.OPEN' | translate)
+              "
               [matTooltipDisabled]="
                 element.status === 1 || element.author !== user
               "
-              >lock_open</mat-icon
-            >
+            ></mat-icon>
           </button>
 
           <button
@@ -353,15 +459,21 @@
             [disabled]="element.status === 0 || element.author !== user"
             class="capBlue"
             (click)="close(element)"
+            id="topic-list-close-card-button-{{ element.id }}"
           >
             <mat-icon
+              svgIcon="lock"
+              class="button-reopen"
               *ngIf="element.author === user"
-              [matTooltip]="element.status === 0 ? 'TOPICS_LIST.OPEN' : 'TOPICS_LIST.CLOSE' | translate"
+              [matTooltip]="
+                element.status === 0
+                  ? 'TOPICS_LIST.OPEN'
+                  : ('TOPICS_LIST.CLOSE' | translate)
+              "
               [matTooltipDisabled]="
                 element.status === 0 || element.author !== user
               "
-              >lock</mat-icon
-            >
+            ></mat-icon>
           </button>
 
           <button
@@ -369,10 +481,14 @@
             *ngIf="element.author === user"
             class="capBlue"
             (click)="delete(element)"
+            id="topic-list-delete-card-button-{{ element.id }}"
           >
-            <mat-icon *ngIf="element.author === user" matTooltip="{{ 'TOPICS_LIST.DELETE' | translate }}"
-              >delete</mat-icon
-            >
+            <mat-icon
+              svgIcon="delete"
+              class="button-reopen"
+              *ngIf="element.author === user"
+              matTooltip="{{ 'TOPICS_LIST.DELETE' | translate }}"
+            ></mat-icon>
           </button>
 
           <button
@@ -380,12 +496,14 @@
             [disabled]="element.status === 0 || !element.canVote"
             class="capBlue"
             (click)="vote(element)"
+            id="topic-list-vote-card-button-{{ element.id }}"
           >
             <mat-icon
+              svgIcon="how_to_vote"
+              class="button-reopen"
               matTooltip="{{ 'TOPICS_LIST.VOTE' | translate }}"
               [matTooltipDisabled]="element.status === 0 || !element.canVote"
-              >how_to_vote</mat-icon
-            >
+            ></mat-icon>
           </button>
 
           <button
@@ -393,16 +511,20 @@
             [disabled]="element.status === 1"
             class="capBlue"
             (click)="results(element)"
+            id="topic-list-visibility-card-button-{{ element.id }}"
           >
             <mat-icon
+              svgIcon="visibility"
+              class="button-reopen"
               matTooltip="{{ 'TOPICS_LIST.VIEW_RESULTS' | translate }}"
               [matTooltipDisabled]="element.status === 1"
-              >visibility</mat-icon
-            >
+            ></mat-icon>
           </button>
         </div>
 
-        <p class="author"><b>{{ 'TOPICS_LIST.AUTHOR' | translate }}:</b> {{ element.author }}</p>
+        <p class="author">
+          <b>{{ "TOPICS_LIST.AUTHOR" | translate }}:</b> {{ element.author }}
+        </p>
       </div>
     </mat-card-content>
   </mat-card>
@@ -424,6 +546,7 @@
     mat-button
     [color]="showPaginatedTable ? 'primary' : 'default'"
     class="image-button pagination-button"
+    id="topic-list-pagination-button"
   >
     <div
       class="button-image"
@@ -440,6 +563,7 @@
     mat-button
     [color]="showScrollTable ? 'primary' : 'default'"
     class="image-button scroll-button"
+    id="topic-list-scroll-button"
   >
     <div
       class="button-image"
@@ -456,6 +580,7 @@
     mat-button
     [color]="showCards ? 'primary' : 'default'"
     class="image-button cards-button"
+    id="topic-list-cards-button"
   >
     <div
       class="button-image"

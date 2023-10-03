@@ -8,10 +8,9 @@ export interface TopicListInterface {
     votedBy: string;
     author: string;
     members: string[];
-    closeDate: string;
+    closeDateString: string;
     visits: number;
     status: string;
     canVote: boolean;
   }
 
-  

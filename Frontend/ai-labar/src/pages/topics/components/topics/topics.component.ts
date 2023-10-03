@@ -3,8 +3,11 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { GroupsComponent } from '../groups/groups.component';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/pages/language.service';
+import { Subject, takeUntil } from 'rxjs';
+import { MessageService } from '../../services/message.service';
+import { LoginService } from 'src/pages/login/login.service';
 
 /**
  * Component for the management of topics and groups.
@@ -23,6 +26,11 @@ export class TopicsComponent implements OnInit {
   currentLanguage!: string;
   textButtonLanguage!: string;
 
+  userImage = this.cookie.get('photo');
+  userImageIsNull: boolean = true;
+
+  private ngUnsubscribe = new Subject();
+
   /**
    * Constructor of the component.
    * @param cookie Service for working with cookies.
@@ -35,8 +43,16 @@ export class TopicsComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private translate: TranslateService,
-    private languageService: LanguageService
-  ) {}
+    private languageService: LanguageService,
+    private messageService: MessageService,
+    private loginService: LoginService
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+        this.textButtonLanguage = translation;
+      });
+    });
+  }
 
   /**
    * Method invoked upon initializing the component.
@@ -50,11 +66,17 @@ export class TopicsComponent implements OnInit {
     this.translate.setDefaultLang('en');
 
     this.currentLanguage = this.languageService.getLanguage();
-    if(this.languageService.getDefaultLanguage() != this.currentLanguage){
-      this.translate.use(this.currentLanguage);
+    if (this.cookie.get('language') != this.currentLanguage) {
+      this.languageService.toggleLanguage();
+      this.currentLanguage = this.languageService.getLanguage();
     }
 
-    this.changeTextButtonLanguage();
+    this.translate.get('LANGUAGE.CHANGE').subscribe((translation: string) => {
+      this.textButtonLanguage = translation;
+    });
+    if (this.userImage != '') {
+      this.userImageIsNull = false;
+    }
   }
 
   /**
@@ -64,6 +86,8 @@ export class TopicsComponent implements OnInit {
   logOut() {
     this.cookie.delete('user');
     this.cookie.delete('token');
+    this.cookie.delete('language');
+    this.cookie.delete('photo');
     this.router.navigate(['login']);
   }
 
@@ -74,17 +98,43 @@ export class TopicsComponent implements OnInit {
     this.router.navigate(['/topics/topics-list']);
   }
 
-  toggleLanguage() {
+  /**
+   * Toggles the application language between available options.
+   * This function updates the current language, UI text, and saves the language preference for the user.
+   */
+  toggleLanguage(): void {
+    // Toggle the application language using the language service.
     this.languageService.toggleLanguage();
-    this.currentLanguage = this.languageService.getLanguage();
-    this.changeTextButtonLanguage();
-  }
 
-  changeTextButtonLanguage(){
-    if (this.currentLanguage === 'EN'){
-      this.textButtonLanguage = 'ES';
-    }else {
-      this.textButtonLanguage = 'EN';
-    }
+    // Retrieve and update the current language.
+    this.currentLanguage = this.languageService.getLanguage();
+
+    // Update the text for the language toggle button.
+    this.textButtonLanguage = this.translate.instant('LANGUAGE.CHANGE');
+
+    // Prepare the request body to save the selected language preference.
+    const saveLanguageBody = {
+      language: this.currentLanguage,
+      user: this.cookie.get('user'),
+      token: this.cookie.get('token'),
+    };
+
+    // Save the language preference by making an HTTP request.
+    this.languageService
+      .saveLanguage(saveLanguageBody)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (response) => {
+          // Handle successful response if needed.
+        },
+        error: (error) => {
+          // Handle errors, show an error message.
+          this.messageService.showErrorMessage(
+            this.translate.instant('ERROR_MESSAGES.ERROR_SEND_LANGUAGE') +
+              '\n' +
+              error.error.message
+          );
+        },
+      });
   }
 }

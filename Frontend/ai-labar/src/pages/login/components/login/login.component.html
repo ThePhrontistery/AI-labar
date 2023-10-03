@@ -9,13 +9,20 @@
 
     <mat-card *ngIf="!showRegistroFom" class="login-card">
       <mat-card-header>
-        <mat-card-title>{{ 'LOGIN.INIT' | translate }}</mat-card-title>
-        <button mat-raised-button class="align-right-button" (click)="toggleLanguage()">{{ textButtonLanguage }}</button>
+        <mat-card-title>{{ "LOGIN.INIT" | translate }}</mat-card-title>
+        <button
+          mat-raised-button
+          class="align-right-button"
+          (click)="toggleLanguage()"
+        >
+          {{ textButtonLanguage }}
+        </button>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="loginForm">
           <mat-form-field class="login-form-field">
             <input
+              id="login-user-input"
               matInput
               placeholder="{{ 'LOGIN.USER' | translate }}"
               required
@@ -24,6 +31,7 @@
           </mat-form-field>
           <mat-form-field class="login-form-field">
             <input
+              id="login-password-input"
               matInput
               placeholder="{{ 'LOGIN.PASSWORD' | translate }}"
               type="password"
@@ -32,49 +40,71 @@
             />
           </mat-form-field>
           <button
+            id="login-login-button"
             mat-raised-button
             color="white"
             class="login-button"
             (click)="loginClick()"
           >
-          {{ 'LOGIN.INIT' | translate }}
+            {{ "LOGIN.INIT" | translate }}
           </button>
-          <button
+          <button *ngIf="!loginCap"
+            id="login-registration-button"
             mat-raised-button
             color="white"
             class="login-button"
             (click)="registration()"
           >
-          {{ 'LOGIN.RECORD' | translate }}
+            {{ "LOGIN.REGISTER" | translate }}
           </button>
         </form>
       </mat-card-content>
     </mat-card>
 
-    <mat-card *ngIf="showRegistroFom" class="login-card">
+    <mat-card *ngIf="showRegistroFom && !loginCap" class="login-card">
       <mat-card-header>
-        <mat-card-title>{{ 'LOGIN.RECORD' | translate }}</mat-card-title>
+        <mat-card-title>{{ "LOGIN.REGISTER" | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form class="login-form" [formGroup]="form">
           <mat-form-field>
-            <mat-label>{{ 'LOGIN.USER' | translate }}</mat-label>
-            <input matInput formControlName="user" />
+            <mat-label>{{ "LOGIN.USER" | translate }}</mat-label>
+            <input
+              id="login-user-register-input"
+              matInput
+              formControlName="user"
+            />
           </mat-form-field>
           <mat-form-field>
-            <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" formControlName="password" />
+            <mat-label>{{ "LOGIN.PASSWORD" | translate }}</mat-label>
+            <input
+              id="login-password-register-input"
+              matInput
+              type="password"
+              formControlName="password"
+            />
           </mat-form-field>
           <mat-form-field>
-            <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
-            <input matInput type="email" formControlName="email" />
+            <mat-label>{{ "LOGIN.EMAIL" | translate }}</mat-label>
+            <input
+              id="login-email-register-input"
+              matInput
+              type="email"
+              formControlName="email"
+            />
           </mat-form-field>
           <mat-form-field style="width: 100%">
-            <mat-label>{{ 'LOGIN.ADD_IMG' | translate }}</mat-label>
-            <button mat-icon-button matPrefix (click)="upload($event)">
-              <mat-icon>attach_file</mat-icon>
+            <mat-label>{{ "LOGIN.ADD_IMG" | translate }}</mat-label>
+            <button
+              id="login-add-img-button"
+              mat-icon-button
+              matPrefix
+              (click)="upload($event)"
+            >
+              <mat-icon svgIcon="attach_file"></mat-icon>
             </button>
             <input
+              id="login-image-text-input"
               type="text"
               readonly
               matInput
@@ -82,6 +112,7 @@
               formControlName="imageVisible"
             />
             <input
+              id="login-image-file-input"
               type="file"
               (change)="onFileSelected($event)"
               formControlName="imageFunctional"
@@ -94,21 +125,23 @@
           </mat-form-field>
         </form>
         <button
+          id="login-register-button"
           mat-raised-button
           color="white"
           class="login-button"
           (click)="sendRegistration()"
         >
-        {{ 'LOGIN.RECORD' | translate }}
+          {{ "LOGIN.REGISTER" | translate }}
         </button>
         <button
+          id="login-cancel-button"
           mat-raised-button
           color="white"
           class="login-button"
           (click)="showRegistroFom = false"
-          style="margin-left: 23px;"
+          style="margin-left: 23px"
         >
-        {{ 'LOGIN.CANCELAR' | translate }}
+          {{ "LOGIN.CANCELAR" | translate }}
         </button>
       </mat-card-content>
     </mat-card>

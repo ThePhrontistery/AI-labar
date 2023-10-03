@@ -4,17 +4,22 @@
     <span (click)="back()">AILabar</span>
   </div>
   <div class="user-info">
-    <i class="material-icons user-icon">account_circle</i>
+    <div *ngIf="userImageIsNull">
+      <i class="button-reopen user-icon"></i>
+    </div>
+    <div *ngIf="!userImageIsNull">
+      <img class="user-image" [src]="userImage" height="auto" alt="Image" />
+    </div>
     <span class="username">{{ user }}</span>
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-button">
-      <mat-icon>arrow_drop_down</mat-icon>
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-button" id="topics-menu-button">
+      <mat-icon svgIcon="arrow_drop_down" class="button-reopen"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="logOut()">
-        {{ "TOPIC.LOGOUT" | translate }}
-      </button>
-      <button mat-menu-item (click)="toggleLanguage()">
+      <button mat-menu-item (click)="toggleLanguage()"  id="topics-language-button">
         {{ textButtonLanguage }}
+      </button>
+      <button mat-menu-item (click)="logOut()"  id="topics-logout-button">
+        {{ "TOPIC.LOGOUT" | translate }}
       </button>
     </mat-menu>
   </div>

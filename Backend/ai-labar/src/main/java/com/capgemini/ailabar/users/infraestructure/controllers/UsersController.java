@@ -1,28 +1,54 @@
 package com.capgemini.ailabar.users.infraestructure.controllers;
 
 import com.capgemini.ailabar.commons.adapters.out.SpecialResponseInterface;
+import com.capgemini.ailabar.commons.utils.RSAKeyPairGeneratorService;
 import com.capgemini.ailabar.commons.utils.SpecialResponse;
 import com.capgemini.ailabar.users.domain.exceptions.LoginException;
 import com.capgemini.ailabar.users.domain.exceptions.*;
-import com.capgemini.ailabar.users.infraestructure.entities.UsersEntity;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.application.services.UsersService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.PrivateKey;
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 public class UsersController implements SpecialResponseInterface {
+    private final RSAKeyPairGeneratorService rsaKeyPairGeneratorService;
     private final UsersService usersService;
+    private final Environment environment;
+    private PrivateKey privateKey;
 
     @Autowired
-    public UsersController(UsersService usersService) {
+    public UsersController(RSAKeyPairGeneratorService rsaKeyPairGeneratorService, UsersService usersService,
+                           Environment environment) {
+        this.rsaKeyPairGeneratorService = rsaKeyPairGeneratorService;
         this.usersService = usersService;
+        this.environment = environment;
+    }
+
+    /*
+     * GENERATE AND PROVIDE AN RSA PUBLIC KEY FOR ENCRYPTION ON THE FRONTEND
+     */
+    @GetMapping("/getPublicKey")
+    public ResponseEntity<SpecialResponse> getPublicKey() {
+        JSONObject responseJson = new JSONObject();
+        String publicKey = null;
+        try {
+            rsaKeyPairGeneratorService.generateKeys();
+            this.privateKey = rsaKeyPairGeneratorService.getPrivateKey();
+            publicKey = rsaKeyPairGeneratorService.publicKeyToString();
+        } catch (Exception e) {
+            throw new LoginException("An error occurred while obtaining the RSA public key");
+        }
+        responseJson.put("message", "PublicKey obtained successful");
+        return new ResponseEntity<>(specialResponse(publicKey, responseJson), HttpStatus.OK);
     }
 
     /*
@@ -35,8 +61,16 @@ public class UsersController implements SpecialResponseInterface {
      */
     @PostMapping("/login")
     public ResponseEntity<SpecialResponse> login(@RequestBody UsersModel usersModel) {
+        if("true".equals(environment.getProperty("login.cap.active"))) {
+            try {
+                usersModel.setPassword(rsaKeyPairGeneratorService.decryptWithPrivateKey(usersModel.getPassword(), privateKey));
+            } catch (Exception e) {
+                throw new LoginException("An error occurred while decrypting the RSA encryption");
+            }
+        }
+
         JSONObject responseJson = new JSONObject();
-        List<String> loginData = usersService.login(usersModel);
+        List<String> loginData = usersService.login(usersModel, privateKey);
         responseJson.put("message", "Login successful");
         return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
@@ -78,6 +112,17 @@ public class UsersController implements SpecialResponseInterface {
         JSONObject responseJson = new JSONObject();
         usersService.editVisualization(usersModel);
         responseJson.put("message", "Visualization edited successfully");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    /*
+     * MODIFIES THE PREFERRED TOPIC LANGUAGE TYPE FOR THE USER
+     */
+    @PutMapping("/editLanguage")
+    public ResponseEntity<SpecialResponse> editLanguage(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.editLanguage(usersModel);
+        responseJson.put("message", "Language edited successfully");
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
     }
 
@@ -125,11 +170,22 @@ public class UsersController implements SpecialResponseInterface {
     @GetMapping("/getUsersDatabase")
     public ResponseEntity<SpecialResponse> getUsersDatabase() {
         JSONObject responseJson = new JSONObject();
-        List<UsersEntity> usersList = usersService.getUsersDatabase();
+        List<UsersModel> usersList = usersService.getUsersDatabase();
         responseJson.put("message", "OK");
         return new ResponseEntity<>(specialResponse(usersList, responseJson), HttpStatus.OK);
     }
     /* End of methods for testing purposes */
+
+    /*
+     * LOGS OUT TO THE APPLICATION
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<SpecialResponse> logout(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.logout(usersModel);
+        responseJson.put("message", "Logout successful");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
 
     // Exception handling for each use case
     @ExceptionHandler(LoginException.class)
@@ -185,6 +241,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerGetUsersDatabaseException (GetUsersDatabaseException getUsersDatabaseException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", getUsersDatabaseException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(LogoutException.class)
+    ResponseEntity<SpecialResponse> handlerLogoutException (LogoutException logoutException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", logoutException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

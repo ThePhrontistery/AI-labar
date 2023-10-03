@@ -62,7 +62,7 @@ describe('ImageTextResultComponent', () => {
 
     // Spy on the service method
     const topicListService = TestBed.inject(TopicsListService);
-    const postSpy = spyOn(topicListService, 'post').and.returnValue(
+    const postSpy = spyOn(topicListService, 'votingResults').and.returnValue(
       // Return a mock observable with the response
       {
         subscribe: (callback: any) => callback(mockResponse),

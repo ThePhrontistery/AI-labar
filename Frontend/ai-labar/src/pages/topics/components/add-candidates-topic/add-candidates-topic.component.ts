@@ -77,6 +77,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   oldSelectedOption: string | undefined;
 
   private ngUnsubscribe = new Subject();
+  private searchTimer: any;
 
   constructor(
     private topicsCreateService: TopicsCreateService,
@@ -103,7 +104,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Load groups and users on component initialization
     this.getGrupos();
-    this.getUsers();
+    //this.getUsers();
   }
 
   // Load users when called
@@ -199,11 +200,13 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
 
   // Initialize the user selection form
   loadForm() {
+    this.users = [];
     this.usersNames.map((item) => {
       let user = {
         name: item,
         checked: false,
         hidden: false,
+        modal: false
       };
       this.users.push(user);
     });
@@ -221,10 +224,16 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   filterUsers(): void {
     this.filtering = true;
     this.users = [];
-    let search = this.groupsForm.value.searcher.toLowerCase();
+    let search = this.groupsForm.value.searcher.toUpperCase();
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
     if (search.length >= 3) {
       this.matcher = search;
-      this.getUsersFilter();
+      //this.getUsersFilter();
+      this.searchTimer = setTimeout(() => {
+        this.getUsersFilter();
+      }, 400);
       this.showUsers = true;
     } else {
       this.showUsers = false;

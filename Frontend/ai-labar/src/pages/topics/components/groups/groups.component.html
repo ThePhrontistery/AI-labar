@@ -1,72 +1,195 @@
-<h1>{{ 'CREATE_GROUPS.CREATE_GROUP' | translate }}</h1>
+<h1>{{ "MANAGING_GROUPS.MANAGING_GROUP" | translate }}</h1>
 <form class="login-form" [formGroup]="groupsForm">
-  <mat-form-field appearance="fill">
-    <input
-      matInput
-      placeholder="{{ 'CREATE_GROUPS.GROUP_NAME' | translate }}"
-      type="text"
-      formControlName="groupName"
-    />
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <input
-      matInput
-      placeholder="{{ 'CREATE_GROUPS.SEARCH_USERS' | translate }}"
-      type="text"
-      (input)="filterUsers()"
-      formControlName="searcher"
-    />
-  </mat-form-field>
-  <div *ngIf="showUsers">
-    <p>{{ users.length }} {{ 'CREATE_GROUPS.USERS_FOUND' | translate }}</p>
-    <div class="selectionPanel" #checkboxContainer>
-      <mat-checkbox
-        color="primary"
-        *ngFor="let user of users"
-        [formControlName]="user.name"
-        [class]="user.hidden ? 'hidden' : ''"
-        [checked]="user.checked"
-      >
-        {{ user.name }}
-      </mat-checkbox>
+  <mat-radio-group formControlName="selectedOption" (change)="onOptionChange()">
+    <mat-radio-button color="primary" value="create">{{
+      "MANAGING_GROUPS.CREATE" | translate
+    }}</mat-radio-button>
+    <mat-radio-button color="primary" value="edit">{{
+      "MANAGING_GROUPS.EDIT" | translate
+    }}</mat-radio-button>
+  </mat-radio-group>
+  <div *ngIf="selectedOption == 'create'">
+    <mat-form-field appearance="fill">
+      <input
+        id="groups-group-name-input"
+        matInput
+        placeholder="{{ 'MANAGING_GROUPS.GROUP_NAME' | translate }}"
+        type="text"
+        formControlName="groupName"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input
+        id="groups-searcher-input"
+        matInput
+        placeholder="{{ 'MANAGING_GROUPS.SEARCH_USERS' | translate }}"
+        type="text"
+        (input)="filterUsers()"
+        formControlName="searcher"
+      />
+    </mat-form-field>
+    <div *ngIf="showUsers">
+      <p>{{ users.length }} {{ "MANAGING_GROUPS.USERS_FOUND" | translate }}</p>
+      <div class="selectionPanel" #checkboxContainer>
+        <mat-checkbox
+          color="primary"
+          *ngFor="let user of users"
+          [formControlName]="user.name"
+          [class]="user.hidden ? 'hidden' : ''"
+          [checked]="user.checked"
+        >
+          {{ user.name }}
+        </mat-checkbox>
+      </div>
+    </div>
+    <div [class.hidden]="!showSelected">
+      <p>
+        {{ "MANAGING_GROUPS.SELECTED_USERS" | translate }}
+        {{ selectedUsers.length }}
+      </p>
+      <mat-form-field appearance="fill">
+        <textarea
+          id="groups-current-selection-input"
+          formControlName="currentSelection"
+          matInput
+          [value]="selectedUsers.join(', ')"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div class="wizard-navigation">
+      <div class="button left-button">
+        <button
+          id="groups-clear-button"
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="clearSelection()"
+        >
+          {{ "MANAGING_GROUPS.CLEAR_SELECTION" | translate }}
+        </button>
+      </div>
+      <div class="button right-button">
+        <button
+          id="groups-cancel-button"
+          class="button"
+          [mat-dialog-close]="true"
+          mat-button
+          color="accent"
+        >
+          {{ "MANAGING_GROUPS.CANCEL" | translate }}
+        </button>
+        <button
+          id="groups-save-button"
+          [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
+          class="button login-button ml16"
+          mat-raised-button
+          color="white"
+          (click)="saveGroup()"
+        >
+          {{ "MANAGING_GROUPS.SAVE_GROUP" | translate }}
+        </button>
+      </div>
     </div>
   </div>
-  <div [class.hidden]="!showSelected">
-    <p>{{ 'CREATE_GROUPS.SELECTED_USERS' | translate }} {{ selectedUsers.length }}</p>
-    <mat-form-field appearance="fill">
-      <textarea
-        formControlName="currentSelection"
-        matInput
-        [value]="selectedUsers.join(', ')"
-        rows="3"
-      ></textarea>
+
+  <div *ngIf="selectedOption == 'edit'">
+    <mat-form-field>
+      <mat-label>{{
+        "ADD_CANDIDATES.SELECT_USER_GROUP" | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="selectedGroup"
+        (selectionChange)="loadUsers()"
+      >
+        <mat-option *ngFor="let group of groups" [value]="group">{{
+          group
+        }}</mat-option>
+      </mat-select>
     </mat-form-field>
+    <div [class.oculto]="!showSelectedGroup">
+      <mat-form-field appearance="fill">
+        <input
+          id="groups-searcher-group-input"
+          matInput
+          placeholder="{{ 'MANAGING_GROUPS.SEARCH_USERS' | translate }}"
+          type="text"
+          (input)="filterUsersGroup()"
+          formControlName="searcherGroup"
+        />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="showUsersGroups">
+      <p>
+        {{ usersGroups.length }} {{ "ADD_CANDIDATES.USERS_FOUND" | translate }}
+      </p>
+      <div class="selectionPanel" #checkboxContainer>
+        <mat-checkbox
+          color="primary"
+          *ngFor="let user of usersGroups"
+          [formControlName]="user.name"
+          [class]="user.hidden ? 'hidden' : ''"
+          [(ngModel)]="user.modal"
+          [checked]="user.checked"
+          (change)="selectUserGroup(user)"
+        >
+          {{ user.name }}
+        </mat-checkbox>
+      </div>
+      <p *ngIf="selectedUsers.length > 8" class="error">
+        {{ "ADD_CANDIDATES.MAX_CANDIDATES_ERROR" | translate }}
+      </p>
+    </div>
+    <div [class.oculto]="!showSelectedGroup">
+      <p>
+        {{ "ADD_CANDIDATES.SELECTED_USERS" | translate }}
+        {{ selectedUsersGroup.length }}
+      </p>
+      <mat-form-field appearance="fill">
+        <textarea
+          id="groups-current-selection-users-input"
+          formControlName="currentSelection"
+          matInput
+          [value]="selectedUsersGroup.join(', ')"
+          rows="3"
+          name="currentSelection"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div class="wizard-navigation">
+      <div class="button left-button">
+        <button
+          id="groups-clearGroup-button"
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="clearSelection()"
+        >
+          {{ "MANAGING_GROUPS.CLEAR_SELECTION" | translate }}
+        </button>
+      </div>
+      <div class="button right-button">
+        <button
+          id="groups-cancelGroup-button"
+          class="button"
+          [mat-dialog-close]="true"
+          mat-button
+          color="accent"
+        >
+          {{ "MANAGING_GROUPS.CANCEL" | translate }}
+        </button>
+        <button
+          id="groups-saveGroup-button"
+          [disabled]="this.selectedUsersGroup.length === 0"
+          class="button login-button ml16"
+          mat-raised-button
+          color="white"
+          (click)="editGroup()"
+        >
+          {{ "MANAGING_GROUPS.SAVE_GROUP" | translate }}
+        </button>
+      </div>
+    </div>
   </div>
 </form>
-
-<div class="wizard-navigation">
-  <div class="button left-button">
-    <button
-      mat-raised-button
-      color="white"
-      class="login-button"
-      (click)="clearSelection()"
-    >
-    {{ 'CREATE_GROUPS.CLEAR_SELECTION' | translate }}
-    </button>
-  </div>
-  <div class="button right-button">
-    <button class="button" [mat-dialog-close]="true" mat-button color="accent">
-      {{ 'CREATE_GROUPS.CANCEL' | translate }}
-    </button>
-    <button
-      [disabled]="this.selectedUsers.length === 0 || !this.groupsForm.valid"
-      class="button login-button ml16"
-      mat-raised-button
-      color="white"
-      (click)="saveGroup()"
-    >
-    {{ 'CREATE_GROUPS.SAVE_GROUP' | translate }}
-    </button>
-  </div>
-</div>

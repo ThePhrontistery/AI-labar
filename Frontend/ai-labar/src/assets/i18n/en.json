@@ -3,13 +3,13 @@
     "INIT": "Log in",
     "USER": "User",
     "PASSWORD": "Password",
-    "RECORD": "Record",
+    "REGISTER": "Register",
     "EMAIL": "E-mail",
     "ADD_IMG": "Add image",
     "CANCELAR": "Cancel"
   },
   "TOPIC": {
-    "ADD_GROUP": "Add group",
+    "MANAGING_GROUPS": "Managing groups",
     "ADD_TOPIC": "Add topic",
     "LOGOUT": "Logout"
   },
@@ -46,7 +46,7 @@
     "YES": "Yes",
     "NO": "No"
   },
-  "CREATE_GROUPS": {
+  "MANAGING_GROUPS": {
     "CREATE_GROUP": "CREATE GROUP",
     "GROUP_NAME": "Group name",
     "SEARCH_USERS": "Search users",
@@ -54,7 +54,10 @@
     "SELECTED_USERS": "Selected users:",
     "CLEAR_SELECTION": "Clear selection",
     "CANCEL": "Cancel",
-    "SAVE_GROUP": "Save group"
+    "SAVE_GROUP": "Save group",
+    "CREATE":"Create group",
+    "EDIT":"Edit group",
+    "MANAGING_GROUP": "MANAGING GROUP"
   },
   "IMAGE_TEXT_RESULT": {
     "CLOSE": "Close"
@@ -121,7 +124,7 @@
     "VIEW_RESULTS_SURVEY_COLUMN": "View results",
     "VIEW_RESULTS_SURVEY": "View results",
     "ACTIONS": "Actions",
-    "WITHOUT_CLOSING_DATE": "Without clsing date",
+    "WITHOUT_CLOSING_DATE": "Without closing date",
     "OPEN": "Open",
     "CLOSE": "Close",
     "DELETE": "Delete",
@@ -138,6 +141,9 @@
   "RATING_RESULT": {
     "CLOSE": "Close"
   },
+  "LANGUAGE": {
+    "CHANGE": "Change Language: ES"
+  },
   "ERROR_MESSAGES": {
     "CREATE_USER_ERROR": "Error creating user",
     "ERROR_RETRIEVING_DATA_CB": "Error while retrieving data from the combo box:",
@@ -151,9 +157,15 @@
     "ERROR_DELETE_TOPIC": "Error when deleting the topic:",
     "ERROR_RETRIEVING_TOPICS": "Error while retrieving the topics:",
     "REPEATED_OPTIONS":"There cannot be repeated options.",
-    "CLOSE_BUTTON": "Close"
+    "CLOSE_BUTTON": "Close",
+    "ERROR_SEND_LANGUAGE": "The language could not be saved",
+    "ERROR_USER_IMAGE_SIZE": "The image is too large. The maximum allowed size is 5MB.",
+    "ERROR_NO_PARTICIPANTS": "You have not selected participants.",
+    "ERROR_EDIT_GROUP":"Unable to edit the group"
   },
   "OK_MESSAGES": {
-    "OK_SEND_SELECTION": "Selection sent successfully"
+    "OK_SEND_SELECTION": "Selection sent successfully",
+    "OK_EDIT_GROUP":"The group has been successfully edited",
+    "OK_CREATE_GROUP":"The group has been successfully created"
   }
 }

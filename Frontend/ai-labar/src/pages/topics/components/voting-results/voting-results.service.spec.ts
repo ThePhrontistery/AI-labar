@@ -26,7 +26,7 @@ describe('VotingResultsComponent', () => {
   });
 
   it('should display correct title', () => {
-    const titleElement: HTMLElement = fixture.nativeElement.querySelector('h2');
+    const titleElement: HTMLElement = fixture.nativeElement.querySelector('h1');
     component.titleSurvey = 'Sample Title';
     fixture.detectChanges();
     expect(titleElement.textContent).toContain('Sample Title');

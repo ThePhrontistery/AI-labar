@@ -53,7 +53,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'title',
     'author',
-    'closeDate',
+    'closeDateString',
     'status',
     'open',
     'close',
@@ -123,11 +123,13 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         'TOPICS_LIST.TOPICS_PAGE'
       );
 
-      const pageOf = this.translate.instant(
-        'TOPICS_LIST.TOPICS_PAGE_OF'
-      );
+      const pageOf = this.translate.instant('TOPICS_LIST.TOPICS_PAGE_OF');
 
-      this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+      this.matPaginatorIntl.getRangeLabel = (
+        page: number,
+        pageSize: number,
+        length: number
+      ) => {
         if (length === 0 || pageSize === 0) {
           return `0 ` + pageOf + ` ${length}`;
         }
@@ -138,7 +140,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             ? Math.min(startIndex + pageSize, length)
             : startIndex + pageSize;
         return `${startIndex + 1} - ${endIndex} ` + pageOf + ` ${length}`;
-
       };
 
       this.matPaginatorIntl.changes.next();
@@ -177,10 +178,14 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         this.closedStatusTranslation = translation;
       });
 
-      this.translate
+    this.translate
       .get('TOPICS_LIST.TOPICS_PAGE_OF')
       .subscribe((translation: string) => {
-        this.matPaginatorIntl.getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+        this.matPaginatorIntl.getRangeLabel = (
+          page: number,
+          pageSize: number,
+          length: number
+        ) => {
           if (length === 0 || pageSize === 0) {
             return `0 ` + translation + ` ${length}`;
           }
@@ -190,11 +195,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
             startIndex < length
               ? Math.min(startIndex + pageSize, length)
               : startIndex + pageSize;
-          return `${startIndex + 1} - ${endIndex} ` + translation + ` ${length}`;
-
+          return (
+            `${startIndex + 1} - ${endIndex} ` + translation + ` ${length}`
+          );
         };
       });
-
   }
 
   ngOnDestroy() {
@@ -221,6 +226,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     this.dataSource = new MatTableDataSource<any>([]);
     this.pageIndex = 1;
+    this.totalItems = undefined;
     if (this.paginator) this.paginator.firstPage();
     this.getTopicList();
   }
@@ -245,7 +251,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   // Method to reopen a closed topic.
   reOpen(votation: any) {
-    const url = `${environment.apiUrl}/topics/reOpenTopic`;
     const closingData = {
       id: votation.id,
       user: this.cookie.get('user'),
@@ -255,7 +260,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.reopenTopic(closingData);
     } else {
-      serviceCall = this.topicListService.put(closingData, url);
+      serviceCall = this.topicListService.reOpenTopic(closingData);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -282,7 +287,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
   // Method to close an open topic.
   close(votation: any) {
-    const url = `${environment.apiUrl}/topics/closeTopic`;
     const closingData = {
       id: votation.id,
       user: this.cookie.get('user'),
@@ -292,7 +296,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.closeTopic(closingData);
     } else {
-      serviceCall = this.topicListService.put(closingData, url);
+      serviceCall = this.topicListService.closeTopic(closingData);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -329,7 +333,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const url = `${environment.apiUrl}/topics/deleteTopic`;
         const deletionData = {
           id: votation.id,
           user: this.cookie.get('user'),
@@ -340,7 +343,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         if (environment.mockup) {
           serviceCall = this.topicsListServiceMock.deleteTopic(deletionData);
         } else {
-          serviceCall = this.topicListService.delete(deletionData, url);
+          serviceCall = this.topicListService.deleteTopic(deletionData);
         }
 
         serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -493,7 +496,6 @@ export class TopicsListComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    const url = `${environment.apiUrl}/topics/loadTopics`;
     const loadTopicsBody = {
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
@@ -505,7 +507,7 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     if (environment.mockup) {
       serviceCall = this.topicsListServiceMock.loadTopics_post(loadTopicsBody);
     } else {
-      serviceCall = this.topicListService.post(loadTopicsBody, url);
+      serviceCall = this.topicListService.loadTopics(loadTopicsBody);
     }
 
     serviceCall.pipe(takeUntil(this.ngUnsubscribe)).subscribe({
@@ -646,29 +648,41 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   /**
    * Open a dialog to add a new group.
    */
-  addGroup() {
+  managingGroups() {
     const dialogRef = this.dialog.open(GroupsComponent, {
       width: '750px',
       data: {},
     });
   }
 
-
-  getRangeLabel(page: number, pageSize: number, length: number){
+  /**
+   * Generates a label for displaying the range of items shown on a page within a paginated list.
+   *
+   * @param {number} page - The current page number (0-based index).
+   * @param {number} pageSize - The number of items displayed per page.
+   * @param {number} length - The total number of items in the list.
+   * @returns {string} A label indicating the range of items displayed on the current page.
+   */
+  getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0 || pageSize === 0) {
-      return `0 de ${length}`;
+      // Return a label indicating no items if the length or pageSize is 0.
+      return `0 of ${length}`;
     }
+
+    // Ensure the length is non-negative.
     length = Math.max(length, 0);
+
+    // Calculate the start and end index for the current page.
     const startIndex = page * pageSize;
     const endIndex =
       startIndex < length
         ? Math.min(startIndex + pageSize, length)
         : startIndex + pageSize;
-    const itemsPerPageLabel = this.translate.instant(
-      'TOPICS_LIST.TOPICS_PAGE'
-    );
 
-    return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} de ${length}`;
+    // Retrieve the label for items per page.
+    const itemsPerPageLabel = this.translate.instant('TOPICS_LIST.TOPICS_PAGE');
 
+    // Construct and return the range label.
+    return itemsPerPageLabel + `${startIndex + 1} - ${endIndex} of ${length}`;
   }
 }

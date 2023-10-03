@@ -24,7 +24,7 @@ describe('RatingResultComponent', () => {
   beforeEach(() => {
     mockDialogRef = jasmine.createSpyObj(['close']);
     mockCookieService = jasmine.createSpyObj(['get']);
-    mockTopicListService = jasmine.createSpyObj(['post']);
+    mockTopicListService = jasmine.createSpyObj(['votingResults']);
 
     TestBed.configureTestingModule({
       declarations: [RatingResultComponent],
@@ -41,7 +41,7 @@ describe('RatingResultComponent', () => {
     component = fixture.componentInstance;
 
     mockCookieService.get.and.returnValue('testUser');
-    mockTopicListService.post.and.returnValue(of({ entity: [] }));
+    mockTopicListService.votingResults.and.returnValue(of({ entity: [] }));
   });
 
   it('should create', () => {
@@ -56,7 +56,7 @@ describe('RatingResultComponent', () => {
       ]
     };
 
-    mockTopicListService.post.and.returnValue(of(fakeResponse));
+    mockTopicListService.votingResults.and.returnValue(of(fakeResponse));
 
     component.ngOnInit();
 

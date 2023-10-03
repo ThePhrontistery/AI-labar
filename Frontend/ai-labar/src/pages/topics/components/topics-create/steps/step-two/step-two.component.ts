@@ -9,6 +9,8 @@ import {
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MessageService } from 'src/pages/topics/services/message.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Second-stage form for creating surveys of different types.
@@ -108,7 +110,11 @@ export class StepTwoComponent implements OnInit, OnDestroy {
     return date >= currentDate;
   };
 
-  constructor(private dialog: MatDialog) {
+  constructor(
+    private dialog: MatDialog,
+    private translate: TranslateService,
+    private messageService: MessageService
+  ) {
     this.minDate = new Date();
   }
 
@@ -132,10 +138,10 @@ export class StepTwoComponent implements OnInit, OnDestroy {
       this.isVotingSurvey = true;
     } else if (this.selectedImage.code === this.imageTextTopicCode) {
       this.isSurveyImageText = true;
-      this.imageName[1]='';
-      this.imageName[2]='';
-      this.imageName[3]='';
-      this.imageName[4]='';
+      this.imageName[1] = '';
+      this.imageName[2] = '';
+      this.imageName[3] = '';
+      this.imageName[4] = '';
     }
   }
 
@@ -214,16 +220,23 @@ export class StepTwoComponent implements OnInit, OnDestroy {
     this.selectedFiles[imageNumber] = event.target.files[0];
     const file = this.selectedFiles[imageNumber];
     if (file) {
-      const reader = new FileReader(); 
-      this.imageName[imageNumber] = file.name;
+      const fileSize = file.size;
+      if (fileSize > 5 * 1024 * 1024) {
+        this.messageService.showErrorMessage(
+          this.translate.instant('ERROR_MESSAGES.ERROR_USER_IMAGE_SIZE')
+        );
+      } else {
+        const reader = new FileReader();
+        this.imageName[imageNumber] = file.name;
 
-      reader.onloadend = () => {
-        const base64data = reader.result?.toString()?.split(',')[1];
-        if (base64data) {
-          this.sendBase64ToWebService(base64data, imageNumber);
-        }
-      };
-      reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          const base64data = reader.result?.toString()?.split(',')[1];
+          if (base64data) {
+            this.sendBase64ToWebService(base64data, imageNumber);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
     }
   }
 

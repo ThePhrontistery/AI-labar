@@ -47,7 +47,6 @@ export class AsResultsComponent implements OnInit {
    */
   loadResults() {
     if (this.data && this.data.votation) {
-      const url = `${environment.apiUrl}/topics/votingResults`;
 
       // Data necessary to request results.
       const resultData = {
@@ -57,7 +56,7 @@ export class AsResultsComponent implements OnInit {
       };
 
       // Make a POST request to get the results.
-      this.topicListService.post(resultData, url).subscribe((response) => {
+      this.topicListService.votingResults(resultData).subscribe((response) => {
         if (response && response.entity) {
           // You get the winning option using the results service.
           response.entity = this.resultsService.getWinnerOption(
