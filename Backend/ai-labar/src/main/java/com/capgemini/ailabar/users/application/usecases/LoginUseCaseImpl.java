@@ -75,7 +75,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
         if(!usersRepositoryPort.checkEmail(decodedClaims.getString("email"))) {
             // Descomentar cuando se quiera volver a registrar a los usuarios con el primer login en la aplicación
             //createCapgeminiUser(usersModel, jsonObject);
-            throw new LoginException("Usuario no autorizado en la aplicación");
+            throw new LoginException("Unauthorized user in the application");
         }
 
         String token = jsonObject.getString("token");
