@@ -6,7 +6,8 @@
     "REGISTER": "Register",
     "EMAIL": "E-mail",
     "ADD_IMG": "Add image",
-    "CANCELAR": "Cancel"
+    "CANCELAR": "Cancel",
+    "PASS_ADMIN": "Administrator password"
   },
   "TOPIC": {
     "MANAGING_GROUPS": "Managing groups",
@@ -161,7 +162,8 @@
     "ERROR_SEND_LANGUAGE": "The language could not be saved",
     "ERROR_USER_IMAGE_SIZE": "The image is too large. The maximum allowed size is 5MB.",
     "ERROR_NO_PARTICIPANTS": "You have not selected participants.",
-    "ERROR_EDIT_GROUP":"Unable to edit the group"
+    "ERROR_EDIT_GROUP":"Unable to edit the group",
+    "ERROR_ADMIN_PASS": "Password verification error: "
   },
   "OK_MESSAGES": {
     "OK_SEND_SELECTION": "Selection sent successfully",
