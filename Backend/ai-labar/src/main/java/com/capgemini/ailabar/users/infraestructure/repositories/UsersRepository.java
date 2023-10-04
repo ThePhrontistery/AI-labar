@@ -17,8 +17,8 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.email = :email")
     boolean checkEmail(@Param("email") String email);
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.user = :user AND u.password = :password")
-    boolean checkLogin(@Param("user") String user, @Param("password") String password);
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UsersEntity u WHERE u.email = :email AND u.password = :password")
+    boolean checkLogin(@Param("email") String email, @Param("password") String password);
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UsersEntity u WHERE u.user = :user")
     boolean checkUser(@Param("user") String user);
@@ -29,10 +29,13 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Query("SELECT u.user FROM UsersEntity u WHERE u.user NOT LIKE '%Deactivated%'")
     List<String> getAllUsers();
 
+    @Query("SELECT u FROM UsersEntity u WHERE u.email = :email")
+    UsersEntity getUserByEmail(@Param("email") String email);
+
     @Query("SELECT u FROM UsersEntity u WHERE u.user = :user")
     UsersEntity getUserByName(@Param("user") String user);
 
-    @Query("SELECT u.user FROM UsersEntity u WHERE upper(u.user) LIKE %:matcher% AND u.user NOT LIKE '%Deactivated%'")
+    @Query("SELECT CONCAT(u.user, ' (', u.email, ')') AS user FROM UsersEntity u WHERE (UPPER(u.user) LIKE %:matcher% OR UPPER(u.email) LIKE %:matcher%) AND u.user NOT LIKE '%Deactivated%'")
     List<String> getUsersByNameMatch(@Param("matcher") String matcher);
 
     @Modifying
@@ -44,8 +47,8 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     void deleteMembersByUserId(@Param("userId") Integer userId);
 
     @Modifying
-    @Query("UPDATE UsersEntity u SET u.token = :newToken WHERE u.id = :userId")
-    void updateToken(@Param("userId") Integer userId, @Param("newToken") String newToken);
+    @Query("UPDATE UsersEntity u SET u.user = :user, u.token = :newToken WHERE u.id = :userId")
+    void updateUserNameAndToken(@Param("userId") Integer userId, @Param("user") String user, @Param("newToken") String newToken);
 
     @Override
     <S extends UsersEntity> S save(S entity);

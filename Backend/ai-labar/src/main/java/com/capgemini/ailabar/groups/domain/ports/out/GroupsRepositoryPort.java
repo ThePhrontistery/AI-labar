@@ -37,5 +37,7 @@ public interface GroupsRepositoryPort {
 
     String getUserNameByUserId(Integer id);
 
+    String getUserNameEMailByUserId(Integer id);
+
     void insertMember(Integer groupId, Integer userId);
 }

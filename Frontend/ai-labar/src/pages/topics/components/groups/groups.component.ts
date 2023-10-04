@@ -159,11 +159,13 @@ export class GroupsComponent implements OnInit, OnDestroy {
       this.selectedUsersGroup = [];
     }
     this.usersGroupsNames.map((item) => {
+      //const username = item;
+      const username = item.split('(')[0].trim();
       let user = {
         name: item,
-        checked: this.selectedUsersGroup.includes(item),
+        checked: this.selectedUsersGroup.includes(username),
         hidden: false,
-        modal: this.selectedUsersGroup.includes(item)
+        modal: this.selectedUsersGroup.includes(username)
       };
       this.usersGroups.push(user);
       if (!this.isFilterUsersGroups) {
@@ -189,9 +191,11 @@ export class GroupsComponent implements OnInit, OnDestroy {
   loadForm() {
     this.users = [];
     this.usersNames.map((item) => {
+      //const username = item;
+      const username = item.split('(')[0].trim();
       let user = {
         name: item,
-        checked: this.selectedUsers.includes(item),
+        checked: this.selectedUsers.includes(username),
         hidden: false,
         modal: false
       };
@@ -254,12 +258,14 @@ export class GroupsComponent implements OnInit, OnDestroy {
    */
   selectUser(user: IUser): void {
     user.checked = !user.checked;
+    //const userName = user.name;
+    const userName = user.name.split('(')[0].trim();
     if (user.checked) {
-      if (!this.selectedUsers.includes(user.name)) {
-        this.selectedUsers.push(user.name);
+      if (!this.selectedUsers.includes(userName)) {
+        this.selectedUsers.push(userName);
       }
     } else {
-      const index = this.selectedUsers.indexOf(user.name);
+      const index = this.selectedUsers.indexOf(userName);
       if (index !== -1) {
         this.selectedUsers.splice(index, 1);
       }
@@ -272,12 +278,14 @@ export class GroupsComponent implements OnInit, OnDestroy {
    */
   selectUserGroup(user: IUser): void {
     user.checked = !user.checked;
+    //const userName = user.name;
+    const userName = user.name.split('(')[0].trim();
     if (user.checked) {
-      if (!this.selectedUsersGroup.includes(user.name)) {
-        this.selectedUsersGroup.push(user.name);
+      if (!this.selectedUsersGroup.includes(userName)) {
+        this.selectedUsersGroup.push(userName);
       }
     } else {
-      const index = this.selectedUsersGroup.indexOf(user.name);
+      const index = this.selectedUsersGroup.indexOf(userName);
       if (index !== -1) {
         this.selectedUsersGroup.splice(index, 1);
       }
@@ -289,9 +297,16 @@ export class GroupsComponent implements OnInit, OnDestroy {
    * Creates a new group with the selected users and saves it to the server.
    */
   saveGroup() {
+
+    const modifiedSelectedUsers: string[] = [];
+    for (const selectedUser of this.selectedUsers) {
+      const userName = selectedUser.split('(')[0];
+      modifiedSelectedUsers.push(userName.trim());
+    }
+
     const groupBody = {
       groupName: this.groupsForm.value.groupName,
-      members: this.selectedUsers,
+      members: modifiedSelectedUsers,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
     };
@@ -320,9 +335,15 @@ export class GroupsComponent implements OnInit, OnDestroy {
    * Edit a group with the selected users and saves it to the server.
    */
   editGroup() {
+    const modifiedSelectedUsers: string[] = [];
+    for (const selectedUser of this.selectedUsersGroup) {
+      const userName = selectedUser.split('(')[0];
+      modifiedSelectedUsers.push(userName.trim());
+    }
+
     const groupBody = {
       groupName: this.actualGroupName,
-      members: this.selectedUsersGroup,
+      members: modifiedSelectedUsers,
       user: this.cookie.get('user'),
       token: this.cookie.get('token'),
       id: this.idGroup,

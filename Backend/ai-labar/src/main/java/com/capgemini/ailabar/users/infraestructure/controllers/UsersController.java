@@ -76,6 +76,17 @@ public class UsersController implements SpecialResponseInterface {
     }
 
     /*
+     * METHOD TO ACCESS USER CREATION
+     */
+    @PostMapping("/adminAccess")
+    public ResponseEntity<SpecialResponse> adminAccess(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.adminAccess(usersModel);
+        responseJson.put("message", "Admin access successful");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
+    /*
      * CREATES A USER IN THE DATABASE:
      * 1. In this case, the password should arrive encrypted with SHA256 from the frontend. In the backend, the password will be re-encrypted in SHA256, and a token will be generated with the user's unique name, password, and ID.
      * 2. The 'gender' field can have values H (male) or M (female) and is optional.
@@ -192,6 +203,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerLoginException (LoginException loginException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", loginException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AdminAccessException.class)
+    ResponseEntity<SpecialResponse> handlerAdminAccessException (AdminAccessException adminAccessException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", adminAccessException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

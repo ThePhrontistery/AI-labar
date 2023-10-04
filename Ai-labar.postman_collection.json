@@ -57,6 +57,34 @@
 					"response": []
 				},
 				{
+					"name": "adminAccess",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"f40c05434358a62bde28b7991e16f880d059d99adb2c20242cf2db46c197e322\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/adminAccess",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"adminAccess"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "createUser",
 					"request": {
 						"method": "POST",

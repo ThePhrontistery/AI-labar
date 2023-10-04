@@ -9,10 +9,12 @@ import java.security.PrivateKey;
 import java.util.List;
 
 @Service
-public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUseCase, DeleteUserUseCase,
-        GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase, GetUsersDatabaseUseCase,
-        EditLanguageUseCase, LogoutUseCase {
+public class UsersService implements LoginUseCase, AdminAccessUseCase, CreateUserUseCase, EditUserUseCase,
+        DeleteUserUseCase, GetUsersByMatchUseCase, EditVisualizationUseCase, GetAllUsersUseCase,
+        GetUsersDatabaseUseCase, EditLanguageUseCase, LogoutUseCase {
     private final LoginUseCase loginUseCase;
+
+    private final AdminAccessUseCase adminAccessUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final EditUserUseCase editUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
@@ -23,12 +25,14 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
     private final GetUsersDatabaseUseCase getUsersDatabaseUseCase;
     private final LogoutUseCase logoutUseCase;
 
-    public UsersService(LoginUseCase loginUseCase, CreateUserUseCase createUserUseCase,
-                        EditUserUseCase editUserUseCase, DeleteUserUseCase deleteUserUseCase,
-                        GetUsersByMatchUseCase getUsersByMatch, EditVisualizationUseCase editVisualizationUseCase,
-                        GetAllUsersUseCase getAllUsersUseCase, GetUsersDatabaseUseCase getUsersDatabaseUseCase ,
-                        EditLanguageUseCase editLanguageUseCase, LogoutUseCase logoutUseCase) {
+    public UsersService(LoginUseCase loginUseCase, AdminAccessUseCase adminAccessUseCase,
+                        CreateUserUseCase createUserUseCase, EditUserUseCase editUserUseCase,
+                        DeleteUserUseCase deleteUserUseCase, GetUsersByMatchUseCase getUsersByMatch,
+                        EditVisualizationUseCase editVisualizationUseCase, GetAllUsersUseCase getAllUsersUseCase,
+                        GetUsersDatabaseUseCase getUsersDatabaseUseCase , EditLanguageUseCase editLanguageUseCase,
+                        LogoutUseCase logoutUseCase) {
         this.loginUseCase = loginUseCase;
+        this.adminAccessUseCase = adminAccessUseCase;
         this.createUserUseCase = createUserUseCase;
         this.editUserUseCase = editUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
@@ -45,6 +49,15 @@ public class UsersService implements LoginUseCase, CreateUserUseCase, EditUserUs
             return loginUseCase.login(usersModel, privateKey);
         } catch (LoginException loginException) {
             throw loginException;
+        }
+    }
+
+    @Override
+    public void adminAccess(UsersModel usersModel) {
+        try {
+            adminAccessUseCase.adminAccess(usersModel);
+        } catch (AdminAccessException adminAccessException) {
+            throw adminAccessException;
         }
     }
 
