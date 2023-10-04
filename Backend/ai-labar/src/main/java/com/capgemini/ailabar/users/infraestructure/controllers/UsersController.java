@@ -75,6 +75,14 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
 
+    @PostMapping("/adminAccess")
+    public ResponseEntity<SpecialResponse> adminAccess(@RequestBody UsersModel usersModel) {
+        JSONObject responseJson = new JSONObject();
+        usersService.adminAccess(usersModel);
+        responseJson.put("message", "Admin access successful");
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.OK);
+    }
+
     /*
      * CREATES A USER IN THE DATABASE:
      * 1. In this case, the password should arrive encrypted with SHA256 from the frontend. In the backend, the password will be re-encrypted in SHA256, and a token will be generated with the user's unique name, password, and ID.
