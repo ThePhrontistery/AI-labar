@@ -1,13 +1,33 @@
 {
 	"info": {
-		"_postman_id": "c6dda908-a066-4cc6-8ea6-7fcee25d9d8b",
+		"_postman_id": "f2047431-70b7-417b-b002-eb97ccacc7e9",
 		"name": "Ai-labar",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20903700"
 	},
 	"item": [
 		{
 			"name": "Users",
 			"item": [
+				{
+					"name": "getPublicKey",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/getPublicKey",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"getPublicKey"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "login",
 					"request": {
@@ -15,7 +35,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\"\r\n}",
+							"raw": "{\r\n  \"user\": \"bgarciav\",\r\n  \"password\": \"HuTao_06\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +63,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"a\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"a@test.com\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"email\": \"beni@test.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -78,7 +98,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"password\": \"9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\",\r\n  \"newUser\": \"Beni2\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Beni2\",\r\n  \"password\": \"8185c8ac4656219f4aa5541915079f7b3743e1b5f48bacfcc3386af016b55320\",\r\n  \"token\": \"e6fc130d97bc5f3ca7d414746a4df82bca185603ac02815d5a24aa563ee6c3eb\",\r\n  \"newUser\": \"Beni3\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,34 +114,6 @@
 							"path": [
 								"users",
 								"editUser"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "editVisualization",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\",\r\n  \"visualization\": \"Cards\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/users/editVisualization",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"users",
-								"editVisualization"
 							]
 						}
 					},
@@ -162,7 +154,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user\": \"Beni\",\r\n    \"matcher\": \"\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"user\": \"Beni\",\r\n    \"matcher\": \"\",\r\n    \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -190,7 +182,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,6 +209,21 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "abcd1234",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -241,6 +248,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": \"Test1\",\r\n  \"token\": \"1fbbe39cab54bf182a9db3ae2fbc88cf97854857b6eaf0c1064e7f841a35e14f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -254,7 +289,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"groupName\": \"Grupo Dos\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Yamato\",\r\n      \"Zoro\",\r\n      \"Lester\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Beni\",\r\n      \"Admin\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -282,7 +317,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -310,7 +345,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 1,\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Yamato\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\",\r\n  \"newGroupName\": \"Grupo uno modificado\"\r\n}",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"members\": [\r\n      \"Luffy\",\r\n      \"Yamato\"\r\n  ],\r\n  \"user\": \"Beni\",\r\n  \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\",\r\n  \"newGroupName\": \"Grupo uno modificado\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -338,7 +373,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"user\": \"Beni\",\r\n  \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -366,7 +401,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"groupName\": \"Grupo Dos\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n  \"id\":6,\r\n  \"groupName\": \"Grupo Final\",\r\n  \"user\": \"Beni\",\r\n  \"token\": \"4f16e07c10f4a91f787daedb8a16bdfa1df688110841bf8ae8b0a3ac9afb7190\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -418,7 +453,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\",\r\n    \"elements\": 1,\r\n    \"page\": 2\r\n}",
+							"raw": "{\r\n    \"user\": \"Beni\",\r\n    \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -474,7 +509,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 2,\r\n  \"title\": \"Mbappé\",\r\n  \"type\": \"TEXT_SINGLE\",\r\n  \"question\": \"¿Vendrá Mbappé?\",\r\n  \"options\": [\r\n        {\r\n            \"option\": \"Sí\"\r\n        },\r\n        {\r\n            \"option\": \"No\"\r\n        }\r\n    ],\r\n  \"user\": \"Yamato\",\r\n  \"groupName\": \"Grupo Uno\",\r\n  \"token\": \"bfbf787b1f540882ee03f3891bdeaabda30d5df717a184c6f10f5162f173d0c5\"\r\n}",
+							"raw": "{\r\n  \"id\": 6,\r\n  \"title\": \"Prueba de opciones 3 editado\",\r\n  \"type\": \"IMAGE_SINGLE\",\r\n  \"question\": \"Se devolverá la foto almacenada en la imagen del usuario en Base64 siempre que exista el mismo y tenga una imagen guardada\",\r\n  \"options\": [\r\n        {\r\n            \"image\": \"uno.jpg\",\r\n            \"option\": \"Laila De Santos\"\r\n        },\r\n        {\r\n            \"image\": \"dos.jpg\",\r\n            \"option\": \"Tontucio Ramos\"\r\n        },\r\n        {\r\n            \"image\": \"tres.jpg\",\r\n            \"option\": \"La nueva opción\"\r\n        }\r\n    ],\r\n  \"user\": \"Yamato\",\r\n  \"groupName\": \"Grupo Tres\",\r\n  \"closeDate\": \"19/07/2023\",\r\n  \"token\": \"2ff6de4a3f425bac4a5bc9e36d286d48a0022fe5d58f0cf3b2d5accba648764f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -502,7 +537,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"user\": \"Yamato\",\r\n    \"token\": \"2ff6de4a3f425bac4a5bc9e36d286d48a0022fe5d58f0cf3b2d5accba648764f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -530,7 +565,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"user\": \"Yamato\",\r\n    \"token\": \"2ff6de4a3f425bac4a5bc9e36d286d48a0022fe5d58f0cf3b2d5accba648764f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -558,7 +593,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"id\": 5,\r\n    \"user\": \"Yamato\",\r\n    \"token\": \"2ff6de4a3f425bac4a5bc9e36d286d48a0022fe5d58f0cf3b2d5accba648764f\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -605,7 +640,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"votation\": [\r\n        \"Laila De Santos\"\r\n    ],\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"id\": 5,\r\n    \"votation\": [\r\n        \"Laila De Santo\"\r\n    ],\r\n    \"user\": \"Beni\",\r\n    \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -633,7 +668,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"762df6366fd13d4459f21cb272bc089a17886271d0e580d07184974367a2b459\"\r\n}",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"user\": \"Beni\",\r\n    \"token\": \"8c0407083600675eab58b450f25188a6a0652d52c25fa8f165158483c8a4707d\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
