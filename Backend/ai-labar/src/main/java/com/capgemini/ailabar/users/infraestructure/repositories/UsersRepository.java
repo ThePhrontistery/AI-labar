@@ -35,7 +35,7 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     @Query("SELECT u FROM UsersEntity u WHERE u.user = :user")
     UsersEntity getUserByName(@Param("user") String user);
 
-    @Query("SELECT u.user FROM UsersEntity u WHERE upper(u.user) LIKE %:matcher% AND u.user NOT LIKE '%Deactivated%'")
+    @Query("SELECT CONCAT(u.user, ' (', u.email, ')') AS user FROM UsersEntity u WHERE (UPPER(u.user) LIKE %:matcher% OR UPPER(u.email) LIKE %:matcher%) AND u.user NOT LIKE '%Deactivated%'")
     List<String> getUsersByNameMatch(@Param("matcher") String matcher);
 
     @Modifying

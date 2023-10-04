@@ -124,7 +124,7 @@ export class TopicsCreateComponent implements OnInit, OnDestroy {
       this.selectedType = this.typeAs;
       this.surveyOptions = [];
       for (const object of this.childComponent.objectsToBack) {
-        const option = { option: object };
+        const option = { option: object.split('(')[0].trim() };
         this.surveyOptions.push(option);
       }
     } else if (this.childComponent.isSurveyImageText) {

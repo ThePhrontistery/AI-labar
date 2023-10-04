@@ -47,7 +47,8 @@ public interface GroupsRepository extends JpaRepository<GroupsEntity, Integer> {
 
     @Query("SELECT u.user FROM UsersEntity u WHERE u.id = :id")
     String getUserNameByUserId(@Param("id") Integer id);
-
+    @Query("SELECT CONCAT(u.user, ' (', u.email, ')') FROM UsersEntity u WHERE u.id = :id")
+    String getUserNameEMailByUserId(@Param("id") Integer id);
     @Modifying
     @Query(value = "INSERT INTO members (group_id, user_id) VALUES (:groupId, :userId)", nativeQuery = true)
     void insertMember(@Param("groupId") Integer groupId, @Param("userId") Integer userId);

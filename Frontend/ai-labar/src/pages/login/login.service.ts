@@ -32,4 +32,9 @@ export class LoginService {
     const url = `${environment.apiUrl}/users/getPublicKey`;
     return this.http.get<any>(url, { observe: 'response' });
   }
+
+  checkPassword(body: any): Observable<any> {
+    const url = `${environment.apiUrl}/users/adminAccess`;
+    return this.http.post<any>(url,  body,{ observe: 'response' });
+  }
 }

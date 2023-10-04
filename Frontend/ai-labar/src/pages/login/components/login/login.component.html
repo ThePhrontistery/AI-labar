@@ -7,7 +7,7 @@
       <div class="cap-container-logo-small"></div>
     </div>
 
-    <mat-card *ngIf="!showRegistroFom" class="login-card">
+    <mat-card *ngIf="!showRegistroFom && !showPasswordModal" class="login-card">
       <mat-card-header>
         <mat-card-title>{{ "LOGIN.INIT" | translate }}</mat-card-title>
         <button
@@ -48,12 +48,12 @@
           >
             {{ "LOGIN.INIT" | translate }}
           </button>
-          <button *ngIf="!loginCap"
+          <button 
             id="login-registration-button"
             mat-raised-button
             color="white"
             class="login-button"
-            (click)="registration()"
+            (click)="showRegistrationModal()"
           >
             {{ "LOGIN.REGISTER" | translate }}
           </button>
@@ -61,7 +61,45 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card *ngIf="showRegistroFom && !loginCap" class="login-card">
+    <!-- Modal para la contraseña -->
+    <mat-card *ngIf="showPasswordModal" class="login-card">   
+      <mat-card-header>
+        <mat-card-title>{{ "LOGIN.REGISTER" | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content> 
+        <form class="login-form" [formGroup]="loginAdminForm">
+          <mat-form-field>
+            <mat-label>{{ "LOGIN.PASSWORD" | translate }}</mat-label>
+            <input
+              id="login-password-passwordAdmin-input"
+              matInput
+              type="password"
+              formControlName="passwordAdmin"
+            />
+</mat-form-field>
+</form>
+<button
+id="password-submit-button"
+mat-raised-button
+color="white"
+class="login-button"
+(click)="checkPassword()"
+>
+Enviar
+</button>
+<button
+id="password-cancel-button"
+mat-raised-button
+color="white"
+class="login-button"
+(click)="cancelPasswordModal()"
+>
+Cancelar
+</button>
+</mat-card-content> 
+  </mat-card>
+
+    <mat-card *ngIf="showRegistroFom && !showPasswordModal" class="login-card">
       <mat-card-header>
         <mat-card-title>{{ "LOGIN.REGISTER" | translate }}</mat-card-title>
       </mat-card-header>
