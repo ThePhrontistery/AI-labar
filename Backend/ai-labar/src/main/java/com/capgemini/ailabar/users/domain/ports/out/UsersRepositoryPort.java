@@ -17,6 +17,8 @@ public interface UsersRepositoryPort {
 
     List<String> getAllUsers();
 
+    UsersEntity getUserByEmail(String email);
+
     UsersEntity getUserByName(String user);
 
     List<String> getUsersByMatch(String matcher);
@@ -27,7 +29,7 @@ public interface UsersRepositoryPort {
 
     void deleteMembersByUserId(Integer userId);
 
-    void updateToken(Integer userId, String newToken);
+    void updateUserNameAndToken(Integer userId, String user, String newToken);
 
     boolean login(String email, String password);
 }

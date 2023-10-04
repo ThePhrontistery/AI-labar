@@ -1,6 +1,7 @@
 package com.capgemini.ailabar.users.application.usecases;
 
 import com.capgemini.ailabar.commons.utils.DateTime;
+import com.capgemini.ailabar.users.domain.exceptions.CreateUserException;
 import com.capgemini.ailabar.users.domain.exceptions.LoginException;
 import com.capgemini.ailabar.users.domain.models.UsersModel;
 import com.capgemini.ailabar.users.domain.ports.in.LoginUseCase;
@@ -72,7 +73,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
         JSONObject decodedClaims = readJWT(jsonObject);
 
-        if(!usersRepositoryPort.checkEmail(decodedClaims.getString("email"))) {
+        String userSubName = decodedClaims.getString("sub");
+        String email = decodedClaims.getString("email");
+
+        if(!usersRepositoryPort.checkEmail(email)) {
             // Descomentar cuando se quiera volver a registrar a los usuarios con el primer login en la aplicación
             //createCapgeminiUser(usersModel, jsonObject);
             throw new LoginException("Unauthorized user in the application");
@@ -80,8 +84,20 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
         String token = jsonObject.getString("token");
 
-        UsersEntity usersEntity = usersRepositoryPort.getUserByName(usersModel.getUser());
-        usersRepositoryPort.updateToken(usersEntity.getId(), token);
+        UsersEntity usersEntity = usersRepositoryPort.getUserByEmail(email);
+        if(usersEntity != null) {
+            if (Boolean.TRUE.equals(usersRepositoryPort.checkUser(userSubName)) && !userSubName.equals(usersModel.getUser())) {
+                throw new CreateUserException("The user already exists");
+            }
+
+            try {
+                usersRepositoryPort.updateUserNameAndToken(usersEntity.getId(), userSubName, token);
+            } catch (Exception e) {
+                throw new LoginException("Error updating user during login");
+            }
+        } else {
+            throw new LoginException("User not found");
+        }
 
         return token;
     }
