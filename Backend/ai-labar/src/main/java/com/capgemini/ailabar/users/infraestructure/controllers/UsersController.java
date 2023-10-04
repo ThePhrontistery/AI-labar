@@ -75,6 +75,9 @@ public class UsersController implements SpecialResponseInterface {
         return new ResponseEntity<>(specialResponse(loginData, responseJson), HttpStatus.OK);
     }
 
+    /*
+     * METHOD TO ACCESS USER CREATION
+     */
     @PostMapping("/adminAccess")
     public ResponseEntity<SpecialResponse> adminAccess(@RequestBody UsersModel usersModel) {
         JSONObject responseJson = new JSONObject();
@@ -200,6 +203,13 @@ public class UsersController implements SpecialResponseInterface {
     ResponseEntity<SpecialResponse> handlerLoginException (LoginException loginException){
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", loginException.getMessage());
+        return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AdminAccessException.class)
+    ResponseEntity<SpecialResponse> handlerAdminAccessException (AdminAccessException adminAccessException){
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", adminAccessException.getMessage());
         return new ResponseEntity<>(specialResponse(null, responseJson), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
