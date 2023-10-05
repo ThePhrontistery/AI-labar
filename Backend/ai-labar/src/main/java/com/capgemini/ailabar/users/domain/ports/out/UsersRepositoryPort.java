@@ -7,7 +7,7 @@ import java.util.List;
 public interface UsersRepositoryPort {
     boolean checkAuthorization(String user, String token);
 
-    boolean checkEmail(String email);
+    boolean checkEmail(String user);
 
     boolean checkUser(String user);
 
