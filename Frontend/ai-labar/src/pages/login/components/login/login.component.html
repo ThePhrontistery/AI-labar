@@ -86,7 +86,7 @@
           class="login-button"
           (click)="checkPassword()"
         >
-          Enviar
+          {{ "LOGIN.SEND" | translate }}
         </button>
         <button
           id="password-cancel-button"
@@ -94,8 +94,9 @@
           color="white"
           class="login-button"
           (click)="cancelPasswordModal()"
+          style="margin-left: 23px"
         >
-          Cancelar
+        {{ "LOGIN.CANCELAR" | translate }}
         </button>
       </mat-card-content>
     </mat-card>
