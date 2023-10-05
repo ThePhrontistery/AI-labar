@@ -7,7 +7,8 @@
     "EMAIL": "E-mail",
     "ADD_IMG": "Añadir imagen",
     "CANCELAR": "Cancelar",
-    "PASS_ADMIN": "Contraseña administrador"
+    "PASS_ADMIN": "Contraseña administrador",
+    "SEND":"Enviar"
   },
   "TOPIC": {
     "MANAGING_GROUPS": "Gestionar grupos",

@@ -81,7 +81,7 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public boolean login(String email, String password) {
-        return usersRepository.checkLogin(email, password);
+    public boolean login(String user, String password) {
+        return usersRepository.checkLogin(user, password);
     }
 }
