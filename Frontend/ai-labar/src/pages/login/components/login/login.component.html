@@ -2,6 +2,7 @@
   <div fxHide fxShow.sm="true" fxShow.gt-md="true" class="cap-container">
     <div class="cap-container-logo"></div>
   </div>
+  <div class="version">{{ appVersion }}</div>
   <div class="login-container">
     <div fxHide fxShow.xs class="cap-container-small">
       <div class="cap-container-logo-small"></div>
@@ -48,7 +49,7 @@
           >
             {{ "LOGIN.INIT" | translate }}
           </button>
-          <button 
+          <button
             id="login-registration-button"
             mat-raised-button
             color="white"
@@ -61,12 +62,12 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Modal para la contraseña -->
-    <mat-card *ngIf="showPasswordModal" class="login-card">   
+    <!-- Modal para la contraseï¿½a -->
+    <mat-card *ngIf="showPasswordModal" class="login-card">
       <mat-card-header>
-        <mat-card-title>{{ "LOGIN.REGISTER" | translate }}</mat-card-title>
+        <mat-card-title>{{ "LOGIN.PASS_ADMIN" | translate }}</mat-card-title>
       </mat-card-header>
-      <mat-card-content> 
+      <mat-card-content>
         <form class="login-form" [formGroup]="loginAdminForm">
           <mat-form-field>
             <mat-label>{{ "LOGIN.PASSWORD" | translate }}</mat-label>
@@ -76,28 +77,28 @@
               type="password"
               formControlName="passwordAdmin"
             />
-</mat-form-field>
-</form>
-<button
-id="password-submit-button"
-mat-raised-button
-color="white"
-class="login-button"
-(click)="checkPassword()"
->
-Enviar
-</button>
-<button
-id="password-cancel-button"
-mat-raised-button
-color="white"
-class="login-button"
-(click)="cancelPasswordModal()"
->
-Cancelar
-</button>
-</mat-card-content> 
-  </mat-card>
+          </mat-form-field>
+        </form>
+        <button
+          id="password-submit-button"
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="checkPassword()"
+        >
+          Enviar
+        </button>
+        <button
+          id="password-cancel-button"
+          mat-raised-button
+          color="white"
+          class="login-button"
+          (click)="cancelPasswordModal()"
+        >
+          Cancelar
+        </button>
+      </mat-card-content>
+    </mat-card>
 
     <mat-card *ngIf="showRegistroFom && !showPasswordModal" class="login-card">
       <mat-card-header>
