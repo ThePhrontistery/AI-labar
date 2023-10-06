@@ -41,6 +41,7 @@ public class GetGroupUseCaseImpl implements GetGroupUseCase {
         List<String> membersList = new ArrayList<>();
         membersIdList.forEach(id -> {
             try {
+                //membersList.add(groupsRepositoryPort.getUserNameEMailByUserId(id));
                 membersList.add(groupsRepositoryPort.getUserNameByUserId(id));
             } catch (GetGroupException getGroupException) {
                 throw new GetGroupException("An error occurred while retrieving group members");

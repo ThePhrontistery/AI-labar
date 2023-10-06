@@ -96,6 +96,10 @@ public class GroupsRepositoryAdapter implements GroupsRepositoryPort {
     }
 
     @Override
+    public String getUserNameEMailByUserId(Integer id) {
+        return groupsRepository.getUserNameEMailByUserId(id);
+    }
+    @Override
     public void insertMember(Integer groupId, Integer userId) {
         groupsRepository.insertMember(groupId, userId);
     }

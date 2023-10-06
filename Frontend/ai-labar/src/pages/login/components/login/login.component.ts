@@ -15,6 +15,7 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'src/pages/topics/services/message.service';
 import { LanguageService } from 'src/pages/language.service';
 import { environment } from 'src/environments/environment';
+import packageJson from '../../../../../package.json';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,10 @@ export class LoginComponent implements OnInit {
   usernameError: string = '';
   passwordError: string = '';
 
+  //
+  passwordConfirmation: string = '';
+  showPasswordModal: boolean = false;
+
   // Properties related to user registration
   fileName: string = '';
   showRegistroFom: boolean = false;
@@ -40,6 +45,11 @@ export class LoginComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     imageVisible: [''],
     imageFunctional: [''],
+  });
+
+   // Login form
+   loginAdminForm: FormGroup = this.fb.group({
+    passwordAdmin: ['', Validators.required],
   });
 
   // Login form
@@ -63,6 +73,8 @@ export class LoginComponent implements OnInit {
   publicKey: any;
 
   loginCap!: boolean;
+
+  appVersion: string = packageJson.version;
 
   /**
    * Component builder.
@@ -399,4 +411,62 @@ export class LoginComponent implements OnInit {
   private showContent() {
     this.router.navigate(['/topics/topics-list']);
   }
+
+
+
+
+
+
+// Método para mostrar el modal de contraseña cuando se hace clic en "Registrar"
+showRegistrationModal() {
+  if (this.loginCap) {
+    this.showPasswordModal = true;
+  } else {
+    this.showRegistroFom = true; // Si loginCap es falso, mostrar el formulario de registro directamente
+  }
+}
+
+// Método para cancelar el modal de contraseña
+cancelPasswordModal() {
+  this.showPasswordModal = false;
+  this.password = ''; // Limpiar la contraseña ingresada
+}
+
+// Método para verificar la contraseña ingresada y mostrar el formulario de registro si es válida
+checkPassword() {
+  // Hash de la contraseña ingresada en SHA256
+ // const hashedPassword = CryptoJS.SHA256(this.password).toString();
+
+  let body;
+  body = {
+          password: CryptoJS.SHA256(this.loginAdminForm.value.passwordAdmin).toString()
+        };
+  // Llamar al servicio web para verificar la contraseña
+  this.loginService.checkPassword(body).subscribe({
+    next: (response) => {
+      if (response === 'ok') {
+        // Contraseña válida, mostrar el formulario de registro
+        this.showRegistroFom = true;
+        this.showPasswordModal = false; // Cerrar el modal de contraseña
+      } else {
+        // Contraseña no válida, mostrar un mensaje de error
+        // Puedes mostrar el mensaje de error en un elemento HTML o utilizar una biblioteca de notificaciones
+        // Por ejemplo: this.notificationService.showError('No tiene permiso para crear usuarios');
+        console.error('No tiene permiso para crear usuarios');
+      }
+      this.showRegistroFom = true;
+      this.showPasswordModal = false;
+    },
+    error: (error) => {
+      // Manejar errores de la llamada al servicio web, si es necesario
+      console.error('Error al verificar la contraseña', error);
+      this.messageService.showErrorMessage(
+        this.translate.instant('ERROR_MESSAGES.ERROR_ADMIN_PASS') +
+        '\n' +
+        error.error.message
+      );
+    },
+  });
+}
+
 }

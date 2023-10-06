@@ -243,12 +243,14 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   // Select or deselect a user
   selectUser(user: IUser): void {
     user.checked = !user.checked;
+    //const userName = user.name;
+    const userName = user.name.split('(')[0];
     if (user.checked) {
-      if (!this.selectedUsers.includes(user.name)) {
-        this.selectedUsers.push(user.name);
+      if (!this.selectedUsers.includes(userName)) {
+        this.selectedUsers.push(userName);
       }
     } else {
-      const index = this.selectedUsers.indexOf(user.name);
+      const index = this.selectedUsers.indexOf(userName);
       if (index !== -1) {
         this.selectedUsers.splice(index, 1);
       }

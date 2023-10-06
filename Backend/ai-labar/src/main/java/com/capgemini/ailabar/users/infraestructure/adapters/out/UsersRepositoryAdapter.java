@@ -46,6 +46,11 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
+    public UsersEntity getUserByEmail(String email) {
+        return usersRepository.getUserByEmail(email);
+    }
+
+    @Override
     public UsersEntity getUserByName(String user) {
         return usersRepository.getUserByName(user);
     }
@@ -71,8 +76,8 @@ public class UsersRepositoryAdapter implements UsersRepositoryPort {
     }
 
     @Override
-    public void updateToken(Integer userId, String newToken) {
-        usersRepository.updateToken(userId, newToken);
+    public void updateUserNameAndToken(Integer userId, String user, String newToken) {
+        usersRepository.updateUserNameAndToken(userId, user, newToken);
     }
 
     @Override
