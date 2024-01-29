@@ -137,3 +137,14 @@ mat-form-field {
   margin-left: 5px;
   background-color: #ababab;
 }
+
+.scrollable {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.ellipsis {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}

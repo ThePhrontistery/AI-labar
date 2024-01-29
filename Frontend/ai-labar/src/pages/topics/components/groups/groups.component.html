@@ -36,7 +36,9 @@
           *ngFor="let user of users"
           [formControlName]="user.name"
           [class]="user.hidden ? 'hidden' : ''"
+          [(ngModel)]="user.modal"
           [checked]="user.checked"
+          (change)="selectUser(user)"
         >
           {{ user.name }}
         </mat-checkbox>
@@ -48,14 +50,14 @@
         {{ selectedUsers.length }}
       </p>
       <mat-form-field appearance="fill">
-        <textarea
-          id="groups-current-selection-input"
-          formControlName="currentSelection"
-          matInput
-          [value]="selectedUsers.join(', ')"
-          rows="3"
-          readonly="true"
-        ></textarea>
+        <mat-chip-list class="mat-chip-list" >
+          <mat-chip *ngFor="let user of selectedUsers" [selectable]="true" [removable]="true" (removed)="deselectUser(user)">
+            {{ user }}
+            <span class="remove-chip" *ngIf="isChipRemovable(user)" (click)="deselectUser(user)">
+              &#10006;
+            </span>
+          </mat-chip>
+        </mat-chip-list>
       </mat-form-field>
     </div>
     <div class="wizard-navigation">
@@ -148,15 +150,14 @@
         {{ selectedUsersGroup.length }}
       </p>
       <mat-form-field appearance="fill">
-        <textarea
-          id="groups-current-selection-users-input"
-          formControlName="currentSelection"
-          matInput
-          [value]="selectedUsersGroup.join(', ')"
-          rows="3"
-          name="currentSelection"
-          readonly="true"
-        ></textarea>
+        <mat-chip-list class="mat-chip-list" >
+          <mat-chip *ngFor="let user of selectedUsersGroup" [selectable]="true" [removable]="true" (removed)="deselectUserGroup(user)">
+            {{ user }}
+            <span class="remove-chip" *ngIf="isChipRemovable(user)" (click)="deselectUserGroup(user)">
+              &#10006;
+            </span>
+          </mat-chip>
+        </mat-chip-list>
       </mat-form-field>
     </div>
     <div class="wizard-navigation">

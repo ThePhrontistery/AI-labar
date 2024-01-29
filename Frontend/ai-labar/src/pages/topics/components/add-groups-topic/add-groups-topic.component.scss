@@ -41,3 +41,15 @@ li.ellipsis {
 .left-button {
   order: -1;
 }
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ellipsis {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  font-size: 1rem;
+}

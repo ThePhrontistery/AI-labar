@@ -101,3 +101,34 @@ li {
     display: none;
   }
 }
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+li.ellipsis {
+  font-style: italic;
+}
+
+.ellipsis {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  font-size: 1rem;
+}
+
+.remove-chip {
+  cursor: pointer;
+  color: red;
+  font-size: 1rem;
+  margin-left: 4px;
+}
+
+.mat-chip-list {
+  height: 120px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  flex-wrap: wrap;
+}

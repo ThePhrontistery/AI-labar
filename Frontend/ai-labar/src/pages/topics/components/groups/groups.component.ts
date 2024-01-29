@@ -110,6 +110,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   isChecked: boolean = true;
 
+
   constructor(
     private fb: FormBuilder,
     private cookie: CookieService,
@@ -176,11 +177,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
       this.groupsForm.addControl(user.name, new FormControl());
       this.groupsForm.patchValue(user);
     });
-    /*this.usersGroups.forEach((user) => {
-      this.groupsForm.controls[user.name].statusChanges.subscribe(() => {
-        //if (user) this.selectUserGroup(user);
-      });
-    });*/
     this.showSelectedGroup = true;
     this.changeDetectorRef.detectChanges();
   }
@@ -197,17 +193,12 @@ export class GroupsComponent implements OnInit, OnDestroy {
         name: item,
         checked: this.selectedUsers.includes(username),
         hidden: false,
-        modal: false
+        modal: this.selectedUsers.includes(username)
       };
       this.users.push(user);
     });
     this.users.forEach((user) => {
       this.groupsForm.addControl(user.name, new FormControl());
-    });
-    this.users.forEach((user) => {
-      this.groupsForm.controls[user.name].statusChanges.subscribe(() => {
-        if (user) this.selectUser(user);
-      });
     });
   }
 
@@ -501,5 +492,29 @@ export class GroupsComponent implements OnInit, OnDestroy {
           );
         },
       });
+  }
+
+  deselectUserGroup(user: string): void {
+    const index = this.selectedUsersGroup.indexOf(user);
+    if (index !== -1) {
+      this.selectedUsersGroup.splice(index, 1);
+    }
+    this.showSelectedGroup = this.selectedUsersGroup.length > 0;
+    this.changeDetectorRef.detectChanges();
+    this.filterUsersGroup();
+  }
+
+  deselectUser(user: string): void {
+    const index = this.selectedUsers.indexOf(user);
+    if (index !== -1) {
+      this.selectedUsers.splice(index, 1);
+    }
+    this.showSelected = this.selectedUsers.length > 0;
+    this.changeDetectorRef.detectChanges();
+    this.filterUsers();
+  }
+
+  isChipRemovable(user: string): boolean {
+    return true;
   }
 }
