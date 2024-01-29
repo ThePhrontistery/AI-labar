@@ -52,6 +52,7 @@ import { MessageService } from './services/message.service';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { LanguageService } from '../language.service';
 import { LoginService } from '../login/login.service';
+import { MatChipsModule } from '@angular/material/chips';
 
 // Function TranslateModule
 export function HttpLoaderFactory(http: HttpClient) {
@@ -112,6 +113,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     MatSnackBarModule,
+    MatChipsModule,
   ],
   providers: [
     TopicsListService,

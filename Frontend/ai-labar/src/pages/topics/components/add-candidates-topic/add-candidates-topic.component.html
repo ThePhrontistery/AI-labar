@@ -28,23 +28,33 @@
     <h3>{{ "ADD_CANDIDATES.USERS_SELECTED_GROUP" | translate }}</h3>
     <!-- List of users of the selected group -->
     <ul>
+      <div  [ngClass]="{'scrollable': usersGroups.length > 6 && showAllUsersGroups}">
       <ng-container *ngFor="let user of usersGroups; let i = index">
         <p *ngIf="i === 0">
           {{ "ADD_CANDIDATES.TOTAL_MEMBERS_GROUP" | translate }}
           {{ usersGroups.length }}
         </p>
-        <li *ngIf="i < 6">
+        <li *ngIf="i < 6 && !showAllUsersGroups">
           {{ user }}
         </li>
-        <li *ngIf="i === 5 && usersGroups.length > 6">...</li>
-        <p
-          *ngIf="i === 7 && usersGroups.length > limitCandidates"
+        <li *ngIf="showAllUsersGroups">
+          {{ user }}
+        </li>
+      </ng-container>
+    </div>
+    <li class="ellipsis" *ngIf="usersGroups.length > 0 && !showAllUsersGroups" (click)="toggleShowAllUsersGroups()">
+      {{ "MANAGING_GROUPS.SHOW_MORE" | translate }}
+    </li>
+    <li class="ellipsis" *ngIf="showAllUsersGroups" (click)="toggleShowAllUsersGroups()">
+      {{ "MANAGING_GROUPS.SHOW_LESS" | translate }}
+    </li>
+    <p
+          *ngIf="usersGroups.length > limitCandidates"
           class="error"
         >
           {{ "ADD_CANDIDATES.MAX_NUMBER_CANDIDATES_ERROR" | translate }}
           {{ limitCandidates }}
         </p>
-      </ng-container>
     </ul>
 
     <div class="wizard-navigation">
@@ -93,7 +103,9 @@
           *ngFor="let user of users"
           [formControlName]="user.name"
           [class]="user.hidden ? 'hidden' : ''"
+          [(ngModel)]="user.modal"
           [checked]="user.checked"
+          (change)="selectUser(user)"
         >
           {{ user.name }}
         </mat-checkbox>
@@ -108,14 +120,14 @@
         {{ selectedUsers.length }}
       </p>
       <mat-form-field appearance="fill">
-        <textarea
-          id="login-selected-users-input"
-          formControlName="currentSelection"
-          matInput
-          [value]="selectedUsers.join(', ')"
-          rows="3"
-          name="currentSelection"
-        ></textarea>
+        <mat-chip-list class="mat-chip-list" >
+          <mat-chip *ngFor="let user of selectedUsers" [selectable]="true" [removable]="true" (removed)="deselectUser(user)">
+            {{ user }}
+            <span class="remove-chip" *ngIf="isChipRemovable(user)" (click)="deselectUser(user)">
+              &#10006;
+            </span>
+          </mat-chip>
+        </mat-chip-list>
       </mat-form-field>
     </div>
 
@@ -138,6 +150,7 @@
           class="button"
           mat-button
           color="accent"
+          (click)="closeDialog()"
           [mat-dialog-close]="true"
           name="cancel"
         >

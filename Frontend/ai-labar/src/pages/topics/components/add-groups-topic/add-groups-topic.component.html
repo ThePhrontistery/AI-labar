@@ -22,17 +22,30 @@
 
 <h3>{{ "ADD_GROUPS.USERS_SELECTED_GROUP" | translate }}</h3>
 <!-- List of users of the selected group -->
-<ul>
-  <ng-container *ngFor="let user of users; let i = index">
-    <p *ngIf="i === 0">
-      {{ "ADD_GROUPS.TOTAL_USERS" | translate }} {{ users.length }}
-    </p>
-    <li *ngIf="i < 6">
-      {{ user }}
+<p>
+  {{ "ADD_GROUPS.TOTAL_USERS" | translate }} {{ users.length }}
+</p>
+
+  <ul>
+    <div  [ngClass]="{'scrollable': users.length > 6 && showAllUsers}">
+      <ng-container *ngFor="let user of users; let i = index">
+        <li *ngIf="i < 6 && !showAllUsers">
+          {{ user }}
+        </li>
+          <li *ngIf="showAllUsers">
+            {{ user }}
+          </li>
+      </ng-container>
+    </div>
+    <li class="ellipsis" *ngIf="users.length > 0 && !showAllUsers" (click)="toggleShowAllUsers()">
+      {{ "MANAGING_GROUPS.SHOW_MORE" | translate }}
     </li>
-    <li class="ellipsis" *ngIf="i === 5 && users.length > 6">...</li>
-  </ng-container>
-</ul>
+    <li class="ellipsis" *ngIf="showAllUsers" (click)="toggleShowAllUsers()">
+      <p></p>
+      {{ "MANAGING_GROUPS.SHOW_LESS" | translate }}
+    </li>
+  </ul>
+
 
 <!-- Close modal button -->
 <div class="wizard-navigation">

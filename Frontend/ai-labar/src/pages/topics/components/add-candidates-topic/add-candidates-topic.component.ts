@@ -8,6 +8,7 @@ import {
   ViewChild,
   ElementRef,
   OnDestroy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { TopicsCreateService } from '../topics-create/topics-create.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -76,6 +77,8 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   // Previously selected option
   oldSelectedOption: string | undefined;
 
+  showAllUsersGroups = false
+
   private ngUnsubscribe = new Subject();
   private searchTimer: any;
 
@@ -87,6 +90,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<AddGroupsTopicComponent>,
     private translate: TranslateService,
     private messageService: MessageService,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // Initialize the form group and controls
@@ -204,19 +208,14 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
     this.usersNames.map((item) => {
       let user = {
         name: item,
-        checked: false,
+        checked:this.selectedUsers.includes(item),
         hidden: false,
-        modal: false
+        modal: this.selectedUsers.includes(item)
       };
       this.users.push(user);
     });
     this.users.forEach((user) => {
       this.groupsForm.addControl(user.name, new FormControl());
-    });
-    this.users.forEach((user) => {
-      this.groupsForm.controls[user.name].statusChanges.subscribe(() => {
-        if (user) this.selectUser(user);
-      });
     });
   }
 
@@ -230,7 +229,6 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
     }
     if (search.length >= 3) {
       this.matcher = search;
-      //this.getUsersFilter();
       this.searchTimer = setTimeout(() => {
         this.getUsersFilter();
       }, 400);
@@ -243,8 +241,7 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
   // Select or deselect a user
   selectUser(user: IUser): void {
     user.checked = !user.checked;
-    //const userName = user.name;
-    const userName = user.name.split('(')[0];
+    const userName = user.name;
     if (user.checked) {
       if (!this.selectedUsers.includes(userName)) {
         this.selectedUsers.push(userName);
@@ -305,5 +302,23 @@ export class AddCandidatesTopicComponent implements OnInit, OnDestroy {
           this.loadForm();
         }
       });
+  }
+
+  toggleShowAllUsersGroups() {
+    this.showAllUsersGroups = !this.showAllUsersGroups;
+  }
+
+  deselectUser(user: string): void {
+    const index = this.selectedUsers.indexOf(user);
+    if (index !== -1) {
+      this.selectedUsers.splice(index, 1);
+    }
+    this.showSelected = this.selectedUsers.length > 0;
+    this.changeDetectorRef.detectChanges();
+    this.filterUsers();
+  }
+
+  isChipRemovable(user: string): boolean {
+    return true;
   }
 }

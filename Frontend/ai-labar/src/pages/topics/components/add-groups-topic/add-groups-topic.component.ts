@@ -23,6 +23,7 @@ export class AddGroupsTopicComponent implements OnInit, OnDestroy {
   selectedGroup: string | undefined;
   groups: string[] = [];
   users: string[] = [];
+  showAllUsers = false;
 
   private ngUnsubscribe = new Subject();
 
@@ -148,5 +149,10 @@ export class AddGroupsTopicComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       this.getGroups();
     });
+  }
+
+
+  toggleShowAllUsers() {
+    this.showAllUsers = !this.showAllUsers;
   }
 }

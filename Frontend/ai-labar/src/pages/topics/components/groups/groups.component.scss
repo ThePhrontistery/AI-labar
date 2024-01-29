@@ -96,4 +96,19 @@ h1 {
   }
 }
 
+.remove-chip {
+  cursor: pointer;
+  color: red;
+  font-size: 1rem;
+  margin-left: 4px;
+}
+
+.mat-chip-list {
+  height: 120px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  flex-wrap: wrap;
+}
+
 

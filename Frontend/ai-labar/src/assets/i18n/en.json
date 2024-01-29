@@ -12,7 +12,7 @@
   },
   "TOPIC": {
     "MANAGING_GROUPS": "Managing groups",
-    "ADD_TOPIC": "Add topic",
+    "ADD_TOPIC": "Create topic",
     "LOGOUT": "Logout"
   },
   "ADD_CANDIDATES": {
@@ -23,7 +23,7 @@
     "SELECT_USER_GROUP": "Select User Group",
     "USERS_SELECTED_GROUP": "Users of the Selected Group",
     "TOTAL_MEMBERS_GROUP": "Total members of the selected group:",
-    "MAX_NUMBER_CANDIDATES_ERROR": "The number of candidates for this survey cannot be greater than",
+    "MAX_NUMBER_CANDIDATES_ERROR": "The number of candidates for this topic cannot be greater than",
     "CLOSE": "Close",
     "SAVE_SELECTION": "Save selection",
     "USERS_FOUND": "users found",
@@ -59,7 +59,9 @@
     "SAVE_GROUP": "Save group",
     "CREATE":"Create group",
     "EDIT":"Edit group",
-    "MANAGING_GROUP": "MANAGING GROUP"
+    "MANAGING_GROUP": "MANAGING GROUP",
+    "SHOW_MORE": "Show more",
+    "SHOW_LESS": "Show less"
   },
   "IMAGE_TEXT_RESULT": {
     "CLOSE": "Close"
@@ -92,8 +94,8 @@
     "TOTAL_PARTICIPANTS": "Total participants:"
   },
   "STEP_ONE": {
-    "CHOOSE_SURVEY_TYPE": "Choose a survey type:",
-    "SELECT_IMAGE_SURVEY": "(Select the image for the type of survey you desire)",
+    "CHOOSE_SURVEY_TYPE": "Choose a topic type:",
+    "SELECT_IMAGE_SURVEY": "(Select the image for the type of topic you desire)",
     "VALUES_SURVEY_NAME": "Values (Single/Multiple selection)",
     "VALUES_IMAGE_SURVEY_NAME": "Values with image (Single/Multiple selection)",
     "EMOJIS_SURVEY_NAME": "Emojis (Single selection)",
@@ -116,11 +118,11 @@
     "AUTHOR": "Author",
     "CLOSING_DATE": "Closing date",
     "OPEN_SURVEY_COLUMN": "Open",
-    "OPEN_SURVEY": "Open survey",
+    "OPEN_SURVEY": "Open topic",
     "CLOSE_SURVEY_COLUMN": "Close",
-    "CLOSE_SURVEY": "Close survey",
+    "CLOSE_SURVEY": "Close topic",
     "DELETE_SURVEY_COLUMN": "Delete",
-    "DELETE_SURVEY": "Delete survey",
+    "DELETE_SURVEY": "Delete topic",
     "VOTE_SURVEY_COLUMN": "Vote",
     "VOTE_SURVEY": "Vote",
     "VIEW_RESULTS_SURVEY_COLUMN": "View results",
@@ -138,7 +140,7 @@
     "TOPICS_PAGE": "Topics per page: ",
     "TOPICS_PAGE_OF": "of",
     "CONFIRM_DELETION": "Confirm Deletion",
-    "CONFIRM_DELETION_MESSAGE": "¿Are you sure you want to delete this survey?"
+    "CONFIRM_DELETION_MESSAGE": "¿Are you sure you want to delete this topic?"
   },
   "RATING_RESULT": {
     "CLOSE": "Close"

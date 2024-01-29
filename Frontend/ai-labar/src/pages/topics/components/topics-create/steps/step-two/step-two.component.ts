@@ -110,6 +110,10 @@ export class StepTwoComponent implements OnInit, OnDestroy {
     return date >= currentDate;
   };
 
+  showAllUsers = false;
+
+  showAllUsersCandidates = false
+
   constructor(
     private dialog: MatDialog,
     private translate: TranslateService,
@@ -264,6 +268,14 @@ export class StepTwoComponent implements OnInit, OnDestroy {
       this.usersCandidates = result.selectedUsers;
       this.objectsToBack = this.usersCandidates;
     });
+  }
+
+  toggleShowAllUsers() {
+    this.showAllUsers = !this.showAllUsers;
+  }
+
+  toggleShowAllUsersCandidates() {
+    this.showAllUsersCandidates = !this.showAllUsersCandidates;
   }
 
   /**

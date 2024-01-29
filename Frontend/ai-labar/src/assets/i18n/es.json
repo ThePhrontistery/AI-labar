@@ -12,7 +12,7 @@
   },
   "TOPIC": {
     "MANAGING_GROUPS": "Gestionar grupos",
-    "ADD_TOPIC": "Añadir topic",
+    "ADD_TOPIC": "Crear encuesta",
     "LOGOUT": "Salir"
   },
   "ADD_CANDIDATES": {
@@ -59,7 +59,9 @@
     "SAVE_GROUP": "Guardar grupo",
     "CREATE":"Crear grupo",
     "EDIT":"Editar grupo",
-    "MANAGING_GROUP": "GESTIONAR GRUPO"
+    "MANAGING_GROUP": "GESTIONAR GRUPO",
+    "SHOW_MORE": "Mostrar Más",
+    "SHOW_LESS": "Mostrar Menos"
   },
   "IMAGE_TEXT_RESULT": {
     "CLOSE": "Cerrar"
@@ -135,7 +137,7 @@
     "PAGINATION": "Paginación",
     "CARDS": "Tarjetas",
     "SCROLL": "Scroll",
-    "TOPICS_PAGE": "Topics por página: ",
+    "TOPICS_PAGE": "Encuestas por página: ",
     "TOPICS_PAGE_OF": "de",
     "CONFIRM_DELETION": "Confirmar Eliminación",
     "CONFIRM_DELETION_MESSAGE": "¿Estás seguro de que deseas eliminar esta encuesta?"
@@ -153,11 +155,11 @@
     "ERROR_SEND_SELECTION": "Error al enviar la selección:",
     "EMPTY_CLOSING_DATE": "La fecha de cierre está vacia.",
     "EMPTY_TITLE": "El titulo está vacio.",
-    "TOPIC_CREATE_ERROR": "Se produjo un error al crear el topic: ",
-    "ERROR_OPEN_TOPIC": "Error al abrir el topic:",
-    "ERROR_CLOSE_TOPIC": "Error al cerrar el topic:",
-    "ERROR_DELETE_TOPIC": "Error al borrar el topic:",
-    "ERROR_RETRIEVING_TOPICS": "Error al obtener los topics:",
+    "TOPIC_CREATE_ERROR": "Se produjo un error al crear la encuesta: ",
+    "ERROR_OPEN_TOPIC": "Error al abrir la encuesta:",
+    "ERROR_CLOSE_TOPIC": "Error al cerrar la encuesta:",
+    "ERROR_DELETE_TOPIC": "Error al borrar la encuesta:",
+    "ERROR_RETRIEVING_TOPICS": "Error al obtener las encuestas:",
     "REPEATED_OPTIONS":"No pueden haber opciones repetidas.",
     "CLOSE_BUTTON": "Cerrar",
     "ERROR_SEND_LANGUAGE": "No se ha podido guardar el idioma",
